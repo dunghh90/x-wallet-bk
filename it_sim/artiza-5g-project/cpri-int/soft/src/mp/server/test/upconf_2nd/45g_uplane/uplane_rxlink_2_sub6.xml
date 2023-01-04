@@ -1,0 +1,15 @@
+<user-plane-configuration xmlns="urn:xran:uplane-conf:1.0">
+	<low-level-rx-links>
+	  <name>RxLinks2</name>
+	  <processing-element>default0</processing-element>
+	  <rx-array-carrier>RxCar2</rx-array-carrier>
+	  <low-level-rx-endpoint>RxEndp1</low-level-rx-endpoint>
+	  <remote-address>
+	    <cu-port-bitmask>49152</cu-port-bitmask>
+		<band-sector-bitmask>16128</band-sector-bitmask>
+		<ccid-bitmask>240</ccid-bitmask>
+		<ru-port-bitmask>15</ru-port-bitmask>
+		<eaxc-id>15</eaxc-id>
+	  </remote-address>
+	</low-level-rx-links>
+</user-plane-configuration>

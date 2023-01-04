@@ -1,0 +1,5 @@
+l3_com_ushortsort_asc.c:28:6:l3_com_ushortsort_asc	64	static
+l3_com_ushortsort_asc.c:99:6:l3_com_heapify	80	static
+l3_com_ushortsort_asc.c:138:6:l3_com_heapsort	80	static
+l3_com_ushortsort_asc.c:164:5:l3_com_cmp_ushort	48	static
+l3_com_ushortsort_asc.c:179:6:l3_com_swap_ushort	48	static

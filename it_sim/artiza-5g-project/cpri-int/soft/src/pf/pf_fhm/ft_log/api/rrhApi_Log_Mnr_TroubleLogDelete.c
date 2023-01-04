@@ -1,0 +1,121 @@
+/*!
+ * @skip  $ld:$
+ * @file  rrhApi_Log_Mnr_TroubleLogDelete.c
+ * @brief API : Log関連
+ * @date  2013/10/29 ALPHA)yokoyama Create.
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2013
+ */
+
+/** @addtogroup RRH_PF_LOG_API
+ *  @{
+ */
+/********************************************************************************************************************/
+/* include file                                                                                                     */
+/********************************************************************************************************************/
+#include "f_rrh_inc.h"
+#include "f_sys_def.h"
+#include "BPF_RU_IPCM.h"
+#include "BPF_COM_LOG.h"
+#include "rrhApi_Com.h"
+#include "rrhApi_Log.h"
+
+/********************************************************************************************************************/
+/**
+ *  @brief  API : Trouble Log Delete Send(障害ログファイル削除)共通関数
+ *  @param  qid         : response queue id (応答送信先QueueID)
+ *  @param  wtime       : wait time(msec) for response (応答待ち時間。即時応答型でのみ有効)
+ *  @param  *data_p     : 取得データポインタ
+ *  @param  *filename   : Trouble Log filename
+ *	@param  sysKind     : 信号種別(3G/S3G)
+ *  @return E_RRHAPI_RCODE
+ *  @retval ret
+ *  @date   2013/11/19 ALPHA)yokoyama Create.
+ *  @date   2014/12/23 ALPHA)fujii Create.
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Log_TroubleLogDelete_com(	INT				qid, 
+												INT				wtime,
+												VOID			*data_p,
+												UCHAR			*filename,
+												UINT			sysKind )
+{
+	T_API_LOG_TROUBLELOG_DEL				*msgp = NULL;
+	INT										errcd = 0;
+	INT										ret   = 0;
+	UINT									length;
+	
+	/* 通信用共有メモリを取得する	*/
+	ret = BPF_RU_IPCM_PROCMSG_ADDRGET(	E_BPF_RU_IPCM_BUFF_KIND_TASK,		/* Buffer種別		*/
+										sizeof(T_API_LOG_TROUBLELOG_DEL),	/* Size				*/
+										(VOID **)&msgp,						/* msgP				*/
+										&errcd );
+	
+	if( ret != E_API_RCD_OK )
+	{
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, "BPF_RU_IPCM_PROCMSG_ADDRGET NG %d", ret);
+		return E_API_RCD_ERR_BPF_CALL;
+	}
+	
+	/* データの設定を行う			*/
+	/* Header部設定	*/
+	msgp->head.uiEventNo 	 = D_API_LOG_MNR_TROUBLE_LOG_DEL;			/* 障害ログファイル削除要求	*/
+	msgp->head.uiDstPQueueID = D_RRH_PROCQUE_F_PF;						/* 送信先Process Queue ID	*/
+	msgp->head.uiDstTQueueID = D_SYS_THDQID_PF_LOG;						/* 送信先Thread Queue ID	*/
+	msgp->head.uiSrcPQueueID = qid;										/* 送信元Process Queue ID	*/
+	msgp->head.uiSrcTQueueID = 0;										/* 送信元Thread Queue ID	*/
+	msgp->head.uiSignalkind  = sysKind;									/* 信号種別					*/
+	
+	/* 個別部設定	*/
+	length = strlen((CHAR*)filename);
+	if( length >= sizeof(msgp->info.filename) )
+	{
+		/* クリップする	*/
+		length = sizeof(msgp->info.filename);
+	}
+	
+	memset( msgp->info.filename, 0, sizeof( msgp->info.filename ) );
+	memcpy( msgp->info.filename, filename, length );					/* 出力ファイル名設定	*/
+	
+	/* PFへ障害ログファイル削除要求を送信する */
+	ret = BPF_RU_IPCM_MSGQ_SEND(	D_RRH_PROCQUE_F_PF,					/* 送信先Process Queue ID	*/
+									(void *)msgp );						/* 送信Message				*/
+	
+	if( ret != E_API_RCD_OK )
+	{
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, "BPF_RU_IPCM_MSGQ_SEND NG %d", ret);
+		return E_API_RCD_ERR_BPF_CALL;
+	}
+	
+	return E_API_RCD_OK;
+}
+
+/********************************************************************************************************************/
+/**
+ *  @brief  API : Trouble Log Delete Send(障害ログファイル削除)
+ *  @note   PF EVENT ID : 0xA0020005
+ *          Reponse  ID : -
+ *          TYPE        : MNR
+ *  @param  qid         : response queue id (応答送信先QueueID)
+ *  @param  wtime       : wait time(msec) for response (応答待ち時間。即時応答型でのみ有効)
+ *  @param  *data_p     : 取得データポインタ
+ *  @param  *filename   : Trouble Log filename
+ *  @return E_RRHAPI_RCODE
+ *  @retval ret
+ *  @date   2013/11/19 ALPHA)yokoyama Create.
+ *  @date   2014/12/22 ALPHA)fujii modify for ppcEOL
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Log_Mnr_TroubleLogDelete(	INT				qid, 
+												INT				wtime,
+												VOID			*data_p,
+												UCHAR			*filename )
+{
+	E_RRHAPI_RCODE		rCode;
+	
+	rCode = rrhApi_Log_TroubleLogDelete_com( qid, wtime, data_p, filename, D_SYS_S3G );
+	
+	return rCode;
+}
+
+/** @} */
+

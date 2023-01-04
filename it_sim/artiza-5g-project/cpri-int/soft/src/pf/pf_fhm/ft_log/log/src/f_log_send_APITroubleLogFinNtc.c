@@ -1,0 +1,100 @@
+/*!
+ * @skip		$ld:$
+ * @file		f_log_send_APITroubleLogFinNtc.c
+ * @brief		ログスレッド 障害ログ出力完了通知送信処理
+ * @author		ALPHA)yokoyama
+ * @date		2013/10/29 ALPHA)横山 Create
+ *
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2013-2015
+ */
+
+/*!
+ * @addtogroup RRH_PF_LOG_LOG
+ * @{
+ */
+
+#include "f_log_inc.h"
+
+/*!
+ * @brief		関数機能概要:障害ログ出力完了通知送信処理を行う
+ * @note		関数処理内容.
+ *				-# 障害ログ出力完了通知送信を行う
+ * @param		dstPQID			[in]  destnation Process QueueID
+ * @param		dstTQID			[in]  destnation Thread QueueID
+ * @param		okng			[in]  OK/NG
+ * @param		filename		[in]  filename
+ * @param		size			[in]  size
+ * @param		sysKind			[in]  sysKind(3G/S3G)
+ * @retval		D_RRH_OK		0:正常終了
+ * @retval		D_RRH_NG		1:異常終了
+ * @return		INT
+ * @warning		N/A
+ * @FeatureID	PF-LOG-003-001-001
+ * @Bug_No		N/A
+ * @CR_No		N/A
+ * @TBD_No		N/A
+ * @date		2013/10/29 ALPHA)横山 Create
+ */
+INT f_log_send_APITroubleLogFinNtc( UINT dstPQID, UINT dstTQID, UINT okng, CHAR* filename, UINT size, UINT sysKind )
+{
+	T_API_LOG_TROUBLELOG_GET_RSP		*sndMsg;							/* 送信メッセージ	*/
+	INT									ret;
+	INT									errcd;
+	
+	cmn_com_assert_th_get(f_logw_assert_p, D_RRH_LOG_AST_LV_ENTER, "[f_log_send_APITroubleLogFinNtc] ENTER" );
+#ifdef FHM_TROUBLELOG_DEBUG_FOR_IT1
+    printf( "[%d]%s <dstPQID>0x%x <dstTQID>%0x%x <okng>0x%x <filename>%s <size>0x%x <sysKind>0x%x \n", __LINE__, __FUNCTION__, dstPQID, dstTQID, okng, filename, size, sysKind);
+#endif
+	
+	/****************************************************************************************************************/
+	/* 障害ログ出力完了通知送信処理																					*/
+	/****************************************************************************************************************/
+	/* バッファ取得 */
+	ret = BPF_RU_IPCM_PROCMSG_ADDRGET(	E_BPF_RU_IPCM_BUFF_KIND_TASK,			/* Buffer種別						*/
+										sizeof(T_API_LOG_TROUBLELOG_GET_RSP),	/* MessageSize						*/
+										(VOID **)&sndMsg,						/* MessageBuffer					*/
+										&errcd );								/* ErrorCode						*/
+	
+	if( BPF_RU_IPCM_OK != ret  )
+	{
+		cmn_com_assert_th_get(f_logw_assert_p, D_RRH_LOG_AST_LV_ERROR, "BUFFER GET NG %d", ret );
+		return D_RRH_NG;
+	}
+	
+	/* 送信MSG作成 */
+	sndMsg->head.uiEventNo		= D_API_LOG_MNR_TROUBLE_LOG_GET_RSP;	/* メッセージID						*/
+	sndMsg->head.uiDstPQueueID	= dstPQID;								/* 返信先PQID						*/
+	sndMsg->head.uiDstTQueueID	= dstTQID;								/* 送信先TQID						*/
+	sndMsg->head.uiSrcPQueueID	= D_RRH_PROCQUE_F_PF;						/* 送信元PQID						*/
+	sndMsg->head.uiSrcTQueueID	= D_SYS_THDQID_PF_LOG;					/* 送信元TQID						*/
+	
+	/* 個別部設定	*/
+	sndMsg->info.okng		= okng;
+	sndMsg->info.size		= size;
+	sndMsg->info.sysKind	= sysKind;
+	
+	if( okng == D_RRH_OK )
+	{
+		memcpy( sndMsg->info.filename, filename, sizeof(sndMsg->info.filename) );
+	}
+	else
+	{
+		memset( sndMsg->info.filename, 0, sizeof(sndMsg->info.filename) );
+	}
+	
+	/* Message送信	*/
+	/* CMUへ送信する	*/
+	ret = BPF_RU_IPCM_MSGQ_SEND(	D_SYS_THDQID_PF_SEND,				/* 送信MSGキューID					*/
+									(VOID *)sndMsg );					/* 送信MSGポインタ					*/
+	
+	if( BPF_RU_IPCM_OK != ret  )
+	{
+		cmn_com_assert_th_get(f_logw_assert_p, D_RRH_LOG_AST_LV_ERROR, "SEND NG %d", ret );
+		return D_RRH_NG;
+	}
+	
+	cmn_com_assert_th_get(f_logw_assert_p, D_RRH_LOG_AST_LV_RETURN, "[f_log_send_APITroubleLogFinNtc] RETURN" );
+	return D_RRH_OK;
+}
+
+/* @} */

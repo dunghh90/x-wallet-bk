@@ -1,0 +1,257 @@
+/*!
+ * @skip  $ld:$
+ * @file  f_hdl_main_cpri.c
+ * @brief pf_hdl 子スレッド メイン処理(f_hdl_main_cpri)
+ * @date  2013/03/25 ALPHA)松延 Create
+ * @date  2013/11/10 ALPHA)松延 modify for docomo zynq
+ * @date  2015/08/05 TDIPS)ikeda
+ *
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2015
+ */
+ 
+/*!
+ * @addtogroup RRH_PF_HDL
+ * @{
+ */
+
+#include "f_hdl_inc.h"
+
+/*!
+ * @brief 関数機能概要: pf_hdl子スレッドメイン(f_hdl_main_cpri)。スレッド起動からMSG受信待ちのLoop処理を実施
+ * @note  関数処理内容.
+ *       -# 割り込み通知先管理テーブルより、割り込み待ち種別を取得
+ *       -# 割り込み待ち無限Loop処理へ移行する
+ *          -# 割り込み受信関数をCallする(BPF_HM_DEVC_RESERVE)
+ *          -# 受信メッセージを解析し、pf_cpriに割り込みを通知する
+ * @param	-
+ * @return		N/A
+ * @warning		N/A
+ * @FeatureID	PF-Hdl-002-001-001
+ * @Bug_No		N/A
+ * @CR_No		N/A
+ * @TBD_No		N/A
+ * @date 2013/03/25 ALPHA)松延 Create
+ * @date 2013/11/10 ALPHA)鮫島 modify for docomo zynq
+ * @date 2015/04/15 ALPHA)鎌田 modify for TDD
+ * @date 2015/08/05 TDIPS)ikeda
+ *
+ */
+VOID f_hdl_main_cpri()
+{
+	/* スレッド名表示	*/
+	prctl(PR_SET_NAME, "pf_hdcpri", 0, 0, 0);
+
+	UINT					endcd;
+
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ENTER, "[f_hdl_main_cpri] ENTER" );
+	
+	/* BPFへスレッド情報登録	*/
+	BPF_RM_SVRM_THREAD_INFO_SET(	D_RRH_PROCID_F_PF,				/* ProcessID						*/
+									D_SYS_THDID_PF_HDCPRI,			/* ThreadID							*/
+									D_SYS_THDQID_PF_HDCPRI, (unsigned long int)pthread_self());		/* ThreadQueueID					*/
+	
+
+	/* 対REC HDL */
+	while(1)
+	{
+		/* 割り込み受信		*/
+		endcd	= BPF_HM_DEVC_RESERVE(D_HDL_BPF_IRQ_CPRI_REC);			/* IRQ割り込み待ち処理				*/
+		/* エラーログ取得	*/
+		if(endcd != BPF_HM_DEVC_COMPLETE)
+		{
+			BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, " errorBPF_HM_DEVC_RESERVE %d ", endcd );
+			break;
+		}
+		if ( f_hdl_main_cpri_sub( D_RRH_CPRINO_REC ) )
+		{
+			BPF_COM_LOG_ASSERT(  D_RRH_LOG_AST_LV_INFO, "f_hdl_main_cpri_sub ng %d" ,D_RRH_CPRINO_REC);
+		}
+	}
+
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_RETURN, "[f_hdl_main_cpri] RETURN" );
+	return;
+}
+
+VOID f_hdl_main_cpri_re()
+{
+	/* スレッド名表示	*/
+	prctl(PR_SET_NAME, "pf_hdcpri_re", 0, 0, 0);
+
+	UINT					endcd;
+	INT						linkno;
+
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ENTER, "[f_hdl_main_cpri_re] ENTER" );
+
+	/* BPFへスレッド情報登録	*/
+	BPF_RM_SVRM_THREAD_INFO_SET(	D_RRH_PROCID_F_PF,				/* ProcessID						*/
+									D_SYS_THDID_PF_HDCPRI_RE,			/* ThreadID							*/
+									D_SYS_THDQID_PF_HDCPRI_RE, (unsigned long int)pthread_self());		/* ThreadQueueID					*/
+
+	
+	/****************************************************************************************************/
+	/* 割り込み受信待ち																					*/
+	/****************************************************************************************************/
+	/* 対RE HDL */
+	while(1)
+	{
+		/* 割り込み受信		*/
+		endcd	= BPF_HM_DEVC_RESERVE(D_HDL_BPF_IRQ_CPRI_RE);			/* IRQ割り込み待ち処理				*/
+		/* エラーログ取得	*/
+		if(endcd != BPF_HM_DEVC_COMPLETE)
+		{
+			BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, " errorBPF_HM_DEVC_RESERVE %d ", endcd );
+			break;
+		}
+
+		for (linkno = D_RRH_CPRINO_RE_MIN; linkno < D_RRH_CPRINO_NUM; linkno += 2)
+		{
+			if( f_hdl_main_cpri_sub(linkno) )
+			{
+				BPF_COM_LOG_ASSERT(  D_RRH_LOG_AST_LV_INFO, "f_hdl_main_cpri_sub ng %d" ,linkno);
+			}
+		}
+	}
+	
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_RETURN, "[f_hdl_main_cpri_re] RETURN" );
+	return;
+}
+
+/*!
+ * @brief 関数機能概要: cpri 1ライン分の割込み処理
+ * @note  レジスタアクセス手順書-l3-hdlによる
+ * @param       linkno [in] CPRI link number
+ * @return		N/A
+ * @warning		N/A
+ * @FeatureID	PF-Hdl-002-001-001
+ * @Bug_No		N/A
+ * @CR_No		N/A
+ * @TBD_No		N/A
+ * @date 2015/08/07 TDIPS)ikeda Create
+ *
+ */
+UINT f_hdl_main_cpri_sub(USHORT linkno)
+{
+	UINT					endcd;
+	UINT					interruptFactor;						/* 割込み要因						*/
+	UINT					cpri_cpstat;							/* D_RRH_REG_CPRI_CPSTAT読出結果	*/
+	UINT					cpri_cptrans;							/* D_RRH_REG_CPRI_CPTRANS読出結果	*/
+	T_SYS_CPRIST_IRQNTC		*msgp;
+	INT						errcd;
+	UINT	regValue;
+	UINT linkmax;
+	UINT addr;
+
+	addr = M_RRH_REG_CNTS_IRQCPS(linkno);
+
+	/* レジスタ読み込み(割込み要因取得)	*/
+	endcd = BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_HDL_READ_WRITE, addr, &interruptFactor);
+	/* エラーログ取得	*/
+	if(endcd != BPF_HM_DEVC_COMPLETE)
+	{
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, "%d error M_RRH_REG_CNTS_IRQCPS %d ", linkno , endcd );
+		return 1;
+	}
+
+	if (interruptFactor == 0)
+	{
+		return 0;
+	}
+
+	/* CPRI Masterマスク読み出し	*/
+	endcd = BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_HDL_READ_WRITE, M_RRH_REG_CNTS_IRQCPSM(linkno), &regValue);
+	/* エラーログ取得	*/
+	if(endcd != BPF_HM_DEVC_COMPLETE)
+	{
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, " errorBPF_HM_DEVC_REG_READ_CPSTAT %d ", endcd );
+		return 1;
+	}
+
+
+	//2リンク分か
+	linkmax = (linkno < D_RRH_CPRINO_RE_MIN) ? linkno + 1 : linkno + 2;
+	for (; linkno < linkmax; linkno++) /* pgr0692 */
+	{
+		if (M_RRH_REG_CNTS_VALUE(linkno, interruptFactor))
+		{
+			/* SFP制御 SFPCNT */
+			endcd = BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_HDL_READ_WRITE, M_RRH_REG_CPRI_SFPCNT(linkno), &regValue);
+			/* エラーログ取得	*/
+			if(endcd != BPF_HM_DEVC_COMPLETE)
+			{
+				BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, " errorBPF_HM_DEVC_REG_READ_CPSTAT %d ", endcd );
+				return 1;
+			}
+
+			/* RX-FRM CPSTAT */
+			endcd = BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_HDL_READ_WRITE, M_RRH_REG_CPRI_CPSTAT(linkno), &cpri_cpstat);
+			/* エラーログ取得	*/
+			if(endcd != BPF_HM_DEVC_COMPLETE)
+			{
+				BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, " errorBPF_HM_DEVC_REG_READ_CPSTAT %d ", endcd );
+				return 1;
+			}
+
+			/* CPRI CPTRANS読み出し	*/
+			endcd = BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_HDL_READ_WRITE, M_RRH_REG_CPRI_CPTRANS(linkno), &cpri_cptrans);
+			/* エラーログ取得	*/
+			if(endcd != BPF_HM_DEVC_COMPLETE)
+			{
+				BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, " errorBPF_HM_DEVC_REG_READ_ CPTRANS %d ", endcd );
+				return 1;
+			}
+
+			/************************************************************************************************/
+			/* 送信処理(→pf_cpri)																			*/
+			/************************************************************************************************/
+			/* 通信用共有メモリを取得する	*/
+			endcd = BPF_RU_IPCM_PROCMSG_ADDRGET(E_BPF_RU_IPCM_BUFF_KIND_TASK,	/* Buffer種別				*/
+												sizeof(T_SYS_CPRIST_IRQNTC),	/* Size						*/
+												(void**)&msgp,					/* msgP						*/
+												&errcd );
+			if( endcd != BPF_RU_IPCM_OK )
+			{
+				if (D_RRH_CPRINO_REC == linkno)
+				{
+					f_com_abort(D_SYS_THDID_PF_HDCPRI, D_RRH_ALMCD_BGET);
+				}
+				else
+				{
+					f_com_abort(D_SYS_THDID_PF_HDCPRI_RE, D_RRH_ALMCD_BGET);
+				}
+				return 1;
+			}
+
+			/* Header部設定	*/
+			msgp->head.uiEventNo 	 = D_SYS_MSGID_CPRISTACHGNTC;				/* CPRI STATE変化通知(0x10020009)*/
+			msgp->head.uiDstPQueueID = D_RRH_PROCQUE_F_PF;						/* 送信先Process Queue ID	*/
+			msgp->head.uiDstTQueueID = D_SYS_THDQID_PF_CPRI;					/* 送信先Thread Queue ID	*/
+			msgp->head.uiSrcPQueueID = D_RRH_PROCQUE_F_PF;						/* 送信元Process Queue ID	*/
+			msgp->head.uiSrcTQueueID = 											/* 送信元Thread Queue ID	*/
+				(linkno == D_RRH_CPRINO_REC) ? D_SYS_THDQID_PF_HDCPRI : D_SYS_THDQID_PF_HDCPRI_RE;
+			msgp->head.uiLength 	 = sizeof(T_SYS_CPRIST_IRQNTC);				/* Length(Head部 + Data部)	*/
+			/* データの設定を行う */
+			msgp->link_num = linkno;
+			msgp->data1 = M_RRH_REG_CNTS_VALUE(linkno, interruptFactor);		/* IRQ割り込み要因の設定	*/
+			msgp->data2 = cpri_cpstat;											/* 0x81000004(CPSTAT)		*/
+			msgp->data3 = cpri_cptrans;											/* 0x81000008(CPTRANS)		*/
+
+			/* CPRI State変化通知を送信する */
+			endcd = BPF_RU_IPCM_MSGQ_SEND(	D_SYS_THDQID_PF_CPRI,				/* 送信先Process Queue ID	*/
+											(void*)msgp );						/* 送信Message				*/
+
+			if( endcd != BPF_RU_IPCM_OK )
+			{
+				BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, " MSGQ_SEND %d ", endcd );
+				return 1;
+			}
+		}
+	}
+
+	/* 割り込み要因をOFF処理 */
+	(VOID)BPF_HM_DEVC_REG_WRITE( D_RRH_LOG_REG_LV_HDL_WRITE, addr, &interruptFactor );
+
+	return 0;
+}
+
+
+/* @} */

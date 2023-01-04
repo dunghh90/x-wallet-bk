@@ -1,0 +1,104 @@
+module test-minelems0 {
+
+  namespace "http://netconfcentral.org/ns/test-minelems0";
+
+  prefix tm0;
+
+  revision "2016-09-30" {
+    description "Add more test cases to test min-elements 0";
+  }
+
+  revision "2016-07-08" {
+  }
+
+    container c2 {
+        leaf x2 { type string; }
+
+        leaf location {
+            type string { length "0..254"; }
+            default "def location";
+            description "location for messaging configuration";
+        }
+
+        leaf-list foo2 {
+            type string;
+            min-elements 0;
+        }
+
+        list foo3 {
+            key "name3";
+            leaf name3 {
+                type string { length "0..127"; }
+            }
+            min-elements 0;
+        }
+
+        list foo4 {
+            key "name4";
+            min-elements 0;
+
+            leaf name4 {
+                type string { length "0..127"; }
+            }
+        }
+
+        list foo5 {
+            key "name5";
+            min-elements 0;
+            max-elements 10;
+
+            leaf name5 {
+                type string { length "0..127"; }
+            }
+        }
+    }
+
+
+    list foo6 {
+        key "name6";
+        min-elements 0;
+        max-elements unbounded;
+
+        leaf name6 {
+            type string { length "0..127"; }
+        }
+    }
+
+
+    list foo7 {
+        key "name7";
+        min-elements 0;
+        max-elements 3;
+
+        leaf name7 {
+            type string { length "0..127"; }
+        }
+    }
+
+/*
+    list foo8 {
+        key "name8";
+        min-elements 1;
+        max-elements unbounded;
+
+        leaf name8 {
+            type string { length "0..127"; }
+        }
+    }
+
+    list foo9 {
+        key "name9";
+        min-elements 1;
+        max-elements 1;
+
+        leaf name9 {
+            type string { length "0..127"; }
+        }
+    }
+
+*/
+
+}
+
+
+

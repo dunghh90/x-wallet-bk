@@ -1,0 +1,134 @@
+module hooks-test-augm {
+
+  namespace "http://netconfcentral.org/ns/hooks-test-augm";
+  prefix "hooks-augm";
+
+  import hooks-test { prefix hk; }
+
+  revision 2017-05-05 {
+    description
+      "Test for YANG constraints, when, must, etc
+        via augmentation
+        - YPW-1039";
+  }
+
+
+  typedef test-enum {
+    type enumeration {
+      enum "auto" {
+        value 1;
+      }
+      enum "on" {
+        value 2;
+      }
+      enum "off" {
+        value 3;
+      }
+    }
+  }
+
+  // YPW-1039: MUST stmt check via deviation
+  augment "/hk:interfaces/hk:interface" {
+
+    leaf negotiation1 {
+      type test-enum;
+    }
+  }
+
+  augment "/hk:interfaces/hk:interface" {
+
+    leaf negotiation2 {
+      type test-enum;
+    }
+  }
+
+  augment "/hk:interfaces/hk:interface" {
+    leaf negotiation3 {
+      type test-enum;
+    }
+  }
+
+  augment "/hk:interfaces/hk:interface" {
+    leaf negotiation4 {
+      type test-enum;
+    }
+  }
+
+  augment "/hk:interfaces/hk:interface" {
+    leaf negotiation5 {
+      type test-enum;
+    }
+  }
+
+  augment "/hk:interfaces/hk:interface" {
+    leaf negotiation6 {
+      type test-enum;
+    }
+  }
+
+  augment "/hk:interfaces/hk:interface" {
+
+    leaf negotiation7 {
+      type test-enum;
+
+      must "../hk:name = 'interface1' or "
+      	 + "../hk:name = 'interface2' or "
+      	 + "../hk:name = 'interface3'" {
+
+          error-message "Custom Error Message";
+      }
+    }
+  }
+
+  augment "/hk:interfaces/hk:interface" {
+
+    leaf negotiation8 {
+      type test-enum;
+
+      must "../hk:name = 'interface1' and "
+      	 + "../hk:type = 'test1'" {
+
+          error-message "Custom Error Message";
+      }
+    }
+  }
+
+  augment "/hk:interfaces/hk:interface" {
+
+    leaf negotiation9 {
+      type test-enum;
+
+      must "((../hk:name = 'interface1') or "
+         + "(../hk:name = 'interface10')) and "
+         + "((../hk:type = 'test1') or "
+         + "(../hk:type = 't-e-s-t'))" {
+
+          error-message "Custom Error Message";
+      }
+    }
+  }
+
+  augment "/hk:interfaces/hk:interface" {
+    leaf negotiation10 {
+      type test-enum;
+    }
+  }
+
+  augment "/hk:interfaces/hk:interface" {
+    leaf negotiation11 {
+      type test-enum;
+    }
+  }
+
+  augment "/hk:interfaces/hk:interface" {
+    leaf negotiation12 {
+      type test-enum;
+    }
+  }
+
+  augment "/hk:interfaces/hk:interface" {
+    leaf negotiation13 {
+      type test-enum;
+    }
+  }
+}

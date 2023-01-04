@@ -1,0 +1,65 @@
+sendln '#edit'
+
+sendln 'config term'
+sendln 'interfaces'
+sendln 'interface mplane-ip'
+sendln 'ipv4'
+sendln 'address 192.168.200.255'
+sendln 'prefix-length 20'
+sendln 'apply'
+sendln 'exit'
+sendln 'exit'
+sendln 'exit'
+sendln 'exit'
+sendln 'exit'
+
+wait 'f_5g_du@5G_DU>'
+sendln 'sget-config /interfaces/interface/ipv4'
+wait 'f_5g_du@5G_DU>'
+sendln '2'
+
+
+wait 'f_5g_du@5G_DU>'
+sendln '#operation-not-supported'
+
+sendln 'config term'
+sendln 'interfaces'
+sendln 'interface mplane-ip'
+sendln 'ipv4'
+sendln 'address 192.168.200.254'
+sendln 'prefix-length 10'
+sendln 'apply'
+sendln 'exit'
+sendln 'exit'
+sendln 'exit'
+sendln 'exit'
+sendln 'exit'
+
+wait 'f_5g_du@5G_DU>'
+sendln 'sget-config /interfaces/interface/ipv4'
+wait 'f_5g_du@5G_DU>'
+sendln '2'
+
+wait 'f_5g_du@5G_DU>'
+sendln '#edit OK'
+
+sendln 'config term'
+sendln 'interfaces'
+sendln 'interface mplane-ip'
+sendln 'ipv4'
+sendln 'address 192.168.200.255'
+sendln 'prefix-length 10'
+sendln 'apply'
+sendln 'exit'
+sendln 'exit'
+sendln 'exit'
+sendln 'exit'
+sendln 'exit'
+
+wait 'f_5g_du@5G_DU>'
+sendln 'sget-config /interfaces/interface/ipv4'
+wait 'f_5g_du@5G_DU>'
+sendln '2'
+
+
+

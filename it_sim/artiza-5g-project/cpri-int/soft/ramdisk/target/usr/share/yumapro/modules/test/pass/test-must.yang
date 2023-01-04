@@ -1,0 +1,116 @@
+module test-must {
+  namespace "http://netconfcentral.org/ns/test-must";
+
+  prefix "xt6";
+
+  description
+    "YANG test module";
+
+  revision 2019-07-10 {
+    description "Init version";
+  }
+
+  container sometop-root {
+    presence "test container";
+  }
+
+  augment "/sometop-root" {
+    list list-1 {
+      key k1;
+      leaf k1 {
+        type uint32;
+      }
+
+      container container-1 {
+        description "positive test";
+
+        must "a1 >= a2" {
+          error-message "a1 cannot be less than a2";
+        }
+        leaf a1 {
+          type uint32;
+          default 120;
+        }
+        leaf a2 {
+          type uint32;
+          default 30;
+        }
+      }
+    }
+  }
+
+  augment "/sometop-root" {
+    list list-2 {
+      key k1;
+      leaf k1 {
+        type uint32;
+      }
+
+      container container-2 {
+        description "negative test";
+
+        must "a1 <= a2" {
+          error-message "a1 cannot be more than a2";
+        }
+        leaf a1 {
+          type uint32;
+          default 120;
+        }
+        leaf a2 {
+          type uint32;
+          default 30;
+        }
+      }
+    }
+  }
+
+  augment "/sometop-root" {
+    list list-3 {
+      key k1;
+      leaf k1 {
+        type uint32;
+      }
+
+      container container-3 {
+        description "negative test";
+
+        must "a1 < a2" {
+          error-message "a1 cannot be more than a2";
+        }
+        leaf a1 {
+          type uint32;
+          default 120;
+        }
+        leaf a2 {
+          type uint32;
+          default 30;
+        }
+      }
+    }
+  }
+
+  augment "/sometop-root" {
+    list list-4 {
+      key k1;
+      leaf k1 {
+        type uint32;
+      }
+
+      container container-4 {
+        description "positive test";
+
+        must "a1 > a2" {
+          error-message "a1 cannot be less than a2";
+        }
+        leaf a1 {
+          type uint32;
+          default 120;
+        }
+        leaf a2 {
+          type uint32;
+          default 30;
+        }
+      }
+    }
+  }
+}

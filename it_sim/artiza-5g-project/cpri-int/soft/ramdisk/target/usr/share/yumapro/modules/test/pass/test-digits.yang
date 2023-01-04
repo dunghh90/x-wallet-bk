@@ -1,0 +1,43 @@
+module test-digits {
+
+	namespace "http://netconfcentral.org/ns/test-digits";
+
+	prefix "tdig";
+
+	import test-digits-type {
+		prefix "cmn";
+	}
+
+    organization
+        "Netconf Central";
+
+    revision "2019-05-22" {
+	  description "draft created";
+    }
+
+
+    typedef my_float-2 {
+	type decimal64 {
+		fraction-digits 2;
+	}
+    }
+
+
+    leaf f1 {
+	type my_float-2 {
+		range "192.10 .. 196.05";  // ok - locally defined
+	}
+    }
+
+    leaf f2 {
+	type cmn:float-2 {
+	}
+	default "192.50";       // default with imported type is ok
+    }
+
+    leaf f3 {
+	type cmn:float-2 {
+		range "192.10 .. 196.05";  // ERROR here! - range with imported type
+	}
+    }
+}

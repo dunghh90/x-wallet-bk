@@ -1,0 +1,44 @@
+module test-when {
+  namespace "http://www.yumaworks.com/ns/test-when";
+  prefix twhen;
+
+  revision "2017-08-18";
+
+  typedef protocol {
+    type enumeration {
+      enum tftp;
+      enum ftp;
+      enum sftp;
+      enum xftp;
+      enum http;
+    }
+  }
+
+  grouping server-config {
+    leaf protocol {
+      type protocol;
+    }
+
+    leaf address {
+      type string {
+        length 0..253;
+      }
+    }
+
+    leaf login-id {
+      when "../protocol != 'tftp'";
+      type string {
+        length 0..32;
+      }
+    }
+  }
+
+  container xftp-config {
+    list server {
+      key protocol;
+
+      uses server-config;
+    }
+  }
+
+}

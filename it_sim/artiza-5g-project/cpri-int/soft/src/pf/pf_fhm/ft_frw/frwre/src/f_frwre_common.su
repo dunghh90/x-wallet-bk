@@ -1,0 +1,5 @@
+f_frwre_common.c:34:6:f_frwre_cm_ReadFlash	64	static
+f_frwre_common.c:86:6:f_frwre_cm_EraseFlash	48	static
+f_frwre_common.c:130:6:f_frwre_com_WriteFlash	80	static
+f_frwre_common.c:191:6:f_frwre_cm_RunHisSet	112	static
+f_frwre_common.c:273:6:f_frwre_logPrint	176	dynamic,bounded

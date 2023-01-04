@@ -1,0 +1,4 @@
+f_nma_common.c:34:6:f_nma_cm_ReadFlash	64	static
+f_nma_common.c:76:6:f_nma_cm_EraseFlash	48	static
+f_nma_common.c:128:6:f_nma_com_WriteFlash	4192	static
+f_nma_common.c:231:6:f_nma_cm_WriteEvtLog	48	static

@@ -1,0 +1,20 @@
+module dec64test {
+  namespace "urn:yumaworks:params:xml:ns:yang:dec64test";
+  prefix "dec64test";
+
+  revision 2020-01-03 {
+  description
+  "Initial version";
+  }
+
+
+ typedef power-control-alpha {
+    type decimal64 {
+      fraction-digits 1;
+      range "0 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1";
+    }
+    reference
+      "3GPP TS 36.213, section 5.1.1.1.";
+  }
+
+}

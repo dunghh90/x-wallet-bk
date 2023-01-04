@@ -1,0 +1,95 @@
+/*!
+ * @skip  $ld:$
+ * @file  rrhApi_nego.c
+ * @brief API : NEGO関連
+ * @date  2015/04/27 FFCS)fuxg Create.
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2015-
+ */
+
+/** @addtogroup RRH_API_NEGO
+ *  @{
+ */
+/********************************************************************************************************************/
+/* include file                                                                                                     */
+/********************************************************************************************************************/
+#include "f_rrh_inc.h"
+#include "f_sys_def.h"
+#include "BPF_RU_IPCM.h"
+
+#include "rrhApi_Com.h"
+#include "rrhApi_Nego.h"
+
+
+/********************************************************************************************************************/
+/**
+ *  @brief  API : Auto Nego Result Set for Debug
+ *  @note   PF EVENT ID : 0xA00C0001
+ *          Reponse  ID : -
+ *          TYPE        : MNT
+ *  @param  qid                : -
+ *  @param  wtime              : -
+ *  @param  data_p             : -
+ *  @param  line_bit_rate      : line bit rate(0:4.9G 1:9.8G)
+ *  @param  result             : result(0:OK 1:NG)
+ *  @return INT
+ *  @retval ret
+ *  @date   2015/04/27 FFCS)fuxg Create.
+ *  @FeatureID	PF_Nego-012-000
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Nego_Mnt_BitRateResult_Dbg(
+			INT		qid,
+			INT		wtime,
+			VOID	*data_p,
+			UINT	line_bit_rate,
+			UINT	result
+)
+{
+	T_API_NEGO_BITRATERESULT_DBG	apiInd;
+	INT								errcd;
+	INT								ret = 0;
+
+	if( (line_bit_rate > D_API_NEGO_LINE_BITRATE_98G) || (result > D_SYS_NG) )
+	{
+		rrhApi_com_log(__func__, E_API_RCD_EPARAM);
+		return E_API_RCD_EPARAM;
+	}
+
+	/* initial */
+	memset(&apiInd,0,sizeof(apiInd));
+
+	apiInd.header.uiEventNo		= D_API_MSGID_NEGO_BITRATERESULT_DBG;	/* Event  ID         */
+	apiInd.header.uiSignalkind	= 0;									/* Signal Kind       */
+	apiInd.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;						/* Destination P QID */
+	apiInd.header.uiDstTQueueID	= 0;									/* Destination T QID */
+	apiInd.header.uiSrcPQueueID	= qid;									/* Source P QID      */
+	apiInd.header.uiSrcTQueueID	= 0;									/* Source T QID      */
+	apiInd.header.uiLength		= sizeof(apiInd);						/* Length            */
+
+	apiInd.line_bit_rate	= line_bit_rate;
+	apiInd.result	= result;
+
+	/* call MW func */
+	ret = rrhApi_com_msgQSend(
+				D_RRH_PROCQUE_F_PF,						/* Message QID             */
+				(void *)&apiInd,					/* The message to transmit */
+				sizeof(apiInd),						/* The size of message     */
+				&errcd								/* Error code              */
+				);
+
+	/* checking parameter */
+	if( ret != BPF_RU_IPCM_OK ) 
+	{
+		rrhApi_com_log(__func__, errcd);
+		return BPF_RU_IPCM_NG;
+	}
+
+	return E_API_RCD_OK;
+}
+
+
+/** @} */
+

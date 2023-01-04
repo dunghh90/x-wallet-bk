@@ -1,0 +1,3 @@
+f_main_loadLog.c:121:6:f_main_loadLog_develop	144	dynamic,bounded
+f_main_loadLog.c:328:6:f_main_loadLog_outputFile	592	static
+f_main_loadLog.c:431:6:f_main_loadLog	48	static

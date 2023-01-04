@@ -1,0 +1,12 @@
+module devtest3 {
+
+    namespace "http://yumaworks.com/ns/devtest3";
+    prefix "d3";
+
+    revision 2015-04-17;
+
+    container X {
+      leaf foo { type int32; }
+    }
+
+}

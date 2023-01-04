@@ -1,0 +1,36 @@
+module tmand {
+
+  namespace "http://netconfcentral.org/ns/tmand";
+
+  prefix tmand;
+
+  revision 2016-05-26;
+
+  container top {
+    list mand-list {
+      key name;
+      min-elements 1;
+      leaf name { type string; }
+      leaf-list vlan-id {
+        type uint32;
+      }
+    }
+  }
+
+
+  choice top-ch {
+    default A;
+    case A {
+      list mand-list {
+        key name;
+        min-elements 1;
+        leaf name { type string; }
+        leaf-list vlan-id {
+          type uint32;
+        }
+      }
+    }
+  }
+
+
+}

@@ -1,0 +1,6 @@
+f_frw_common.c:33:6:f_frw_cm_EraseFlash	48	static
+f_frw_common.c:73:6:f_frw_com_WriteFlash	4192	static
+f_frw_common.c:148:6:f_frw_com_WriteFlash_slc1chp	80	static
+f_frw_common.c:223:6:f_frw_cm_WriteEvtLog	48	static
+f_frw_common.c:251:6:f_frw_cm_RunHisSet	112	static
+f_frw_common.c:335:6:f_frw_logPrint	176	dynamic,bounded

@@ -1,0 +1,130 @@
+module validation {
+
+  namespace "http://www.yumaworks.com.org/ns/validation";
+  prefix "valid";
+
+  revision 2013-06-10 {
+    description "YANG validation tests.";
+  }
+
+  leaf valid1 {
+    when "/valid2 > 3";
+    type int32;
+  }
+
+  leaf valid2 {
+    type int32;
+    default 5;
+  }
+
+  container valid3 {
+    presence "yes";
+    choice valid33 {
+      mandatory true;
+      leaf v33_a { type string; }
+      leaf v33_b { type string; }
+    }
+  }
+
+  container valid4 {
+    list valid44 {
+      max-elements 5;
+      key v44_a;
+      leaf v44_a { type string; }
+      leaf v44_b { type int32; mandatory true; }
+      leaf v44_c { type int32; }
+    }
+  }
+
+  container valid5 {
+    presence "yes";
+    list valid55 {
+      unique "v55_b/v555_b";
+      min-elements 2;
+      key v55_a;
+      leaf v55_a { type int8; }
+      list v55_b {
+        min-elements 1;
+        max-elements 3;
+        key v555_a;
+        leaf v555_a { type int8; }
+        leaf v555_b { type int8; }
+      }
+    }
+  }
+
+  list valid6 {
+    key v66_a;
+    leaf v66_a {
+      type string;
+      must "../../valid1 = 5";
+    }
+    leaf v66_b {
+      type int16;
+      must "/valid2 != 5";
+    }
+  }
+
+  leaf valid7 {
+    must "(/valid8 > 10) or (/valid5/valid55/v55_a > 20)";
+    type int32;
+  }
+
+  leaf valid8 {
+    type int32;
+    default 20;
+  }
+
+  container valid9 {
+    leaf v9_a {
+      default 12;
+      type uint8;
+    }
+    leaf v9_b {
+      when "/valid6/v66_b = 10";
+      type int8;
+    }
+  }
+
+  leaf valid10 {
+    type boolean;
+  }
+
+  list valid11 {
+    key "v11_id";
+    unique "v11_a v11_b";
+    leaf v11_id {
+      type int32;
+    }
+    leaf v11_a {
+      type uint8;
+      mandatory true;
+    }
+    leaf v11_b {
+      default 12;
+      type uint8;
+    }
+  }
+
+  list valid12 {
+    max-elements 2;
+    key a;
+    leaf a { type int8; }
+    leaf b { type string; }
+  }
+
+  /* need to set --running-error=continue because server won't load
+   * a module with a mandatory top-level object for default 'stop'
+  leaf valid13 {
+    mandatory true;
+    type boolean;
+  }
+  */
+
+  leaf valid14 {
+    when "../valid10";
+    mandatory true;
+    type boolean;
+  }
+
+}

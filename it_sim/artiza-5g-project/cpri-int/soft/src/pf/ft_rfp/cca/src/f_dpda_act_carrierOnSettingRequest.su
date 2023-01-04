@@ -1,0 +1,4 @@
+f_dpda_act_carrierOnSettingRequest.c:19:5:f_dpda_act_txCarrierOnSettingRequest	144	dynamic,bounded
+f_dpda_act_carrierOnSettingRequest.c:242:5:f_dpda_act_rxCarrierOnSettingRequest	128	dynamic,bounded
+f_dpda_act_carrierOnSettingRequest.c:366:5:f_dpda_act_testtxCarrierOnSettingRequest	128	dynamic,bounded
+f_dpda_act_carrierOnSettingRequest.c:555:5:f_dpda_act_carrierOnSettingRequest	144	dynamic,bounded

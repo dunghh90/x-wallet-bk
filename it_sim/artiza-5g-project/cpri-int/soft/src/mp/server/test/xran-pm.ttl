@@ -1,0 +1,149 @@
+;;Ÿinterval‚Ìİ’è
+
+inputbox 'rx-window-measurement-interval‚ğİ’è‚µ‚Ä‚­‚¾‚³‚¢' 'interval?'
+str2int val inputstr
+rx_interval = val
+
+inputbox 'notification-interval‚ğİ’è‚µ‚Ä‚­‚¾‚³‚¢' 'interval?'
+str2int val inputstr
+ntf_interval = val
+
+
+sendln 'config term'
+
+wait 'f_5g_du@5G_DU#'
+
+sendln 'performance-measurement-objects'
+
+wait 'f_5g_du@5G_DU(performance-measurement-objects)#'
+
+sprintf2 send_txt "rx-window-measurement-interval %d"rx_interval
+sendln send_txt
+
+wait 'f_5g_du@5G_DU(performance-measurement-objects)#'
+
+sprintf2 send_txt "notification-interval %d"ntf_interval
+sendln send_txt
+
+
+wait 'f_5g_du@5G_DU(performance-measurement-objects)#'
+
+sendln 'exit'
+
+
+;;Ÿactive‚Ìİ’è‚ğs‚¤
+inputbox 'activeİ’è‚ÍH(true) or (false)' '(true) or (false)'
+
+;;Ÿrx-window-measurement-objects‚Ìİ’è
+
+wait 'f_5g_du@5G_DU#'
+
+sendln 'performance-measurement-objects'
+
+wait 'f_5g_du@5G_DU(performance-measurement-objects)#'
+
+sendln 'rx-window-measurement-objects RX_CORRUPT'
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sendln 'object-unit RU'
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sprintf2 send_txt "active %s"inputstr
+sendln send_txt
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sendln 'exit'
+
+
+wait 'f_5g_du@5G_DU(performance-measurement-objects)#'
+
+sendln 'rx-window-measurement-objects RX_DUPL'
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sendln 'object-unit RU'
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sprintf2 send_txt "active %s"inputstr
+sendln send_txt
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sendln 'exit'
+
+
+wait 'f_5g_du@5G_DU(performance-measurement-objects)#'
+
+sendln 'rx-window-measurement-objects RX_EARLY'
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sendln 'object-unit RU'
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sprintf2 send_txt "active %s"inputstr
+sendln send_txt
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sendln 'exit'
+
+
+wait 'f_5g_du@5G_DU(performance-measurement-objects)#'
+
+sendln 'rx-window-measurement-objects RX_LATE'
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sendln 'object-unit TRANSPORT'
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sprintf2 send_txt "active %s"inputstr
+sendln send_txt
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sendln 'exit'
+
+
+wait 'f_5g_du@5G_DU(performance-measurement-objects)#'
+
+sendln 'rx-window-measurement-objects RX_ON_TIME'
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sendln 'object-unit TRANSPORT'
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sprintf2 send_txt "active %s"inputstr
+sendln send_txt
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sendln 'exit'
+
+
+wait 'f_5g_du@5G_DU(performance-measurement-objects)#'
+
+sendln 'rx-window-measurement-objects RX_TOTAL'
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sendln 'object-unit TRANSPORT'
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sprintf2 send_txt "active %s"inputstr
+sendln send_txt
+
+wait 'f_5g_du@5G_DU(rx-window-measurement-objects)#'
+
+sendln 'exit'
+

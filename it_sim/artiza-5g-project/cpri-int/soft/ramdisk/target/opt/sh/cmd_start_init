@@ -1,0 +1,83 @@
+#!/bin/sh
+
+export PATH=/home/user/Desktop/soft/ramdisk/target/opt/proc:/home/user/Desktop/soft/ramdisk/target/opt/sh:/home/user/Desktop/soft/ramdisk/target/opt/debug:/home/user/Desktop/soft/ramdisk/target/opt/tp:/home/user/Desktop/soft/ramdisk/target/opt/lnk:/home/user/Desktop/soft/ramdisk/target/opt/agent/bin:$PATH
+export SAA_LOGLEVEL="debug2"
+export NSA_LOGLEVEL="info"
+
+
+if [ ! -d /home/user/Desktop/soft/ramdisk/target/var/log/troublelog ]; then
+    ulimit -c unlimited
+    mkdir /home/user/Desktop/soft/ramdisk/target/var/log/troublelog
+    mkdir /home/user/Desktop/soft/ramdisk/target/var/log/troublelog_rst
+    mkdir /home/user/Desktop/soft/ramdisk/target/var/log/sendlog
+    mkdir /home/user/Desktop/soft/ramdisk/target/var/log/healthchklog
+    mkdir /home/user/Desktop/soft/ramdisk/target/var/run/netconfd-pro
+    chown -R f_5g_du:f_5g_du /home/user/Desktop/soft/ramdisk/target/home/f_5g_du
+fi
+
+#insmod /home/user/Desktop/soft/ramdisk/target/opt/lkm/rruploglevel.ko name="reg","spi","i2c","qspi","rsc_buf","rsc_tim","rsc_sem","trc","trc_init","trc_pf","trc_ptp","trc_ptp_h","trc_api","trc_rfic","ptplog","ptpinfo","ptpapr","trc_cal"
+
+echo "Start PLOG ..." > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+/home/user/Desktop/soft/ramdisk/target/opt/sh/cmd_rruplogstart
+
+# i2c0
+echo 2 > /home/user/Desktop/soft/ramdisk/target/opt/proc/irq/30/smp_affinity
+# i2c1
+echo 2 > /home/user/Desktop/soft/ramdisk/target/opt/proc/irq/31/smp_affinity
+# qspi
+# echo 2 > /proc/irq/33/smp_affinity
+# spi0
+echo 4 > /home/user/Desktop/soft/ramdisk/target/opt/proc/irq/36/smp_affinity
+# spi1
+echo 2 > /home/user/Desktop/soft/ramdisk/target/opt/proc/irq/37/smp_affinity
+# wdt
+echo 2 > /home/user/Desktop/soft/ramdisk/target/opt/proc/irq/43/smp_affinity
+# 1s
+echo 2 > /home/user/Desktop/soft/ramdisk/target/opt/proc/irq/44/smp_affinity
+# 1pps
+echo 2 > /home/user/Desktop/soft/ramdisk/target/opt/proc/irq/45/smp_affinity
+# sv
+echo 2 > /home/user/Desktop/soft/ramdisk/target/opt/proc/irq/46/smp_affinity
+# mac
+echo 2 > /home/user/Desktop/soft/ramdisk/target/opt/proc/irq/47/smp_affinity
+
+cmd_devctl er 3c2 1>/dev/null 2>/dev/null
+ptpmode=$?
+
+cmd_devctl er 3e6 1>/dev/null 2>/dev/null
+pgclog=$?
+if [ $pgclog -eq 1 ]; then
+	echo "Start PGC LOG ..." > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+	cmd_rrupfdump -n 100000 -N "pgc_log" -F "dst 127.1.4" -c /home/user/Desktop/soft/ramdisk/target/var/log/pgc_log.pcap &
+fi
+
+cmd_devctl er 40 1>/dev/null 2>/dev/null
+if [ $? -eq 255 ] ; then
+	echo "<0>Auto Ether Set1... " > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+	ifconfig eth0 up 192.168.1.131 netmask 255.255.255.0 1>/dev/null 2>/dev/null
+else
+	echo "Start DU Middle Process ..." > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+	DU_mw
+	if [ $? -ne 0 ]; then
+		echo "Error !!!!!!!!!!!!!!!!!!!!" > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+		/sbin/ifconfig eth0 192.168.1.131 up
+		exit
+	fi
+
+	echo "Start initialize iptables ..." > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+	/home/user/Desktop/soft/ramdisk/target/opt/sh/cmd_iptables_init
+
+	echo "Start Debug Lan Port  ..." > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+	rrh -ifup eth0
+
+	echo "Start DU Init Process ..." > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+	DU_init &
+
+	if [ $ptpmode -eq 2 ] || [ $ptpmode -eq 1 ]; then
+		rrh -ptp_debug_start $ptpmode > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+	fi
+
+	echo "Start Logrotate handler  ..." > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+	cmd_logrotate_handler &
+
+fi

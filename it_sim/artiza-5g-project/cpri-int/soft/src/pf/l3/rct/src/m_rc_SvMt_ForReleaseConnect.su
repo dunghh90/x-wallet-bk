@@ -1,0 +1,6 @@
+m_rc_SvMt_ForReleaseConnect.c:34:6:m_rc_SvMt_ForReleaseConnectReq	128	dynamic,bounded
+m_rc_SvMt_ForReleaseConnect.c:142:6:m_rc_SvMt_ForReleaseConnectRes	80	dynamic,bounded
+m_rc_SvMt_ForReleaseConnect.c:250:8:m_rc_SvMt_ForReleaseConnectResRcvAllChk	48	static
+m_rc_SvMt_ForReleaseConnect.c:293:6:m_rc_SvMt_ForReleaseConnectTO	192	dynamic,bounded
+m_rc_SvMt_ForReleaseConnect.c:427:6:m_rc_SvMt_ForReleaseConnectInit	48	static
+m_rc_SvMt_ForReleaseConnect.c:462:6:m_rc_SvMt_ForReleaseRspSnd	80	dynamic,bounded

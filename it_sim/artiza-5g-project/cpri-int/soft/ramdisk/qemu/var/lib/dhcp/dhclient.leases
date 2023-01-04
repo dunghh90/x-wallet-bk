@@ -1,0 +1,13 @@
+lease {
+  interface "fheth0.0";
+  fixed-address 192.168.1.10;
+  option subnet-mask 255.255.255.0;
+  option routers 10.10.10.1;
+  option dhcp-lease-time 3600;
+  option dhcp-message-type 5;
+  option dhcp-server-identifier 192.168.251.2;
+  option vendor-encapsulated-options 1:4:c0:a8:1:b;
+  renew 6 2000/01/01 00:48:59;
+  rebind 6 2000/01/01 01:13:21;
+  expire 6 2000/01/01 01:20:51;
+}

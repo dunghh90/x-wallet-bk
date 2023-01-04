@@ -1,0 +1,93 @@
+module test-oc4 {
+
+  namespace "http://www.yumaworks.com/ns/test-oc4";
+  prefix toc4;
+
+  import test-oc1 { prefix toc1; }
+  import test-oc5 { prefix toc5; }
+
+  revision "2019-03-05" {
+    description
+      "Initial revision. Test module for Open Config modules";
+  }
+
+  typedef instance-ref {
+    type leafref {
+      path "/instances/instance/config/name";
+    }
+  }
+
+  grouping instance-top {
+
+    container instances {
+      presence "";
+
+      list instance {
+        key "name";
+
+        leaf name {
+          type leafref {
+            path "../config/name";
+          }
+        }
+
+        /* WITH NO PREFIX FOR IDREF */
+        uses l2ni-instance {
+            when "config/type = 'L2VSI' or config/type = 'L3VRF'";
+        }
+
+        /* WITH PREFIX FOR IDREF */
+        uses l2ni-instance2 {
+            when "config/type = 'toc1:L2VSI' or config/type = 'toc1:L3VRF'";
+        }
+
+        container config {
+          uses instance-config;
+        }
+
+        container test-cont {  }
+
+        uses toc5:aft-top;
+      }
+    }
+  }
+
+  grouping instance-config {
+    leaf name {
+      type string;
+    }
+
+    leaf type {
+      type identityref {
+        base "toc1:NETWORK_INSTANCE_TYPE";
+      }
+    }
+  }
+
+  grouping l2ni-instance {
+    container fdb {
+      presence "";
+
+      container config {
+        leaf mac-learning {
+          type boolean;
+        }
+      }
+    }
+  }
+
+  grouping l2ni-instance2 {
+    container fdb2 {
+      presence "";
+
+      container config2 {
+        leaf mac-learning {
+          type boolean;
+        }
+      }
+    }
+  }
+
+  uses instance-top;
+
+}

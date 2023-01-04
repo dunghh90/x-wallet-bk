@@ -1,0 +1,31 @@
+--- a/drivers/fpga/xilinx.c	2018-04-06 10:22:42.595344300 +0900
++++ b/drivers/fpga/xilinx.c	2018-04-05 22:24:12.057290300 +0900
+@@ -19,6 +19,8 @@
+ #include <spartan3.h>
+ #include <zynqpl.h>
+ 
++int xilinx_fpga_cfg_done = 0;
++
+ /* Local Static Functions */
+ static int xilinx_validate(xilinx_desc *desc, char *fn);
+ 
+@@ -31,6 +33,7 @@
+ 	unsigned int swapsize;
+ 	unsigned char *dataptr;
+ 	unsigned int i;
++	unsigned int ret;
+ 	const fpga_desc *desc;
+ 	xilinx_desc *xdesc;
+ 
+@@ -122,7 +125,10 @@
+ 	dataptr += 4;
+ 	printf("  bytes in bitstream = %d\n", swapsize);
+ 
+-	return fpga_load(devnum, dataptr, swapsize, bstype);
++	ret = fpga_load(devnum, dataptr, swapsize, bstype);
++	
++	if(ret == FPGA_SUCCESS)
++		xilinx_fpga_cfg_done = 1;
+ }
+ 
+ int xilinx_load(xilinx_desc *desc, const void *buf, size_t bsize,

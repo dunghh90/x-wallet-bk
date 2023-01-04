@@ -1,0 +1,64 @@
+module test100 {
+    yang-version 1.1;
+    namespace "http://yumaworks.com/ns/test100";
+
+    prefix "t100";
+
+    revision 2018-01-04 {
+    }
+
+    typedef T1 {
+      type stream-ref {
+        require-instance false;
+      }
+    }
+
+   typedef T11 {
+     type stream-ref { }
+   }
+
+   typedef stream-ref {
+     type leafref {
+       path "/t100:X/t100:Y";
+     }
+   }
+
+    container X {
+      leaf Y { type string; }
+    }
+
+    leaf AA {
+      type leafref {
+        path "/t100:X/t100:Y";
+        require-instance false;
+      }
+    }
+
+    leaf AA2 {
+      type leafref {
+        require-instance false;
+        path "/t100:X/t100:Y";
+      }
+    }
+
+    leaf BB {
+      type T1;
+    }
+
+    leaf BB2 {
+      type stream-ref {
+        require-instance false;
+      }
+    }
+
+    leaf BB3 {
+      type stream-ref {
+        require-instance true;
+      }
+    }
+
+    leaf BB4 {
+      type T11;
+    }
+
+}

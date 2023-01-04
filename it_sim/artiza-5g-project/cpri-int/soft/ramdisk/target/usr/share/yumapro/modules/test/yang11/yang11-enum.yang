@@ -1,0 +1,51 @@
+module yang11-enum {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/yang11-enum";
+  prefix yenum;
+  revision "2016-11-22";
+
+    typedef my-base-enumeration-type {
+       type enumeration {
+         enum white {
+           value 1;
+         }
+         enum yellow {
+           value 2;
+         }
+         enum red {
+           value 3;
+         }
+       }
+     }
+
+   leaf T1 {
+     type my-base-enumeration-type {
+       // legal enum refinement
+       enum yellow;
+       enum red {
+         value 3;
+       }
+     }
+   }
+
+   leaf T2 { type base3; }
+
+   typedef base3 {
+      type base2;
+   }
+
+   typedef base2 {
+      type base1 {}
+   }
+
+   typedef base1 {
+      type enumeration {
+        enum A;
+        enum B;
+        enum C;
+      }
+    }
+
+
+}

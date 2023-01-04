@@ -1,0 +1,49 @@
+export ARCH = arm64
+export CROSS_COMPILE = aarch64-wrs-linux-
+export SYSROOT=/opt/windriver/wrlinux-tiny/10.17.41/sysroots/aarch64-wrs-linux/
+export PATH += :/opt/windriver/wrlinux-tiny/10.17.41/sysroots/x86_64-wrlinuxsdk-linux/usr/bin/aarch64-wrs-linux/:$SYSROOT
+
+
+export PGRTOP = $(shell pwd)
+export SRCTOP = $(PGRTOP)/../src
+include $(SRCTOP)/Makefile.in
+export PGR_MESSAGE_CHK = $(PGRTOP)/pgr_pf.log
+export PGR_MESSAGE_ALL = $(PGRTOP)/pgrall_pf.log
+export PGR_MESSAGE_CSV= $(PGRTOP)/pgrall_pf.csv
+export PGR_CHK_SRC = $(PGRTOP)/pgrchk_pf.log
+
+PGRDIRLIST= \
+$(SRCTOP)/pf/ft_main/main/src \
+$(SRCTOP)/pf/ft_dhcp/dhcp/src \
+$(SRCTOP)/pf/ft_dhcp/api \
+$(SRCTOP)/pf/ft_eqs/eqs/src \
+$(SRCTOP)/pf/ft_eqs/api \
+$(SRCTOP)/pf/ft_hdl/hdl/src \
+$(SRCTOP)/pf/ft_lgc/lgc/src \
+$(SRCTOP)/pf/ft_nma/nma/src \
+$(SRCTOP)/pf/ft_nma/nmas/src \
+$(SRCTOP)/pf/ft_flm/fdl/src \
+$(SRCTOP)/pf/ft_flm/ful/src \
+$(SRCTOP)/pf/ft_ptp/ptp/src \
+$(SRCTOP)/pf/ft_ptp/api \
+$(SRCTOP)/pf/ft_rfp/rfa/src \
+$(SRCTOP)/pf/ft_rfp/api \
+$(SRCTOP)/pf/ft_rfp/cca/src \
+$(SRCTOP)/pf/ft_eom/eom/src \
+$(SRCTOP)/pf/ft_pfm/pfm/src \
+$(SRCTOP)/pf/ft_fhs/fhs/src \
+$(SRCTOP)/pf/ft_sfp/sfp/src \
+$(SRCTOP)/pf/ft_wdt/wdt/src \
+$(SRCTOP)/pf/ft_eio/eio/src \
+$(SRCTOP)/pf/ft_eio/api \
+$(SRCTOP)/pf/ft_mti/mti/src \
+$(SRCTOP)/pf/ft_com/com/src \
+$(SRCTOP)/pf/ft_com/api
+pgr:
+	@echo '"チェック済指摘","ソースファイル名",行番号,"グループ","指摘ID","メッセージ"' > $(PGR_MESSAGE_CHK)
+	@echo '"チェック済指摘","ソースファイル名",行番号,"グループ","指摘ID","メッセージ"' > $(PGR_MESSAGE_ALL)
+	@echo '' > $(PGR_CHK_SRC)
+	$(foreach dir,$(PGRDIRLIST),\
+		cd $(dir);cp $(PGRTOP)/makepgr_sub ./;make -f makepgr_sub pgr;rm ./makepgr_sub;\
+	)
+	iconv -t SJIS $(PGR_MESSAGE_ALL) > $(PGR_MESSAGE_CSV)

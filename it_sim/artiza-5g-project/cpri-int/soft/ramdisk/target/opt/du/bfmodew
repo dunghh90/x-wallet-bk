@@ -1,0 +1,18 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+mode = ARGV[0]
+
+if mode.to_i(16) == 0 then
+	val = 0xff
+elsif mode.to_i(16) == 1 then
+	val = 0
+else
+	puts DuCode::ERR_DESCRIPTION[2]
+	Rrh.exit(1)
+end
+
+Rrh.eepwrite(0x03e7,val)
+puts DuCode::ERR_DESCRIPTION[0]
+

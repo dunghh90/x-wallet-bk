@@ -1,0 +1,40 @@
+module test-idref {
+
+    namespace "http://netconfcentral.org/ns/test-idref";
+    prefix "tid";
+
+    organization
+        "Netconf Central";
+
+    contact
+        "Andy Bierman";
+
+    revision 2016-10-08;
+
+   identity id-A;
+   identity id-B;
+   identity id-C { base id-A; }
+   identity id-D { base id-C; }
+   identity id-E { base id-D; }
+
+   leaf id1 {
+      type identityref { base id-A; }
+   }
+
+   leaf id2 {
+      type identityref { base id-B; }
+   }
+
+   leaf id3 {
+      type identityref { base id-C; }
+   }
+
+   leaf id4 {
+      type identityref { base id-D; }
+   }
+
+   leaf id5 {
+      type identityref { base id-E; }
+   }
+
+}

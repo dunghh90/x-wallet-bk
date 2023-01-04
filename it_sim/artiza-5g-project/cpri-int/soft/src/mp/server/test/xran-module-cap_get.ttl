@@ -1,0 +1,12 @@
+sendln "sget /module-capability"
+wait 'f_5g_du@5G_DU>'
+sendln "sget /module-capability/band-capabilities"
+wait 'f_5g_du@5G_DU>'
+sendln "sget /module-capability/ru-capabilities"
+wait 'f_5g_du@5G_DU>'
+sendln "sget /module-capability/ru-capabilities/format-of-iq-sample"
+wait 'f_5g_du@5G_DU>'
+sendln "sget /module-capability/ru-capabilities/format-of-iq-sample/compression-method-supported"
+wait 'f_5g_du@5G_DU>'
+sendln "sget /module-capability/ru-capabilities/ul-mixed-num-required-guard-rbs"
+wait 'f_5g_du@5G_DU>'

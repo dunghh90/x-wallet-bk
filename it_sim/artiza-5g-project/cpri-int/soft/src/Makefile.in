@@ -1,0 +1,64 @@
+#
+# Makefile Include
+#
+# 変数
+# CC                   : コンパイラ名
+# LD                   : リンカ名
+# AR                   : アーカイバ名
+# STRIP                : ストリップ名
+# CFLAGS               : コンパイルオプション
+# LDFLAGS              : リンクオプション
+# ARFLAGS              : アーカイブオプション
+# LDLIBS               : ライブラリオプション
+# CP                   : コピーコマンド名
+#
+# コンパイルオプション
+# -g                   : デバッグオプション
+# -O0                  : 最適化無効オプション
+# -O2                  : 最適化オプション
+# -Wall                : 警告メッセージオプション
+# -MMD                 : 標準ヘッダを除いたインクルードファイルの依存関係をファイルに出力するオプション(*.dが出力される)
+# -D_FORTIFY_SOURCE=2  : メモリリーク検出オプション(※)
+# -fstack-protector-all: スタック破壊防止オプション(※)
+#                        ※本オプションを付与することでプロセスダウンが発生する場合、そのプロセスにはバグがある
+# -fstack-usage        : 関数が使用するスタック量をファイルに出力するオプション(*.suとして出力される) (本オプションはコンパイラ4.6以降で対応している)
+#
+# リンクオプション
+# -Wl,-Map=xx.map      : マップファイル生成オプション、プロセスダウン時のデバッグに役立つ
+#
+
+CC					= $(CROSS_COMPILE)gcc
+LD					= $(CROSS_COMPILE)gcc
+AR					= $(CROSS_COMPILE)ar
+CXX					= $(CROSS_COMPILE)g++
+
+ifeq ($(TARGET_DEBUG),yes)
+STRIP				= echo
+else
+STRIP				= $(CROSS_COMPILE)strip
+endif
+OBJDUMP				= $(CROSS_COMPILE)objdump
+NM					= $(CROSS_COMPILE)nm
+ARFLAGS				= crsv
+CP					= /bin/mv
+LDFLAGS				=
+LDLIBS				=
+
+ifeq ($(BUILD_MODE),0)
+SYSROOT				= --sysroot=/opt/windriver/wrlinux-tiny/10.17.41/sysroots/aarch64-wrs-linux
+else
+SYSROOT				= --sysroot=/
+endif
+
+ifndef CROSS_COMPILE
+CFLAGS				= -g -O0 -rdynamic -Wall -fstack-protector-all -MMD -D_FORTIFY_SOURCE=2 -fstack-usage -DOPT_RRE_ZYNQ_SIM -DOPT_RRH_ARCH_ZYNQ -DOPT_RRE_1CHP $(SYSROOT) -Wl,--no-as-needed
+#CFLAGS				= -g -O0 -rdynamic -Wall -fstack-protector-all -MMD -D_FORTIFY_SOURCE=2 -fstack-usage -DOPT_RRE_ZYNQ_SIM -DOPT_RRE_1CHP -Wl,--no-as-needed
+CXXFLAGS			= -g -O0 -rdynamic -Wall -fstack-protector-all -MMD -D_FORTIFY_SOURCE=2 -fstack-usage -DOPT_RRH_ARCH_ZYNQ $(SYSROOT) -Wl,--no-as-needed
+#CXXFLAGS			= -g -O0 -rdynamic -Wall -fstack-protector-all -MMD -D_FORTIFY_SOURCE=2 -fstack-usage -DOPT_RRH_ARCH_ZYNQ -Wl,--no-as-needed
+else
+#CFLAGS				= -g -O0 -rdynamic -Wall -fstack-protector-all -MMD -D_FORTIFY_SOURCE=2 -DOPT_RRH_ARCH_ZYNQ -Wl,--no-as-needed
+CFLAGS				= -g -O0 -rdynamic -Wall -fstack-protector-all -DSIM_DEBUG -MMD -D_FORTIFY_SOURCE=2 -DOPT_RRH_ARCH_ZYNQ $(SYSROOT) -DOPT_RRE_ZYNQ_SIM -Wl,--no-as-needed
+#CXXFLAGS			= -g -O0 -rdynamic -Wall -fstack-protector-all -DSIM_DEBUG -MMD -D_FORTIFY_SOURCE=2 -DOPT_RRH_ARCH_ZYNQ -Wl,--no-as-needed
+CXXFLAGS			= -g -O0 -rdynamic -Wall -fstack-protector-all -MMD -D_FORTIFY_SOURCE=2 -DOPT_RRH_ARCH_ZYNQ $(SYSROOT) -DOPT_RRE_ZYNQ_SIM -Wl,--no-as-needed
+endif
+

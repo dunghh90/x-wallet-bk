@@ -1,0 +1,4 @@
+NETWORKING=yes
+HOSTNAME=localhost.localdomain
+NETWORKING_IPV6=no
+VLAN=yes

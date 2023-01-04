@@ -1,0 +1,31 @@
+--- a/drivers/net/zynq_gem.c	2018-05-07 20:46:17.832966100 +0900
++++ b/drivers/net/zynq_gem.c	2018-05-08 19:37:40.815827000 +0900
+@@ -117,6 +117,13 @@
+ #define ZYNQ_GEM_FREQUENCY_100	25000000UL
+ #define ZYNQ_GEM_FREQUENCY_1000	125000000UL
+ 
++/* MIO control */
++#define ZYNQ_MIO_DIR1		0xFF0A0244
++#define ZYNQ_MIO_OEN1		0xFF0A0248
++#define ZYNQ_MIO_DATA1		0xFF0A0044
++
++#define ZYNQ_MIO_RESET		0x00000800
++
+ /* Device registers */
+ struct zynq_gem_regs {
+ 	u32 nwctrl; /* 0x0 - Network Control reg */
+@@ -627,6 +634,14 @@
+ 	void *bd_space;
+ 	struct zynq_gem_priv *priv = dev_get_priv(dev);
+ 	int ret;
++	
++	/* MIO Reset Release */
++	clrbits_le32(ZYNQ_MIO_DATA1 , ZYNQ_MIO_RESET);
++	setbits_le32(ZYNQ_MIO_DIR1 , ZYNQ_MIO_RESET);
++	setbits_le32(ZYNQ_MIO_OEN1 , ZYNQ_MIO_RESET);
++	setbits_le32(ZYNQ_MIO_DATA1 , ZYNQ_MIO_RESET);
++	
++	mdelay(1); /* 1ms wait */
+ 
+ 	/* Align rxbuffers to ARCH_DMA_MINALIGN */
+ 	priv->rxbuffers = memalign(ARCH_DMA_MINALIGN, RX_BUF * PKTSIZE_ALIGN);

@@ -1,0 +1,4 @@
+
+;;ŸlbmÝ’è
+sendln'edit-config config=@mplane-int.xml'
+wait 'f_5g_du@5G_DU>'

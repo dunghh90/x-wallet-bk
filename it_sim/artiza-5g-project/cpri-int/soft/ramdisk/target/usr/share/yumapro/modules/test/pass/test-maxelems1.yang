@@ -1,0 +1,25 @@
+module test-maxelems1 {
+
+  namespace "http://netconfcentral.org/ns/test-maxelem1";
+
+  prefix tmax1;
+
+  revision "2016-07-18" {
+    description "Initial version. Test max-elems when the target=running";
+  }
+
+  container xx {
+    list yy {
+      max-elements 1;
+      key id;
+      leaf id { type int32; }
+    }
+  }
+
+  list zz {
+    max-elements 1;
+    key id;
+    leaf id { type int32; }
+  }
+
+}

@@ -1,0 +1,43 @@
+module test_leafsin_case {
+  namespace "http://www.yumaworks.com/ns/test_leafsin_case";
+  prefix testleafs;
+
+  revision "2017-01-25";
+
+  list aaaa {
+    key "name";
+
+    leaf name {
+      type string;
+    }
+
+    leaf bbbb {
+     type string;
+      default "bbbb";
+    }
+
+    choice cccc {
+      default xxxx;
+      
+      case xxxx {
+        leaf dddd {
+           type uint32;
+        }
+      }
+      
+      case yyyy {
+        leaf eeee {
+          type boolean;
+          default true;
+        }
+
+        leaf ffff {
+          type uint32;
+          default 64;
+        }
+
+      }
+    }
+  }
+
+}

@@ -1,0 +1,118 @@
+module hooks2 {
+
+  namespace "http://netconfcentral.org/ns/hooks2";
+  prefix "hooks2";
+
+  import hooks-test { prefix main-hk; }
+  import hooktest { prefix hookt; }
+
+  revision 2019-10-21 {
+    description
+      "YPW-1570: IDREF issue with prefix validation in when stmt.
+                 Add more tests for identity;
+                 Change prefix for the 'hooks-test' module to test
+                 prefixes validation for the identity-ref type nodes";
+  }
+
+  revision 2017-12-20 {
+    description
+      "Test for YANG constraints, nested when
+        via augmentation and directly";
+  }
+
+  augment "/main-hk:interfaces/main-hk:interface" {
+
+    container fcoe-params {
+      when "../main-hk:type = 'test6' or ../main-hk:type = 'test5'";
+
+
+      leaf port-mode {
+        when "(../../main-hk:type = 'test6' or
+               ../../main-hk:type = 'test5') and
+              (../../hookt:mtu = 1532  or
+               ../../hookt:mode = 'defmode2')";
+        type string;
+        default "enode";
+      }
+
+      leaf fcoe-enable {
+        when "../../main-hk:type = 'test5'";
+        type boolean;
+        default false;
+      }
+      leaf fc-map {
+        when "../../main-hk:type = 'test6'";
+        type uint32;
+        default "0x0EFC00";
+      }
+    }
+  }
+
+  // Test plain container when stmts (not externally augmented !)
+  list crash_test {
+    key "name";
+
+    leaf name {
+      type string;
+    }
+
+    leaf type {
+      type string;
+    }
+
+    leaf mode {
+      type string;
+    }
+
+    container fcoe-params {
+      when "../hooks2:type = 'test6' or ../hooks2:type = 'test5'";
+
+      leaf port-mode {
+        when "(../../hooks2:type = 'test5' or
+               ../../hooks2:type = 'test4') and
+              (../../hooks2:mode = 'defmode'  or
+               ../../hooks2:mode = 'defmode2')";
+        type string;
+        default "enode";
+      }
+
+      leaf fcoe-enable {
+        when "../../hooks2:type = 'test6'";
+        type boolean;
+        default false;
+      }
+      leaf fc-map {
+        when "../../hooks2:type = 'test6'";
+        type uint32;
+        default "0x0EFC00";
+      }
+    }
+  }
+
+  /* YPW-XXX: Issue with prefix validation in identity-ref */
+  grouping vlan-routed-config {
+
+    leaf vlan {
+      type union {
+        type uint16;
+        type string;
+      }
+    }
+  }
+
+  grouping vlan-routed-top {
+
+    container routed-vlan {
+      container config {
+        uses vlan-routed-config;
+      }
+    }
+  }
+
+  augment "/main-hk:interfaces/main-hk:interface" {
+
+    uses vlan-routed-top {
+      when "current()/main-hk:config/main-hk:type = 'main-hk:tbase-3'";
+    }
+  }
+}

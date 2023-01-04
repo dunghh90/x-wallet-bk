@@ -1,0 +1,57 @@
+module yang11-bad-idref {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/yang11-bad-idref";
+  prefix yidref;
+  revision "2016-11-08";
+
+  identity A;
+
+  identity B;
+
+  identity C;
+
+  identity D {
+    base A;
+    base C;
+  }
+
+  identity E {
+    base B;
+  }
+
+  identity F {
+    base E;
+  }
+
+  identity G {
+    base A;
+    base C;
+  }
+
+
+  leaf l1 {
+    type identityref {
+      base C;
+    }
+    default F;
+  }
+
+  leaf l2 {
+    type identityref {
+      base A;
+      base B;
+      base C;
+    }
+    default D;
+  }
+
+  leaf l3 {
+    type identityref {
+      base C;
+      base B;
+    }
+    default G;
+  }
+
+}

@@ -1,0 +1,68 @@
+module silprio {
+    namespace "http://netconfcentral.org/ns/silprio";
+    prefix "sp";
+    import yumaworks-extensions { prefix ywx; }
+
+    revision 2015-12-06;
+
+    container A {
+      ywx:sil-priority 10;
+      list list1 {
+         ywx:sil-priority 11;
+         key "a";
+         leaf a { type int32; }
+         leaf b { type uint32; }
+         leaf c { 
+             ywx:sil-priority 50;
+             type string;
+         }
+         leaf d { type string; }
+      }
+      list list2 {
+         ywx:sil-priority 5;
+         key "a";
+         leaf a { type int32; }
+         leaf b { type uint32; }
+      }
+    }
+
+    container B {
+      ywx:sil-priority 8;
+      leaf C {
+        ywx:sil-priority 42;
+        type int8;
+      }
+      list list3 {
+         ywx:sil-priority 12;
+         key "a";
+         leaf a { type int32; }
+         leaf b { type uint32; }
+         leaf c { 
+             ywx:sil-priority 4;
+             type string;
+         }
+         leaf d { 
+             ywx:sil-priority 3;
+             type string;
+         }
+         list list4 {
+           ywx:sil-priority 9;
+           key "a";
+           leaf a { type int32; }
+           leaf b { type uint32; }
+         }
+         list list5 {
+           ywx:sil-priority 2;
+           key "a";
+           leaf a { type int32; }
+           leaf b { type uint32; }
+         }
+      }
+      leaf-list D {
+        ywx:sil-priority 4;
+        type int8;
+      }
+    }
+
+
+}

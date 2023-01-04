@@ -1,0 +1,30 @@
+module test-when3-aug {
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/test-when3-aug";
+  prefix twhen3aug;
+
+  import test-when2 {
+    prefix twhen2;
+  }
+
+  revision "2019-05-22";
+
+  augment "/twhen2:when-test-container" {
+
+    leaf test-leaf {
+      when "../twhen2:toasterWeight = 10";
+      type string;
+      default "foo";
+      config true;
+    }
+
+    container test-condition {
+      when "../twhen2:toasterWeight <= 5";
+      config true;
+      leaf aug-test-leaf {
+        type string;
+        default "fooo";
+      }
+    }
+  }
+}

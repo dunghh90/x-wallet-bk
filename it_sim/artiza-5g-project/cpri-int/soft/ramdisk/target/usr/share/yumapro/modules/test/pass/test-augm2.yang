@@ -1,0 +1,116 @@
+module test-augm2 {
+  namespace "http://yumaworks.com/ns/test-augm2";
+  prefix "taugm2";
+
+  import test-augm {
+      prefix taugm;
+  }
+
+  revision "2017-12-05" {
+    description
+      "Initial version.
+       Test module to test external augments with NP containers";
+  }
+
+
+  grouping storm {
+    leaf broadcast {
+      type uint32;
+      default 32;
+    }
+  }
+
+  augment "/taugm:sync" {
+    container ptp-global {
+      leaf augmentGlobalConfigLeafA {
+          type uint32;
+          default 75;
+       }
+       leaf augmentGlobalConfigLeafB {
+           type uint32;
+           default 100;
+       }
+    }
+  }
+
+  augment "/taugm:sync" {
+    leaf mode {
+      type string;
+      default "defmode";
+    }
+  }
+
+  augment "/taugm:sync" {
+    leaf-list untagged-ports {
+      type string;
+    }
+  }
+
+  augment "/taugm:sync" {
+    container uses-container {
+      uses storm;
+    }
+  }
+
+  augment "/taugm:sync" {
+    uses storm;
+  }
+
+  augment "/taugm:sync" {
+    uses taugm:group;
+  }
+
+
+  augment "/taugm:sync" {
+    container ntp {
+      container associations {
+        container multicast-server {
+          uses storm;
+        }
+      }
+    }
+  }
+
+  augment /taugm:test-engine/taugm:listen/taugm:transport {
+
+    case tls {
+      container tls {
+        leaf ip {
+          type string;
+          default "defip";
+
+        }
+
+        leaf port {
+          type uint32;
+        }
+      }
+    }
+  }
+
+  augment "/taugm:sync" {
+
+    choice transport {
+      default tls;
+
+      case udp {
+        container udp {
+          leaf ip {
+            type string;
+            default "defip";
+          }
+        }
+      }
+
+      case tls {
+        container tls {
+          leaf ip {
+            type string;
+            default "defIP";
+          }
+        }
+      }
+    }
+  }
+
+}

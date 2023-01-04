@@ -1,0 +1,180 @@
+module delete-add-bug {
+
+    namespace "http://netconfcentral.org/ns/delete-add-bug";
+    prefix "del";
+
+    import ietf-interfaces { prefix if; }
+    import ietf-inet-types { prefix inet; }
+    import hooks-test { prefix hk; }
+
+    revision 2018-11-30 {
+        description
+            "Update address container to be usable for hooks-test module.
+             Create a new container to test delete-children first mode.
+             - YPW-1344: Reverse-sil priority does not work when
+               delete-children-first";
+    }
+
+    revision 2018-07-18 {
+        description
+            "Add new grouping 'grouping3' with more nodes.
+             - YPW-1272";
+    }
+
+    revision 2017-03-01 {
+        description
+            "Add new import 'hooks-test' to include callback from this
+             module into rest-reg test.
+             Add new augment to hooks-test module.
+             Add more grouping for YPW-1000 to test create and remove
+             operations at the same time
+             - YPW-1022
+             - YPW-1016";
+    }
+
+    revision 2016-08-25 {
+        description
+            "Initial version";
+    }
+
+    grouping intf-ipv6-grouping {
+
+      leaf intf-v6-enabled {
+          type boolean;
+      }
+      leaf link-local-addr {
+        type inet:ipv6-prefix;
+      }
+
+      leaf site-local-addr {
+        type inet:ipv6-prefix;
+      }
+    }
+
+    grouping ipv6-address-grouping {
+      container ipv6-addresses {              // edit2 cb
+        list address {                        // edit2 cb
+          key "ipv6-address";
+
+          leaf eui64 {
+            type boolean;
+          }
+
+          leaf ipv6-address {
+            type inet:ipv6-prefix;
+          }
+        }
+      }
+    }
+
+    grouping ipv6-address-options {
+      leaf autoconfig {
+        type boolean;
+      }
+      uses ipv6-address-grouping;
+    }
+
+    grouping grouping2 {
+
+        container address {                      // edit2 cb
+          presence "Presence container to avoid restreg test problems";
+
+          must "../../if:type != 'ianaift:ieee8023adLag' or "
+             + "../../hk:type = 'test-address'" {
+
+                error-message
+                    "parameter not configurable if type
+                     is not test-address";
+          }
+
+          leaf primary-addr {
+            type inet:ipv4-prefix;
+          }
+
+          leaf-list secondary-addr {
+            type inet:ipv4-prefix;
+
+            must "../primary-addr != '80.80.80.80/24' " {
+                error-message
+                    "Attempt to configure secondary
+                     address without a primary.";
+            }
+
+            must "../primary-addr != current() " {
+              error-message
+                "Secondary IP address same as the primary.";
+            }
+          }
+        }
+
+        /* YPW-1344: Reverse-sil priority does not work when
+         * delete-children-first
+         */
+        container virtual-router-ipv4 {    // edit2 cb
+          presence "Presence container to avoid restreg test problems";
+
+          leaf anycast-ipv4-addr {
+            type inet:ipv4-prefix;
+          }
+        }
+    }
+
+    grouping grouping3 {
+
+      list address-list {
+        key "ip";
+
+        leaf ip {
+          type inet:ipv4-address-no-zone;
+        }
+
+        leaf prefix-length {
+          type uint8 {
+            range "0..32";
+          }
+        }
+      }
+    }
+
+    grouping grouping1 {
+        leaf broadcast {
+            type uint32 {
+                range "0..33554368";
+            }
+        }
+
+        uses grouping2;
+        uses grouping3;
+
+        leaf enabled {
+          type boolean;
+          default true;
+        }
+
+        leaf mtu {
+          type uint32 {
+            range "594..12000";
+          }
+          default "1554";
+          units "bytes";
+        }
+    }
+
+    augment "/if:interfaces/if:interface" {
+        container ipv4 {                         // edit2 cb
+            uses grouping1;
+            uses ipv6-address-options;
+            uses intf-ipv6-grouping;
+        }
+    }
+
+    /* rest-reg tests callbacks */
+    augment "/hk:interfaces/hk:interface" {
+        container ipv4 {                         // edit2 cb
+            uses grouping1;
+            uses ipv6-address-options;
+            uses intf-ipv6-grouping;
+        }
+    }
+
+}

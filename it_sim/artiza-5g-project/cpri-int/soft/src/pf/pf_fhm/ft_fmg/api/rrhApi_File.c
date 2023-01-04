@@ -1,0 +1,625 @@
+/*!
+ * @skip  $ld:$
+ * @file  rrhApi_File.c
+ * @brief API : related to File operation
+ * @date  2013/11/08 FFCS) Create.
+ * @date  2015/08/14 TDIPS)sasaki delete rrhApi_File_Mnr_UpdateFirm
+ * @date  2015/08/14 TDIPS)sasaki create rrhApi_File_Mnr_SaveFirm
+ * @date  2015/08/17 TDIPS)sasaki create rrhApi_File_Fsm_GetReFileInfo
+ * @date  2015/08/19 TDIPS)sasaki MKレビュー指摘事項No.60対応
+ * @date  2015/08/19 TDIPS)sasaki コメント修正
+ * @date  2015/08/19 TDIPS)sasaki rrhApi_com_msgQSendの戻り値の評価をE_API_RCD_OKか否かに変更
+ *
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2013
+ */
+
+/** @addtogroup RRH_API_FILE
+ *  @{
+ */
+/********************************************************************************************************************/
+/* include file                                                                                                     */
+/********************************************************************************************************************/
+#include "f_rrh_inc.h"
+#include "f_sys_def.h"
+
+#include "BPF_RU_IPCM.h"
+#include "BPF_COM_LOG.h"
+
+#include "rrhApi_Com.h"
+#include "rrhApi_File.h"
+
+#include "f_cmn_com_inc.h"
+
+/********************************************************************************************************************/
+/**
+ *  @brief  API : Get Firmware Information
+ *  @note   PF EVENT ID : 0xA0080001
+ *          TYPE        : FSM
+ *  @param  qid     [I] : response queue id (calling process QueueID)
+ *  @param  wtime   [I] : N/A
+ *  @param  data_p  [I] : not use
+ *  @return E_RRHAPI_RCODE
+ *  @retval ret
+ *  @date   2013/11/08 FFCS)linb Create.
+ *  @date   2015/08/19 TDIPS)sasaki コメント修正
+ *  @date   2015/08/19 TDIPS)sasaki rrhApi_com_msgQSendの戻り値の評価をE_API_RCD_OKか否かに変更
+ *  @FeatureID	PF_File-003-004-001
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_File_Mpr_SubGetFirmVersion(	INT	qid, INT wtime, VOID* data_p)
+{
+	T_API_FILE_FIRM_VERSION_REQ    	apiReq;
+	INT								errcd;
+	INT								ret;
+	
+	if(rrhApi_com_checkRespQ(qid) != E_API_RCD_OK)
+		return E_API_RCD_EPARAM;
+
+	memset(&apiReq, 0, sizeof(apiReq));
+		
+	/*fill IF*/
+	apiReq.header.uiEventNo		= D_API_MSGID_FILE_FIRM_VERSION_REQ;	/* Event  ID         */
+	apiReq.header.uiSignalkind	= 0;								/* Signal Kind       */
+	apiReq.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;					/* Destination P QID */
+	apiReq.header.uiDstTQueueID	= 0;				/* Destination T QID */
+	apiReq.header.uiSrcPQueueID	= qid;								/* Source P QID      */
+	apiReq.header.uiSrcTQueueID	= 0;								/* Source T QID      */
+	apiReq.header.uiLength		= sizeof(apiReq);					/* Length            */
+
+	/* Queue Clear	*/
+	(VOID)BPF_RU_IPCM_PROCMSGQ_FREE_STACK_BUFF( qid );
+	
+	/* call MW func */
+	ret = rrhApi_com_msgQSend(
+				D_RRH_PROCQUE_F_PF,					/* Message QID             */
+				(void *)&apiReq,					/* The message to transmit */
+				sizeof(apiReq),						/* The size of message     */
+				&errcd								/* Error code              */
+				);
+
+	/* checking parameter */
+	if( ret != E_API_RCD_OK ) {
+		rrhApi_com_log(__func__,errcd);
+
+		return E_API_RCD_NG;	
+	}
+
+	return E_API_RCD_OK;
+}
+/********************************************************************************************************************/
+/**
+ *  @brief  API : The request of erasing firm
+ *  @note   PF EVENT ID : 0xA0080005
+ *          Reponse  ID : 0xA0060006
+ *          TYPE        : MQR
+ *  @param  qid    [I]  : response queue id (calling process QueueID)
+ *  @param  wtime  [I]  : N/A
+ *  @param  data_p [I]  : not use
+ *  @param  side   [I]	: 0 act side;1 Standby side
+ *  @return E_RRHAPI_RCODE
+ *  @retval ret
+ *  @date   2013/11/08 FFCS)linb Create.
+ *  @date   2015/08/19 TDIPS)sasaki コメント修正
+ *  @date   2015/08/19 TDIPS)sasaki rrhApi_com_msgQSendの戻り値の評価をE_API_RCD_OKか否かに変更
+ *  @FeatureID	PF_File-001-001-001
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_File_Mnr_EraseFirm(	INT	qid, INT wtime,VOID *data_p,
+								UINT side )
+{
+	T_API_FILE_ERASE_FIRM_REQ		apiReq;
+	INT								errcd;
+	INT								ret;
+	
+	if(rrhApi_com_checkRespQ(qid) != E_API_RCD_OK)
+		return E_API_RCD_EPARAM;
+
+	memset(&apiReq, 0, sizeof(apiReq));
+		
+	/*fill IF*/
+	apiReq.header.uiEventNo		= D_API_MSGID_FILE_FIRM_ERASE_REQ;	/* Event  ID         */
+	apiReq.header.uiSignalkind	= 0;								/* Signal Kind       */
+	apiReq.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;					/* Destination P QID */
+	apiReq.header.uiDstTQueueID	= 0;				/* Destination T QID */
+	apiReq.header.uiSrcPQueueID	= qid;								/* Source P QID      */
+	apiReq.header.uiSrcTQueueID	= 0;								/* Source T QID      */
+	apiReq.header.uiLength		= sizeof(apiReq);					/* Length            */
+	apiReq.data.side			= side;								/* Erase Side 	   **/
+
+	/* call MW func */
+	ret = rrhApi_com_msgQSend(
+				D_RRH_PROCQUE_F_PF,						/* Message QID             */
+				(void *)&apiReq,					/* The message to transmit */
+				sizeof(apiReq),						/* The size of message     */
+				&errcd								/* Error code              */
+				);
+
+	/* checking parameter */
+	if( ret != E_API_RCD_OK ) {
+		rrhApi_com_log(__func__,errcd);
+
+		return E_API_RCD_NG;
+	}
+
+	return E_API_RCD_OK;
+}
+/********************************************************************************************************************/
+/**
+ *  @brief  API : The request of updating firm
+ *  @note   PF EVENT ID : 0xA0080007
+ *          Reponse  ID : 0xA0060008
+ *          TYPE        : MQR
+ *  @param  qid      [I]    : response queue id (calling process QueueID)
+ *  @param  wtime    [I]    : N/A
+ *  @param  data_p   [I]    : not use
+ *  @param  dlwType  [I]	: down type:0: startup ;1: use 
+ *  @param  checksum [I]    : not use
+ *  @param  time     [I]    : not use
+ *  @return E_RRHAPI_RCODE
+ *  @retval ret
+ *  @date   2013/11/08 FFCS)linb Create.
+ *  @date   2015/08/14 TDIPS)sasaki update
+ *  @date   2015/08/19 TDIPS)sasaki コメント修正
+ *  @date   2015/08/19 TDIPS)sasaki rrhApi_com_msgQSendの戻り値の評価をE_API_RCD_OKか否かに変更
+ *  @FeatureID	RRH-007-000
+ *  @Bug_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_File_Mnr_UpdateFirm(	INT	qid, INT wtime,VOID *data_p,
+														UINT dlwType, UINT checksum, UINT time )
+{
+//	T_API_FILE_UPDATE_FIRM_REQ   	apiReq;
+//	INT								errcd;
+//	INT								ret;
+//	
+//	if(rrhApi_com_checkRespQ(qid) != E_API_RCD_OK)
+//		return E_API_RCD_EPARAM;
+//
+//	memset(&apiReq, 0, sizeof(apiReq));
+//	
+//	/*fill IF*/
+//	apiReq.header.uiEventNo		= D_API_MSGID_FILE_FIRM_UPDATE_REQ;	/* Event  ID         */
+//	apiReq.header.uiSignalkind	= 0;								/* Signal Kind       */
+//	apiReq.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;					/* Destination P QID */
+//	apiReq.header.uiDstTQueueID	= 0;				/* Destination T QID */
+//	apiReq.header.uiSrcPQueueID	= qid;								/* Source P QID      */
+//	apiReq.header.uiSrcTQueueID	= 0;								/* Source T QID      */
+//	apiReq.header.uiLength		= sizeof(apiReq);					/* Length            */
+//	apiReq.data.dlwType			= dlwType;							/* Download Type	   */
+//	apiReq.data.chksum			= checksum;							/* checksum			*/
+//	apiReq.data.time			= time;							/* checksum			*/
+//	
+//	/* call MW func */
+//	ret = rrhApi_com_msgQSend(
+//				D_RRH_PROCQUE_F_PF,					/* Message QID             */
+//				(void *)&apiReq,					/* The message to transmit */
+//				sizeof(apiReq),						/* The size of message     */
+//				&errcd								/* Error code              */
+//				);
+//
+//	/* checking parameter */
+//	if( ret != E_API_RCD_OK ) {
+//		rrhApi_com_log(__func__,errcd);
+//
+//		return E_API_RCD_NG;
+//	}
+//
+	return E_API_RCD_OK;
+}
+
+/********************************************************************************************************************/
+/**
+ *  @brief  API : The request of updating firm
+ *  @note   PF EVENT ID : 0xA0080007
+ *          Reponse  ID : 0xA0060008
+ *          TYPE        : MQR
+ *  @param  qid   [I]   : response queue id (calling process QueueID)
+ *  @param  dlwType  [I]	: down type:0: startup ;1: use 
+ *  @param  checksum  [I]	: file checksum 
+ *  @param  fw_type  [I]	: firm type:1: FHM ;2: RE
+ *  @param  save_pos  [I]	: save position: FHM:0 or 1, RE:1～16
+ *  @param  fw_info  [I]	: Save FW File Info
+ *  @return E_RRHAPI_RCODE
+ *  @retval ret
+ *  @date   2013/11/08 FFCS)linb Create.
+ *  @date   2015/08/14 TDIPS)sasaki update
+ *  @date   2015/08/19 TDIPS)sasaki MKレビュー指摘事項No.60対応
+ *  @date   2015/08/19 TDIPS)sasaki rrhApi_com_msgQSendの戻り値の評価をE_API_RCD_OKか否かに変更
+ *  @FeatureID	RRH-007-000
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_File_Mnr_SaveFirm(INT qid, UINT dlwType, UINT checksum, USHORT fw_type, USHORT save_pos, T_RRH_FW_INFO* fw_info)
+{
+	T_API_FILE_SAVE_FW_REQ   		apiReq;
+	INT								errcd;
+	INT								ret;
+	
+	if(rrhApi_com_checkRespQ(qid) != E_API_RCD_OK)
+		return E_API_RCD_EPARAM;
+
+	memset(&apiReq, 0, sizeof(apiReq));
+	
+	/*fill IF*/
+	apiReq.header.uiEventNo		= D_API_MSGID_FILE_FIRM_UPDATE_REQ;	/* Event ID					*/
+	apiReq.header.uiSignalkind	= 0;								/* Signal Kind				*/
+	apiReq.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;					/* Destination P QID		*/
+	apiReq.header.uiDstTQueueID	= 0;								/* Destination T QID		*/
+	apiReq.header.uiSrcPQueueID	= qid;								/* Source P QID				*/
+	apiReq.header.uiSrcTQueueID	= 0;								/* Source T QID				*/
+	apiReq.header.uiLength		= sizeof(apiReq);					/* Length					*/
+	apiReq.data.dlwType			= dlwType;							/* Download Type			*/
+	apiReq.data.chksum			= checksum;							/* checksum					*/
+	apiReq.data.time			= 0;
+	apiReq.data.fw_type			= fw_type;							/* File Type(1:FHM,2:RE)	*/
+	apiReq.data.save_pos		= save_pos;
+	apiReq.data.fw_info			= *fw_info;
+	
+	/* call MW func */
+	ret = rrhApi_com_msgQSend(
+				D_RRH_PROCQUE_F_PF,					/* Message QID             */
+				(void *)&apiReq,					/* The message to transmit */
+				sizeof(apiReq),						/* The size of message     */
+				&errcd								/* Error code              */
+				);
+
+	/* checking parameter */
+	if( ret != E_API_RCD_OK ) {
+		rrhApi_com_log(__func__,errcd);
+
+		return E_API_RCD_NG;
+	}
+
+	return E_API_RCD_OK;
+}
+
+/********************************************************************************************************************/
+/**
+ *  @brief  API : The request of load RE File Data into shared memory
+ *  @note   PF EVENT ID : 0xA0080009
+ *          Reponse  ID : 0xA008000A
+ *          TYPE        : MQR
+ *  @param  qid   [I]   : response queue id (calling process QueueID)
+ *  @param  save_pos [I] : 1～16
+ *  @return E_RRHAPI_RCODE
+ *  @retval ret
+ *  @date   2015/08/17 TDIPS)sasaki create
+ *  @date   2015/08/19 TDIPS)sasaki MKレビュー指摘事項No.60対応
+ *  @date   2015/08/19 TDIPS)sasaki rrhApi_com_msgQSendの戻り値の評価をE_API_RCD_OKか否かに変更
+ *  @FeatureID	RRH-007-000
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_File_Mnr_LoadReFileData(INT qid, USHORT save_pos)
+{
+	T_API_FILE_LOAD_FW_DATA_REQ   	apiReq;
+	INT								errcd;
+	INT								ret;
+	
+	if(rrhApi_com_checkRespQ(qid) != E_API_RCD_OK)
+	{
+		return E_API_RCD_EPARAM;
+	}
+
+	memset(&apiReq, 0, sizeof(apiReq));
+	
+	/*fill IF*/
+	apiReq.header.uiEventNo		= D_API_MSGID_FILE_FIRM_READ_REQ;	/* Event ID					*/
+	apiReq.header.uiSignalkind	= 0;								/* Signal Kind				*/
+	apiReq.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;					/* Destination P QID		*/
+	apiReq.header.uiDstTQueueID	= 0;								/* Destination T QID		*/
+	apiReq.header.uiSrcPQueueID	= qid;								/* Source P QID				*/
+	apiReq.header.uiSrcTQueueID	= 0;								/* Source T QID				*/
+	apiReq.header.uiLength		= sizeof(apiReq);					/* Length					*/
+	apiReq.data.save_pos		= save_pos;
+
+	/* call MW func */
+	ret = rrhApi_com_msgQSend(
+				D_RRH_PROCQUE_F_PF,					/* Message QID             */
+				(void *)&apiReq,					/* The message to transmit */
+				sizeof(apiReq),						/* The size of message     */
+				&errcd								/* Error code              */
+				);
+
+	/* checking parameter */
+	if( ret != E_API_RCD_OK ) {
+		rrhApi_com_log(__func__,errcd);
+		return E_API_RCD_NG;
+	}
+
+	return E_API_RCD_OK;
+}
+
+/********************************************************************************************************************/
+/**
+ *  @brief  API : Get RE File Information
+ *  @note   
+ *  @param  fw_info  [O]	: Pointer to area RE File Info array copied.
+ *  @return E_RRHAPI_RCODE
+ *  @retval E_API_RCD_OK 正常終了
+ *  @retval E_API_RCD_NG 異常終了
+ *  @date   2015/08/17 TDIPS)sasaki create
+ *  @FeatureID	RRH-007-000
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_File_Fsm_GetReFileInfo(T_RRH_FW_INFO* fw_info)
+{
+	INT		ret;
+	UINT	idx;
+
+	/********************************************************************************************/
+	/* 共有メモリテーブルから読み出したREファイル情報をfw_infoへ展開							*/
+	/********************************************************************************************/
+	for(idx = 0; idx < D_RRH_CPRINO_RE_MAX; idx++)
+	{
+		ret = f_cmn_com_fw_info_re_get(idx, (fw_info + idx));
+		if(ret != D_RRH_OK)
+		{
+			return E_API_RCD_NG;
+		}
+	}
+
+	return E_API_RCD_OK;
+}
+
+/********************************************************************************************************************/
+/**
+ *  @brief  API : Cancel Update Firm
+ *  @note   PF EVENT ID : 0xA0080007
+ *          TYPE        : FSM
+ *  @param  qid   [I]   : response queue id (calling process QueueID)
+ *  @param  wtime [I]   : N/A
+ *  @param  data_p  [O] : data pointer
+ *  @return E_RRHAPI_RCODE
+ *  @retval ret
+ *  @date   2014/01/08 FFCS)linb Create.
+ *  @date   2015/08/19 TDIPS)sasaki rrhApi_com_msgQSendの戻り値の評価をE_API_RCD_OKか否かに変更
+ *  @FeatureID	PF_File-003-004-001
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_File_Mnt_CancelUpdFirm(	INT		qid, 
+										INT		wtime, VOID *data_p )
+{
+	T_API_FILE_FIRM_CANCEL_IND	apiNtc;
+	INT							errcd;
+	INT							ret;
+	
+	memset(&apiNtc, 0, sizeof(apiNtc));
+	
+	/*fill IF*/
+	apiNtc.header.uiEventNo		= D_API_MSGID_FILE_FIRM_CANCEL_IND;	/* Event  ID         */
+	apiNtc.header.uiSignalkind	= 0;								/* Signal Kind       */
+	apiNtc.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF	;				/* Destination P QID */
+	apiNtc.header.uiDstTQueueID	= 0;				/* Destination T QID */
+	apiNtc.header.uiSrcPQueueID	= qid;								/* Source P QID      */
+	apiNtc.header.uiSrcTQueueID	= 0;								/* Source T QID      */
+	apiNtc.header.uiLength		= sizeof(apiNtc);					/* Length            */
+
+
+	/* call MW func */
+	ret = rrhApi_com_msgQSend(
+				D_RRH_PROCQUE_F_PF,					/* Message QID             */
+				(void *)&apiNtc,					/* The message to transmit */
+				sizeof(apiNtc),						/* The size of message     */
+				&errcd								/* Error code              */
+				);
+
+	/* checking parameter */
+	if( ret != E_API_RCD_OK ) {
+		rrhApi_com_log(__func__,errcd);
+
+		return E_API_RCD_NG;
+	}
+
+	return E_API_RCD_OK;
+}
+
+/********************************************************************************************************************/
+/**
+ *  @brief  API : The process of loading share memorya
+ *  @note   PF EVENT ID : -
+ *          Reponse  ID : -
+ *          TYPE        : FSM
+ *  @param  qid   [o]   : return value indicate sharememory address
+ *  @return E_RRHAPI_RCODE
+ *  @retval ret
+ *  @date   2013/11/08 FFCS)linb Create.
+ *  @FeatureID	PF_File-003-001-001
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+static INT* shmem_fd = 0;
+E_RRHAPI_RCODE rrhApi_File_Fsm_loadMemory(INT *handle)
+{
+	int ret;
+	INT errcd;
+	/* 共有メモリから外部インターフェース情報を取得する */
+	if(shmem_fd == 0)
+	{
+		ret = BPF_RU_IPCM_PROCSHM_ADDRGET(D_RRH_SHMID_APL_LMC_DATA/* T.B.D */,
+											(VOID**)&shmem_fd,
+											&errcd);
+	
+		if(ret != BPF_RU_IPCM_OK)
+		{
+			rrhApi_com_log(__func__,errcd);
+			return E_API_RCD_NG;
+		
+		}
+	}
+		
+	/*first beginning 32 byte is used for management */
+	/* 
+	used: 4byte
+	file size: 4byte
+	file offset 4byte
+	*/
+	*handle = (INT)shmem_fd;
+	shmem_fd[0] = D_RRH_ON;
+	shmem_fd[1] = 0;
+	shmem_fd[2] = 0;
+
+	return E_API_RCD_OK;
+}
+/********************************************************************************************************************/
+/**
+ *  @brief  API : The process of saving file data
+ *  @note   PF EVENT ID : -
+ *          Reponse  ID : -
+ *          TYPE        : FSM
+ *  @param  fd    [I]   : file descriptor
+ *  @param  data  [I]   : file data
+ *  @param  size  [I]   : file size 
+ *  @return E_RRHAPI_RCODE
+ *  @retval ret
+ *  @date   2013/11/08 FFCS)linb Create.
+ *  @FeatureID	PF_File-003-001-001
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_File_Fsm_SaveData(INT fd,VOID   *data, UINT	size	)
+{	
+	INT offset;
+
+	if (fd != (INT)shmem_fd)
+	return E_API_RCD_EPARAM;
+	
+	offset = shmem_fd[1];
+	memcpy((CHAR*)(&shmem_fd[8]) + offset, data, size);
+	shmem_fd[1]  += size; 
+
+	return E_API_RCD_OK;
+}
+/********************************************************************************************************************/
+/**
+ *  @brief  API : The process of unloading share memory
+ *  @note   PF EVENT ID : -
+ *          Reponse  ID : -
+ *          TYPE        : FSM
+ *  @param  fd           [I] : file descriptor
+ *  @param  size         [I] : size of received data 
+ *  @param  recvCheckSum [I] : received check sum
+ *  @return E_RRHAPI_RCODE
+ *  @retval ret
+ *  @date   2013/11/08 FFCS)linb Create.
+ *  @FeatureID	PF_File-003-001-001
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_File_Fsm_unLoadMemory(INT fd,INT size,USHORT recvCheckSum)
+{
+	USHORT	calcCheckSum = D_SYS_NUM0;
+	
+	if (fd != (INT)shmem_fd)
+	return E_API_RCD_EPARAM;
+
+	shmem_fd[0] = D_RRH_OFF;
+	shmem_fd[2] = size;
+
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_WARNING, "Firm CHKSUM Start");
+	/* caculate the checksum of received data */
+	rrh_cm_CheckSumCalc((UCHAR*)(&shmem_fd[8]), (UINT)size, &calcCheckSum);
+	
+	/* if checksum is not correct */
+	if(calcCheckSum != recvCheckSum)
+	{
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, "CHKSUM NG(recvCheckSum) %d", recvCheckSum);
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, "CHKSUM NG(calcCheckSum) %d", calcCheckSum);
+
+		return E_API_RCD_CHECKSUMNG;		
+	}		
+
+	/*BPF_RU_IPCM_PROCMSG_ADDRFREE(shmem_fd);*/
+	shmem_fd = 0;
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_WARNING, "Firm CHKSUM End");
+
+	return E_API_RCD_OK;
+}
+/** @} */
+
+VOID rrh_cm_CheckSumCalc( const VOID*	chkSumAdr_p,
+								UINT			dataLen,
+								USHORT*		chkSum_p)
+{
+	UINT	a_loopnum;      			
+	UINT	a_cnt;					
+	USHORT*	a_work_p;				
+	UINT    a_chksum_value  = D_SYS_NUM0;
+	USHORT  a_chksum_value2 = D_SYS_NUM0; 
+	USHORT  temp = D_SYS_NUM0;
+	
+	/* input parameter ( 0 Address) check */
+	if(((INT)chkSumAdr_p == D_SYS_NUM0)||((INT)chkSum_p == D_SYS_NUM0))
+	{
+		return;
+
+	}
+
+	a_work_p = (USHORT*)chkSumAdr_p;
+	a_loopnum = dataLen / sizeof(USHORT) ;
+    
+	for( a_cnt=D_SYS_NUM0 ; a_cnt<a_loopnum ; a_cnt++ )
+	{
+		a_chksum_value = a_chksum_value + *(a_work_p + a_cnt);
+
+		if(a_chksum_value > 0xFFFF)
+		{
+			a_chksum_value2 = (USHORT)a_chksum_value;
+			a_chksum_value2 ++;
+			a_chksum_value = (UINT)a_chksum_value2;
+	
+			if(a_chksum_value == D_SYS_NUM0)
+			{
+				a_chksum_value ++;
+			}
+		}
+	}
+	
+	if((dataLen % D_SYS_NUM2) == D_SYS_NUM1)
+	{
+		a_chksum_value = 
+					a_chksum_value + (USHORT)((*(a_work_p + a_loopnum)) & 0x00FF);
+
+		if(a_chksum_value > 0xFFFF)
+		{
+			a_chksum_value2 = (USHORT)a_chksum_value;
+			a_chksum_value2 ++;
+			a_chksum_value = (UINT)a_chksum_value2;
+	
+			if(a_chksum_value == D_SYS_NUM0)
+			{
+				a_chksum_value ++;
+			}
+		}
+	}
+	
+	*chkSum_p = ~(USHORT)a_chksum_value ;
+
+	/* swap the checksum */
+	temp = *chkSum_p;
+	*chkSum_p = ((temp & 0xFF00) >> 8) | ((temp & 0x00FF) << 8);
+
+	return;
+}
+/* @} */

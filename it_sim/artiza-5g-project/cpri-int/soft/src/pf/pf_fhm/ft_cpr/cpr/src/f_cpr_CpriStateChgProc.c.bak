@@ -1,0 +1,378 @@
+/*********************************************************************************/
+/**
+ *  @skip $Id:$
+ *  @file f_cpr_CpriStateChgProc.c
+ *  @brief  CPRI state change interruption handle function
+ *  @date   2008/07/18 FFCS)Wangjuan create
+ *  @date   2009/08/08 FFCS)Wangjuan modify for 
+ *							  CR-00054-005(CPRI spec V1.0.8) 
+ *  @date   2009/10/08 QNET)Kabasima MOD CR-00071-001(TRA-HS-V2R11 RE AUTO RESET and 3GRF-INF)
+ *  @date   2009/10/14 QNET)Kabasima HISTORY ADD CR-00064-001(TRA-HS-V2R9 HDLC RATE CHANGE IRQ)
+ *  @date   2009/12/27 QNET)Kabasima M-S3G-eNBPF-02862:[3G水平展開]OPTTX5とMDEIF直結にて
+ *                          OPTTX5の光ON/OFFを繰り返すと、MDEIFに対してinbandリセット発行する
+ *  @date   2010/03/02 QNET)Kabasima MOD M-S3G-eNBPF-03221:CPRI共用からLTE単独構成変更時にREのレジスタに3G-L3ERRが残る場合がある
+ *  @date   2012/07/05  FFCS)niemsh modify for 1.5GVA
+ *  @date 2013/11/25  FFCS)niemsh modify for zynq
+ *  @date 2015/06/30 ALPHA)Ueda modify for RRH-007-000
+ *  @date 2015/07/27 TDIPS)ikeda * 
+ *  ALL Rights Reserved, Copyright (c) FUJITSU Limited 2008-2015
+ */
+/*********************************************************************************/
+
+/** @addtogroup RRH_PF_CPR
+* @{ */
+
+#include "f_sys_inc.h"
+#include "f_cpr_inc.h"
+#include "rrhApi_Cpri.h"
+/**
+* @brief CPRI state change interruption handle function
+* @note CPRI state change interruption handle function.\n
+* @param buff_adr [in] the buffer address pointer of received message
+* @return None
+* @date 2008/07/18 FFCS)Wangjuan create
+* @date 2009/12/27 QNET)Kabasima M-S3G-eNBPF-02862:[3G水平展開]OPTTX5とMDEIF直結にて
+*                       OPTTX5の光ON/OFFを繰り返すと、MDEIFに対してinbandリセット発行する
+* @date 2010/03/02 QNET)Kabasima MOD M-S3G-eNBPF-03221:CPRI共用からLTE単独構成変更時にREのレジスタに3G-L3ERRが残る場合がある
+* @date 2012/07/05  FFCS)niemsh modify for 1.5GVA
+* @date 2013/11/25  FFCS)niemsh modify for zynq
+* @date 2015/06/30 ALPHA)ieda modify for RRH-007-000
+* @date 2015/07/30 TDIPS)ikeda
+* @date 2015/11/04 TDI)satou その他未実装-008 「Wait 200ms (確実にEDWN発生させる為のWait)」追加
+* @date 2015/11/11 TDI)satou その他未実装-006 最大遅延量減設の復旧処理を追加
+* @date 2015/11/13 TDI)satou その他未実装-013
+* @warning	N/A
+* @FeatureID	PF_Cpri-003-003-001
+* @Bug_No	N/A
+* @CR_No	N/A
+* @TBD_No	N/A
+*
+*/
+VOID f_cpr_CpriStateChgProc(UINT * buff_adr)
+ {
+	T_SYS_CPRIST_IRQNTC*		a_cpristachgntc_p;	/* input IF pointer */
+	T_API_CPRILINK_STATE_NTC	apiNtc;
+	UINT						a_signal;
+	UINT						a_num;
+	UINT						a_cprista;	/* CPRI state */
+	UINT						a_index;
+	UINT						bChange = D_SYS_OFF;
+	T_RRH_SYSTEM_TIME			logtime;
+	T_SYS_AUTO_NEGO_RESTART_IND	autonego_restart_ind;
+	T_SYS_AUTO_NEGO_STOP_IND	autonego_stop_ind;
+	UINT						regVal;
+	UINT						regVal2;
+	CHAR *		bitratename[] = { "2.4G","4.9G","9.8G"};
+	USHORT						a_link_num;
+	T_RRH_L1STAT_TBL *a_cprw_l1StatTbl;
+	T_RRH_L1LOSLOF_TBL	*a_cprw_l1LosLofTbl;
+	UINT						count;
+
+	/* initial */
+	memset(&apiNtc, 0, sizeof(apiNtc));
+	memset(&autonego_restart_ind, 0, sizeof(autonego_restart_ind));
+	memset(&autonego_stop_ind, 0, sizeof(autonego_stop_ind));
+
+	/* Get CPRI state from IF */
+	a_cpristachgntc_p = (T_SYS_CPRIST_IRQNTC*)buff_adr;
+ 	if (a_cpristachgntc_p->link_num != D_RRH_CPRINO_REC)
+ 	{
+ 		f_cpr_CpriStateChgProcRE(buff_adr);
+		return;
+ 	}
+	a_cprista = a_cpristachgntc_p->data1;
+ 
+ 	a_link_num = a_cpristachgntc_p->link_num;
+	/* Assert log */
+	BPF_COM_PLOG_TRACE_CPRI( E_TRC_LV_INFO, 
+						"CPRI STATUS IRQ NTC!data1 = 0x%08x, data2 = 0x%08x, data3 = 0x%08x", 
+						a_cpristachgntc_p->data1,
+						a_cpristachgntc_p->data2,
+						a_cpristachgntc_p->data3);
+
+	/* if HDLC ACT or (HDLC Idle and E Down off) or Status E */
+	if( ((a_cprista & D_CPR_CPRISTA_BIT_HDLCACT) != D_SYS_NUM0) || 
+		(((a_cprista & D_CPR_CPRISTA_BIT_HDLCIDLE) != D_SYS_NUM0) && 
+		((a_cprista & D_CPR_CPRISTA_BIT_EDWN) == D_SYS_NUM0)) || 
+		((a_cprista & D_CPR_CPRISTA_BIT_E) != D_SYS_NUM0) )
+	{
+		apiNtc.cpriEDown = D_RRH_OFF;
+		apiNtc.cpriState = D_RRH_CPRISTAT_E;
+
+		/* Auto Nego Complete? */
+		if(f_cprw_autonego_complete_flag == D_SYS_ON)
+		{
+			bChange = D_SYS_ON;
+
+			/* bit rate setting */
+			apiNtc.cpriLineBitrate = f_cprw_bitrate_real;
+
+			/* CPRI Auto Nego Stop */
+			autonego_stop_ind.thdif.uiEventNo = D_SYS_MSGID_AUTONEGO_STOP_IND;
+			autonego_stop_ind.thdif.uiDstPQueueID = D_RRH_PROCQUE_PF;
+			autonego_stop_ind.thdif.uiDstTQueueID = D_SYS_THDQID_PF_NEGO;
+			autonego_stop_ind.thdif.uiSrcPQueueID = D_RRH_PROCQUE_PF;
+			autonego_stop_ind.thdif.uiSrcTQueueID = D_SYS_THDQID_PF_CPRI;
+			autonego_stop_ind.thdif.uiLength = sizeof(autonego_stop_ind);
+
+			/* write running history */
+			f_cpr_cm_runHisSet(D_CPR_SENDIEVEFLG, (UCHAR*)&autonego_stop_ind);
+
+			/* send auto nego start indication to pf_nego */
+			f_com_msgQSend( D_SYS_THDQID_PF_NEGO, 
+							(CHAR*)&autonego_stop_ind,
+							sizeof(autonego_stop_ind), 
+							D_SYS_THDQID_PF_CPRI, 
+							f_cprw_thrdState, 
+							D_SYS_MSGID_AUTONEGO_STOP_IND );
+		}
+
+		/* L1 ERR off */
+		f_com_SVCtl(D_SYS_THDID_PF_CPRI, E_SYS_SVCTL_L1ERR, D_SYS_OFF);
+
+		if ((a_cprista & D_CPR_CPRISTA_BIT_HDLCIDLE) == D_SYS_NUM0)
+		{
+			/* CPRI リンク障害表示クリア */
+//			BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI, D_RRH_REG_CPRI_CPERR, &regVal);
+//			BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI, D_RRH_REG_CPRI_RL1MNT, &regVal);
+//			BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI, D_RRH_REG_CPRI_CPSTCHG, &regVal);
+//			BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI, D_RRH_REG_CPRI_CPSYNC, &regVal);
+
+			/* SFP状態表示クリア */
+			BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI, D_RRH_REG_CNTS_CPSSFPSTA, &regVal);
+		}
+
+		a_signal = apiNtc.cpriState;
+
+		for(count = 0 ; count < 100 ;count++){
+			regVal = 0;
+			/* bitrate 取得 + CPRI Protocol ver  */
+			BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI, D_RRH_REG_CPRI_CPRXCW, &regVal);
+			if (
+				(( regVal & M_RRH_REG_CPRI_CPRXCW_VER ) ==  0x01000000 ) ||
+				(( regVal & M_RRH_REG_CPRI_CPRXCW_VER )  == 0x02000000 )
+			)
+			{
+				if (
+					(( regVal & M_RRH_REG_CPRI_CPRXCW_STUP ) ==  D_RRH_HDLC_RATE_960 ) ||
+					(( regVal & M_RRH_REG_CPRI_CPRXCW_STUP)  == D_RRH_HDLC_RATE_1920 )
+				)
+				{
+					f_cprw_SlaveCPPVer_HDLCRate = regVal & ( M_RRH_REG_CPRI_CPRXCW_VER | M_RRH_REG_CPRI_CPRXCW_STUP );
+					apiNtc.cpriHDLCBitrate = regVal & M_RRH_REG_CPRI_CPRXCW_STUP;
+					break;
+				}
+			}
+			regVal2 = regVal;
+			usleep(1000);
+		}
+		if(count > 0){
+			BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_WARNING, "Miss Bitrate , CP ver is l %08x f %08x ",regVal,regVal2); /* pgr0000 */
+		}
+
+		if(100 <= count)
+		{	/* 期待値監視タイマT.O : (TX-FRM)Protocol Version情報とHDLCレート情報を取得し、MasterのCPRI start-upで使用 */
+			BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI, D_RRH_REG_CPRI_CPTXCW, &regVal);
+			f_cprw_SlaveCPPVer_HDLCRate = regVal & ( M_RRH_REG_CPRI_CPTXCW_VER | M_RRH_REG_CPRI_CPTXCW_STUP );
+			BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_WARNING, "retry over(bitrate, CP ver). regVal=%08x", regVal);
+
+			apiNtc.cpriHDLCBitrate = regVal & M_RRH_REG_CPRI_CPTXCW_STUP;
+		}
+
+		/* HDLC ACT */
+		if((a_cprista & D_CPR_CPRISTA_BIT_HDLCACT)    != D_SYS_NUM0)
+		{
+			apiNtc.cpriHdlc = D_RRH_ON;
+			a_signal = D_RRH_CPRISTAT_HDLCACT;
+		}
+		/* HDLC IDLE */
+		else if( ((a_cprista & D_CPR_CPRISTA_BIT_HDLCIDLE) != D_SYS_NUM0) && 
+				((a_cprista & D_CPR_CPRISTA_BIT_EDWN) == D_SYS_NUM0) )
+		{
+			a_signal = D_RRH_CPRISTAT_HDLCIDLE;
+		}
+		/* log */
+		BPF_COM_PLOG_TRACE_CPRI(E_TRC_LV_INFO, "L3 Start!Bit Rate = %s(%d), HDLC rate = %x, complete_flag = %d",
+									bitratename[apiNtc.cpriLineBitrate], 
+									apiNtc.cpriLineBitrate,
+									apiNtc.cpriHDLCBitrate,
+									f_cprw_autonego_complete_flag);
+	}
+	else
+	{
+		if((a_cprista & D_CPR_CPRISTA_BIT_HDLCIDLE) == D_SYS_NUM0)
+		{
+			bChange = D_SYS_ON;
+			apiNtc.cpriHdlc = D_RRH_OFF;
+
+			if ( (a_cprista & D_CPR_CPRISTA_BIT_B)   != D_SYS_NUM0  )
+			{
+				apiNtc.cpriState = D_RRH_CPRISTAT_B;
+			}
+
+			if ( (a_cprista & D_CPR_CPRISTA_BIT_C)   != D_SYS_NUM0  )
+			{
+				apiNtc.cpriState = D_RRH_CPRISTAT_C;
+			}
+
+			if ( (a_cprista & D_CPR_CPRISTA_BIT_D)   != D_SYS_NUM0  )
+			{
+				apiNtc.cpriState = D_RRH_CPRISTAT_D;
+			}
+		}
+
+		if((a_cprista & D_CPR_CPRISTA_BIT_EDWN) != D_SYS_NUM0)
+		{
+			f_cprw_SlaveCPPVer_HDLCRate = 0;
+
+			/* 配下RE停止 */
+			/* CPM#n 光OFF & CPRI Disable設定 */
+			for (a_num = D_RRH_CPRINO_RE_MIN; a_num < D_RRH_CPRINO_NUM; a_num++)
+			{
+				BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI, M_RRH_REG_CPRI_SFPCNT(a_num), &regVal);
+				regVal &= ~0x00000007;
+				regVal |=  0x00000001;
+				BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, M_RRH_REG_CPRI_SFPCNT(a_num), &regVal);
+			}
+
+//			/* Wait 200ms (確実にEDWN発生させる為のWait) */
+//			usleep(200*1000);
+//			BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_INFO, "Slave EDWN wait End.");
+
+			bChange = D_SYS_ON;
+			apiNtc.cpriEDown = D_RRH_ON;
+
+			/* rate nego complete flag OFF */
+			f_cprw_autonego_complete_flag = D_SYS_OFF;
+
+			/* CPRI Auto Nego restart by same bit rate */
+			autonego_restart_ind.thdif.uiEventNo = D_SYS_MSGID_AUTONEGO_RESTART_IND;
+			autonego_restart_ind.thdif.uiDstPQueueID = D_RRH_PROCQUE_PF;
+			autonego_restart_ind.thdif.uiDstTQueueID = D_SYS_THDQID_PF_NEGO;
+			autonego_restart_ind.thdif.uiSrcPQueueID = D_RRH_PROCQUE_PF;
+			autonego_restart_ind.thdif.uiSrcTQueueID = D_SYS_THDQID_PF_CPRI;
+			autonego_restart_ind.thdif.uiLength = sizeof(autonego_restart_ind);
+
+			autonego_restart_ind.bit_rate = f_cprw_bitrate_real;
+
+			/* write running history */
+			f_cpr_cm_runHisSet(D_CPR_SENDIEVEFLG, (UCHAR*)&autonego_stop_ind);
+
+			/* send auto nego start indication to pf_nego */
+			f_com_msgQSend( D_SYS_THDQID_PF_NEGO, 
+							(CHAR*)&autonego_restart_ind,
+							sizeof(autonego_restart_ind), 
+							D_SYS_THDQID_PF_CPRI, 
+							f_cprw_thrdState, 
+							D_SYS_MSGID_AUTONEGO_RESTART_IND );
+			
+			if ( (a_cprista & D_CPR_CPRISTA_BIT_D)   != D_SYS_NUM0  )
+			{
+				apiNtc.cpriState = D_RRH_CPRISTAT_D;
+			}
+
+			if ( (a_cprista & D_CPR_CPRISTA_BIT_C)   != D_SYS_NUM0  )
+			{
+				apiNtc.cpriState = D_RRH_CPRISTAT_C;
+			}
+
+			if ( (a_cprista & D_CPR_CPRISTA_BIT_B)   != D_SYS_NUM0  )
+			{
+				apiNtc.cpriState = D_RRH_CPRISTAT_B;
+			}
+
+            /* SlaveにL1断が発生した場合、遅延補正をやり直すので最大遅延量減設を復旧させる */
+            f_com_SVCtl(D_SYS_THDID_PF_CPRI, E_SYS_SVCTL_DELAY_ERR,     D_SYS_OFF);
+            f_com_SVCtl(D_SYS_THDID_PF_CPRI, E_SYS_SVCTL_DELAY_ERR_S3G, D_SYS_OFF);
+            
+			USHORT	cpr_num, cpr_idx;
+			
+			for (cpr_num = D_RRH_CPRINO_RE_MIN; cpr_num <= D_RRH_CPRINO_RE_MAX; cpr_num++)
+			{
+				cpr_idx = cpr_num - 1;
+				/*	REC<->FHMのCPRIリンク確立により遅延補正やり直しとなるため、	*/
+				/*	一旦フェールセーフERRを復旧する	*/
+				/*	フェールセーフERR発生中の場合	*/
+				if(f_cprw_dly_inf.f_cprw_dly_failsafe_3G[cpr_idx] == D_SYS_ON )
+				{
+					/*	フェールセーフERR復旧	*/
+					f_com_SVCtl(D_SYS_THDID_PF_CPRI, M_SYS_SVCTL_3G_FAILSAFE_ERR(cpr_num), D_SYS_OFF);
+					f_cprw_dly_inf.f_cprw_dly_failsafe_3G[cpr_idx] = D_SYS_OFF;
+					BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_INFO, "fail Safe err(3G) CLR. cpri=%d", cpr_num);
+				}
+				/*	フェールセーフERR発生中の場合	*/
+				if(f_cprw_dly_inf.f_cprw_dly_failsafe_S3G[cpr_idx] == D_SYS_ON )
+				{
+					/*	フェールセーフERR復旧	*/
+					f_com_SVCtl(D_SYS_THDID_PF_CPRI, M_SYS_SVCTL_S3G_FAILSAFE_ERR(cpr_num), D_SYS_OFF);
+					f_cprw_dly_inf.f_cprw_dly_failsafe_S3G[cpr_idx] = D_SYS_OFF;
+					BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_INFO, "fail Safe err(S3G) CLR. cpri=%d", cpr_num);
+				}
+			}
+		}
+
+		/* L1 ERR on */
+		f_com_SVCtl(D_SYS_THDID_PF_CPRI, E_SYS_SVCTL_L1ERR, D_SYS_ON);
+
+		a_signal = apiNtc.cpriState;
+	}
+	
+	/*add log*/
+	if(f_cprw_l1StatTbl)
+	{
+		a_cprw_l1StatTbl = &f_cprw_l1StatTbl[D_RRH_CPRINO_REC];
+
+		BPF_HM_DEVC_GETTIME(&logtime);
+		a_index = a_cprw_l1StatTbl->index % D_RRH_L1_STATI_L1BLK_NUM;
+		a_signal %= D_RRH_L1_STATI_L1SIG_NUM;
+		if(a_cprw_l1StatTbl->blks[a_index][a_signal].firstTime_flag  == D_SYS_OFF)
+		{
+			a_cprw_l1StatTbl->blks[a_index][a_signal].singal_kind = a_signal;
+			a_cprw_l1StatTbl->blks[a_index][a_signal].firstTime_flag = D_SYS_ON;
+			memcpy(&a_cprw_l1StatTbl->blks[a_index][a_signal].firstTime,&logtime,sizeof(logtime));
+		}
+		memcpy(&a_cprw_l1StatTbl->blks[a_index][a_signal].lastTime,&logtime,sizeof(logtime));
+		a_cprw_l1StatTbl->blks[a_index][a_signal].occur_counter++;
+		if(a_cprw_l1StatTbl->blks[a_index][a_signal].occur_counter == 0)
+			a_cprw_l1StatTbl->blks[a_index][a_signal].overflow_counter++;
+	}
+
+	/*add log*/
+	if(f_cprw_l1LosLofTbl)
+	{
+		a_cprw_l1LosLofTbl = &f_cprw_l1LosLofTbl[D_RRH_CPRINO_REC];
+
+		BPF_HM_DEVC_GETTIME(&a_cprw_l1LosLofTbl->hisInfo[a_cprw_l1LosLofTbl->index % D_RRH_L1_LOSLOF_SIZE].time);
+		a_cprw_l1LosLofTbl->hisInfo[a_cprw_l1LosLofTbl->index % D_RRH_L1_LOSLOF_SIZE].cpristat = a_cpristachgntc_p->data2;
+		a_cprw_l1LosLofTbl->hisInfo[a_cprw_l1LosLofTbl->index % D_RRH_L1_LOSLOF_SIZE].cptrans  = a_cpristachgntc_p->data3;
+		a_cprw_l1LosLofTbl->hisInfo[a_cprw_l1LosLofTbl->index % D_RRH_L1_LOSLOF_SIZE].irqvalue = a_cprista;
+		a_cprw_l1LosLofTbl->index ++;
+		a_cprw_l1LosLofTbl->index %= D_RRH_L1_LOSLOF_SIZE;
+	}
+	
+	if(bChange)
+	{
+		/* send notice to apl */
+		apiNtc.header.uiEventNo = D_API_MSGID_CPRI_STATE_STATE_NTC;
+		apiNtc.header.uiLength = sizeof(apiNtc);
+		apiNtc.link_num = a_link_num;
+		for(a_num = 0; a_num < sizeof(f_cprw_cprStatChgNtc_QID) / sizeof(UINT);a_num++)
+		{
+			if(f_cprw_cprStatChgNtc_QID[a_num])
+			{
+				apiNtc.header.uiDstPQueueID = f_cprw_cprStatChgNtc_QID[a_num];
+			
+				/* write running history */
+				f_cpr_cm_runHisSet(D_CPR_SENDIEVEFLG, (UCHAR*)&apiNtc);
+
+				f_com_sendMsgToApl(f_cprw_cprStatChgNtc_QID[ a_num], &apiNtc, sizeof(apiNtc),
+					apiNtc.header.uiEventNo, D_SYS_THDQID_PF_CPRI);
+			}
+		}
+	}
+
+	return;
+ }
+
+/* @} */
+

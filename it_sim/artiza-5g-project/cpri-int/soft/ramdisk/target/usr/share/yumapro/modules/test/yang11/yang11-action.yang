@@ -1,0 +1,127 @@
+module yang11-action {
+  yang-version 1.1;
+
+  namespace "http://netconfcentral.org/ns/yang11-action";
+  prefix ytact;
+
+  import ietf-yang-types { prefix yang; }
+  import ietf-inet-types { prefix inet; }
+
+  revision 2018-05-10 {
+    description
+      "Added more 'actions' ";
+  }
+
+  revision 2016-03-12 {
+    description
+      "Initial version";
+  }
+
+  grouping G1 {
+    action gr-act1 {
+      input {
+        leaf t1 { type int32; }
+        leaf t2 {
+          type union {
+            type int16;
+            type uint32;
+            type string;
+          }
+        }
+      }
+    }
+  }
+
+  grouping G2 {
+    // no input action
+    action gr-act2 {
+      output {
+        leaf t1 { type int32; }
+        leaf t2 {
+          type union {
+            type int16;
+            type uint32;
+            type string;
+          }
+        }
+      }
+    }
+
+    // no input/output
+    action gr-act3 {
+
+    }
+  }
+
+  augment /server {
+    uses G1;
+  }
+
+  list server {
+       key "name addr";
+
+       leaf name {
+         type string;
+       }
+
+       leaf addr {
+         type inet:ip-address;
+       }
+
+       action reset {
+         input {
+           leaf reset-at {
+             type yang:date-and-time;
+             mandatory true;
+            }
+          }
+          output {
+            leaf reset-finished-at {
+              type yang:date-and-time;
+              mandatory true;
+            }
+          }
+       }
+
+       leaf altname {
+         type string;
+       }
+
+       leaf altaddr {
+         type inet:ip-address;
+       }
+
+       leaf altr2 {
+         type union {
+           type int16;
+           type uint32;
+           type string;
+         }
+       }
+
+  }
+
+  container C1 {
+    uses G2;
+
+    uses G1 {
+      augment gr-act1/input {
+        leaf XX { type int32; }
+      }
+    }
+  }
+
+  rpc gr-rpc1 {
+      input {
+        leaf r1 { type int16; }
+        leaf r2 {
+          type union {
+            type int16;
+            type uint32;
+            type string;
+          }
+        }
+      }
+  }
+
+}

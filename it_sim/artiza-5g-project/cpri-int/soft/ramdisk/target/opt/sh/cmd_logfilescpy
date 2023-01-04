@@ -1,0 +1,22 @@
+#!/bin/sh
+
+if [ $# -lt 1 ]; then
+  echo "Input param error"
+  echo $0 "<path>"
+  echo "<path> : copy path"
+  exit 1
+fi
+
+cp -rf /var/log/mplane*.pcap $1
+cp -rf /var/log/netconfd-pro.log* $1
+cp -rf /var/log/syslog* $1
+cp -rf /var/log/auth.log* $1
+cp -rf /var/log/debug* $1
+cp -rf /var/log/daemon.log $1
+cp -rf /var/log/messages $1
+cp -rf /var/log/user.log $1
+cp -rf /var/log/sftp_download.log $1
+cp -rf /var/log/sftp_upload.log $1
+cp -rf /var/log/vsftpd.log $1
+cp -rf /var/log/LUTLog*.bin $1
+exit 0

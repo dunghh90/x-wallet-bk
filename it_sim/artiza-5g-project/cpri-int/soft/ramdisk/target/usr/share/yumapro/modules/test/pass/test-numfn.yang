@@ -1,0 +1,31 @@
+module test-numfn {
+
+    namespace "http://netconfcentral.org/ns/test-numfn";
+    prefix "tnumfn";
+
+    revision 2016-11-01 {
+        description "Test module to test number function.";
+    }
+
+	container timers {
+
+      leaf config-keepalive {
+        type uint16;
+        default "60";
+        units "seconds";
+      }
+
+      leaf config-hold-time {
+        type uint16;
+        default "180";
+        units "seconds";
+      }
+
+      must "number(config-keepalive) < number(config-hold-time)" {
+        error-message "Keepalive should be lesser than hold time.";
+
+      }
+
+    }
+
+}

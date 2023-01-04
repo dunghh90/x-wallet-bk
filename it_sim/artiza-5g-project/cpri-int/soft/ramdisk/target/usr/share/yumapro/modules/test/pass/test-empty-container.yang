@@ -1,0 +1,70 @@
+module test-empty-container {
+
+  namespace "http://netconfcentral.org/ns/test-empty-container";
+
+  prefix tempty;
+
+
+  import test {
+    prefix t;
+  }
+
+  revision "2016-07-18" {
+    description "Initial version. Test AnyXML handling for Empty
+       containers and the regular Empty nodes. Create via DB-API and
+       YANG-PATCH.
+            - YPW-872";
+  }
+
+  grouping test-group {
+    list test-list {
+      key "name";
+
+      leaf name {
+        type string;
+      }
+      container pres-cont {
+        presence "Presence container";
+
+        choice choice.1 {
+          mandatory true;
+
+          container choice-cont.1 {
+            uses t:Leafs.1;
+
+          }
+          container choice-cont.2 {
+            uses t:Leafs.1;
+          }
+        }
+      }
+    }
+  }
+
+  container top-cont {
+
+    container empty-cont {
+        container empty-cont2 {
+            uses test-group;
+        }
+        uses t:Leafs.1 {
+            refine "uint32.1" {
+                description "Test with defaut value";
+                default "8";
+            }
+        }
+    }
+
+    uses t:Leafs.1 {
+        refine "string.1" {
+            description "Test with defaut value";
+            default "value (default)";
+        }
+    }
+  }
+
+  leaf top-empty {
+    type empty;
+  }
+
+}

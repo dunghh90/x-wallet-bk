@@ -1,0 +1,14 @@
+module test-maxelems {
+
+    namespace "http://netconfcentral.org/ns/test-maxelems";
+    prefix "tmax";
+    revision 2016-08-11;
+
+    list B {
+      key a;
+      max-elements 1;
+      leaf a { type int32; }
+      leaf b { type int32; }
+    }
+    leaf-list BB { type int32; max-elements 1; }
+}

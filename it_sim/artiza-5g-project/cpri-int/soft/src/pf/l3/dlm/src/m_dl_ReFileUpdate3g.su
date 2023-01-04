@@ -1,0 +1,5 @@
+m_dl_ReFileUpdate3g.c:32:6:m_dl_FWFileInfoRequestSnd_3g	144	dynamic,bounded
+m_dl_ReFileUpdate3g.c:86:6:m_dl_FWFileReportRspRcv_3g	80	dynamic,bounded
+m_dl_ReFileUpdate3g.c:120:6:m_dl_FWFileReportRespondNG_3g	80	dynamic,bounded
+m_dl_ReFileUpdate3g.c:161:6:m_dl_fhm_fwreprsp_waiting_fwrep_cnf_to_3g	64	dynamic,bounded
+m_dl_ReFileUpdate3g.c:198:6:m_dl_REFileNotUpdate_3g	192	dynamic,bounded

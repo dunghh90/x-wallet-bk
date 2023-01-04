@@ -1,0 +1,48 @@
+module yang11-union {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/yang11-union";
+  prefix ytunion;
+
+  import yang11-leafref { prefix ytl; }
+  revision "2016-04-16";
+
+  typedef ut {
+    type union {
+      type union {
+        type int32;
+        type leafref {
+           path "/ytl:int/ytl:name";
+        }
+      }
+      type leafref {
+         path "/ytl:int/ytl:type";
+      }
+      type int32;
+      type boolean;
+      type string;
+    }
+    default test4;
+  }
+
+  leaf ut1 {
+    type union {
+      type leafref {
+         path "/ytl:int/ytl:type";
+      }
+      type union {
+        type int32;
+        type leafref {
+           path "/ytl:int/ytl:name";
+        }
+      }
+      type string;
+    }
+  }
+
+  leaf ut2 {
+    type ut;
+    default test1;
+  }
+
+}

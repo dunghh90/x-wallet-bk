@@ -1,0 +1,43 @@
+module devtest1 {
+  namespace "http://netconfcentral.org/ns/devtest1";
+  prefix dt1;
+
+  revision 2019-07-03 {
+    description
+      "- YPW-1517: Empty container created which has deviated out default leafs
+          - Add grouping with more test data";
+  }
+
+  revision 2016-04-10 {
+    description
+      "-Init version";
+  }
+
+  container top {
+    list interface {
+      key name;
+      leaf name { type string; }
+
+      leaf Y { type int32; }
+      leaf Z { type int32; }
+    }
+  }
+
+  grouping dev-bug-top {
+    container dev-bug {
+      leaf dba {
+        type string;
+        default "dba";
+      }
+      leaf dbb {
+        type string;
+        default "dbb";
+      }
+      leaf dbc {
+        type string;
+      }
+    }
+  }
+
+  uses dev-bug-top;
+}

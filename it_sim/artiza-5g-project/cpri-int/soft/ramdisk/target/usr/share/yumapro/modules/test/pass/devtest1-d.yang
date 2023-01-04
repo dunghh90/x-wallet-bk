@@ -1,0 +1,39 @@
+module devtest1-d {
+  namespace "http://netconfcentral.org/ns/devtest1-d";
+  prefix dt1-d;
+
+  import devtest1 { prefix dt1; }
+  import yuma-ncx { prefix ncx; }
+
+  revision 2019-07-03 {
+    description
+      "- YPW-1517: Empty container created which has deviated out default leafs
+          - Add deviation to desable default nodes";
+  }
+
+  revision 2016-04-10 {
+    description
+      "-Init version";
+  }
+
+  deviation /dt1:top {
+    deviate add {
+      ncx:root;
+      ncx:sil-delete-children-first;
+    }
+  }
+
+  deviation /dt1:top/dt1:interface {
+    deviate add {
+      ncx:sil-delete-children-first;
+    }
+  }
+
+  deviation /dt1:dev-bug/dt1:dba {
+    deviate not-supported;
+  }
+
+  deviation /dt1:dev-bug/dt1:dbb {
+    deviate not-supported;
+  }
+}

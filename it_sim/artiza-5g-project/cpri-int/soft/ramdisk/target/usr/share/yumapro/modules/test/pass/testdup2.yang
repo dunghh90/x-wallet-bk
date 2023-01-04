@@ -1,0 +1,12 @@
+module testdup2 {
+    namespace "http://netconfcentral.org/ns/testdup2";
+    prefix "tdup2";
+    revision 2013-09-20;
+
+    leaf dupleaf { type string; }
+    leaf-list dupleaflist { type string; }
+
+    container dupcon {
+      leaf dupleaf { type int32; }
+    }
+}

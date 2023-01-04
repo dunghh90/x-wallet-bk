@@ -1,0 +1,96 @@
+module delete-add-bug-dev {
+  namespace "http://netconfcentral.org/ns/delete-add-bug-dev";
+  prefix del-dev;
+
+  import yumaworks-extensions { prefix ywx; }
+  import yuma-ncx { prefix ncx; }
+
+  import hooks-test {
+    prefix hk;
+  }
+
+  import delete-add-bug {
+    prefix del;
+  }
+
+  import hooktest {
+    prefix hookt;
+  }
+
+  revision 2019-05-01 {
+    description
+      "Add more sil-delete-children test scenarious with different
+       sil-priorities combinations.
+       - YPW-1470: server can invoke callbacks in wrong order
+                   during delete-children-first ";
+  }
+
+  revision 2018-11-29 {
+    description
+      "Initial version";
+  }
+
+  deviation /hk:interfaces/hk:interface/del:ipv4 {
+    deviate add {
+      ywx:sil-priority 240;
+      ncx:sil-delete-children-first;
+    }
+  }
+
+  deviation /hk:interfaces/hk:interface/del:ipv4/del:address {
+    deviate add {
+      ywx:sil-priority 200;
+    }
+  }
+
+  deviation /hk:interfaces/hk:interface/del:ipv4/del:virtual-router-ipv4 {
+    deviate add {
+      ywx:sil-priority 210;
+    }
+  }
+
+  deviation /hookt:d-interfaces {
+    deviate add {
+      ywx:sil-priority 200;
+    }
+  }
+
+  deviation /hookt:d-interfaces/hookt:interface {
+    deviate add {
+      //ywx:sil-priority 240;
+      ncx:sil-delete-children-first;
+    }
+  }
+
+  deviation /hookt:d-interfaces/hookt:interface/hookt:vrrp-ipv4 {
+    deviate add {
+      //ncx:sil-delete-children-first;
+      ywx:sil-priority 245;
+      //os10-ext:delete-empty-container;
+    }
+  }
+
+  deviation /hookt:d-interfaces/hookt:interface/hookt:vrrp {
+    deviate add {
+      //ywx:sil-priority 255;
+    }
+  }
+
+  deviation /hookt:d-interfaces/hookt:interface/hookt:vrf {
+    deviate add {
+      ywx:sil-priority 255;
+    }
+  }
+
+  deviation /hookt:container-parent {
+    deviate add {
+      ncx:sil-delete-children-first;
+    }
+  }
+
+  deviation /hookt:container-parent/hookt:list1 {
+    deviate add {
+      ywx:no-sil-delete-children-first;
+    }
+  }
+}

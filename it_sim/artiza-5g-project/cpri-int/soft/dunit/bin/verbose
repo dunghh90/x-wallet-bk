@@ -1,0 +1,29 @@
+ARGV.length.times { | count |
+ case ARGV[count].to_s.downcase
+   when "-core","-c" then 
+     Core.dmsg("CORE")
+   when "-sys","-s" then 
+     Core.dmsg("SYS")
+   when "-oal","-ol" then 
+     Core.dmsg("OAL")
+   when "-hal","-hl" then 
+     Core.dmsg("HAL")
+   when "-rfic","-rf" then 
+     Core.dmsg("RFIC")
+   when "-cmn","-cn" then 
+     Core.dmsg("CMN")
+   when "-init","-i" then 
+     Core.dmsg("INIT")
+   when "-pf","-p" then 
+     Core.dmsg("PF")
+   when "-mp","-m" then 
+     Core.dmsg("MP")
+   when "-conv","-cv" then 
+     Core.dconvert("ON")
+   when "-all","-a" then 
+     Core.dmsg("ALL")
+   when "-ccunit","-cc" then 
+     Core.cmode_set(1) # <-- CUNIT console mode
+   else
+end
+}

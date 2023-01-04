@@ -1,0 +1,82 @@
+module binarytest {
+    yang-version 1.1;
+
+
+    namespace "http://yumaworks.com/ns/binarytest";
+    prefix "binarytest";
+    
+    import ietf-inet-types {
+      prefix inet;
+    }
+
+    organization
+        "YumaWorks, Inc.";
+
+    contact
+        "Andy Bierman";
+
+    description
+        "Performance test module 1.";
+
+    revision 2013-03-22;
+
+
+  typedef mac-address-and-uint-type {
+      type binary {
+        length "8";
+      }
+      description
+        "A MAC address and a two-octet unsigned integer";
+      reference
+        "[802.1q] IEEE8021-CFM-MIB.Dot1agCfmMaintDomainNameType";
+   }
+
+  list maintenance-domain {
+    key id;
+    leaf id { type string; }
+    leaf problems {
+      type union {
+        type inet:host;
+        type mac-address-and-uint-type;
+        type string;
+      }
+    }
+  }
+
+  leaf binaryname {
+    type union {
+      type uint16;
+      type binary {
+        length 7;
+      }
+      type string;
+    }
+  }
+
+  container test {
+    leaf l1 {
+      type union {
+        type binary {
+          length 7;
+        }
+        type string;
+      }
+    }
+  }
+
+  /*ypw-1488: Test for default binary value*/
+  container defaulttest{
+    leaf defaultbinary {
+      type binary {
+        length '6';
+      }
+      default "SGVsbG8h";
+    }
+
+    leaf-list defaultleaflist {
+      type binary;
+      default "SGkh";
+    }
+  }
+
+}

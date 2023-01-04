@@ -1,0 +1,2 @@
+l3_main_systemInit.c:40:6:l3_main_systemInit	608	dynamic,bounded
+l3_main_systemInit.c:102:6:l3_main_subGetVersion	576	dynamic,bounded

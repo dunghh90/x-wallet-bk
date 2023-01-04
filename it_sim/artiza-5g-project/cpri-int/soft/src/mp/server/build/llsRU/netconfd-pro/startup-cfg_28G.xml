@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+<!-- IETF HARDWARE -->
+  <hardware xmlns="urn:ietf:params:xml:ns:yang:ietf-hardware">
+    <component>
+     <name>280GLLA-SDU</name>
+     <class xmlns:o-ran-hw="urn:o-ran:hardware:1.0">o-ran-hw:O-RAN-RADIO</class>
+     <state>
+      <admin-state>RU_ADMIN</admin-state>
+     </state>
+     <o-ran-name xmlns="urn:o-ran:hardware:1.0">280GLLA-SDU</o-ran-name>
+    </component>
+    <component>
+     <name>hw-fhport0</name>
+     <class xmlns:ianahw="urn:ietf:params:xml:ns:yang:iana-hardware">ianahw:port</class>
+     <o-ran-name xmlns="urn:o-ran:hardware:1.0">hw-fhport0</o-ran-name>
+    </component>
+  </hardware>
+<!-- IETF INTERFACES -->
+  <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+      <interface>
+      <name>fheth0</name>
+      <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:ethernetCsmacd</type>
+      <class-of-service xmlns="urn:o-ran:interfaces:1.0">
+        <m-plane-marking>RU_MP_PCP</m-plane-marking>
+      </class-of-service>
+      <mac-address xmlns="urn:o-ran:interfaces:1.0">RU_MAC_ADDR</mac-address>
+      <port-reference xmlns="urn:o-ran:interfaces:1.0">
+        <port-name>hw-fhport0</port-name>
+        <port-number>0</port-number>
+      </port-reference>
+      </interface>
+      <interface>
+      <name>m-vlan0</name>
+      <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:l2vlan</type>
+      <port-reference xmlns="urn:o-ran:interfaces:1.0">
+        <port-name>hw-fhport0</port-name>
+        <port-number>0</port-number>
+      </port-reference>
+       <vlan-id xmlns="urn:o-ran:interfaces:1.0">RU_MP_VLAN_ID</vlan-id>
+      </interface>
+      <interface>
+      <name>mplane-ip</name>
+      <type xmlns:if="urn:ietf:params:xml:ns:yang:iana-if-type">if:ip</type>
+      </interface>
+  </interfaces>
+<!-- O-RAN DELAY MANAGEMENT -->
+  <delay-management xmlns="urn:o-ran:delay:1.0">
+    <bandwidth-scs-delay-state>
+      <bandwidth>100000</bandwidth>
+      <subcarrier-spacing>120000</subcarrier-spacing>
+    </bandwidth-scs-delay-state>
+  </delay-management>
+<!-- O-RAN TRANSCEIVER -->
+  <port-transceivers xmlns="urn:o-ran:transceiver:1.0">
+    <port-transceiver-data>
+      <interface-name>fheth0</interface-name>
+      <port-number>0</port-number>
+      <name>sfp0</name>
+    </port-transceiver-data>
+  </port-transceivers>
+<!-- O-RAN SYNC -->
+  <sync xmlns="urn:o-ran:sync:1.0">
+    <ptp-config>
+      <domain-number>RU_PTP_DOMAIN</domain-number>
+      <ptp-profile>G_8275_1</ptp-profile>
+      <g-8275-1-config>
+        <multicast-mac-address>RU_PTP_MULTICAST_MACADDR</multicast-mac-address>
+      </g-8275-1-config>
+    </ptp-config>
+    <synce-config>
+      <acceptance-list-of-ssm>PRC</acceptance-list-of-ssm>
+      <ssm-timeout>5</ssm-timeout>
+    </synce-config>
+  </sync>

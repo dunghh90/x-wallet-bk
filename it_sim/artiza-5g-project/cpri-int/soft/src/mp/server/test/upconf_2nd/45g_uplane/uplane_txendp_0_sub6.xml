@@ -1,0 +1,12 @@
+<user-plane-configuration xmlns="urn:xran:uplane-conf:1.0">
+	<low-level-tx-endpoints>
+	  <name>TxEndp0</name>
+	  <local-address>
+	    <cu-port-bitmask>49152</cu-port-bitmask>
+		<band-sector-bitmask>16128</band-sector-bitmask>
+		<ccid-bitmask>240</ccid-bitmask>
+		<ru-port-bitmask>15</ru-port-bitmask>
+		<eaxc-id>0</eaxc-id>
+	  </local-address>
+	</low-level-tx-endpoints>
+</user-plane-configuration>

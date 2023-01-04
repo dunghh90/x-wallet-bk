@@ -1,0 +1,60 @@
+module test-errmsg {
+
+    namespace "http://yumaworks.com/ns/test-errmsg";
+    prefix "tm";
+    import yumaworks-extensions { prefix ywx; }
+    revision 2018-03-05;
+
+    container top {
+      list list1 {
+        key a;
+        leaf a { type string; }
+        leaf b { type int32; }
+        leaf test1 {
+          ywx:errmsg "The value '%s' is invalid for the %s list entry" {
+            ywx:errmsg-parm ".";
+            ywx:errmsg-parm "../a";
+            ywx:errmsg-tag "invalid-value";
+          }
+          type int8;
+        }
+
+        leaf test2 {
+          must "../test1 != 8" {
+            ywx:errmsg "The test1 value '%s' is not allowed if test2 is '%s'" {
+               ywx:errmsg-parm "../test1";
+               ywx:errmsg-parm ".";
+               ywx:errmsg-apptag "must-violation";
+            }
+          }
+          type uint32;
+
+          ywx:errmsg "The b value is %s and the key is %s "
+          + "for the invalid-value %s" {
+            ywx:errmsg-tag "invalid-value";
+            ywx:errmsg-parm "../b";
+            ywx:errmsg-parm "../a";
+            ywx:errmsg-parm ".";
+          }
+        }
+
+        leaf test3 {
+          type string;
+          ywx:errmsg "This is %s the %s operation-failed %s msg" {
+            ywx:errmsg-parm "../b";
+            ywx:errmsg-parm "../test1";
+            ywx:errmsg-parm ".";
+            ywx:errmsg-lang "en";
+          }
+
+          ywx:errmsg "C'est %s l'opération %s a échoué %s msg" {
+            ywx:errmsg-parm "../b";
+            ywx:errmsg-parm "../test1";
+            ywx:errmsg-parm ".";
+            ywx:errmsg-lang "fr";
+          }
+        }
+      }
+    }
+
+}

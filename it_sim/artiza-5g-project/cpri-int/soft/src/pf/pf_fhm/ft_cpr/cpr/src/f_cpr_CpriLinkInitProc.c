@@ -1,0 +1,429 @@
+/*********************************************************************************/
+/**
+ *  @skip $Id:$
+ *  @file f_cpr_CpriLinkInitProc.c
+ *  @brief  cpri link start indication function
+ *  @date 2013/11/14 FFCS)niemsh create
+ * 
+ *  ALL Rights Reserved, Copyright (c) FUJITSU Limited 2013-2015
+ */
+/*********************************************************************************/
+
+/** @addtogroup RRH_PF_CPR
+* @{ */
+
+#include "f_sys_inc.h"
+#include "f_cpr_inc.h"
+#include "BPF_RU_ITCM.h"
+#include "rrhApi_Cpri.h"
+
+/**
+* @brief 	cpri link init indication function
+* @note 	cpri link init indication function.\n
+* @param 	buff_adr [in] the buffer address pointer of received message
+* @return 	None
+* @date 	2013/11/14 FFCS)niemsh create
+* @date 	2015/06/17 ALPHA)ueda RRH-007-000 TDD-Zynq対応
+* @date     2015.08.11 TDIPS)ikeda 17リンク対応、レジスタ修正
+* @date     2015.09.03 TDIPS)ikeda SFPコード読み込み
+* @date     2015/09/03 TDI)satou レビュー指摘修正
+* @date     2015/10/22 TDI)satou その他未実装-007 SFPERR設定追加
+* @date     2015/11/02 TDI)satou その他未実装-011 「IQ ShutDownマスク解除設定」修正
+* @date     2015/11/02 TDI)satou その他未実装-011 「遅延固定オフセット」削除
+* @date     2015/11/02 TDI)satou その他未実装-011 SFPERR2 -> SFPERR1
+* @date     2015/11/05 FPT)yen fix bug IT3 No51
+* @date     2015/11/17 TDI)satou ハソ-QA-047
+* @warning	N/A
+* @FeatureID	PF_Cpri-002-001-001
+* @Bug_No	N/A
+* @CR_No	N/A
+* @TBD_No	N/A
+*
+*/
+VOID f_cpr_CpriLinkInitProc(UINT * buff_adr)
+{
+	T_API_CPRILINK_STARTUP_IND	*apiInd;
+	UINT regVal;
+	INT num;
+	UINT thrdID;
+	INT errcd;
+	INT sit_ret;
+	T_SYS_AUTO_NEGO_START_IND	autonego_start_ind;
+	UCHAR sfpcode[D_CPR_EEPROM_SFPSTR_LENGTH+1];
+	T_RRH_CONN_DISC		conn;
+    USHORT	linkno;  /* CPRIリンク番号 */
+	UINT	regDat;
+	UINT	pwrOnFlg = D_RRH_OFF;
+
+	apiInd = (T_API_CPRILINK_STARTUP_IND *)buff_adr;
+	if (apiInd->link_num != D_RRH_CPRINO_REC)
+	{
+		/* 対RE のスタートアップ初期化へ */
+		f_cpr_CpriLinkInitProcRE(buff_adr);
+		return;
+	}
+
+	memset(&autonego_start_ind, 0, sizeof(autonego_start_ind));
+
+	/* STA1-5マスク解除 */
+	BPF_HM_DEVC_REG_WRITE_BITOFF(D_RRH_LOG_REG_LV_READ_WRITE_CPRI, 
+									D_RRH_REG_CNTS_STA1M,
+									0x0FFFFF00);
+	BPF_HM_DEVC_REG_WRITE_BITOFF(D_RRH_LOG_REG_LV_READ_WRITE_CPRI, 
+									D_RRH_REG_CNTS_STA1M, 
+									0x00000060);
+
+	/* SFP ステータス表示マスク解除(master) */
+	for (num = D_RRH_CPRINO_REC; num < D_RRH_CPRINO_NUM; num++)
+	{
+		BPF_HM_DEVC_REG_WRITE_BITOFF(D_RRH_LOG_REG_LV_READ_WRITE_CPRI,
+				M_RRH_REG_CNTS_CPSFPSTAM(num), 0x0000000F);
+	}
+
+	/* CPS/M リンク障害表示マスク解除(slave/master) */
+	for (num = D_RRH_CPRINO_REC; num < D_RRH_CPRINO_NUM; num++)
+	{
+		BPF_HM_DEVC_REG_WRITE_BITOFF(D_RRH_LOG_REG_LV_READ_WRITE_CPRI,
+				M_RRH_REG_CPRI_CPMSK(num), 0x00000FFF);
+	}
+
+	/* IQ ShutDownマスク解除設定 */
+	regVal = 0xFFCFFFCF;
+	BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CNTS_CPSDLSDM, &regVal);
+	regVal = 0x0000FF8F;
+	BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CNTS_CPMULSDM, &regVal);
+
+	/* L1-RST マスク解除 */
+	BPF_HM_DEVC_REG_WRITE_BITOFF(D_RRH_LOG_REG_LV_READ_WRITE_CPRI, D_RRH_REG_CNT_RSTM, 0x00000004);
+	
+	/* CPRI状変IRQマスク解除 */
+	regVal = 0x0000807F;
+	BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CNTS_IRQCPSM, &regVal);
+	regVal = 0x807F807F;
+	BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CNTS_IRQCPM12M, &regVal);
+	regVal = 0x807F807F;
+	BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CNTS_IRQCPM34M, &regVal);
+	regVal = 0x807F807F;
+	BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CNTS_IRQCPM56M, &regVal);
+	regVal = 0x807F807F;
+	BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CNTS_IRQCPM78M, &regVal);
+	regVal = 0x807F807F;
+	BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CNTS_IRQCPM9AM, &regVal);
+	regVal = 0x807F807F;
+	BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CNTS_IRQCPMBCM, &regVal);
+	regVal = 0x807F807F;
+	BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CNTS_IRQCPMDEM, &regVal);
+	regVal = 0x807F807F;
+	BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CNTS_IRQCPMF10M, &regVal);
+
+	/* SFP Mount状変IRQマスク解除 */
+	BPF_HM_DEVC_REG_WRITE_BITOFF(D_RRH_LOG_REG_LV_READ_WRITE_CPRI, D_RRH_REG_CNTS_IRQSFPMNTM, 0xFFFF0001);
+
+	/* HDLC統計情報収集ON設定 */
+	for (num = D_RRH_CPRINO_REC; num < D_RRH_CPRINO_NUM; num++)
+	{
+		regVal = 0x00000001;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, M_RRH_REG_CM_LAPMES(num), &regVal);
+	}
+	
+	/* CPM MasterMode設定 */
+	for (num = D_RRH_CPRINO_RE_MIN; num < D_RRH_CPRINO_NUM; num++)
+	{
+		BPF_HM_DEVC_REG_WRITE_BITON(D_RRH_LOG_REG_LV_READ_WRITE_CPRI, M_RRH_REG_CPRI_CPMODE(num), 0x00000004);
+	}
+
+	/* QPLL/GTH Power-up */
+	BPF_HM_DEVC_REG_WRITE_BITON(D_RRH_LOG_REG_LV_READ_WRITE_CPRI, D_RRH_REG_CNTS_CPSSERPWR, 0x00000003);
+	BPF_HM_DEVC_REG_WRITE_BITON(D_RRH_LOG_REG_LV_READ_WRITE_CPRI, D_RRH_REG_CNTS_CPMSERPWR, 0x000FFFFF);
+
+	/* QPLLリセット */
+	BPF_HM_DEVC_REG_WRITE_BITON(D_RRH_LOG_REG_LV_READ_WRITE_CPRI, D_RRH_REG_CNTS_CPSSERRST, 0x00000001);
+	BPF_HM_DEVC_REG_WRITE_BITON(D_RRH_LOG_REG_LV_READ_WRITE_CPRI, D_RRH_REG_CNTS_CPMSERRST, 0x0000000F);
+
+	/* CQPLL Lock確認 */
+	for( num = 0; num < (D_CPR_CQPLLLOCK_TIME_10MSEC / D_CPR_CQPLLLOCK_TIME_POLLING); num++ )
+	{
+		usleep(D_CPR_CQPLLLOCK_TIME_POLLING * 1000);
+
+		BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI, D_RRH_REG_CNTS_STA1, &regVal);
+		
+		if((regVal & 0x00000F20) == 0x00000F20)
+		{
+			break;
+		}
+	}
+
+	/* CQPLL Lock確認NG */
+	if( num >= (D_CPR_CQPLLLOCK_TIME_10MSEC / D_CPR_CQPLLLOCK_TIME_POLLING) )
+	{
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_CRITICAL, "CQPLL Lock Check confirm NG! CNTS_STA1:0x%x", regVal);
+	
+		/* ALM */
+		f_com_abort(D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_DIA4);
+		return;
+	}
+
+	/* CPS SFP AUTO設定 */
+	BPF_HM_DEVC_REG_WRITE_BITOFF(D_RRH_LOG_REG_LV_READ_WRITE_CPRI, D_RRH_REG_CPRI_SFPCNT, 0x00000003);
+
+	/* C&M DDR受信フラグ初期化 */
+	for (num = D_RRH_CPRINO_REC; num < D_RRH_CPRINO_NUM; num++)
+	{
+		regVal = 0x00000000;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, M_RRH_REG_DDR_RXFLG(0, num), &regVal);
+		regVal = 0x00000000;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, M_RRH_REG_DDR_RXFLG(1, num), &regVal);
+		regVal = 0x00000000;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, M_RRH_REG_DDR_RXFLG(2, num), &regVal);
+		regVal = 0x00000000;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, M_RRH_REG_DDR_RXFLG(3, num), &regVal);
+		regVal = 0x00000000;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, M_RRH_REG_DDR_RXFLG(4, num), &regVal);
+		regVal = 0x00000000;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, M_RRH_REG_DDR_RXFLG(5, num), &regVal);
+		regVal = 0x00000000;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, M_RRH_REG_DDR_RXFLG(6, num), &regVal);
+		regVal = 0x00000000;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, M_RRH_REG_DDR_RXFLG(7, num), &regVal);
+	}
+
+	/* BRAM sleep 解除 */
+	regVal = 0x00000000;
+	BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CNTS_RAMSLP, &regVal);
+
+	/* if f_cprw_cprStatChgNtc_QID has valid, send notice to apl */
+	for(num = 0; num < sizeof(f_cprw_cprStatChgNtc_QID) / sizeof(UINT); num++)
+	{
+		if(f_cprw_cprStatChgNtc_QID[num] != 0)
+		{
+			f_cpr_com_CpriStateNtc(D_RRH_CPRINO_REC, f_cprw_cprStatChgNtc_QID[num]);
+		}
+	}
+
+	/* CPRI L1リンク障害ログの収集用にpf_cprlogスレッドを起動する */
+	sit_ret = BPF_RU_ITCM_THREAD_CREATE(
+			(unsigned long int *)&thrdID,
+			BPF_RU_ITCM_SCHED_FIFO,
+			10,	/*priority*/
+			0,	/* stack size */
+			f_cpr_CpriStatistMain,
+			D_RRH_NULL,
+			&errcd);
+
+	if(sit_ret != BPF_RU_ITCM_OK)
+	{
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, "BPF thread create NG!ret=%d",  sit_ret );
+	}
+
+	/* CPS L1,L2,L3 ERR ON */
+    f_com_SVCtl(D_SYS_THDID_PF_CPRI, M_SYS_SVCTL_L1ERR(D_RRH_CPRINO_REC), D_SYS_ON);
+    f_com_SVCtl(D_SYS_THDID_PF_CPRI, M_SYS_SVCTL_L2ERR(D_RRH_CPRINO_REC), D_SYS_ON);
+    f_com_SVCtl(D_SYS_THDID_PF_CPRI, M_SYS_SVCTL_3G_L3ERR(D_RRH_CPRINO_REC), D_SYS_ON);
+    f_com_SVCtl(D_SYS_THDID_PF_CPRI, M_SYS_SVCTL_S3G_L3ERR(D_RRH_CPRINO_REC), D_SYS_ON);
+
+	/* CPS SFP 実装？ */
+	for(num = 0; ;  )
+	{
+		BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI,
+				D_RRH_REG_CNTS_CPSSFPSTA, &regVal);
+
+		if((regVal & 0x00000001) == 0x00000001)
+		{
+			/*	SFP Power ON	*/
+			BPF_HM_DEVC_REG_WRITE_BITOFF(D_RRH_LOG_REG_LV_READ_WRITE_CPRI,
+					D_RRH_REG_CNTS_SFPLDODIS, 0x00000001);
+			pwrOnFlg = D_RRH_ON;
+			break;
+		}
+		else
+		{
+			BPF_HM_DEVC_REG_WRITE_BITON(D_RRH_LOG_REG_LV_READ_WRITE_CPRI,
+					D_RRH_REG_CNTS_SFPLDODIS, 0x00000001);
+			BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_CRITICAL, "SFP power off", sit_ret);
+
+	        /* SFP ERR on */
+	        f_com_SVCtl(D_SYS_THDID_PF_CPRI, E_SYS_SVCTL_SFP_ERR1, D_SYS_ON);
+		}
+
+		usleep(D_CPR_CPSSFPDONE_TIME_POLLING * 1000);
+	}
+	/* 配下REの使用/未使用を取得 */
+	f_cmn_com_conn_disk_get(&conn);
+	for (linkno = D_RRH_CPRINO_RE_MIN; linkno < D_RRH_CPRINO_NUM; linkno++)
+	{
+		/* 配下REの未使用の場合 */
+		if( conn.conn_disc[linkno-1] == CMD_OFF )
+		{
+			continue;
+		}
+		/* CPM#n SFP状態取得 */
+		BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI, M_RRH_REG_CNTS_CPSFPSTA(linkno), &regDat);
+		/* CPM#n SFP実装の場合 */
+		if (regDat & D_RRH_REG_CNTS_CPSFPSTA_OPTMNT)
+		{
+			/*	SFP電源ON	*/
+			BPF_HM_DEVC_REG_WRITE_BITOFF(D_RRH_LOG_REG_LV_READ_WRITE_CPRI,
+					D_RRH_REG_CNTS_SFPLDODIS, 0x00010000 << (linkno - 1));
+			pwrOnFlg = D_RRH_ON;
+			/*	2msec wait (1msec以上のWait必要)	*/
+			usleep(2*1000);
+		}
+		/* CPM#n SFP未実装の場合 */
+		else
+		{
+			/*	SFP電源OFF	*/
+			BPF_HM_DEVC_REG_WRITE_BITON(D_RRH_LOG_REG_LV_READ_WRITE_CPRI,
+					D_RRH_REG_CNTS_SFPLDODIS, 0x00010000 << (linkno - 1));
+			
+			/* Master port 電源OFF */
+			BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_CRITICAL, "SFP power off", linkno);
+		}
+	}
+	if(pwrOnFlg == D_RRH_ON)
+	{
+		/*	SlaveおよびMaster#n SFPの電源ONした場合は500msec wait	*/
+		usleep(500*1000);
+	}
+
+	/* SFPログ取得 */
+	f_cpr_sfp_log(D_RRH_CPRINO_REC, (E_RRH_SFPLOG_TRIGGER)apiInd->sfpLogTrigger);
+
+	/*	共有メモリのアドレス取得できていない場合	*/
+	if(f_cprw_shm_sfplog == NULL)
+	{
+		/*	誤実装として動作する	*/
+		f_support_sfp[D_RRH_CPRINO_REC] = D_RRH_OFF;
+		f_cprw_bitrate_real = D_COM_LINE_BITRATE_98G;
+		f_com_assert((UINT)f_cprw_shm_sfplog, "rec sfpcode not get");
+	}
+	else
+	{
+		/* CPS SFP 型番確認 サポート品種の場合 */
+		if(f_cprw_shm_sfplog->cpr_latest[D_RRH_CPRINO_REC].log.sfpSupport == E_RRH_SFPLOG_SUPPORT_YES)
+		{
+			f_support_sfp[D_RRH_CPRINO_REC] = D_RRH_ON;
+			if(f_cprw_shm_sfplog->cpr_latest[D_RRH_CPRINO_REC].log.sfpSpeed == E_RRH_SFPLOG_SPEED_98G_49G)
+			{
+				f_support_98g[D_RRH_CPRINO_REC] = D_RRH_ON;
+			}
+			else
+			{
+				f_support_98g[D_RRH_CPRINO_REC] = D_RRH_OFF;
+			}
+		}
+		/* CPS SFP 型番確認 未サポート品種の場合 */
+		else
+		{
+			f_support_sfp[D_RRH_CPRINO_REC] = D_RRH_OFF;
+		}
+		memset(sfpcode, 0, sizeof(sfpcode));
+		memcpy(&sfpcode, &f_cprw_shm_sfplog->cpr_latest[D_RRH_CPRINO_REC].log.sfpInf[0][0x0060], sizeof(sfpcode));
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_INFO, "REC sfpcode [%s]",  sfpcode );
+	}
+	/* CPS SFP 型番確認 サポート品種 */
+	if ( f_support_sfp[D_RRH_CPRINO_REC] )
+	{
+	    /* SFP ERR off */
+	    f_com_SVCtl(D_SYS_THDID_PF_CPRI, E_SYS_SVCTL_SFP_ERR1, D_SYS_OFF);
+		/* LED制御用に誤実装の場合はSFP_ERR2もOFFする */
+		f_com_SVCtl(D_SYS_THDID_PF_CPRI, E_SYS_SVCTL_SFP_ERR2, D_SYS_OFF);
+
+		/* 9.8G対応品 */
+		if (f_support_98g[D_RRH_CPRINO_REC])
+		{
+			f_cprw_bitrate_real = D_COM_LINE_BITRATE_98G;
+		}
+		else
+		{
+			f_cprw_bitrate_real = D_COM_LINE_BITRATE_24G;
+		}
+	}
+	else
+	{
+		/* SFP ERR on */
+		f_com_SVCtl(D_SYS_THDID_PF_CPRI, E_SYS_SVCTL_SFP_ERR1, D_SYS_ON);
+		/* LED制御用に誤実装の場合はSFP_ERR2もONする */
+		f_com_SVCtl(D_SYS_THDID_PF_CPRI, E_SYS_SVCTL_SFP_ERR2, D_SYS_ON);
+	}
+	/* CPRI Auto Nego起動 */
+	autonego_start_ind.thdif.uiEventNo = D_SYS_MSGID_AUTONEGO_START_IND;
+	autonego_start_ind.thdif.uiDstPQueueID = D_RRH_PROCQUE_F_PF;
+	autonego_start_ind.thdif.uiDstTQueueID = D_SYS_THDQID_PF_NEGO;
+	autonego_start_ind.thdif.uiSrcPQueueID = D_RRH_PROCQUE_F_PF;
+	autonego_start_ind.thdif.uiSrcTQueueID = D_SYS_THDQID_PF_CPRI;
+	autonego_start_ind.thdif.uiLength = sizeof(autonego_start_ind);
+
+	autonego_start_ind.bit_rate = f_cprw_bitrate_real;
+
+	/* write running history */
+	f_cpr_cm_runHisSet(D_CPR_SENDIEVEFLG, (UCHAR*)&autonego_start_ind);
+
+	/* send auto nego start indication to pf_nego */
+	f_com_msgQSendFHM( D_SYS_THDQID_PF_NEGO, 
+					(CHAR*)&autonego_start_ind,
+					sizeof(autonego_start_ind), 
+					D_SYS_THDQID_PF_CPRI, 
+					f_cprw_thrdState, 
+					D_SYS_MSGID_AUTONEGO_START_IND );
+
+	return;
+}
+/* @} */
+
+
+/* @{ */
+/**
+* @brief set DL/UL Delay Offset.\n
+* @note set DL/UL Delay Offset.\n
+* @return None
+* @date 2015/06/05 FFCS)fuxg create
+*
+*/
+
+VOID f_cpr_CpriDelayOffset()
+{
+/* パッチ適用中 */
+#if 0
+	UINT	uiAntNum;
+	UINT	regVal;
+
+	/* DL Delay OffSET */
+	for(uiAntNum = 0; uiAntNum < D_RRH_ANT_MAX; uiAntNum++)
+	{
+		BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI,
+							M_RRH_REG_CC_TXPRM0(uiAntNum), &regVal);
+		regVal &= 0x0000FFFF;
+		//regVal |= 0x0C280000; /* 遅延オフセット値はハソQA No.18よりTBD(暫定で0を設定する)、7月/MまでにFix予定 */
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, 
+							M_RRH_REG_CC_TXPRM0(uiAntNum), &regVal);
+
+		BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI,
+							M_RRH_REG_CC_TXPRM1(uiAntNum), &regVal);
+		regVal &= 0x0000FFFF;
+		//regVal |= 0x0C280000; /* 遅延オフセット値はハソQA No.18よりTBD(暫定で0を設定する)、7月/MまでにFix予定 */
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, 
+							M_RRH_REG_CC_TXPRM1(uiAntNum), &regVal);
+	}
+
+	/* UL Delay OffSET */
+	for(uiAntNum = 0; uiAntNum < D_RRH_ANT_MAX; uiAntNum++)
+	{
+		BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI,
+							M_RRH_REG_RX_RXCPRM0(uiAntNum), &regVal);
+		regVal &= 0x0000FFFF;
+		//regVal |= 0x0D940000; /* 遅延オフセット値はハソQA No.18よりTBD(暫定で0を設定する)、7月/MまでにFix予定 */
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, 
+							M_RRH_REG_RX_RXCPRM0(uiAntNum), &regVal);
+
+		BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI,
+							M_RRH_REG_RX_RXCPRM1(uiAntNum), &regVal);
+		regVal &= 0x0000FFFF;
+		//regVal |= 0x0D940000; /* 遅延オフセット値はハソQA No.18よりTBD(暫定で0を設定する)、7月/MまでにFix予定 */
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, 
+							M_RRH_REG_RX_RXCPRM1(uiAntNum), &regVal);
+	}
+#endif
+	return;
+}
+/* @} */
+

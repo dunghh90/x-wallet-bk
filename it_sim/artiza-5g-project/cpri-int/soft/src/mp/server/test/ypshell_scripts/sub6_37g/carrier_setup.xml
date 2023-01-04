@@ -1,0 +1,280 @@
+# ----------------------------------------
+$step="""
+<messages>START sget module capability</messages>
+"""
+show var step
+sget module-capability
+# ----------------------------------------
+$step2="""
+<messages>START sget beamforming-config</messages>
+"""
+show var step2
+sget beamforming-config
+# ----------------------------------------
+$step3="""
+<messages>START sget interfaces</messages>
+"""
+show var step3
+sget interfaces
+# ----------------------------------------
+$step4="""
+<messages>START sget hardware</messages>
+"""
+show var step4
+sget hardware
+# ----------------------------------------
+$step5="""
+<messages>START edit-confg interfaces for uc-plane of port0</messages>
+"""
+show var step5
+edit-config target=running config="""
+<config>
+      <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+        <interface>
+          <name>uc-vlan0</name>
+          <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:l2vlan</type>
+          <mac-address xmlns="urn:xran:interfaces:1.0">00:01:02:03:04:05</mac-address>
+          <vlan-tagging xmlns="urn:xran:interfaces:1.0">true</vlan-tagging>
+          <u-plane-marking xmlns="urn:xran:interfaces:1.0">7</u-plane-marking>
+          <c-plane-marking xmlns="urn:xran:interfaces:1.0">7</c-plane-marking>
+          <m-plane-marking xmlns="urn:xran:interfaces:1.0">2</m-plane-marking>
+          <s-plane-marking xmlns="urn:xran:interfaces:1.0">7</s-plane-marking>
+          <other-marking xmlns="urn:xran:interfaces:1.0">7</other-marking>
+          <vlan-id xmlns="urn:xran:interfaces:1.0">3</vlan-id>
+        </interface>
+      </interfaces>
+</config>
+"""
+# ----------------------------------------
+$step6="""
+<messages>START edit-confg interfaces for uc-plane of port0</messages>
+"""
+show var step6
+edit-config target=running config="""
+<config>
+      <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+        <interface>
+          <name>uc-vlan1</name>
+          <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:l2vlan</type>
+          <mac-address xmlns="urn:xran:interfaces:1.0">00:06:07:08:09:0A</mac-address>
+          <vlan-tagging xmlns="urn:xran:interfaces:1.0">true</vlan-tagging>
+          <u-plane-marking xmlns="urn:xran:interfaces:1.0">7</u-plane-marking>
+          <c-plane-marking xmlns="urn:xran:interfaces:1.0">7</c-plane-marking>
+          <m-plane-marking xmlns="urn:xran:interfaces:1.0">2</m-plane-marking>
+          <s-plane-marking xmlns="urn:xran:interfaces:1.0">7</s-plane-marking>
+          <other-marking xmlns="urn:xran:interfaces:1.0">7</other-marking>
+          <vlan-id xmlns="urn:xran:interfaces:1.0">3</vlan-id>
+        </interface>
+      </interfaces>
+</config>
+"""
+# ----------------------------------------
+$step7="""
+<messages>START sget interfaces</messages>
+"""
+show var step7
+sget interfaces
+# ----------------------------------------
+$step8="""
+<messages>START sget processing-elements</messages>
+"""
+show var step8
+sget processing-elements
+# ----------------------------------------
+$step9="""
+<messages>START edit-config processing-elements for port0</messages>
+"""
+show var step9
+edit-config target=running config="""
+    <config>
+      <processing-elements xmlns="urn:xran:processing-element:1.0">
+        <transport-session-type>ETH-INTERFACE</transport-session-type>
+        <ru-elements>
+          <name>processing-element01</name>
+          <transport-flow>
+            <interface-name>uc-vlan0</interface-name>
+            <eth-flow>
+              <ru-mac-address>00:01:02:03:04:05</ru-mac-address>
+              <vlan-id>3</vlan-id>
+              <llscu-mac-address>38:AF:D7:D5:C7:6C</llscu-mac-address>
+            </eth-flow>
+          </transport-flow>
+        </ru-elements>
+      </processing-elements>
+    </config>
+"""
+# ----------------------------------------
+$step10="""
+<messages>START edit-config processing-elements for port1</messages>
+"""
+show var step10
+edit-config target=running config="""
+    <config>
+      <processing-elements xmlns="urn:xran:processing-element:1.0">
+        <transport-session-type>ETH-INTERFACE</transport-session-type>
+        <ru-elements>
+          <name>processing-element02</name>
+          <transport-flow>
+            <interface-name>uc-vlan1</interface-name>
+            <eth-flow>
+              <ru-mac-address>00:06:07:08:09:0A</ru-mac-address>
+              <vlan-id>3</vlan-id>
+              <llscu-mac-address>38:AF:D7:D5:C7:6D</llscu-mac-address>
+            </eth-flow>
+          </transport-flow>
+        </ru-elements>
+      </processing-elements>
+    </config>
+"""
+# ----------------------------------------
+$step11="""
+<messages>START sget processing-elements</messages>
+"""
+show var step11
+sget processing-elements
+# ----------------------------------------
+$step12="""
+<messages>START edit-config sync</messages>
+"""
+show var step12
+edit-config target=running config="""
+<config>
+  <sync xmlns="urn:xran:sync:1.0">
+    <ptp-config>
+      <domain-number>24</domain-number>
+      <multicast-mac-address>NONFORWARDABLE</multicast-mac-address>
+      <accepted-clock-classes>
+        <clock-classes>7</clock-classes>
+      </accepted-clock-classes>
+      <delay-asymmetry>0</delay-asymmetry>
+    </ptp-config>
+    <ptp-status>
+      <reporting-period>10</reporting-period>
+      <partial-timing-supported>false</partial-timing-supported>
+    </ptp-status>
+    <synce-status>
+      <reporting-period>10</reporting-period>
+    </synce-status>
+  </sync>
+</config>
+"""
+# ----------------------------------------
+$step13="""
+<messages>START sget user-plane-configuration</messages>
+"""
+show var step13
+sget user-plane-configuration
+# ----------------------------------------
+$step14="""
+<messages>START edit-config user-plane-configuration</messages>
+"""
+show var step14
+edit-config target=running config="""
+<config>
+  <user-plane-configuration xmlns="urn:xran:uplane-conf:1.0">
+    <low-level-tx-endpoints>
+      <name>TxEndp0</name>
+      <local-address>
+        <cu-port-bitmask>49152</cu-port-bitmask>
+        <band-sector-bitmask>16128</band-sector-bitmask>
+        <ccid-bitmask>240</ccid-bitmask>
+        <ru-port-bitmask>15</ru-port-bitmask>
+        <eaxc-id>0</eaxc-id></local-address>
+    </low-level-tx-endpoints>
+    <low-level-rx-endpoints>
+      <name>RxEndp0</name>
+      <local-address>
+        <cu-port-bitmask>49152</cu-port-bitmask>
+        <band-sector-bitmask>16128</band-sector-bitmask>
+        <ccid-bitmask>240</ccid-bitmask>
+        <ru-port-bitmask>15</ru-port-bitmask>
+        <eaxc-id>0</eaxc-id></local-address>
+    </low-level-rx-endpoints>
+    <tx-array-carriers>
+      <name>tx-array-carrier11</name>
+      <absolute-frequency-center>3700000</absolute-frequency-center>
+      <center-of-channel-bandwidth>0</center-of-channel-bandwidth>
+      <channel-bandwidth>100000000</channel-bandwidth>
+      <power>0.0</power>
+      <fft-size>0</fft-size>
+      <downlink-radio-frame-offset>0</downlink-radio-frame-offset>
+      <downlink-sfn-offset>0</downlink-sfn-offset>
+      <default-scs>KHZ_30</default-scs>
+      <cp-length>0</cp-length>
+    </tx-array-carriers>
+    <rx-array-carriers>
+      <name>rx-array-carrier11</name>
+      <absolute-frequency-center>3700000</absolute-frequency-center>
+      <center-of-channel-bandwidth>0</center-of-channel-bandwidth>
+      <channel-bandwidth>100000000</channel-bandwidth>
+      <fft-size>0</fft-size>
+      <ul-fft-sampling-offset>0</ul-fft-sampling-offset>
+      <n-ta-offset>13792</n-ta-offset>
+      <default-scs>KHZ_30</default-scs>
+      <cp-length>0</cp-length>
+    </rx-array-carriers>
+  </user-plane-configuration>
+</config>
+"""
+# ----------------------------------------
+$step15="""
+<messages>START edit-config user-plane-configuration low-level-links </messages>
+"""
+show var step15
+edit-config target=running config="""
+<config>
+  <user-plane-configuration xmlns="urn:xran:uplane-conf:1.0">
+  <low-level-tx-links>
+    <name>low-level-tx-links1</name>
+    <processing-element>processing-element01</processing-element>
+    <tx-array-carrier>tx-array-carrier11</tx-array-carrier>
+    <low-level-tx-endpoint>TxEndp0</low-level-tx-endpoint>
+    <remote-address>
+      <cu-port-bitmask>49152</cu-port-bitmask>
+      <band-sector-bitmask>16128</band-sector-bitmask>
+      <ccid-bitmask>240</ccid-bitmask>
+      <ru-port-bitmask>15</ru-port-bitmask>
+      <eaxc-id>0</eaxc-id></remote-address>
+    </low-level-tx-links>
+    <low-level-rx-links>
+      <name>low-level-rx-links1</name>
+      <processing-element>processing-element01</processing-element>
+      <rx-array-carrier>rx-array-carrier11</rx-array-carrier>
+      <low-level-rx-endpoint>RxEndp0</low-level-rx-endpoint>
+      <remote-address>
+        <cu-port-bitmask>49152</cu-port-bitmask>
+        <band-sector-bitmask>16128</band-sector-bitmask>
+        <ccid-bitmask>240</ccid-bitmask>
+        <ru-port-bitmask>15</ru-port-bitmask>
+        <eaxc-id>0</eaxc-id>
+      </remote-address>
+    </low-level-rx-links>
+  </user-plane-configuration>
+</config>
+"""
+# ----------------------------------------
+$step16="""
+<messages>START edit-config user-plane-configuration carriers activation </messages>
+"""
+show var step16
+edit-config target=running config="""
+<config>
+  <user-plane-configuration xmlns="urn:xran:uplane-conf:1.0">
+    <tx-array-carriers>
+      <name>tx-array-carrier11</name>
+      <active>ACTIVE</active>
+    </tx-array-carriers>
+    <rx-array-carriers>
+      <name>rx-array-carrier11</name>
+      <active>ACTIVE</active>
+    </rx-array-carriers>
+  </user-plane-configuration>
+</config>
+"""
+# ----------------------------------------
+$step17="""
+<messages>START get-config all </messages>
+"""
+show var step17
+get-config
+quit

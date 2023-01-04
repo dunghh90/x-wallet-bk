@@ -1,0 +1,7 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+if Rrh.system("/bin/cat /var/log/startup-cfg.xml 2>/dev/null") != 0 then
+	puts("Not found M-plane configuration data. M-plane has not started yet...")
+end

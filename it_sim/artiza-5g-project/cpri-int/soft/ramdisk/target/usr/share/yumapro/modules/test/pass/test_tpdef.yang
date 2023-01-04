@@ -1,0 +1,165 @@
+
+module test_tpdef {
+    namespace "http://www.yumaworks.com/ns/test_tpdef";
+    prefix tpdef;
+
+    import ietf-yang-types { prefix yang; }
+    import ietf-inet-types { prefix inet; }
+
+    organization "YumaWorks, Inc";
+
+    revision 2016-07-29 {
+        description
+            "Add new scenariour with, with no prefixes,
+             leafref in local/external augments with/with no
+             prefixes, etc";
+    }
+
+    revision 2016-07-01 {
+        description
+            "Initial version";
+    }
+
+
+  /*
+   * Typedefs
+   */
+    typedef node-ref {
+        type leafref {
+            path "/topnode/listnode/leafnode";
+        }
+    }
+
+    typedef node.2-ref {
+        type leafref {
+            path "/topnode/listnode/leafnode2";
+        }
+    }
+
+    typedef key-id {
+        type inet:uri;
+    }
+
+    typedef node.3-ref {
+        type leafref {
+            path "/topnode/listnode/leafnode3";
+        }
+    }
+
+    typedef node.4-ref {
+        type leafref {
+            path "/tpdef:topnode/tpdef:listnode/tpdef:leafnode4";
+        }
+    }
+
+
+  /*
+   * Configuration data nodes
+   */
+
+    grouping group1 {
+        leaf name {
+            type yang:yang-identifier;
+        }
+
+        leaf group-leafref {
+          type leafref {
+            path "/tpdef:topnode/tpdef:listnode/tpdef:keynode";
+          }
+        }
+
+        leaf group-leafref2 {
+          type leafref {
+            path "/tpdef:topnode/tpdef:listnode/tpdef:keynode";
+          }
+        }
+
+        leaf name1 {
+            type union {
+                type key-id;
+                type string { length 0; }
+            }
+        }
+    }
+
+    grouping group2 {
+
+        uses group1;
+
+        leaf group-leafref3 {
+          type leafref {
+            path "/tpdef:group-leafref";
+          }
+        }
+
+        leaf group-leafref4 {
+          type leafref {
+            path "/group-leafref2";
+          }
+        }
+    }
+
+    container topnode {
+
+        list listnode {
+            key "keynode";
+
+            leaf keynode {
+                type key-id;
+
+            }
+            leaf leafnode {
+                type boolean;
+            }
+            leaf leafnode2 {
+                type boolean;
+            }
+            leaf leafnode3 {
+                type boolean;
+            }
+            leaf leafnode4 {
+                type boolean;
+            }
+        }
+
+        uses group1;
+    }
+
+  /*
+   * Local Augments
+   */
+    augment "/topnode/listnode" {
+
+        leaf leafnode5 {
+            type node.4-ref;
+
+        }
+    }
+
+    augment "/tpdef:topnode/tpdef:listnode" {
+
+        leaf leafnode6 {
+            type node.4-ref;
+
+        }
+    }
+
+    augment "/topnode/listnode" {
+
+        leaf leafnode7 {
+            type tpdef:node.4-ref;
+
+        }
+    }
+
+    augment "/tpdef:topnode/tpdef:listnode" {
+
+        leaf leafnode8 {
+            type tpdef:node.4-ref;
+
+        }
+    }
+
+}
+
+

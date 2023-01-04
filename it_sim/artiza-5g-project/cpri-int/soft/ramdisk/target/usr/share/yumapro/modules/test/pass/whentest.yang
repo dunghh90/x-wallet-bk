@@ -1,0 +1,24 @@
+module whentest {
+  namespace "http://yumaworks.com/ns/whentest";
+  prefix "wt";
+
+  revision 2020-01-03 {
+  description
+  "Initial version";
+  }
+
+  leaf T {
+    type int32;
+    default 42;
+  }
+
+  container parent{
+    leaf l1{
+      type string;
+      when "/T=41";
+      default "fred";
+    }
+    leaf-list Z {type uint8;}
+  }
+
+}

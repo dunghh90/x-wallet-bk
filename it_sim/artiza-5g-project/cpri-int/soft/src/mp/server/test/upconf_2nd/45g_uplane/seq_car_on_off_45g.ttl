@@ -1,0 +1,93 @@
+
+prompt = 'f_5g_du@5G_DU>'
+
+;interface設定
+include '45G_interface.ttl'
+pause 5
+
+;processing-element設定
+include '45G_procelm.ttl'
+pause 5
+
+;01.tx-array-carriers(連続)
+for i 0 15
+	sprintf2 send_txt 'edit-config config=@uplane_txcar_%d_45g.xml' i
+	sendln send_txt
+	wait prompt
+next
+
+;02.rx-array-carriers(連続)
+for i 0 15
+	sprintf2 send_txt 'edit-config config=@uplane_rxcar_%d_45g.xml' i
+	sendln send_txt
+	wait prompt
+next
+
+;03.low-level-tx-endpoints(連続)
+for i 0 15
+	sprintf2 send_txt 'edit-config config=@uplane_txendp_%d_sub6.xml' i
+	sendln send_txt
+	wait prompt
+next
+
+;04.low-level-rx-endpoints(連続)
+for i 0 15
+	sprintf2 send_txt 'edit-config config=@uplane_rxendp_%d_sub6.xml' i
+	sendln send_txt
+	wait prompt
+next
+
+;05.low-level-tx-links(連続)
+for i 0 15
+	sprintf2 send_txt 'edit-config config=@uplane_txlink_%d_sub6.xml' i
+	sendln send_txt
+	wait prompt
+next
+
+;06.low-level-rx-links(連続)
+for i 0 15
+	sprintf2 send_txt 'edit-config config=@uplane_rxlink_%d_sub6.xml' i
+	sendln send_txt
+	wait prompt
+next
+
+;07.get(disable)
+sendln'sget /user-plane-configuration'
+wait prompt
+
+;08.active-tx(連続)
+for i 0 15
+	sprintf2 send_txt 'edit-config config=@uplane_txact_%d.xml' i
+	sendln send_txt
+	wait prompt
+next
+
+;09.active-rx(連続)
+for i 0 15
+	sprintf2 send_txt 'edit-config config=@uplane_rxact_%d.xml' i
+	sendln send_txt
+	wait prompt
+next
+
+;10.get(ready)
+sendln'sget /user-plane-configuration'
+wait prompt
+
+;11.inactive-tx(連続)
+for i 0 15
+	sprintf2 send_txt 'edit-config config=@uplane_txinact_%d.xml' i
+	sendln send_txt
+	wait prompt
+next
+
+;12.inactive-rx(連続)
+for i 0 15
+	sprintf2 send_txt 'edit-config config=@uplane_rxinact_%d.xml' i
+	sendln send_txt
+	wait prompt
+next
+
+;13.get(disable)
+sendln'sget /user-plane-configuration'
+wait prompt
+

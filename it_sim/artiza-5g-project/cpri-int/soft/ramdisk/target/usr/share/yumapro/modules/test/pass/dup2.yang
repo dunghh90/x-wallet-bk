@@ -1,0 +1,11 @@
+module dup2 {
+  yang-version 1.1;
+  namespace "http://www.yumaworks.com/ns/dup2";
+  prefix d2;
+  revision 2019-07-23;
+  container top {
+    leaf A { type string; }
+    leaf B { type string; }
+  }
+
+}

@@ -1,0 +1,160 @@
+module rpc_test1 {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/rpc_test1";
+  prefix "rpct1";
+
+  import hooks-test { prefix hk; }
+
+  revision 2019-06-26 {
+        description
+         "YPW-1493: netconfd: must-stmt and leafref validation not retrieving
+                    GET2 callback data correctly
+            - Add more RPC to test the operation - 'rpc-1'";
+  }
+
+  revision 2019-03-22 {
+    description
+      "New RPC for:
+       - YPW-1429: RPC callback for choice object problem";
+  }
+
+  revision 2016-07-14 {
+    description
+      "Initial revision";
+  }
+
+  container rpc-container {
+    presence "This is to test MUST on operational data nodes inside RPC";
+    config false;
+    leaf name { type string; }
+    list rpc-list {
+      key list-name;
+      leaf list-name { type string; }
+      leaf a { type string; }
+      leaf b { type string; }
+    }
+  }
+
+  rpc rpc-1 {
+    description "Testing MUST inside RPC";
+    input {
+      leaf rpc-1-leaf {
+        type leafref {
+          path "/rpc-container/rpc-list/list-name";
+        }
+        must "/rpc-container/rpc-list[list-name = current()][a = 'false' and b = 'false']" {
+          error-message "This passes only if a::false and b::false";
+        }
+        mandatory true;
+      }
+    }
+    output {
+      leaf rpc-out-1 {
+        type string;
+      }
+    }
+  } // rpc rpc-1
+
+  rpc test-augm {
+
+    input {
+      leaf session-id {
+        type uint32;
+        mandatory true;
+
+        description
+          "The mandatory check.";
+      }
+
+      leaf must-check {
+        type hk:listname-ref;
+
+        must "../session-id = 3";
+        description
+          "The must check.";
+      }
+
+      leaf when-check {
+        type hk:listname-ref;
+        when "../session-id > 3";
+
+        description
+          "The when check.";
+      }
+    }
+  }
+
+  rpc test-leafref {
+    input {
+      choice intf-choice {
+        case all-intf-case {
+          leaf all-intf {
+            type enumeration {
+              enum "ALL" {
+                value 1;
+              }
+              enum "ALL-VLAN" {
+                value 2;
+              }
+            }
+          }
+        }
+        case ifname-case {
+          leaf ifname {
+            type hk:listname-ref;
+          }
+        }
+      }
+    }
+  }
+
+ rpc software-download {
+    input {
+      leaf path {
+        type string;
+        mandatory true;
+      }
+
+      choice credentials {
+        case password {
+
+          container password {
+            presence true;
+            leaf password {
+              type string;
+              mandatory true;
+            }
+          }
+        }
+        case certificate {
+          container certificate {
+            presence true;
+          }
+        }
+      }
+    }
+
+    output {
+      leaf status {
+        type enumeration {
+          enum STARTED {
+          }
+          enum FAILED {
+          }
+        }
+        mandatory true;
+      }
+      leaf error-message {
+        when "../status = 'FAILED'";
+        type string;
+      }
+
+      leaf notification-timeout {
+        type int32;
+        units seconds;
+        default 30;
+      }
+    }
+  }
+}

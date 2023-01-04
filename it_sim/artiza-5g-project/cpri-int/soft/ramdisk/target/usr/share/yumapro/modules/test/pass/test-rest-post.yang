@@ -1,0 +1,146 @@
+module test-rest-post {
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/test-rest-post";
+  prefix trestpost;
+
+  import ietf-yang-types {
+    prefix yang;
+  }
+
+  revision 2019-04-08 {
+    description
+      "YPW-1435: RESTCONF POST operation return OK instead or Error
+       YPW-1456: Server crash in case of RESTCONF get operation
+                 with partial keys";
+  }
+
+  // NP -- working
+  container time {
+
+    list somelist1 {
+      key "somekey";
+
+      leaf somekey {type string;}
+      leaf someleaf {type string;}
+    }
+
+    container state {
+      config false;
+
+      leaf current-time {
+        type yang:date-and-time;
+      }
+      leaf boot-time {
+        type yang:date-and-time;
+      }
+      leaf uptime {
+        type uint64;
+      }
+    }
+
+    container config {
+      list somelist2 {
+        key "somekey";
+
+        leaf somekey {type string;}
+        leaf someleaf {type string;}
+      }
+
+      leaf timezone-utc-offset {
+        type int16 {
+          range "-1500 .. 1500";
+        }
+        units "minutes";
+        default "0";
+      }
+      action set-time {
+        input {
+          leaf time {
+            type yang:date-and-time;
+            mandatory true;
+          }
+        }
+      }
+    }
+  }
+
+  // EMPTY NP -- NOT working
+  container time2 {
+
+    list somelist1 {
+      key "somekey";
+
+      leaf somekey {type string;}
+      leaf someleaf {type string;}
+    }
+
+    container state {
+      config false;
+
+      leaf current-time {
+        type yang:date-and-time;
+      }
+      leaf boot-time {
+        type yang:date-and-time;
+      }
+      leaf uptime {
+        type uint64;
+      }
+    }
+
+    container config {
+      list somelist2 {
+        key "somekey";
+
+        leaf somekey {type string;}
+        leaf someleaf {type string;}
+      }
+
+      action set-time {
+        input {
+          leaf time {
+            type yang:date-and-time;
+            mandatory true;
+          }
+        }
+      }
+    }
+  }
+
+  /* YPW-1456: Server crash in case of RESTCONF get operation
+   * with partial keys
+   */
+  container controller-config {
+    list controller {
+      key "ip protocol port";
+      max-elements "1";
+
+      leaf ip {
+        type string;
+      }
+      leaf protocol {
+          type string;
+      }
+      leaf port {
+        type string;
+      }
+    }
+  }
+
+  /* YPW-1513: netconfd: crashing in case of invalid curl request instead of
+   * throwing an error.
+   */
+   container restports {
+     presence "Test for invalid post";
+    list port {
+      key "display-name";
+      leaf display-name {
+        type string;
+      }
+      leaf admin-state {
+          type boolean;
+          default false;
+      }
+    }
+  }
+}

@@ -1,0 +1,3 @@
+m_rc_ReCntMain.c:59:6:m_rc_ReCntMain	160	dynamic,bounded
+m_rc_ReCntMain.c:818:6:m_rc_loging	80	static
+m_rc_ReCntMain.c:915:6:m_rc_logPrint	128	dynamic,bounded

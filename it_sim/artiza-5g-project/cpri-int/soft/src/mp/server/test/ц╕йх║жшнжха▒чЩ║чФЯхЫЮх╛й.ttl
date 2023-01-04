@@ -1,0 +1,11 @@
+
+while 1
+	sendln 'rrh -svctl 42 1 1'
+	wait 'root@5G_DU:/var/volatile/tmp#'
+	mpause 1000
+	sendln 'rrh -svctl 42 0 1'
+	wait 'root@5G_DU:/var/volatile/tmp#'
+	mpause 1000
+endwhile
+
+

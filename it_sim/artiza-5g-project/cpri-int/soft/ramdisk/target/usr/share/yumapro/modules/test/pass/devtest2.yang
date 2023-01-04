@@ -1,0 +1,15 @@
+module devtest2 {
+
+    namespace "http://yumaworks.com/ns/devtest2";
+    prefix "d2";
+
+    revision 2015-04-17;
+
+   typedef foo-type {
+      type int32;
+   }
+
+   leaf foo { type int32; }
+
+   leaf bar { type string; }
+}

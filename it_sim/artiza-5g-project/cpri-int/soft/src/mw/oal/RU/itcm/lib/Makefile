@@ -1,0 +1,55 @@
+#------------------------------------------------------
+# Makefile for itcm library
+#------------------------------------------------------
+# Target: libbpf_itcm
+#------------------------------------------------------
+TARGET=libbpf_itcm.so.1.0
+TARGETLINK=libbpf_itcm.so
+
+include ../../../../../Makefile.in
+
+#------------------------------------------------------
+# build top
+#------------------------------------------------------
+TOP=../../../../../..
+OPT=-shared -fPIC
+
+#------------------------------------------------------
+# Library
+#------------------------------------------------------
+LIB=-lbpf_com
+
+#------------------------------------------------------
+# Default Parameters
+#------------------------------------------------------
+LIBDIR=$(TOP)/ramdisk/target/lib
+
+#------------------------------------------------------
+# BPF Includes
+#------------------------------------------------------
+BPFINC=-I$(TOP)/src/sys/inc -I$(TOP)/src/sys/inc_mw -I$(TOP)/src/mw/inc -I../include -I$(TOP)/src/sys/inc_arch
+
+#---
+# Source Files
+#---
+
+SRC=$(shell ls *.c)
+OBJ=$(SRC:.c=.o)
+
+
+#------------------------------------------------------
+# rules
+#------------------------------------------------------
+all: $(TARGET)
+$(TARGET): $(OBJ)
+	$(CC) $(OPT) $(SYSROOT) -o $(TARGET) $(OBJ) -L$(LIBDIR) $(LIB) -lrt
+	ln -s $(TARGET) $(TARGETLINK)
+	mv $(TARGET) $(LIBDIR)/
+	mv $(TARGETLINK) $(LIBDIR)/
+.c.o:
+	$(CC) $(OPT) $(CFLAGS) -c $< $(INC) $(BPFINC)
+
+clean:
+	rm -f $(LIBDIR)/$(TARGETLINK)
+	rm -f $(LIBDIR)/$(TARGET)
+	rm -f *.o *.d

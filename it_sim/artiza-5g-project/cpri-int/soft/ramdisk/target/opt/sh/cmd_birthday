@@ -1,0 +1,3 @@
+#!/bin/sh
+
+DU_init -v ; DU_pf -v

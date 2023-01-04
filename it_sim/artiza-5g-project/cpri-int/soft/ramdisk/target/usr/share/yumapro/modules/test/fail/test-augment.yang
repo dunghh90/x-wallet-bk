@@ -1,0 +1,35 @@
+module test-augment {
+
+  namespace "http://netconfcentral.org/ns/test-augment";
+  prefix taug;
+  revision "2016-03-14" {
+  }
+
+  augment /server {
+    case BAD1 {
+     leaf XX { type int32; }
+     leaf YY { type int32; }
+    }
+  }
+
+  augment /X {
+    leaf BAD2 { type string; }
+  }
+
+  augment /Y {
+    leaf BAD3 { type string; }
+  }
+
+  list server {
+    key name;
+    leaf name {
+      type string;
+    }
+  }
+
+  leaf X { type string; }
+
+  leaf-list Y { type string; }
+
+
+}

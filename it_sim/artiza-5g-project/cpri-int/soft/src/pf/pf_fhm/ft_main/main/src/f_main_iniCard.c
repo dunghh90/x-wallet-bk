@@ -1,0 +1,458 @@
+/*!
+ * @skip		$ld:$
+ * @file		f_main_iniCard.c
+ * @brief		pf_main ハードウェア初期化処理
+ * @date  		2015/06/09 ALPHA) tomioka Create RRH-007-000 TDD-Zynq対応
+ *
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2015
+ */
+
+/*!
+ * @addtogroup RRH_PF_MAIN
+ * @{
+ */
+
+#include "f_main_inc.h"
+#include "RFIC_PMC.h"
+
+/*!
+ * @brief		f_main_iniCard_tdd
+ * @note		ハードウェアの初期設定
+ *					-# 機種種別判定
+ *					-# 起動Busyフラグクリア
+ *					-# リセット要因退避
+ *					-# AXI_Timer初期設定
+ *					-# SWDT Desable
+ *					-# SWDTタイマ設定
+ *					-# SWDTクリア
+ *					-# SWDT Enable
+ *					-# MIO[7]=1設定
+ *					-# スレーブFPGA Config完了確認
+ *					-# ユーザIP QSPI初期化設定
+ *					-# PCIeリセット解除
+ *					-# PCIe起動①～④
+ *					-# PCIe領域アクセス可能設定
+ *					-# スレーブFPGAリセット解除
+ *					-# PCIe起動⑤
+ *					-# CNTM/CNTS STA1マスク解除
+ *					-# IF確認
+ *					-# 外部PLL IC設定
+ *					-# CNTS STA1マスク解除
+ *					-# SYS PLL リセット解除
+ *					-# SYS PLLロック確認
+ *					-# SYSロジックリセット解除
+ *					-# FPGA領域アクセス可能設定
+ *					-# STA1マスク解除
+ *					-# GTH電源確認
+ *                  -# リセット履歴要因クリア
+ *                  -# EEP起動面情報更新(ロールバック起動時のみ)
+ * @param		-
+ * @retval		D_SYS_OK	0:正常終了
+ * @retval		D_SYS_NG	1:異常終了
+ * @return		処理結果
+ * @warning		N/A
+ * @FeatureID	N/A
+ * @Bug_No		N/A
+ * @CR_No		N/A
+ * @TBD_No		N/A
+ * @date  		2015/06/09 ALPHA) tomioka Create RRH-007-000 TDD-Zynq対応
+ * @date        2015/07/25 TDI) satou 「PAPS ON設定処理」を削除
+ * @date        2015/07/25 TDI) satou 「DCM RFIC Boot JESD config 起動」機能を削除
+ * @date        2015/07/25 TDI) satou 「RFIC UniTX設定」機能を削除
+ * @date        2015/07/25 TDI) satou 「RFIC UniRX設定」機能を削除
+ * @date        2015/07/25 TDI) satou 「RFIC 温度情報設定」機能を削除
+ * @date        2015/07/25 TDI) satou 「RFIC JESD起動」機能を削除
+ * @date        2015/07/25 TDI) satou 「RFIC MIO3/MIO4障害監視開始設定」機能を削除
+ * @date        2015/07/25 TDI) satou 「JESD異常状態マスク解除」機能を削除
+ * @date        2015/07/27 TDI) satou 「APD部設定」機能を削除
+ * @date        2015/07/28 TDI) satou 「トレーニングデータリード」処理を削除
+ * @date        2015/07/29 TDI) satou 「TD FIXモードOFF設定」処理を削除
+ * @date        2015/07/29 TDI) satou 電源停止アラーム[12]についてSTA1マスク解除の対象外に
+ * @date        2015/07/29 TDI) satou UniTX/RXのリセット解除処理を削除
+ * @date        2015/08/03 TDIPS) sasaki 「f_main_userIpQspiSetのI/F変更」対応
+ * @date        2015/08/03 TDIPS) sasaki 「RE DLファイル格納用FLASH初期設定」処理を追加
+ * @date        2015/07/16 ALPHA) ueda modify for M-RRU-ZSYS-01646対応
+ * @date        2015/08/04 TDI) satou 一次診断の処理を追加
+ * @date        2015/08/06 TDIPS) sasaki レビュー指摘事項No.15対応
+ * @date        2015/10/13 TDI)satou ハソ-QA-004 「リセット要因クリア」にBit28 Local-RSTのクリアを追加
+ * @date        2015/12/17 TDI)enoki  「リセット要因クリア」にBit30 soft-RST2のクリアを追加
+ * @date        2016/02/05 TDIPS)enoki 配下REのInbandReset対象のFHM起動要因に自身のL1RSTとUnKnownを追加
+ * @date        2016/02/25 FJT)harada 35G-SREからの水平展開,ロールバック時にEEPROMを更新する際に共有メモリも更新する
+ */
+UINT f_main_iniCard_tdd()
+{
+	UINT	regw_data	= 0;
+	UINT	regr_data	= 0;
+	UINT	compCnt		= 0;
+	UINT	rtn;
+	UINT	rtn_bpf;
+	UINT	rtn_rfic;
+	UCHAR	face = 0;
+    UCHAR   slave_face = 0;
+	UINT 	rollback = D_SYS_OFF;
+	UINT	ifchk=0;
+
+    time_t  *fpga_config_start_t;
+    time_t  *fpga_config_end_t;
+    UINT    cnt = 0;
+
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ENTER, "[f_main_iniCard_tdd] ENTER" );
+
+	/************************************************************/
+	/* 機種種別判定												*/
+	/* f_main_initで実施済み									*/
+	/************************************************************/
+
+    /************************************************************/
+    /* スレーブFPGA Config開始時間取得                            */
+    /************************************************************/
+    time( (time_t *)  &(fpga_config_start_t) );
+
+	/************************************************************/
+	/* 起動Busyフラグクリア										*/
+	/************************************************************/
+	/* 起動Busyフラグクリア	*/
+	BPF_HM_DEVC_REG_WRITE_BITOFF(D_RRH_LOG_REG_LV_READ_WRITE, D_RRH_REG_SLCR_ZYNQ_REBOOT_STATUS, D_RRH_SLCR_RST_FACT_BTBUSY );
+
+	/************************************************************/
+	/* リセット要因退避											*/
+	/************************************************************/
+    f_mainw_reboot_status = 0;
+    BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ, D_RRH_REG_SLCR_ZYNQ_REBOOT_STATUS, &f_mainw_reboot_status);
+    BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_INFO, "REG Reboot status:%08x", f_mainw_reboot_status );
+
+	/************************************************************/
+	/* AXI_Timer初期設定										*/
+	/* f_main_initで実施										*/
+	/************************************************************/
+
+	/************************************************************/
+	/* SWDT Desable												*/
+	/************************************************************/
+	(VOID)BPF_HM_DEVC_WDT_SET( D_SYS_AXI_TIMER_SKP, D_SYS_SWDT_TIMER_CLR );
+
+	/************************************************************/
+	/* SWDTタイマ設定											*/
+	/* SWDTクリア												*/
+	/* SWDT Enable												*/
+	/* f_main_initで実施										*/
+	/************************************************************/
+
+	/************************************************************/
+	/* MIO[0]=1設定 OXBOOTBUSY(LED)消灯  							*/
+	/************************************************************/
+	BPF_HM_DEVC_REG_WRITE_BITON(D_RRH_LOG_REG_LV_READ_WRITE, D_RRH_REG_MIO_DATA_0, D_RRH_MIO_OXBOOTBUSY );
+
+    /************************************************************/
+    /* スレーブFPGA Config完了確認                              */
+    /************************************************************/
+    /* スレーブFPGA Config完了の確認ができなくても、開始時に取得した時間から5秒経過する */
+    /* まではALMにしない。10msec waitし、5秒経過するまで完了確認を繰り返す。            */
+    while( cnt < 500)
+    {
+        /* スレーブFPGA Config完了情報取得 */
+        BPF_HM_DEVC_REG_READ_BIT(D_RRH_LOG_REG_LV_READ, D_RRH_REG_CNT_SLVCFG, D_RRH_CNT_TRXCFG_CFGDONE, &regr_data);
+
+        /* スレーブFPGA Config完了判定 */
+        if( D_RRH_CNT_TRXCFG_CFGDONE == regr_data )
+        {
+            /* スレーブFPGA Configが正常に完了 */
+            BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_WARNING, "Slave FPGA Config Done OK(%d)", cnt);
+            break;
+        }
+        cnt++;
+        /* スレーブFPGA Configが完了していない */
+        /* 経過時間取得 */
+        time( (time_t *)  &(fpga_config_end_t) );
+        BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ENTER, "start_t=%d end_t=%d", &fpga_config_start_t, &fpga_config_end_t);
+        /* 開始時間から5秒経過したか判定 */
+        if(( &fpga_config_end_t > ( &fpga_config_start_t + 5 )) || ( cnt >= 500 ))
+        {
+			/************************************************************/
+			/* ユーザIP QSPI初期化設定									*/
+			/************************************************************/
+			f_main_userIpQspiSet(0x40020000, 1);	/* スレーブFPGA Config FLASH 初期設定		*/
+			f_main_userIpQspiSet(0x40030000, 4);	/* RE DLファイル格納用FLASH(SS0-SS3) 初期設定	*/
+
+            /* スレーブFPGA Config NG 一次診断NG4 */
+            BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR,   "Slave FPGA Config Done Fail. regr_data=%08x", regr_data);
+            BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_RETURN, "[f_main_iniCard] RETURN" );
+            f_com_abort( D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_DIA4 );
+            return D_SYS_NG;
+        }
+        else
+        {
+            BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ENTER,"10msec wait=%d", cnt);
+            /* 10msec waitし、再チェック */
+            f_com_taskDelay(10,0,0,0);
+        }
+    }
+
+	/************************************************************/
+	/* ユーザIP QSPI初期化設定									*/
+	/************************************************************/
+	f_main_userIpQspiSet(0x40020000, 1);	/* スレーブFPGA Config FLASH 初期設定		*/
+	f_main_userIpQspiSet(0x40030000, 4);	/* RE DLファイル格納用FLASH(SS0-SS3) 初期設定	*/
+
+	/************************************************************/
+	/* PCIeリセット解除											*/
+	/* f_main_PCIeで実施										*/
+	/************************************************************/
+
+	/************************************************************/
+	/* PCIe起動													*/
+	/************************************************************/
+	rtn = f_main_PCIe();
+	if( rtn != D_SYS_OK)
+	{
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR , "PCIe First Setting Fail. rtn=%08x", rtn);
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_RETURN, "[f_main_iniCard] RETURN" );
+		f_com_abort( D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_DIA4 );
+		return D_SYS_NG;
+	}
+
+	/************************************************************/
+	/* CNTM/CNTS STA1マスク解除									*/
+	/************************************************************/
+	regw_data = ( D_RRH_CNT_STA1M_SLVSVERR |			/* FPGA間SV I/F異常[29] */
+	 	  	 	  D_RRH_CNT_STA1M_MMISVERR );			/* MMI-CPLD間SV I/F異常[28] */
+	BPF_HM_DEVC_REG_WRITE_BITOFF( D_RRH_LOG_REG_LV_READ_WRITE, D_RRH_REG_CNT_STA1M, regw_data);
+
+	regw_data = ( D_RRH_CNTS_STA1_SVERR );			/* FPGA間SV I/F異常[28] */
+	BPF_HM_DEVC_REG_WRITE_BITOFF( D_RRH_LOG_REG_LV_READ_WRITE, D_RRH_REG_CNTS_STA1M, regw_data);
+
+	/************************************************************/
+	/* IF確認													*/
+	/************************************************************/
+	/* FPGA間SV I/F異常		*/
+	BPF_HM_DEVC_REG_READ_BIT(D_RRH_LOG_REG_LV_READ, D_RRH_REG_CNT_STA1, D_RRH_CNT_STA1_SLVSVERR, &regr_data);
+	if( regr_data != 0 )
+	{
+		ifchk=( ifchk | regr_data);
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR, "FPGA SV IF ERR. regr_data=%08x", regr_data);
+	}
+
+	/* MMI-CPLD間SV I/F異常		*/
+	BPF_HM_DEVC_REG_READ_BIT(D_RRH_LOG_REG_LV_READ, D_RRH_REG_CNT_STA1, D_RRH_CNT_STA1_MMISVERR, &regr_data);
+	if( regr_data != 0 )
+	{
+		ifchk=( ifchk | regr_data);
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR, "MMI-CPLD SV IF ERR. regr_data=%08x", regr_data);
+	}
+
+	/* Slave FPGA間SV I/F異常		*/
+	BPF_HM_DEVC_REG_READ_BIT(D_RRH_LOG_REG_LV_READ, D_RRH_REG_CNTS_STA1, D_RRH_CNTS_STA1_SVERR, &regr_data);
+	if( regr_data != 0 )
+	{
+		ifchk=( ifchk | regr_data);
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR, "Slave FPGA SV IF ERR. regr_data=%08x", regr_data);
+	}
+
+	/* IF異常の場合、CNTS STA1マスク解除後に一次診断NG4とする。		*/
+	if ( ifchk != 0 )
+	{
+		/* CNTS STA1マスク解除		*/
+		regw_data = ( D_RRH_CNTS_STA1M_SYSPULCK );			/* SYS PLL UnLock[0] */
+		BPF_HM_DEVC_REG_WRITE_BITOFF( D_RRH_LOG_REG_LV_READ_WRITE, D_RRH_REG_CNTS_STA1M, regw_data);
+
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_RETURN, "[f_main_iniCard] RETURN" );
+		f_com_abort( D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_DIA4 );
+		return D_SYS_NG;
+	}
+
+	/************************************************************/
+	/* 外部PLL IC設定											*/
+	/************************************************************/
+	/* SPI初期化設定	*/
+	(void)BPF_HM_DEVC_SPI_INIT();
+
+	// rtn_rfic=RFIC_PMC_DCM_PLLIC_SET();
+	// if(rtn_rfic != RFIC_PMC_COMPLETE)
+	// {
+	// 	BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR,   "RFIC PMC DCM PLLIC SET Fail. rtn_rfic=%08x", rtn_rfic);
+	// 	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_RETURN, "[f_main_iniCard] RETURN" );
+	// 	f_com_abort( D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_DIA4 );
+	// 	return D_SYS_NG;
+	// }
+
+	/************************************************************/
+	/* CNTS STA1マスク解除										*/
+	/************************************************************/
+	regw_data = ( D_RRH_CNTS_STA1M_SYSPULCK );			/* SYS PLL UnLock[0] */
+	BPF_HM_DEVC_REG_WRITE_BITOFF( D_RRH_LOG_REG_LV_READ_WRITE, D_RRH_REG_CNTS_STA1M, regw_data);
+
+	/************************************************************/
+	/* SYS PLL リセット解除										*/
+	/************************************************************/
+	BPF_HM_DEVC_REG_WRITE_BITOFF(D_RRH_LOG_REG_LV_READ_WRITE, D_RRH_REG_CNT_RST, D_RRH_CNT_RST_SYSPLL);
+
+	/************************************************************/
+	/* SYS PLLロック確認										*/
+	/************************************************************/
+	/* Lockステータスをポーリングし、                          */
+	/* 100ms以内にLock遷移しない場合はハード初期化NG（ALM)     */
+	for(compCnt = 0; compCnt < D_MAIN_SYS_PLL_LOCK_CHECK_CNT; compCnt++)
+	{
+		rtn_bpf = BPF_HM_DEVC_REG_READ_BIT(D_RRH_LOG_REG_LV_READ ,D_RRH_REG_CNTS_STA1, D_RRH_CNTS_STA1_CHK_SYSPLL, &regr_data);
+		/* Lock遷移完了 */
+		if( 0 == regr_data )
+		{
+			BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ENTER, "SYS PLL Lock OK");
+			break;
+		}
+		/* 10ms Wait*/
+		f_com_taskDelay(10,0,0,0);
+	}
+	if(compCnt >= D_MAIN_SYS_PLL_LOCK_CHECK_CNT)
+	{
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR,   "SYS PLL Lock Fail. rtn_bpf=%08x, regr_data=%08x", rtn_bpf, regr_data);
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_RETURN, "[f_main_iniCard] RETURN" );
+		f_com_abort( D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_DIA4 );
+		return D_SYS_NG;
+	}
+
+	/************************************************************/
+	/* SYSロジックリセット解除									*/
+	/************************************************************/
+	BPF_HM_DEVC_REG_WRITE_BITOFF(D_RRH_LOG_REG_LV_READ_WRITE, D_RRH_REG_CNT_RST, D_RRH_CNT_RST_SYSLOG);
+
+	/************************************************************/
+	/* FPGA領域アクセス可能設定									*/
+	/************************************************************/
+	BPF_HM_DEVC_PL_CONFIG_STATE_SET(D_RRH_ON);
+
+	/************************************************************/
+	/* STA1マスク解除											*/
+	/************************************************************/
+	regw_data = ( D_RRH_CNT_STA1M_EPLLALM );			/* 外部PLL Statusアラーム[8] */
+	BPF_HM_DEVC_REG_WRITE_BITOFF( D_RRH_LOG_REG_LV_READ_WRITE, D_RRH_REG_CNT_STA1M, regw_data);
+
+	regw_data = ( D_RRH_CNTS_STA1M_PHYPWRGOOD );		/* 各SerDes電源Status表示[4] */
+	BPF_HM_DEVC_REG_WRITE_BITOFF( D_RRH_LOG_REG_LV_READ_WRITE, D_RRH_REG_CNTS_STA1M, regw_data);
+
+	/************************************************************/
+	/* GTH電源確認												*/
+	/************************************************************/
+	BPF_HM_DEVC_REG_READ_BIT(D_RRH_LOG_REG_LV_READ ,D_RRH_REG_CNTS_STA1, D_RRH_CNTS_STA1_PHYPWRGOOD, &regr_data);
+
+	if( D_RRH_CNTS_STA1_PHYPWRGOOD != regr_data )
+	{
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR,   "GTH PWR CHK Fail. regr_data=%08x", regr_data);
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_RETURN, "[f_main_iniCard] RETURN" );
+		f_com_abort( D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_DIA4 );
+		return D_SYS_NG;
+	}
+
+    /************************************************************/
+    /* リセット履歴要因クリア                                  */
+    /************************************************************/
+    /* リセット履歴をクリアする前に、ロールバック情報を取得 */
+    /* ロールバック履歴を退避 */
+    /* 起動フロー中に障害が発生しリセットする前に要因をクリアしている場合、起動とリセットを繰り返してしまうため要因クリアを出来るだけ遅らせている */
+    BPF_HM_DEVC_REG_READ_BIT(D_RRH_LOG_REG_LV_READ, D_RRH_REG_SLCR_ZYNQ_REBOOT_STATUS, D_RRH_SLCR_RST_FACT_RLBK, &regr_data);
+    if( D_RRH_SLCR_RST_FACT_RLBK == regr_data )
+    {
+        rollback = D_SYS_ON;
+    }
+
+	/* L1RST(29)ON、またはUnKnown(All0)の場合にBit31をONにし、l3_cprにて配下REのInbandReset対象判定に使用する。 */
+	regr_data = 0;
+	BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ, D_RRH_REG_SLCR_ZYNQ_REBOOT_STATUS, &regr_data);
+    if(( D_RRH_SLCR_RST_FACT_L1RST1 == ( D_RRH_SLCR_RST_FACT_L1RST1 & regr_data ))||( 0 == regr_data ))
+    {
+	    BPF_HM_DEVC_REG_WRITE_BITON( D_RRH_LOG_REG_LV_READ_WRITE, D_RRH_REG_SLCR_ZYNQ_REBOOT_STATUS, D_RRH_SLCR_RST_FACT_CPYL1RST );
+    }
+
+	/* リセット履歴をクリア */
+    regw_data = ( D_RRH_SLCR_RST_FACT_SWRST2    |       /* [30] */
+                  D_RRH_SLCR_RST_FACT_L1RST1    |       /* [29] */
+                  D_RRH_SLCR_RST_FACT_LOCAL_RST |       /* [28] */
+                  D_RRH_SLCR_RST_FACT_SWRST     |       /* [27] */
+                  D_RRH_SLCR_RST_FACT_WDT       |       /* [26] */
+                  D_RRH_SLCR_RST_FACT_RLBK );           /* [25] */
+    BPF_HM_DEVC_REG_WRITE_BITOFF( D_RRH_LOG_REG_LV_READ_WRITE, D_RRH_REG_SLCR_ZYNQ_REBOOT_STATUS, regw_data);
+
+    /************************************************************/
+    /* EEP起動面情報更新(ロールバック起動時のみ)              */
+    /************************************************************/
+    if( rollback == D_SYS_ON )          /* ロールバック時  */
+    {
+        /* ロールバック、FPGA/Firm共通 起動面情報[69] を読み出す */
+        (VOID)BPF_HM_DEVC_EEPROM_READ(D_RRH_EEP_START_FLG_ENA, &face);
+
+        if( face == D_RRH_BOOT_ACT0)    {
+            /* 0面起動時 */
+            face = D_RRH_BOOT_ACT1;
+        }
+        else if( face == D_RRH_BOOT_ACT1){
+            /* 1面起動時 */
+            face = D_RRH_BOOT_ACT0;
+        }
+        /* 起動面情報が 0,1以外であった場合 は 1面固定 */
+        else
+        {
+            face = D_RRH_BOOT_ACT1;
+        }
+
+        /* FPGA/Firm共通 起動面情報[69]書き込み */
+        rtn_bpf = BPF_HM_DEVC_EEPROM_WRITE(D_RRH_EEP_START_FLG_ENA, &face);
+        if(BPF_HM_DEVC_COMPLETE != rtn_bpf)
+        {
+            BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, "REG Write Access Fail boot side. rtn_bpf=%08x，face=%d", rtn_bpf, face);
+            BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_RETURN, "[f_main_iniCard] RETURN" );
+            return D_SYS_NG;
+        }
+    	/* 共有メモリも更新する */
+    	f_cmw_tra_inv_tbl->cmx_com_bootmen=face;
+
+        /* 続いて、CPRI-FPGA起動面情報[6b] を読み出す */
+        (VOID)BPF_HM_DEVC_EEPROM_READ(D_RRH_EEP_CPRI_START_FLG1, &slave_face);
+
+        if( slave_face == D_RRH_BOOT_ACT0)  {
+            /* 0面起動時 */
+            slave_face = D_RRH_BOOT_ACT1;
+        }
+        else if( slave_face == D_RRH_BOOT_ACT1){
+            /* 1面起動時 */
+            slave_face = D_RRH_BOOT_ACT0;
+        }
+        /* 起動面情報が 0,1以外であった場合 は 1面固定 */
+        else
+        {
+            slave_face = D_RRH_BOOT_ACT1;
+        }
+
+        /* CPRI-FPGA起動面情報[6b]書き込み */
+        rtn_bpf = BPF_HM_DEVC_EEPROM_WRITE(D_RRH_EEP_CPRI_START_FLG1, &slave_face);
+        if(BPF_HM_DEVC_COMPLETE != rtn_bpf)
+        {
+            BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, "REG Write Access Fail slave side. rtn_bpf=%08x，slave_face=%d", rtn_bpf, slave_face);
+            BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_RETURN, "[f_main_iniCard] RETURN" );
+            return D_SYS_NG;
+        }
+    	/* 共有メモリも更新する */
+    	f_cmw_tra_inv_tbl->cmx_cpri_bootmen=slave_face;
+    }
+
+    /************************************************************
+     * ユーザIP-I2C初期化
+     ***********************************************************/
+     regw_data=0x0000000F;
+     BPF_HM_DEVC_REG_WRITE( D_RRH_LOG_REG_LV_WRITE, 0x40040120 , &regw_data);
+     regw_data=0x00000076;
+     BPF_HM_DEVC_REG_WRITE( D_RRH_LOG_REG_LV_WRITE, 0x4004013C , &regw_data);
+     regw_data=0x00000075;
+     BPF_HM_DEVC_REG_WRITE( D_RRH_LOG_REG_LV_WRITE, 0x40040140 , &regw_data);
+
+    /************************************************************
+     * 一次診断. NGの場合は、「一次診断NG5」のALMを発動する
+     ***********************************************************/
+    if (D_SYS_OK != f_main_diag()) {
+        f_com_abort(D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_DIA5);
+        return D_SYS_NG;
+    }
+
+	return D_SYS_OK;
+}
+
+/* @} */

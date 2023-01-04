@@ -1,0 +1,165 @@
+ifeq ($(BUILD_QEMU_DEF), 0)
+#------------------------------------------------------
+# Makefile for APL process
+#------------------------------------------------------
+# Target: cmn/dcm
+#------------------------------------------------------
+TARGET=libdu_aih.a
+
+include ../../../../Makefile.in
+
+#------------------------------------------------------
+# build top
+#------------------------------------------------------
+TOP=../../../..
+OPT=
+
+#------------------------------------------------------
+# Library
+#------------------------------------------------------
+LIB=-lm
+
+DEV_HOME=../../../../..
+BPF_LIB_DIR=$(DEV_HOME)/ramdisk/target/lib
+BPF_LIBS=-L$(BPF_LIB_DIR) \
+						-lbpf_svrm \
+						-lbpf_facc \
+						-lbpf_hrtm \
+						-lbpf_string \
+						-lbpf_ipcm \
+						-lbpf_itcm \
+						-lbpf_mblm \
+						-lbpf_devc \
+						-lbpf_log \
+						-lbpf_com \
+
+#------------------------------------------------------
+# PF Includes
+#------------------------------------------------------
+INCLUDES=\
+-I$(TOP)/sys/inc \
+-I$(TOP)/sys/inc_arch \
+-I$(TOP)/sys/inc_mw \
+-I$(TOP)/api/inc \
+-I$(TOP)/cmn/com/inc \
+-I$(TOP)/cmn/dcm/inc \
+-I$(TOP)/mp/public \
+-I$(TOP)/mp/server/interface/msg \
+-I$(TOP)/pf/ft_com/com/inc \
+-I$(TOP)/pf/ft_aih/bsp/inc \
+-I$(TOP)/pf/ft_aih/aih/inc \
+-I$(TOP)/pf/sys
+
+#---
+# Source Files
+#---
+SRC=$(shell ls ../src/*.c)
+OBJS=$(SRC:.c=.o)
+
+#------------------------------------------------------
+# rules
+#------------------------------------------------------
+#all: $(TARGET)
+#$(TARGET): $(OBJS)
+#	$(AR) rc $(TARGET) $(OBJS)
+#%.o: %.c
+#	$(CC) $(OPT) $(CFLAGS) -c $< $(INCLUDES)  $(BPF_LIBS) $(LIB) $(BPFINC) -o $@
+
+all: $(TARGET)
+$(TARGET): $(OBJS)
+	$(AR) rc $(TARGET) $(OBJS)
+%.o: %.c
+	$(CC) $(OPT) $(CFLAGS) -c $< $(INCLUDES) -o $@
+	
+install:
+	mv -f ../src/*.o ../lib
+	mv -f ./*.a ../lib
+	
+clean:
+	rm -f ../lib/*.o $(TARGET) *~
+	rm -f ../src/*.o ../src/*.d $(TARGET) *~
+
+endif
+
+ifeq ($(BUILD_QEMU_DEF), 1)
+#------------------------------------------------------
+# Makefile for APL process
+#------------------------------------------------------
+# Target: cmn/dcm
+#------------------------------------------------------
+TARGET=libdu_aih.a
+
+include ../../../../Makefile.in
+
+#------------------------------------------------------
+# build top
+#------------------------------------------------------
+TOP=../../../..
+OPT=
+
+#------------------------------------------------------
+# Library
+#------------------------------------------------------
+LIB=-lm
+
+DEV_HOME=../../../../..
+BPF_LIB_DIR=$(DEV_HOME)/ramdisk/target/lib
+BPF_LIBS=-L$(BPF_LIB_DIR) \
+						-lbpf_svrm \
+						-lbpf_facc \
+						-lbpf_hrtm \
+						-lbpf_string \
+						-lbpf_ipcm \
+						-lbpf_itcm \
+						-lbpf_mblm \
+						-lbpf_devc_qemu \
+						-lbpf_log \
+						-lbpf_com \
+
+#------------------------------------------------------
+# PF Includes
+#------------------------------------------------------
+INCLUDES=\
+-I$(TOP)/sys/inc \
+-I$(TOP)/sys/inc_arch \
+-I$(TOP)/sys/inc_mw \
+-I$(TOP)/api/inc \
+-I$(TOP)/cmn/com/inc \
+-I$(TOP)/cmn/dcm/inc \
+-I$(TOP)/mp/public \
+-I$(TOP)/mp/server/interface/msg \
+-I$(TOP)/pf/ft_com/com/inc \
+-I$(TOP)/pf/ft_aih/bsp/inc \
+-I$(TOP)/pf/ft_aih/aih/inc \
+-I$(TOP)/pf/sys
+
+#---
+# Source Files
+#---
+SRC=$(shell ls ../src/*.c)
+OBJS=$(SRC:.c=.o)
+
+#------------------------------------------------------
+# rules
+#------------------------------------------------------
+#all: $(TARGET)
+#$(TARGET): $(OBJS)
+#	$(AR) rc $(TARGET) $(OBJS)
+#%.o: %.c
+#	$(CC) $(OPT) $(CFLAGS) -c $< $(INCLUDES)  $(BPF_LIBS) $(LIB) $(BPFINC) -o $@
+
+all: $(TARGET)
+$(TARGET): $(OBJS)
+	$(AR) rc $(TARGET) $(OBJS)
+%.o: %.c
+	$(CC) $(OPT) $(CFLAGS) -c $< $(INCLUDES) -o $@
+	
+install:
+	mv -f ../src/*.o ../lib
+	mv -f ./*.a ../lib
+	
+clean:
+	rm -f ../lib/*.o $(TARGET) *~
+	rm -f ../src/*.o ../src/*.d $(TARGET) *~
+
+endif

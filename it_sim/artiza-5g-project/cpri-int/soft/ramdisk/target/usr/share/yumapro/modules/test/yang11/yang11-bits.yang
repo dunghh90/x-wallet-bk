@@ -1,0 +1,50 @@
+module yang11-bits {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/yang11-bits";
+  prefix ybit;
+  revision "2016-11-27";
+
+  typedef my-base-bits-type {
+     type bits {
+       bit A {
+         position 1;
+       }
+       bit B {
+         position 3;
+       }
+       bit C {
+         position 4;
+       }
+     }
+   }
+
+   leaf B1 {
+     type my-base-bits-type {
+       bit A;
+       bit B {
+         position 3;
+       }
+     }
+   }
+
+   leaf B2 { type bitbase3; }
+
+   typedef bitbase3 {
+      type bitbase2;
+   }
+
+   typedef bitbase2 {
+      type bitbase1 {}
+   }
+
+   typedef bitbase1 {
+      type bits {
+        bit AA;
+        bit BB;
+        bit CC;
+      }
+    }
+
+
+}

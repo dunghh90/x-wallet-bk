@@ -1,0 +1,36 @@
+module test-keyclass2 {
+  namespace "http://www.yumaworks.com/ns/test-keyclass2";
+  prefix testkc2;
+
+  import yumaworks-extensions {
+    prefix ywx;
+  }
+
+  revision "2017-01-11";
+
+  typedef cname-ref {
+    type leafref {
+      path /testkc2:classifier-entry/testkc2:name;
+    }
+  }
+
+  list classifier-entry {
+    ywx:sil-priority 150;
+
+    key "name";
+
+    leaf name {
+      type string;
+    }
+
+    leaf mtype {
+      type string;
+      default "qos";
+      description
+        "Type of the class template";
+    }
+  }
+
+}
+
+

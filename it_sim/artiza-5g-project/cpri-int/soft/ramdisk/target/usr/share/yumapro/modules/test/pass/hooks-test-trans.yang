@@ -1,0 +1,221 @@
+module hooks-test-trans {
+  namespace "http://www.yumaworks.com/ns/hooks-test-trans";
+  prefix "transhook";
+
+  import hooks-test { prefix hk; }
+
+
+revision 2019-02-27 {
+    description
+      "More regt test node:
+         -YPW-1434: Transaction Hook function called only once during
+          DELETE operation
+        - YPW-1407 Transaction Hook callback on leafy node
+          called only once for multiple siblings";
+  }
+
+  revision 2018-11-06 {
+    description
+      "More regt test node:
+        - YPW-1334: Tranasction Hook is not invoked per data
+          nodes (for each list entries)";
+  }
+
+  revision 2018-07-16 {
+    description
+      "Initial version.
+        - YPW-1295: Transaction hook does not fire for subtree mode edits";
+  }
+
+  grouping physical-address-grouping {
+    leaf rack {
+      type string;
+    }
+    leaf subrack {
+      type string;
+    }
+    leaf slot {
+      type string;
+    }
+    leaf subslot {
+      type string;
+    }
+    leaf port {
+      type string;
+    }
+  }
+
+  grouping emc-config-grouping {
+    container emc {                     // edit2 cb + Transaction Hook
+      presence
+        "Presence activates EMC function.";
+      container ma-list {               // edit2 cb
+        must "count(ma[not(string(uri))])<=1" {
+          error-message
+            "Not more than one Management Agent"+
+            " without uri or empty uri is allowed";
+        }
+
+        list ma {                       // edit2 cb
+          key name;
+          unique uri;
+
+          leaf name {
+            type string;
+            must ".!='default'" {
+              error-message
+                "Value 'default' is reserved for internal use";
+            }
+          }
+
+          leaf uri {
+            type string;
+          }
+
+          container address-prefix {    // edit2 cb
+            uses physical-address-grouping;
+          }
+        }
+      }
+    }
+  }
+
+  /// no any callbacks registered for this tree
+  grouping emc-config-grouping2 {
+    container emc2 {                  // Transaction Hook ONLY
+      presence
+        "Presence activates EMC function.";
+      container ma-list {
+        must "count(ma[not(string(uri))])<=1" {
+          error-message
+            "Not more than one Management Agent"+
+            " without uri or empty uri is allowed";
+        }
+
+        list ma {
+          key name;
+          unique uri;
+
+          leaf name {
+            type string;
+            must ".!='default'" {
+              error-message
+                "Value 'default' is reserved for internal use";
+            }
+          }
+
+          leaf uri {
+            type string;
+          }
+
+          container address-prefix {
+            uses physical-address-grouping;
+          }
+        }
+      }
+    }
+  }
+
+  /* YPW-1334: Tranasction Hook is not invoked per data
+   * nodes (for each list entries)
+   */
+  grouping emc-list-grouping {
+    list transhook-list {           // Transaction Hook ONLY
+      key name;
+
+      leaf name {
+        type string;
+        must ".!='default'" {
+          error-message
+            "Value 'default' is reserved for internal use";
+        }
+      }
+
+      leaf uri {
+        type string;
+      }
+    }
+  }
+
+  /* YPW-1407 Transaction Hook callback on leafy node
+   * called only once for multiple siblings
+   */
+  grouping list-grouping2 {
+    list transhook-list2 {
+      key name;
+
+      leaf name {
+        type string;
+      }
+
+      leaf leaf-test {                  // Transaction Hook
+        type string;
+      }
+
+      leaf-list ll-test {               // Transaction Hook
+        type string;
+      }
+
+      leaf edit1-test {                 // EDIT1 callback
+        type string;
+      }
+    }
+  }
+
+ /* YPW-1434: Transaction Hook function called only once during
+  * DELETE operation
+  */
+  grouping list-grouping3 {
+    list transhook-list3 {              // EDIT2 callback
+      key name;
+
+      leaf name {
+        type string;
+      }
+
+      leaf leaf-test {                  // NODE Transaction Hook
+        type string;
+      }
+    }
+  }
+
+  grouping list-grouping4 {
+    list transhook-list4 {              // EDIT2 callback
+      key name;
+
+      leaf name {
+        type string;
+      }
+
+      leaf leaf-test {                  // SUBTREE Transaction Hook
+        type string;
+      }
+    }
+  }
+
+  /*
+   * Configuration data nodes
+   */
+
+  augment "/hk:interfaces" {
+    uses emc-config-grouping;
+    uses emc-config-grouping2;
+
+   /* YPW-1334: Tranasction Hook is not invoked per data
+    * nodes (for each list entries)
+    */
+    uses emc-list-grouping;
+
+    /* YPW-1407 Transaction Hook callback on leafy node
+     * called only once for multiple siblings
+     */
+    uses list-grouping2;
+
+    /* YPW-1434: Transaction Hook function called only once during
+     * DELETE operation
+     */
+    uses list-grouping3;
+    uses list-grouping4;
+  }
+
+}

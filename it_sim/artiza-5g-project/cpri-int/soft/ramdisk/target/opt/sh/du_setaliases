@@ -1,0 +1,8 @@
+#!/bin/sh
+alias help='du -help'
+alias reset='du -reset'
+alias reboot='reset'
+alias logout='echo "See you ...";exit'
+alias bye='logout'
+alias quit='logout'
+alias jig='PATH=/opt/proc:/opt/sh:/opt/debug:/opt/tp:/opt/lnk:/opt/agent/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin /opt/tp/rrh'

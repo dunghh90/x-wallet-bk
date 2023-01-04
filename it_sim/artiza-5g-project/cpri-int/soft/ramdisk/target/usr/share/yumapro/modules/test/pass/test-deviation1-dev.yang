@@ -1,0 +1,17 @@
+module test-deviation1-dev {
+  namespace "http://netconfcentral.org/ns/mytest-dev";
+  prefix "mytest-dev";
+
+  import test-deviation1 {
+    prefix mytest;
+  }
+  revision 2019-11-05 {  }
+
+  deviation /mytest:c1 {
+      deviate not-supported;
+  }
+
+  deviation /mytest:c2/mytest:addVal {
+    deviate not-supported;
+  }
+}

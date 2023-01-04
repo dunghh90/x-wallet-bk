@@ -1,0 +1,24 @@
+module errmsg-if {
+
+    namespace "http://netconfcentral.org/ns/errmsg-if";
+    prefix "em";
+
+    import yumaworks-extensions { prefix ywx; }
+    import ietf-interfaces { prefix if; }
+
+    revision 2018-04-12 {
+        description "Initial revision.";
+    }
+
+    deviation /if:interfaces/if:interface/if:type {
+      deviate add {
+          ywx:errmsg "This is the name %s and type %s of the interface" {
+            ywx:errmsg-parm "../name";
+            ywx:errmsg-parm ".";
+            ywx:errmsg-lang "en";
+          }
+
+      }
+    }
+
+}

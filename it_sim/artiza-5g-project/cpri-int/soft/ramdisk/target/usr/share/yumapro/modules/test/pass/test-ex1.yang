@@ -1,0 +1,27 @@
+module test-ex1 {
+
+    namespace "http://yumaworks.com/ns/test-ex1";
+
+    prefix "e1";
+
+    description
+      "Example target module for yangmap";
+
+    revision 2018-02-22;
+
+    // test target (hidden from client) data model
+    container logical-ports {
+      list logical-port {
+        key "name";
+        leaf name { type string; }
+
+        list nest2 {
+          key name;
+          leaf name { type string; }
+          leaf N2 { type int32; }
+          leaf N3 { type uint32; }
+        }
+      }
+    }
+
+}

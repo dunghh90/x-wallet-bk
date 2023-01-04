@@ -1,0 +1,2 @@
+m_rc_RePortCnt.c:36:6:m_rc_RePortCntRes	80	dynamic,bounded
+m_rc_RePortCnt.c:98:6:m_rc_RePortCntReq	80	dynamic,bounded

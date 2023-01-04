@@ -1,0 +1,40 @@
+module simple_list_test {
+
+    namespace "http://netconfcentral.org/ns/simple_list_test";
+    prefix "slt";
+    import yumaworks-extensions { prefix ywx; }
+/*
+    revision 2018-01-08 {
+        description
+          "Add no-sil-delete-children-first extension
+           to maintain same SIL callbacks for integ-tests.";
+    }
+*/
+    revision 2008-11-20 {
+        description "Initial revision.";
+    }
+
+    container simple_list {
+      ywx:no-sil-delete-children-first;
+      list theList {
+        key theKey;
+        leaf theKey { type string; }
+        leaf theVal { type string; }
+      }
+    }
+
+    rpc inc-counter {
+        description "Increments a counter.";
+    }
+
+    rpc get-counter {
+        description "Gets the current count.";
+
+        output {
+            leaf count {
+                description "The current count.";
+                type uint32;
+            }
+        }
+    }
+}

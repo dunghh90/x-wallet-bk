@@ -1,0 +1,53 @@
+module test-leafref {
+
+  namespace "http://netconfcentral.org/ns/test-leafref";
+  prefix tl;
+  revision "2016-03-14";
+
+
+  list int3 {
+    key "name type";
+    leaf name { type int32; }
+    leaf type { type int32; }
+  }
+
+  typedef ut {
+    type leafref {
+      path "/int3/type";
+    }
+    default test4;
+  }
+
+  typedef ut2 {
+    type leafref {
+      path "/int3/bad";
+    }
+  }
+
+  leaf ut2 {
+    type ut;
+    default test1;
+  }
+
+  leaf ut3 {
+    type ut;
+    default 32;
+  }
+
+  leaf ut4 {
+    type leafref {
+      path "/int3/bad";
+    }
+  }
+
+  leaf-list ut5 {
+    type leafref {
+      path "/int3/bad";
+    }
+  }
+
+  leaf-list ut6 {
+    type ut2;
+  }
+
+}

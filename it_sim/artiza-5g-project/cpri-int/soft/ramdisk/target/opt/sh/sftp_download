@@ -1,0 +1,69 @@
+#!/bin/sh
+
+# remote server 情報. 
+REMOTE_IP=$1 
+REMOTE_PORT=$2
+REMOTE_USER=$3 
+REMOTE_PASS=$4 
+# remote serverから転送するファイル. 
+REMOTE_FILE=$5 
+
+# sftpでファイルダウンロード
+cd /tmp
+expect -c "
+	set timeout 300
+	spawn sftp -l 16000 -vvv -P ${REMOTE_PORT} ${REMOTE_USER}@${REMOTE_IP}
+	expect {
+		\"Are you sure you want to continue connecting (yes/no)? \" {
+		send \"yes\n\"
+		expect \"assword:\"
+		send \"${REMOTE_PASS}\n\"
+		expect \"sftp>\" {
+			   send \"get ${REMOTE_FILE}\n\"
+		} \"denied\" {
+			exit 2
+		} timeout {
+			exit 1
+		}
+		expect \"100%\" {
+			expect \"sftp>\"
+			send \"quit\n\"
+			exit 0
+		} \"not found\" {
+			send \"quit\n\"
+			exit 2
+		} \"sftp>\" {
+			send \"quit\n\"
+			exit 1
+		} timeout {
+			exit 1
+		}
+	} \"assword:\" {
+		send \"${REMOTE_PASS}\n\"
+		expect \"sftp>\" {
+			   send \"get ${REMOTE_FILE}\n\"
+		} \"denied\" {
+			exit 2
+		} timeout {
+			exit 1
+		}
+		expect \"100%\" {
+			expect \"sftp>\"
+			send \"quit\n\"
+			exit 0
+		} \"not found\" {
+			send \"quit\n\"
+			exit 2
+		} \"sftp>\" {
+			send \"quit\n\"
+			exit 1
+		} timeout {
+			exit 1
+		}
+	} timeout {
+		exit 1
+	}
+}
+exit 1
+interact 
+" 

@@ -1,0 +1,3 @@
+f_nego_AutoNegoStartInd.c:35:6:f_nego_AutoNegoStartInd	112	dynamic,bounded
+f_nego_AutoNegoStartInd.c:153:6:f_nego_HardSetLyncUp_Start	32	static
+f_nego_AutoNegoStartInd.c:322:6:f_nego_HardSetHfnSync_Start	32	static

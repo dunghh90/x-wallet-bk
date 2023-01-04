@@ -1,0 +1,3 @@
+m_cr_cm_RunHisSet.c:29:6:m_cr_cm_RunHisSet	128	static
+m_cr_cm_RunHisSet.c:173:6:m_cr_cm_RunHisNG	48	static
+m_cr_cm_RunHisSet.c:194:6:m_cr_logPrint	208	dynamic,bounded

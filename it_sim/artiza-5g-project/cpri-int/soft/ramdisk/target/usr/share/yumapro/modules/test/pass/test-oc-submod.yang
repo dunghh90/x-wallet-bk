@@ -1,0 +1,36 @@
+submodule test-oc-submod {
+
+  belongs-to test-oc1 {
+    prefix "toc1";
+  }
+
+  revision "2019-03-05" {
+    description
+      "Initial revision. Test module for Open Config modules";
+  }
+
+  grouping l2ni-instance {
+    container fdb {
+      container config {
+        uses acl-set-config2;
+      }
+      container state {
+        config false;
+        uses acl-set-config2;
+      }
+    }
+  }
+
+  grouping acl-set-config2 {
+    leaf name {
+      type string;
+    }
+
+    leaf description {
+      type string;
+    }
+  }
+
+}
+
+

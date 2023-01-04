@@ -1,0 +1,877 @@
+module hooktest {
+
+    namespace "http://netconfcentral.org/ns/hooktest";
+    prefix "hookt";
+
+    import yumaworks-extensions { prefix ywx; }
+    import hooks-test { prefix hk; }
+    import ietf-snmp { prefix snmp; }
+    import ietf-inet-types { prefix inet; }
+
+
+    revision 2019-05-01 {
+      description
+        "Add more sil-delete-children test scenarious with different
+         sil-priorities combinations.
+         - YPW-1470: server can invoke callbacks in wrong order
+                     during delete-children-first ";
+    }
+
+    revision 2019-04-15 {
+        description
+            "Add augment to 'hk:intefaces/interface' to test Callback
+             on deafult NP containers
+              - YPW-1458
+              - YPW-1458 (ONLY LION)
+             Add more tests for 'server skip children callbacks during
+             REPLACE operatio' problem.
+              - YPW-1465: (BOTH LION AND TIGER)
+             ";
+    }
+
+    revision 2018-07-16 {
+        description
+            "Add augment to 'hk:intefaces' to test Set Hook and
+             Delete-children-first mode
+              - YPW-1270
+             ";
+    }
+
+    revision 2017-12-27 {
+        description
+            "Add config=false counters to test callbacks invokation
+             and count them for validation.
+             Add refresh-callback-counters RPC to refresh callbacks counters";
+    }
+
+    revision 2017-11-02 {
+        description
+            "- YPW-1125: Replace operation is converted to create after
+             encountering an error with previous the replace operation
+
+             - FD#1292: <restore> operation crash. Add more test cases";
+    }
+
+    revision 2017-06-02 {
+        description
+            "YPW-1049: Server duplicate sil-callbacks test";
+    }
+
+    revision 2017-03-21 {
+        description
+            "Add new edit2 callbacks to test Rollback operation.
+             Add a new import: ietf-inet-types
+             - YPW-1016";
+    }
+
+    revision 2016-12-09 {
+        description
+            "Add test augmented leaf 'mtu' for the
+             server crash during reverse-edit test.
+             - YPW-937";
+    }
+
+    revision 2016-11-11 {
+        description
+            "Add test for edit2 operation merge instead of create.
+             - YPW-928";
+    }
+
+    revision 2016-08-25 {
+        description
+            "Add test for edit2 SIL callback not invoked for all the
+             instances with different keys for merge.
+             - YPW-840";
+    }
+
+    revision 2016-08-15 {
+        description
+            "Add test for error registering edit2 callback on
+             container that augments choice.
+             - YPW-874";
+    }
+
+    revision 2016-07-19 {
+        description
+            "Add test data model for 'remove' operation
+             problem with edit2 cb
+             - YPW-841";
+    }
+
+    revision 2016-07-11 {
+        description
+            "Add typdef to test leafref nodes in augment
+             - YPW-834
+             - YPW-835 ";
+    }
+
+    revision 2016-07-08 {
+        description
+            "Add multiple test scenario for Hooks
+             and Edit1 and Edit2.
+             - YPW-786
+             - YWP-840
+             - YPW-801 ";
+    }
+
+    revision 2016-01-20 {
+        description "Initial revision.";
+    }
+
+    leaf hookleaf { type string; }
+
+    leaf setleaf { type string; }
+
+    leaf whenleaf {
+      // when "../contA/listname[leafkey=11]/leafA = 32";
+      type string;
+    }
+
+    leaf mustleaf {
+      // must "../contA";
+      type string;
+    }
+
+    list hooklist {
+      ywx:sil-priority 40;
+      key "b";
+
+      leaf a {
+         type int32;
+      }
+
+      leaf b {
+        type string;
+      }
+
+      leaf c {
+         type uint32;
+         default 5;
+      }
+    }
+
+    container contA {
+      ywx:sil-priority 10;
+      // when "../setleaf = 'whentest'";
+      // must "leafB != 11";
+
+      list listname {
+        key "leafkey";
+
+        leaf leafkey {
+           type uint32 {
+               range "1..32";
+           }
+        }
+
+        leaf leafA {
+           type uint64 {
+               range "1..100";
+           }
+        }
+
+        leaf defleaf {
+         type uint32 {
+          range "1..32";
+         }
+         description
+             "Leaf with default value";
+           default "11";
+        }
+      }
+
+      leaf leafB {
+         type uint32 {
+             range "1..32";
+         }
+      }
+
+      leaf-list leaflistA {
+        ywx:sil-priority 5;
+        type int8;
+      }
+    }
+
+
+  // YPW-786 set-hook BUG test scenario for when statement with augment
+  augment "/hk:interfaces/hk:interface" {
+    when "hk:type = 'test1' or hk:type = 'test2'";
+
+    leaf mode {
+      type string;
+      default "defmode";
+      description "defmode, defmode2, defmode3";
+    }
+  }
+
+  augment "/hk:interfaces/hk:interface" {
+    when "hk:type = 'l2vlan' or hk:type = 'l3vlan'";
+
+    leaf-list untagged-ports {
+      type hk:listname-ref;
+      must "/hk:interfaces/hk:interface[hk:name = current()]"
+         + "/hookt:mode = 'defmode' or
+            /hk:interfaces/hk:interface[hk:name = current()]"
+         + "/hookt:mode = 'defmode2'" {
+        description
+                "...";
+      }
+    }
+  }
+
+  // YWP-840 Edit2 BUG test scenario
+  augment "/hk:interfaces/hk:interface" {
+    when "hk:type = 'dot1' or hk:type = 'dot2'";
+
+    container dot1x {             // edit2 cb
+
+      leaf host-mode {
+        type enumeration {
+          enum x;
+          enum y;
+          enum z;
+        }
+        default "x";
+      }
+
+      leaf period {
+        type uint32{
+          range "1..65535" {
+            error-message "out of range";
+          }
+        }
+        default "60";
+        units "seconds";
+      }
+
+      list edit2-list {
+        key "key1 key2 key3";
+
+        leaf key1 {
+          type string;
+        }
+        leaf key2 {
+          type uint32;
+        }
+        leaf key3 {
+          type uint32;
+        }
+
+        leaf name {
+          type string;
+        }
+
+        leaf test2 {
+          type string;
+        }
+
+      }
+
+    }
+  }
+
+
+  // YPW-834: ref type test
+  augment "/hk:interfaces/hk:interface" {
+    when "hk:type = 'member'";
+
+    list must-member {
+      key "name";
+
+      leaf name {
+        type hk:listname-ref;
+        must "/hk:interfaces/hk:interface[hk:name = current()]"
+            +   "/hk:type = 'test1' and
+              /hk:interfaces/hk:interface[hk:name = current()]"
+            +   "/hookt:mode = 'defmode3'" {
+              description
+                "...";
+        }
+      }
+    }
+
+    // definition not found Segfault test
+    list member {
+      key "name";
+
+      leaf name {
+        type string;
+      }
+
+      leaf mem-number {
+        type uint32 {
+          range "1..65535" {
+            error-message "out of range";
+          }
+        }
+      }
+    }
+  }
+
+  // YPW-841: "remove" operation problem with edit2 cb
+  grouping storm {
+    leaf broadcast {
+      type uint32 {
+        range "0..33554368";
+      }
+    }
+  }
+
+  augment "/hk:interfaces/hk:interface" {
+    container uses-container {      // edit2 callback
+      uses storm;
+    }
+  }
+
+ /* YPW-874: error registering edit2 callback on
+  * container that augments choice
+  */
+  augment "/snmp:snmp/snmp:usm/snmp:local/snmp:user/snmp:priv/snmp:protocol" {
+    case test-case {
+      container test-container {  // edit2 callback
+        leaf test-leaf {
+          type string;
+        }
+      }
+    }
+  }
+
+  augment "/snmp:snmp/snmp:usm/snmp:local/snmp:user/snmp:priv/snmp:protocol" {
+    container test-container2 {  // edit2 callback
+      leaf test-leaf2 {
+        type string;
+      }
+    }
+  }
+
+  // YPW-928: edit2 operation merge instead of create
+  augment "/hk:interfaces/hk:interface" {
+    when "hk:type = 'lag-test'";
+
+    leaf min-links {
+      type uint32 {
+        range "1..32";
+      }
+      default "1";
+    }
+
+    leaf lag-mode {
+      type enumeration {
+        enum STATIC {
+            value 1;
+        }
+
+        enum DYNAMIC {
+            value 2;
+        }
+      }
+      default "STATIC";
+    }
+
+    list member-ports {
+      key "name";
+
+      leaf name {
+        type string;
+      }
+
+      leaf lacp-mode {
+        type enumeration {
+          enum ACTIVE {
+              value 1;
+          }
+          enum PASSIVE {
+              value 2;
+          }
+        }
+      }
+    }
+  }
+
+  // YPW-937: server crash during reverse-edit
+  augment "/hk:interfaces/hk:interface" {
+
+    leaf mtu {
+      type uint32;
+      default "1532";
+    }
+  }
+
+  // YPW-1016: server crash during Rollback phase after "delete" operation
+  augment "/hk:interfaces" {
+    container ntp {                   // edit2 callback
+
+      container associations {        // edit2 callback
+
+        container multicast-server {  // edit2 callback
+          leaf-list ipv6-address {
+            type inet:ipv6-address;
+          }
+
+          leaf ipv6-address-leaf {
+            type inet:ipv6-address;
+          }
+        }
+      }
+    }
+  }
+
+  // YPW-1049: Server duplicate sil-callbacks
+  augment "/hk:interfaces/hk:interface" {
+    container fc-params {     // edit2 callback
+
+      leaf vfabric-id {
+        type string;
+      }
+    }
+  }
+
+
+  // YPW-1125: Replace operation is converted to create after
+  // encountering an error with previous the replace operation
+  container ip-acl {          // edit2 callback
+
+    list ip-acl-entry {       // edit2 callback
+      key "src-ip dest-ip";
+
+      leaf src-ip {
+        type inet:ip-prefix;
+      }
+
+      leaf dest-ip {
+        type inet:ip-prefix;
+      }
+
+      // this is help internally, if the value is 11 report an error
+      leaf port-ranges {
+        type string;
+        default "all";
+      }
+    }
+  }
+
+  // FD#1292: <restore> operation crash
+  grouping aaa-authentication-user-config {
+    leaf username {
+      type string;
+    }
+    leaf password-hashed {
+      type string;
+    }
+    leaf role {
+      type string;
+    }
+  }
+
+  grouping aaa-authentication-user-top {
+    container users {             // edit2 callback
+      list user {                 // edit2 callback
+        key "username";
+
+        leaf username {
+          type string;
+        }
+
+        container config {        // edit2 callback
+          uses aaa-authentication-user-config;
+        }
+      }
+    }
+  }
+
+  grouping aaa-authentication-top {
+    container authentication {      // edit2 callback
+      uses aaa-authentication-user-top;
+    }
+  }
+
+  grouping aaa-top {
+    container aaa {               // edit2 callback
+      uses aaa-authentication-top;
+    }
+  }
+
+  grouping system-top {
+    container test-system {            // edit2 callback
+      presence "Presence container to avoid restreg test problems with
+                get and get-config requests";
+      uses aaa-top;
+    }
+  }
+  uses system-top;
+
+
+
+  // RPCs to init/clean callback counters for restreg test
+  rpc refresh-callback-counters {
+    description
+      "Refresh callback counters";
+  }
+
+  container callback_counters {
+    description
+      "Callback statistical data, to be used in the RESTreg test";
+
+    config false;
+
+    container total_cb_counters {
+      description
+        "Total callback invocation numbers";
+
+      leaf validate_cb_count {
+        type uint32;
+      }
+      leaf apply_cb_count {
+        type uint32;
+      }
+      leaf commit_cb_count {
+        type uint32;
+      }
+      leaf rollback_cb_count {
+        type uint32;
+      }
+      leaf other_cb_count {
+        description
+          "Total callback invocation numbers for other callbacks, set-hook, etc";
+        type uint32;
+      }
+    }
+
+    container total_validate_cb_counters {
+      description
+        "Total Validate phase callback invocation numbers";
+
+      leaf validate_cb_count_create {
+        type uint32;
+      }
+      leaf validate_cb_count_merge {
+        type uint32;
+      }
+      leaf validate_cb_count_delete {
+        type uint32;
+      }
+      leaf validate_cb_count_replace {
+        type uint32;
+      }
+      leaf validate_cb_count_load {
+        type uint32;
+      }
+    }
+
+    container total_apply_cb_counters {
+      description
+        "Total Apply phase callback invocation numbers";
+
+      leaf apply_cb_count_create {
+        type uint32;
+      }
+      leaf apply_cb_count_merge {
+        type uint32;
+      }
+      leaf apply_cb_count_delete {
+        type uint32;
+      }
+      leaf apply_cb_count_replace {
+        type uint32;
+      }
+      leaf apply_cb_count_load {
+        type uint32;
+      }
+    }
+
+    container total_commit_cb_counters {
+      description
+        "Total Commit phase callback invocation numbers";
+
+      leaf commit_cb_count_create {
+        type uint32;
+      }
+      leaf commit_cb_count_merge {
+        type uint32;
+      }
+      leaf commit_cb_count_delete {
+        type uint32;
+      }
+      leaf commit_cb_count_replace {
+        type uint32;
+      }
+      leaf commit_cb_count_load {
+        type uint32;
+      }
+    }
+
+    container total_rollback_cb_counters {
+      description
+        "Total Rollback phase callback invocation numbers";
+
+      leaf rollback_cb_count_create {
+        type uint32;
+      }
+      leaf rollback_cb_count_merge {
+        type uint32;
+      }
+      leaf rollback_cb_count_delete {
+        type uint32;
+      }
+      leaf rollback_cb_count_replace {
+        type uint32;
+      }
+      leaf rollback_cb_count_load {
+        type uint32;
+      }
+    }
+
+    container total_others_cb_counters {
+      description
+        "Total Other callbacks invocation numbers";
+
+      leaf sethook_cb_count {
+        type uint32;
+      }
+      leaf transhook_cb_count {
+        type uint32;
+      }
+      leaf setorderhook_cb_count {
+        type uint32;
+      }
+      leaf trans_start_cb_count {
+        type uint32;
+      }
+      leaf trans_compl_cb_count {
+        type uint32;
+      }
+      leaf validate_compl_cb_count {
+        type uint32;
+      }
+      leaf apply_compl_cb_count {
+        type uint32;
+      }
+      leaf commit_compl_cb_count {
+        type uint32;
+      }
+    }
+  }
+
+  // YPW-1270: Yang extension "delete-children-first"
+  // does not work if the request is made by set-hook
+  augment "/hk:interfaces/hk:interface" {
+    when "hk:type = 'sethook-test'";
+
+    container qos-cfg {                   // edit2 CB
+      leaf flow-control {
+        type boolean;
+      }
+
+      container interface-trust-map {     // edit2 CB
+        leaf trust-map-name {
+          type string;
+        }
+        leaf trust-map-type {
+          type enumeration {
+            enum "dot1p" {
+              value 1;
+            }
+            enum "dscp" {
+              value 2;
+            }
+          }
+        }
+      }
+
+      list policy {                       // edit2 CB
+        key "direction name";
+        leaf direction {
+          type enumeration {
+            enum "input" {
+              value 1;
+            }
+            enum "output" {
+              value 2;
+            }
+          }
+        }
+
+        leaf name {
+          type string;
+        }
+      }
+    }
+  }
+
+  /* YPW-1458: server skips callbacks for NP containers */
+  augment "/hk:interfaces/hk:interface" {
+    when "hk:type = 'invoke-test'";
+
+    container npcont {                   // edit2 CB
+      leaf mode {
+        type string;
+        default "defmode";
+      }
+    }
+  }
+
+  /* YPW-1465: server skip children callbacks during REPLACE operation */
+  container mock {                       // edit2 CB
+    presence "Hiding the cont for better testing";
+
+    container stacking {                 // edit2 CB
+      container local-agent {            // edit2 CB
+        leaf agent-name {
+          type string;
+          default "local";
+        }
+        container address-prefix {       // edit2 CB
+          leaf rack {
+            type string;
+            default "1";
+          }
+          leaf subrack {
+            type string;
+            default "1";
+          }
+        }
+      }
+    }
+  }
+
+  /* FD#100322: delete-children-first broken */
+  container d-interfaces {                // edit2 CB
+    presence "Presence container to avoid restreg test problems";
+
+    list interface {                      // edit2 CB
+      key "name";
+
+      leaf name {
+        type string;
+      }
+
+      leaf type {
+        type string;
+        mandatory true;
+      }
+
+      leaf defleaf1 {
+        type uint32;
+        default "11";
+      }
+    }
+
+    leaf defleaf {
+      type uint32;
+      default "11";
+    }
+
+    leaf non-def {
+      type uint32;
+    }
+  }
+
+  grouping ipv4-attributes {
+
+    leaf vrid {
+      type uint8 {
+        range 1..255;
+      }
+    }
+
+    container preempt {                  // edit2 CB
+
+      leaf enable {
+        type boolean;
+        default true;
+      }
+
+      leaf hold-time {
+        type uint32;
+        default 0;
+      }
+    }
+
+    leaf priority {
+      type uint8 {
+        range 1..254;
+      }
+      default 100;
+    }
+
+    container advertise-interval {        // edit2 CB
+      leaf advertise-interval-sec {
+        type uint8 {
+          range 1..255;
+        }
+        default 1;
+      }
+
+      leaf advertise-interval-centi-sec {
+        type uint16 {
+          range 25..4075 {
+            error-message "out of range, should be in the range of 25 to 4075";
+          }
+        }
+        default 100;
+        units centiseconds;
+      }
+    }
+  }
+
+  augment "/hookt:d-interfaces/hookt:interface" {
+
+    container vrrp {                      // edit2 CB
+      presence "Presence";
+
+      leaf active-active-mode {
+        when "../../hookt:type = 'test1' or ../../hookt:type = 'test2'";
+        type boolean;
+        default true;
+      }
+    }
+
+    container vrrp-ipv4 {                 // edit2 CB
+      presence "Presence";
+
+      must "../hookt:type != 'ethernetCsmacd' and " +
+           "../hookt:type != 'l3vlan'";
+
+      list vrrp-instance {                // edit2 CB
+        key "vrid";
+
+        uses ipv4-attributes;
+      }
+    }
+
+    container vrf {                      // edit2 CB
+      presence "Presence";
+
+      leaf mode {
+        when "../../hookt:type = 'test1' or ../../hookt:type = 'test2'";
+        type boolean;
+        default true;
+      }
+    }
+  }
+
+  container container-parent {
+    leaf name {
+          type string;
+    }
+    list list1 {
+      key list-name;
+      leaf list-name {
+          type string;
+          mandatory true;
+      }
+      leaf con-leaf {
+          type string;
+      }
+      container container-list {
+          leaf con-list-leaf { type string; }
+      }
+    }
+    container container-grandchild {
+      leaf name {
+          type string;
+      }
+    }
+  }
+
+}

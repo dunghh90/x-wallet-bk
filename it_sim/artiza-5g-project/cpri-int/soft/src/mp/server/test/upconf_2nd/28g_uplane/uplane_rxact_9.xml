@@ -1,0 +1,6 @@
+<user-plane-configuration xmlns="urn:xran:uplane-conf:1.0">
+  <rx-array-carriers>
+    <name>RxCar9</name>
+    <active>ACTIVE</active>
+  </rx-array-carriers>
+</user-plane-configuration>

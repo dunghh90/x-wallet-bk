@@ -1,0 +1,42 @@
+module augment_interface {
+
+  yang-version 1;
+
+  namespace "http://www.augment_interface.com/";
+
+  prefix aintf;
+
+  import iana-if-type {
+    prefix iana;
+  }
+
+  organization "Augment";
+
+  contact "augment@bug.com";
+
+  description "Example file to find the augment bug.";
+
+  revision "2014-06-16" {
+    description
+      "IANA interface type changed from enum to identityref.";
+  }
+
+  revision "2012-06-14" {
+    description "Initial revision.";
+  }
+
+
+  container augment_interface {
+    list interface {
+      key "name";
+      leaf name {
+        type string;
+      }
+
+      leaf type {
+        type identityref { base iana:iana-interface-type; }
+        mandatory true;
+      }
+    } // list interface
+  } // container augment_interface
+}

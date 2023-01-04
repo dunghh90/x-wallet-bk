@@ -1,0 +1,6 @@
+m_rc_FldMt_ForReleaseConnect.c:34:6:m_rc_Fld_Mt_ForReleaseConnectReq	128	dynamic,bounded
+m_rc_FldMt_ForReleaseConnect.c:145:6:m_rc_Fld_Mt_ForReleaseConnectRes	80	dynamic,bounded
+m_rc_FldMt_ForReleaseConnect.c:259:8:m_rc_Fld_Mt_ForReleaseConnectResRcvAllChk	48	static
+m_rc_FldMt_ForReleaseConnect.c:306:6:m_rc_Fld_Mt_ForReleaseConnectTO	192	dynamic,bounded
+m_rc_FldMt_ForReleaseConnect.c:433:6:m_rc_Fld_Mt_ForReleaseConnectInit	48	static
+m_rc_FldMt_ForReleaseConnect.c:468:6:m_rc_Fld_Mt_ForReleaseRspSnd	80	dynamic,bounded

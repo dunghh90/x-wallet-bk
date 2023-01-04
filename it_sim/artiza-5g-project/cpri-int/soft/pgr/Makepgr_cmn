@@ -1,0 +1,27 @@
+export ARCH = arm64
+export CROSS_COMPILE = aarch64-wrs-linux-
+export SYSROOT=/opt/windriver/wrlinux-tiny/10.17.41/sysroots/aarch64-wrs-linux/
+export PATH += :/opt/windriver/wrlinux-tiny/10.17.41/sysroots/x86_64-wrlinuxsdk-linux/usr/bin/aarch64-wrs-linux/:$SYSROOT
+
+export PGRTOP = $(shell pwd)
+export SRCTOP = $(PGRTOP)/../src
+include $(SRCTOP)/Makefile.in
+export PGR_MESSAGE_CHK = $(PGRTOP)/pgr_cmn.log
+export PGR_MESSAGE_ALL = $(PGRTOP)/pgrall_cmn.log
+export PGR_MESSAGE_CSV= $(PGRTOP)/pgrall_cmn.csv
+export PGR_CHK_SRC = $(PGRTOP)/pgrchk_cmn.log
+
+PGRDIRLIST= \
+$(SRCTOP)/cmn/com/src \
+$(SRCTOP)/cmn/com/lib \
+$(SRCTOP)/cmn/cmu/src \
+$(SRCTOP)/cmn/debug/src
+
+pgr:
+	@echo '"チェック済指摘","ソースファイル名",行番号,"グループ","指摘ID","メッセージ"' > $(PGR_MESSAGE_CHK)
+	@echo '"チェック済指摘","ソースファイル名",行番号,"グループ","指摘ID","メッセージ"' > $(PGR_MESSAGE_ALL)
+	@echo '' > $(PGR_CHK_SRC)
+	$(foreach dir,$(PGRDIRLIST),\
+		cd $(dir);cp $(PGRTOP)/makepgr_sub ./;make -f makepgr_sub pgr;rm ./makepgr_sub;\
+	)
+	iconv -t SJIS $(PGR_MESSAGE_ALL) > $(PGR_MESSAGE_CSV)

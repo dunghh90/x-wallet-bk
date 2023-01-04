@@ -1,0 +1,20 @@
+diff -urN a/drivers/spi/spi-cadence.c b/drivers/spi/spi-cadence.c
+--- a/drivers/spi/spi-cadence.c	2018-08-07 11:33:31.000000000 +0900
++++ b/drivers/spi/spi-cadence.c	2018-08-02 19:22:53.000000000 +0900
+@@ -46,6 +46,7 @@
+  * This register contains various control bits that affect the operation
+  * of the SPI controller
+  */
++#define CDNS_SPI_CR_MODFAILGEN	0x00020000 /* Modefail_gen_en */
+ #define CDNS_SPI_CR_MANSTRT	0x00010000 /* Manual TX Start */
+ #define CDNS_SPI_CR_CPHA		0x00000004 /* Clock Phase Control */
+ #define CDNS_SPI_CR_CPOL		0x00000002 /* Clock Polarity Control */
+@@ -56,7 +57,7 @@
+ #define CDNS_SPI_CR_MANSTRTEN	0x00008000 /* Manual TX Enable Mask */
+ #define CDNS_SPI_CR_SSFORCE	0x00004000 /* Manual SS Enable Mask */
+ #define CDNS_SPI_CR_BAUD_DIV_4	0x00000008 /* Default Baud Div Mask */
+-#define CDNS_SPI_CR_DEFAULT	(CDNS_SPI_CR_MSTREN | \
++#define CDNS_SPI_CR_DEFAULT	( CDNS_SPI_CR_MODFAILGEN | CDNS_SPI_CR_MSTREN | \
+ 					CDNS_SPI_CR_SSCTRL | \
+ 					CDNS_SPI_CR_SSFORCE | \
+ 					CDNS_SPI_CR_BAUD_DIV_4)

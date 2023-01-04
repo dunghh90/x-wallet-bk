@@ -1,0 +1,8 @@
+sendln 'sget /hardware'
+wait 'f_5g_du@5G_DU>'
+sendln 'sget /hardware/last-change'
+wait 'f_5g_du@5G_DU>'
+sendln 'sget /hardware/component/'
+wait 'f_5g_du@5G_DU>'
+sendln 'sget /hardware/component/state'
+wait 'f_5g_du@5G_DU>'

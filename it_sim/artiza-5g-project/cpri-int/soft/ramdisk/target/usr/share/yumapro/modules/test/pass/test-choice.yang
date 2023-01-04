@@ -1,0 +1,94 @@
+module test-choice {
+
+  namespace "http://netconfcentral.org/ns/test-choice";
+
+  prefix tchoice;
+
+  revision "2016-11-28" {
+    description 
+      "YPW-934: server crash during merge on choice containers";
+  }
+
+  /* Top P-cont test */
+  container top-cont-pres {
+    presence "test top-cont";
+      
+    choice protocol {
+      mandatory true;
+
+      container md5 {
+        uses group;
+      }
+
+      container sha {
+        uses group;
+       }
+    }
+  }
+
+  /* Top NP-cont test */
+  container top-cont {
+      
+    choice protocol {
+
+      container md5 {
+        uses group;
+      }
+
+      container sha {
+        uses group;
+       }
+    }
+  }
+
+  /* Top choice test */
+  choice top-choice {
+
+    container md5 {
+      uses group;
+    }
+
+    container sha {
+      uses group;
+    }
+  }
+
+  augment "/top-cont/protocol" {
+    case test-case {
+      container test-container {
+        leaf test-leaf {
+          type string;
+        }
+      }
+    }
+  }
+
+  augment "/top-cont-pres/protocol" {
+    case test-case {
+      container test-container {
+        leaf test-leaf {
+          type string;
+        }
+      }
+    }
+  }
+
+  augment "/top-choice" {
+    case test-case {
+      container test-container {
+        leaf test-leaf {
+          type string;
+        }
+      }
+    }
+  }
+
+  grouping group {
+    leaf group-leaf {
+      type uint32 {
+        range "0..33554368";
+      }
+    }
+  }
+
+}

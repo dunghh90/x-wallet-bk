@@ -1,0 +1,60 @@
+module simple_yang_test {
+
+    namespace "http://netconfcentral.org/ns/simple_yang_test";
+    prefix "syt";
+    import yumaworks-extensions { prefix ywx; }
+/*
+    revision 2018-01-08 {
+        description
+          "Add no-sil-delete-children-first extension
+           to maintain same SIL callbacks for integ-tests.";
+    }
+*/
+    revision 2017-01-13 {
+        description "Change container to presence to prevent
+                     must-stmt errors on bootup.";
+    }
+
+    revision 2011-11-21 {
+        description "Initial revision.";
+    }
+
+    container protocol {
+      choice name {
+        case udp {
+          leaf udp {
+            type empty;
+          }
+        }
+        case tcp {
+          leaf tcp {
+            type empty;
+          }
+        }
+      }
+   }
+
+   container interface {
+      ywx:no-sil-delete-children-first;
+      // added because YANG 1.1 says NP-containers always exist
+      // causes immediate false must-stmts below
+      presence "no false must-stmt at boot time.";
+      leaf ifType {
+         type enumeration {
+            enum ethernet;
+            enum atm;
+         }
+      }
+      leaf ifMTU {
+         type uint32;
+      }
+      must "ifType != 'ethernet' or " +
+           "(ifType = 'ethernet' and ifMTU = 1500)" {
+         error-message "An ethernet MTU must be 1500";
+      }
+      must "ifType != 'atm' or " +
+           "(ifType = 'atm' and ifMTU <= 17966 and ifMTU >= 64)" {
+         error-message "An atm MTU must be between 64 and 17966";
+      }
+   }
+}

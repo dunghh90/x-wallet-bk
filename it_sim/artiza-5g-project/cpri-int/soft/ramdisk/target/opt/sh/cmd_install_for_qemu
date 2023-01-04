@@ -1,0 +1,44 @@
+#!/bin/sh
+
+if [ $# -lt 1 ]; then
+  echo "Input param error"
+  echo $0 "<filename>"
+  echo "<filename> : filename "
+  exit 1
+fi
+
+echo "Start TFTP get file ..."
+tftp -g -r $1 10.0.2.2 
+if [ $? -eq 0 ]; then
+   echo "Finish"
+else
+   echo "Error !!!!!!!!!!!!!!!!!!!!"
+   exit 1
+fi
+
+echo "Start unzip ..."
+tar zvxf $1
+if [ $? -eq 0 ]; then
+   echo "Finish"
+else
+   echo "Error !!!!!!!!!!!!!!!!!!!!"
+   exit 1
+fi
+
+echo "Start Install ..."
+
+chmod 777 ./ramdisk/target/opt/tp/rrh
+chmod 777 ./ramdisk/target/opt/proc/*
+chmod 777 ./ramdisk/target/opt/debug/*
+chmod 777 ./ramdisk/target/opt/sh/*
+
+mv ./ramdisk/target/lib/lib* /lib/
+mv ./ramdisk/target/usr/local/lib64/* /usr/local/lib64/
+mv ./ramdisk/target/opt/debug/* /opt/debug/
+mv ./ramdisk/target/opt/lkm/* /opt/lkm/
+mv ./ramdisk/target/opt/lnk/* /opt/lnk/
+mv ./ramdisk/target/opt/proc/* /opt/proc/
+mv ./ramdisk/target/opt/sh/* /opt/sh/
+mv ./ramdisk/target/opt/tp/* /opt/tp/
+
+exit 0

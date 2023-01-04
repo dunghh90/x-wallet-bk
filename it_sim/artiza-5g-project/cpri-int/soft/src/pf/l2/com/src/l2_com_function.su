@@ -1,0 +1,5 @@
+l2_com_function.c:28:6:l2_com_comMsgSnd	80	static
+l2_com_function.c:76:5:l2_com_comMsgRcv	80	static
+l2_com_function.c:108:6:l2_com_monitorMsgToApl	48	static
+l2_com_function.c:142:6:l2_com_cpriMsgToApl	48	static
+l2_com_function.c:176:5:l2_com_timeCompare	64	static

@@ -1,0 +1,28 @@
+module yang11-feature-bad {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/yang11-feature-bad";
+  prefix yfeat-bad;
+  import yang11-feature { prefix yfeat; }
+  revision "2016-04-17" {
+  }
+
+  leaf fbad1 {
+    type identityref {
+      base yfeat:fbase-4;
+    }
+    default "yfeat:fbase-6";
+  }
+
+
+  leaf fbad2 {
+    type yfeat:fbits;
+    default "A B";
+  }
+
+  leaf fbad3 {
+    type yfeat:fenum;
+    default "D";
+  }
+
+}

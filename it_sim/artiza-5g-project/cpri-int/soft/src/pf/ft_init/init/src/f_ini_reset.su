@@ -1,0 +1,6 @@
+f_ini_reset.c:31:13:f_ini_force_regwrite	64	static
+f_ini_reset.c:59:13:f_ini_force_read	80	static
+f_ini_reset.c:90:13:f_ini_saveSysTime	96	static
+f_ini_reset.c:129:6:f_ini_wvStp_allAnt	48	static
+f_ini_reset.c:168:6:f_ini_resetMsg	64	static
+f_ini_reset.c:232:6:f_ini_reset	96	dynamic,bounded

@@ -1,0 +1,35 @@
+module yang11-must {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/yang11-must";
+  prefix ymust;
+  import ietf-interfaces { prefix if; }
+  revision "2016-11-22";
+
+  notification M1 {
+    must "../if:interfaces";
+    must "/if:interfaces";
+    must "test and toast";
+    leaf test { type int8; }
+    leaf toast { type int8; }
+  }
+
+  rpc R1 {
+    input {
+      must "../if:interfaces";
+      must "/if:interfaces";
+      must "test and toast";
+      leaf test { type int8; }
+      leaf toast { type int8; }
+    }
+    output {
+      must "../if:interfaces";
+      must "/if:interfaces";
+      must "test2 and toast2";
+      leaf test2 { type int8; }
+      leaf toast2 { type int8; }
+    }
+  }
+
+
+}

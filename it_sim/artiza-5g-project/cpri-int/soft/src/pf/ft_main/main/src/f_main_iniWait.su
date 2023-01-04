@@ -1,0 +1,6 @@
+f_main_iniWait.c:45:6:f_main_iniWait	144	dynamic,bounded
+f_main_iniWait.c:393:5:f_main_sigHandler	64	static
+f_main_iniWait.c:416:6:f_main_mp_comp_wait	96	dynamic,bounded
+f_main_iniWait.c:516:6:f_main_sigWait	160	static
+f_main_iniWait.c:604:6:f_main_troubelelog_send	48	static
+f_main_iniWait.c:712:6:f_main_flash_write_req_send	128	static

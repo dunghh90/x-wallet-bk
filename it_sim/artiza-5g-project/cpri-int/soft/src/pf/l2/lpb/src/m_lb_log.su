@@ -1,0 +1,6 @@
+m_lb_log.c:35:6:lblap_statis	80	static
+m_lb_log.c:165:6:lblap_statis_for_l3	112	dynamic,bounded
+m_lb_log.c:380:6:lblap_move_log	64	static
+m_lb_log.c:560:5:lblap_check_singalKind	48	static
+m_lb_log.c:845:6:lblap_init_log	43568	static
+m_lb_log.c:902:6:lblap_ablog	48	static

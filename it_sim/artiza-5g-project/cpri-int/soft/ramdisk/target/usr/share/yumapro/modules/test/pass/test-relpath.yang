@@ -1,0 +1,67 @@
+module test-relpath {
+  yang-version 1.1;
+  namespace "http://yumaworks.com/ns/test-relpath";
+  prefix tr;
+  revision 2018-11-26;
+
+  container test1{
+    config false;
+
+    leaf a {
+      type string;
+    }
+
+    action foo{
+      input{
+        leaf mgmt-interface {
+          type leafref {
+            path "../../a";
+          }
+        }
+      }
+    }
+  }
+
+  container test2{
+    config false;
+
+    leaf a {
+      type string;
+    }
+
+    action foo{
+      output{
+        leaf mgmt-interface {
+          type leafref {
+            path "../../a";
+          }
+        }
+      }
+    }
+  }
+
+  leaf a {
+    type string;
+  }
+
+  rpc test3{
+   input{
+     leaf mgmt-interface {
+       type leafref {
+          path "../../a";
+       }
+     }
+   }
+  }
+
+  rpc test4{
+   output{
+     leaf mgmt-interface {
+       type leafref {
+          path "../../a";
+       }
+     }
+   }
+  }
+
+}

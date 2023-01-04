@@ -1,0 +1,384 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+
+	mode = 0xf
+	if ARGV.length > 0 then
+		case ARGV[0].downcase
+			when "ptp" then
+				mode = 0x1
+			when "fh" then
+				mode = 0x2
+			when "sfp" then
+				mode = 0x3
+			when "mp" then
+				mode = 0x4
+			when "up" then
+				mode = 0x5
+			when "all" then
+				mode = 0xe
+			else
+				puts DuCode::ERR_DESCRIPTION[1]
+				Rrh.exit(1)
+		end
+	end
+
+	puts ""
+	puts "DU interface status information "
+	puts ""
+	Rrh.system("/bin/echo -n \"Time : \" ; /bin/date +\"%Y/%m/%d %H:%M:%S\"")
+	puts ""
+	# PTP 
+	if ( mode == 0xf) || (mode == 0x01) || (mode == 0xe) then
+		port_number = Rrh.get_shmptp("port_number")
+		case port_number
+			when "00000001" then
+				portnum = "Port1"
+			else
+				portnum = "Not Available"
+		end
+		domain = Rrh.get_shmptp("domain_number")
+		multimac = Rrh.get_shmptp("multicast_mac_addr")
+		if multimac == "00000001" then
+			multimac_str = "01-80-C2-00-00-0E"
+		else
+			multimac_str = "01-1B-19-00-00-00"
+		end
+		accepted_clock_classes = Rrh.get_shmptp("accepted_clock_classes")
+		sync_sts = Rrh.regread("a000018c")
+		ptp_clock_class = Rrh.get_shmptp("ptp_clock_class")
+		if  Rrh.calc(sync_sts,"&","70000000") != "00000000" then
+			if  Rrh.calc(sync_sts,"&","10000000") != "00000000" then
+				sync_str = "FreeRun"
+			elsif  Rrh.calc(sync_sts,"&","20000000") != "00000000" then
+				sync_str = "Locked"
+			elsif  Rrh.calc(sync_sts,"&","40000000") != "00000000" then
+				sync_str = "HoldOver"
+			else
+				sync_str = "FreeRun"
+			end
+		else
+			sync_str = "FreeRun"
+		end
+		
+		if  Rrh.calc(sync_sts,"&","01000000") != "00000000" then
+			syncE_str = "Locked"
+		else
+			syncE_str = "UnLocked"
+		end
+		if  Rrh.calc(sync_sts,"&","02000000") != "00000000" then
+			ptp_str = "Locked"
+		else
+			ptp_str = "UnLocked"
+		end
+		puts "S-plane information "
+		puts " Current S-plane Port Number : #{portnum}"
+		puts " PTP Domain Number           : #{domain.to_i(16)}"
+		puts " PTP Multicast Mac Address   : #{multimac_str}"
+		puts " PTP Accepted CLK Class      : Less than #{accepted_clock_classes.to_i(16)}"
+		puts " Current PTP Clock Class     : #{ptp_clock_class.to_i(16)}"
+		puts " PTP Lock State              : #{ptp_str}"
+		puts " PTP Status                  : #{sync_str}"
+		puts " SyncE Lock State            : #{syncE_str}"
+		puts ""
+	end
+	# FH
+	if ( mode == 0xf) || (mode == 0x02)  || (mode == 0xe) then
+		Rrh.regwrite("A1000800","00000001")
+		port1link = Rrh.regread("a1000108")
+
+		if  Rrh.calc(port1link,"&","00000001") != "00000000" then
+			port1link_sts = "LINK-DOWN"
+		else
+			port1link_sts = "LINK-UP  "
+		end
+
+		  puts "Fronthaul interface information "
+		  puts " Ethernet MAC status "
+		  puts "                      Port1"
+		printf("   STATUS            :%s\n",port1link_sts)
+		puts ""
+		  puts " Network interface statistics (** Not included U/C/M-plane packets **) "
+		  puts " M-plane Statistics "
+		Rrh.system("/sbin/ifconfig fheth0 2>/dev/null")
+		  puts " S-plane Statistics "
+		Rrh.system("/sbin/ifconfig fhethS0 2>/dev/null")
+		  puts " PTP/SyncE Statistics(snapshot) "
+		Rrh.system("/bin/cat /proc/ptp/statistic 2>/dev/null")
+		Rrh.system("/bin/echo 0 > /proc/ptp/statistic 2>/dev/null")
+		puts ""
+		  puts " ALL packets Statistics(snapshot) "
+		  puts "                      Port1"
+		printf("   RXUPLANE          :0x%s\n",Rrh.regread("a1000810"))
+		printf("   RXMPLANE          :0x%s\n",Rrh.regread("a1000814"))
+		printf("   RXSPLANE          :0x%s\n",Rrh.regread("a1000818"))
+		printf("   RXDAERR           :0x%s\n",Rrh.regread("a100081C"))
+		printf("   RXETYPEERR        :0x%s\n",Rrh.regread("a1000820"))
+		printf("   RXVERERR          :0x%s\n",Rrh.regread("a1000824"))
+		printf("   STATRXFRERR       :0x%s\n",Rrh.regread("a1000828"))
+		printf("   STATRXSMALL       :0x%s\n",Rrh.regread("a100082C"))
+		printf("   STATRXJABER       :0x%s\n",Rrh.regread("a1000830"))
+		printf("   STATRXLARGE       :0x%s\n",Rrh.regread("a1000834"))
+		printf("   STATRXOVRSIZE     :0x%s\n",Rrh.regread("a1000838"))
+		printf("   STATRXUDRSIZE     :0x%s\n",Rrh.regread("a100083C"))
+		printf("   STATRXTOOLONG     :0x%s\n",Rrh.regread("a1000840"))
+		printf("   STATRXFRAGMNT     :0x%s\n",Rrh.regread("a1000844"))
+		printf("   STATRXBADCODE     :0x%s\n",Rrh.regread("a1000848"))
+		printf("   STATRXTOTALPACKET :0x%s\n",Rrh.regread("a100084C"))
+		printf("   STATRXBADFCS      :0x%s\n",Rrh.regread("a1000850"))
+		printf("   STATRXSTOMPEDFCS  :0x%s\n",Rrh.regread("a1000854"))
+		printf("   STATRXUNICAST     :0x%s\n",Rrh.regread("a1000858"))
+		printf("   STATRXMULTICAST   :0x%s\n",Rrh.regread("a100085C"))
+		printf("   STATRXBROADCAST   :0x%s\n",Rrh.regread("a1000860"))
+		printf("   STATRXPAUSE       :0x%s\n",Rrh.regread("a1000864"))
+		printf("   OVFFRAMES         :0x%s\n",Rrh.regread("a1000868"))
+		printf("   AXIERRFRAMES      :0x%s\n",Rrh.regread("a100086C"))
+		printf("   OVFFRAMEM         :0x%s\n",Rrh.regread("a1000870"))
+		printf("   AXIERRFRAMEM      :0x%s\n",Rrh.regread("a1000874"))
+		printf("   TXUPLANE          :0x%s\n",Rrh.regread("a1000878"))
+		printf("   TXMPLANE          :0x%s\n",Rrh.regread("a100087C"))
+		printf("   TXSPLANE          :0x%s\n",Rrh.regread("a1000880"))
+		printf("   STATTXPACKETS     :0x%s\n",Rrh.regread("a1000884"))
+		printf("   STATTXBADFCS      :0x%s\n",Rrh.regread("a1000888"))
+		printf("   STATTXFRAMEERROR  :0x%s\n",Rrh.regread("a100088C"))
+		printf("   FECCOR            :0x%s\n",Rrh.regread("a1000890"))
+		printf("   FECCANTCOR        :0x%s\n",Rrh.regread("a1000894"))
+		printf("   RSFECCOR          :0x%s\n",Rrh.regread("a1000898"))
+		printf("   RSFECUNCOR        :0x%s\n",Rrh.regread("a100089C"))
+		printf("   RSFECERR          :0x%s\n",Rrh.regread("a10008A0"))
+		puts ""
+		Rrh.regwrite("A1000800","00000001")
+	end
+
+	if (mode == 0x05) || (mode == 0xe) then
+		device_type = Rrh.get_shmcm("device_type")
+		if device_type == "00000013" || device_type == "00000014" then
+			Rrh.regwrite("a2010340","00000001")
+			Rrh.regwrite("a2200740","00000001")
+
+			  puts " U/C-plane packets Statistics "
+			  puts "                      Port1"
+			printf("   DL RCVPKT         :0x%s\n",Rrh.regread("a20103c0"))
+			printf("   DL ILGCMH         :0x%s\n",Rrh.regread("a20103c4"))
+			printf("   DL IDINV          :0x%s\n",Rrh.regread("a20103c8"))
+			printf("   DL SRPERR         :0x%s\n",Rrh.regread("a20103cc"))
+			printf("   DL EXPRCVRB       :0x%s\n",Rrh.regread("a2010c00"))
+			printf("   DL RBRCVLOSA0     :0x%s\n",Rrh.regread("a2010c20"))
+			printf("   DL RBRCVLOSB0     :0x%s\n",Rrh.regread("a2010c24"))
+			printf("   DL RBRCVLOSC0     :0x%s\n",Rrh.regread("a2010c28"))
+			printf("   DL RBRCVLOSD0     :0x%s\n",Rrh.regread("a2010c2c"))
+			printf("   DL RBRCVLOSA1     :0x%s\n",Rrh.regread("a2010c30"))
+			printf("   DL RBRCVLOSB1     :0x%s\n",Rrh.regread("a2010c34"))
+			printf("   DL RBRCVLOSC1     :0x%s\n",Rrh.regread("a2010c38"))
+			printf("   DL RBRCVLOSD1     :0x%s\n",Rrh.regread("a2010c3c"))
+			printf("   UL SNDUP          :0x%s\n",Rrh.regread("a2200800"))
+
+			if device_type == "00000013" then
+
+			  puts "                      ANT-A      ANT-B      ANT-C      ANT-D"
+			printf("   DLN ILGAPHA0DN    :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010400"),Rrh.regread("a2010600"),Rrh.regread("a2010800"),Rrh.regread("a2010a00"))
+			printf("   DLN ILGTIMA0DN    :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010404"),Rrh.regread("a2010604"),Rrh.regread("a2010804"),Rrh.regread("a2010a04"))
+			printf("   DLN TIMTEA0DN     :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010408"),Rrh.regread("a2010608"),Rrh.regread("a2010808"),Rrh.regread("a2010a08"))
+			printf("   DLN TIMTLA0DN     :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a201040c"),Rrh.regread("a201060c"),Rrh.regread("a201080c"),Rrh.regread("a2010a0c"))
+			printf("   DLN ONTIMA0DN     :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010410"),Rrh.regread("a2010610"),Rrh.regread("a2010810"),Rrh.regread("a2010a10"))
+			printf("   DLN SEQDUPA0DN    :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010414"),Rrh.regread("a2010614"),Rrh.regread("a2010814"),Rrh.regread("a2010a14"))
+			printf("   DLN SEQMISA0DN    :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010418"),Rrh.regread("a2010618"),Rrh.regread("a2010818"),Rrh.regread("a2010a18"))
+			printf("   DLN RCVFCA0DN     :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a201041c"),Rrh.regread("a201061c"),Rrh.regread("a201081c"),Rrh.regread("a2010a1c"))
+			printf("   DLN RCVUPA0DN     :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010420"),Rrh.regread("a2010620"),Rrh.regread("a2010820"),Rrh.regread("a2010a20"))
+			  puts "                      ANT-A      ANT-B      ANT-C      ANT-D"
+			printf("   ULN ILGAPHA0UN    :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010440"),Rrh.regread("a2010640"),Rrh.regread("a2010840"),Rrh.regread("a2010a40"))
+			printf("   ULN ILGTIMA0UN    :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010444"),Rrh.regread("a2010644"),Rrh.regread("a2010844"),Rrh.regread("a2010a44"))
+			printf("   ULN TIMTEA0UN     :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010448"),Rrh.regread("a2010648"),Rrh.regread("a2010848"),Rrh.regread("a2010a48"))
+			printf("   ULN TIMTLA0UN     :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a201044c"),Rrh.regread("a201064c"),Rrh.regread("a201084c"),Rrh.regread("a2010a4c"))
+			printf("   ULN ONTIMA0UN     :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010450"),Rrh.regread("a2010650"),Rrh.regread("a2010850"),Rrh.regread("a2010a50"))
+			printf("   ULN SEQDUPA0UN    :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010454"),Rrh.regread("a2010654"),Rrh.regread("a2010854"),Rrh.regread("a2010a54"))
+			printf("   ULN SEQMISA0UN    :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010458"),Rrh.regread("a2010658"),Rrh.regread("a2010858"),Rrh.regread("a2010a58"))
+			printf("   ULN RCVFCA0UN     :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a201045c"),Rrh.regread("a201065c"),Rrh.regread("a201085c"),Rrh.regread("a2010a5c"))
+			  puts "                      ANT-A      ANT-B      ANT-C      ANT-D"
+			printf("   ULR ILGAPHA0UR    :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010480"),Rrh.regread("a2010680"),Rrh.regread("a2010880"),Rrh.regread("a2010a80"))
+			printf("   ULR ILGTIMA0UR    :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010484"),Rrh.regread("a2010684"),Rrh.regread("a2010884"),Rrh.regread("a2010a84"))
+			printf("   ULR TIMTEA0UR     :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010488"),Rrh.regread("a2010688"),Rrh.regread("a2010888"),Rrh.regread("a2010a88"))
+			printf("   ULR TIMTLA0UR     :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a201048c"),Rrh.regread("a201068c"),Rrh.regread("a201088c"),Rrh.regread("a2010a8c"))
+			printf("   ULR ONTIMA0UR     :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010490"),Rrh.regread("a2010690"),Rrh.regread("a2010890"),Rrh.regread("a2010a90"))
+			printf("   ULR SEQDUPA0UR    :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010494"),Rrh.regread("a2010694"),Rrh.regread("a2010894"),Rrh.regread("a2010a94"))
+			printf("   ULR SEQMISA0UR    :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010498"),Rrh.regread("a2010698"),Rrh.regread("a2010898"),Rrh.regread("a2010a98"))
+			printf("   ULR RCVFCA0UR     :0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a201049c"),Rrh.regread("a201069c"),Rrh.regread("a201089c"),Rrh.regread("a2010a9c"))
+			  puts "                      ANT-A      ANT-B      ANT-C      ANT-D"
+
+			else
+			  puts "                      ANT-A                                       ANT-B"
+			  puts "                      C0         C1         C2         C3         C0         C1         C2         C3"
+			printf("   DLN ILGAPHA0DN    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010400"),Rrh.regread("a2010500"),Rrh.regread("a2010600"),Rrh.regread("a2010700"),Rrh.regread("a2010800"),Rrh.regread("a2010900"),Rrh.regread("a2010a00"),Rrh.regread("a2010b00"))
+			printf("   DLN ILGTIMA0DN    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010404"),Rrh.regread("a2010504"),Rrh.regread("a2010604"),Rrh.regread("a2010704"),Rrh.regread("a2010804"),Rrh.regread("a2010904"),Rrh.regread("a2010a04"),Rrh.regread("a2010b04"))
+			printf("   DLN TIMTEA0DN     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010408"),Rrh.regread("a2010508"),Rrh.regread("a2010608"),Rrh.regread("a2010708"),Rrh.regread("a2010808"),Rrh.regread("a2010908"),Rrh.regread("a2010a08"),Rrh.regread("a2010b08"))
+			printf("   DLN TIMTLA0DN     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a201040c"),Rrh.regread("a201050c"),Rrh.regread("a201060c"),Rrh.regread("a201070c"),Rrh.regread("a201080c"),Rrh.regread("a201090c"),Rrh.regread("a2010a0c"),Rrh.regread("a2010b0c"))
+			printf("   DLN ONTIMA0DN     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010410"),Rrh.regread("a2010510"),Rrh.regread("a2010610"),Rrh.regread("a2010710"),Rrh.regread("a2010810"),Rrh.regread("a2010910"),Rrh.regread("a2010a10"),Rrh.regread("a2010b10"))
+			printf("   DLN SEQDUPA0DN    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010414"),Rrh.regread("a2010514"),Rrh.regread("a2010614"),Rrh.regread("a2010714"),Rrh.regread("a2010814"),Rrh.regread("a2010914"),Rrh.regread("a2010a14"),Rrh.regread("a2010b14"))
+			printf("   DLN SEQMISA0DN    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010418"),Rrh.regread("a2010518"),Rrh.regread("a2010618"),Rrh.regread("a2010718"),Rrh.regread("a2010818"),Rrh.regread("a2010918"),Rrh.regread("a2010a18"),Rrh.regread("a2010b18"))
+			printf("   DLN RCVFCA0DN     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a201041c"),Rrh.regread("a201051c"),Rrh.regread("a201061c"),Rrh.regread("a201071c"),Rrh.regread("a201081c"),Rrh.regread("a201091c"),Rrh.regread("a2010a1c"),Rrh.regread("a2010b1c"))
+			printf("   DLN RCVUPA0DN     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010420"),Rrh.regread("a2010520"),Rrh.regread("a2010620"),Rrh.regread("a2010720"),Rrh.regread("a2010820"),Rrh.regread("a2010920"),Rrh.regread("a2010a20"),Rrh.regread("a2010b20"))
+			  puts "                      C0         C1         C2         C3         C0         C1         C2         C3"
+			printf("   ULN ILGAPHA0UN    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010440"),Rrh.regread("a2010540"),Rrh.regread("a2010640"),Rrh.regread("a2010740"),Rrh.regread("a2010840"),Rrh.regread("a2010940"),Rrh.regread("a2010a40"),Rrh.regread("a2010b40"))
+			printf("   ULN ILGTIMA0UN    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010444"),Rrh.regread("a2010544"),Rrh.regread("a2010644"),Rrh.regread("a2010744"),Rrh.regread("a2010844"),Rrh.regread("a2010944"),Rrh.regread("a2010a44"),Rrh.regread("a2010b44"))
+			printf("   ULN TIMTEA0UN     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010448"),Rrh.regread("a2010548"),Rrh.regread("a2010648"),Rrh.regread("a2010748"),Rrh.regread("a2010848"),Rrh.regread("a2010948"),Rrh.regread("a2010a48"),Rrh.regread("a2010b48"))
+			printf("   ULN TIMTLA0UN     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a201044c"),Rrh.regread("a201054c"),Rrh.regread("a201064c"),Rrh.regread("a201074c"),Rrh.regread("a201084c"),Rrh.regread("a201094c"),Rrh.regread("a2010a4c"),Rrh.regread("a2010b4c"))
+			printf("   ULN ONTIMA0UN     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010450"),Rrh.regread("a2010550"),Rrh.regread("a2010650"),Rrh.regread("a2010750"),Rrh.regread("a2010850"),Rrh.regread("a2010950"),Rrh.regread("a2010a50"),Rrh.regread("a2010b50"))
+			printf("   ULN SEQDUPA0UN    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010454"),Rrh.regread("a2010554"),Rrh.regread("a2010654"),Rrh.regread("a2010754"),Rrh.regread("a2010854"),Rrh.regread("a2010954"),Rrh.regread("a2010a54"),Rrh.regread("a2010b54"))
+			printf("   ULN SEQMISA0UN    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010458"),Rrh.regread("a2010558"),Rrh.regread("a2010658"),Rrh.regread("a2010758"),Rrh.regread("a2010858"),Rrh.regread("a2010958"),Rrh.regread("a2010a58"),Rrh.regread("a2010b58"))
+			printf("   ULN RCVFCA0UN     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a201045c"),Rrh.regread("a201055c"),Rrh.regread("a201065c"),Rrh.regread("a201075c"),Rrh.regread("a201085c"),Rrh.regread("a201095c"),Rrh.regread("a2010a5c"),Rrh.regread("a2010b5c"))
+			  puts "                      C0         C1         C2         C3         C0         C1         C2         C3"
+			printf("   ULR ILGAPHA0UR    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010480"),Rrh.regread("a2010580"),Rrh.regread("a2010680"),Rrh.regread("a2010780"),Rrh.regread("a2010880"),Rrh.regread("a2010980"),Rrh.regread("a2010a80"),Rrh.regread("a2010b80"))
+			printf("   ULR ILGTIMA0UR    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010484"),Rrh.regread("a2010584"),Rrh.regread("a2010684"),Rrh.regread("a2010784"),Rrh.regread("a2010884"),Rrh.regread("a2010984"),Rrh.regread("a2010a84"),Rrh.regread("a2010b84"))
+			printf("   ULR TIMTEA0UR     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010488"),Rrh.regread("a2010588"),Rrh.regread("a2010688"),Rrh.regread("a2010788"),Rrh.regread("a2010888"),Rrh.regread("a2010988"),Rrh.regread("a2010a88"),Rrh.regread("a2010b88"))
+			printf("   ULR TIMTLA0UR     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a201048c"),Rrh.regread("a201058c"),Rrh.regread("a201068c"),Rrh.regread("a201078c"),Rrh.regread("a201088c"),Rrh.regread("a201098c"),Rrh.regread("a2010a8c"),Rrh.regread("a2010b8c"))
+			printf("   ULR ONTIMA0UR     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010490"),Rrh.regread("a2010590"),Rrh.regread("a2010690"),Rrh.regread("a2010790"),Rrh.regread("a2010890"),Rrh.regread("a2010990"),Rrh.regread("a2010a90"),Rrh.regread("a2010b90"))
+			printf("   ULR SEQDUPA0UR    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010494"),Rrh.regread("a2010594"),Rrh.regread("a2010694"),Rrh.regread("a2010794"),Rrh.regread("a2010894"),Rrh.regread("a2010994"),Rrh.regread("a2010a94"),Rrh.regread("a2010b94"))
+			printf("   ULR SEQMISA0UR    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a2010498"),Rrh.regread("a2010598"),Rrh.regread("a2010698"),Rrh.regread("a2010798"),Rrh.regread("a2010898"),Rrh.regread("a2010998"),Rrh.regread("a2010a98"),Rrh.regread("a2010b98"))
+			printf("   ULR RCVFCA0UR     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a201049c"),Rrh.regread("a201059c"),Rrh.regread("a201069c"),Rrh.regread("a201079c"),Rrh.regread("a201089c"),Rrh.regread("a201099c"),Rrh.regread("a2010a9c"),Rrh.regread("a2010b9c"))
+			  puts "                      C0         C1         C2         C3         C0         C1         C2         C3"
+			printf("   DLS ILGAPHA0DS    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a20104c0"),Rrh.regread("a20105c0"),Rrh.regread("a20106c0"),Rrh.regread("a20107c0"),Rrh.regread("a20108c0"),Rrh.regread("a20109c0"),Rrh.regread("a2010ac0"),Rrh.regread("a2010bc0"))
+			printf("   DLS ILGTIMA0DS    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a20104c4"),Rrh.regread("a20105c4"),Rrh.regread("a20106c4"),Rrh.regread("a20107c4"),Rrh.regread("a20108c4"),Rrh.regread("a20109c4"),Rrh.regread("a2010ac4"),Rrh.regread("a2010bc4"))
+			printf("   DLS TIMTEA0DS     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a20104c8"),Rrh.regread("a20105c8"),Rrh.regread("a20106c8"),Rrh.regread("a20107c8"),Rrh.regread("a20108c8"),Rrh.regread("a20109c8"),Rrh.regread("a2010ac8"),Rrh.regread("a2010bc8"))
+			printf("   DLS TIMTLA0DS     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a20104cc"),Rrh.regread("a20105cc"),Rrh.regread("a20106cc"),Rrh.regread("a20107cc"),Rrh.regread("a20108cc"),Rrh.regread("a20109cc"),Rrh.regread("a2010acc"),Rrh.regread("a2010bcc"))
+			printf("   DLS ONTIMA0DS     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a20104d0"),Rrh.regread("a20105d0"),Rrh.regread("a20106d0"),Rrh.regread("a20107d0"),Rrh.regread("a20108d0"),Rrh.regread("a20109d0"),Rrh.regread("a2010ad0"),Rrh.regread("a2010bd0"))
+			printf("   DLS SEQDUPA0DS    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a20104d4"),Rrh.regread("a20105d4"),Rrh.regread("a20106d4"),Rrh.regread("a20107d4"),Rrh.regread("a20108d4"),Rrh.regread("a20109d4"),Rrh.regread("a2010ad4"),Rrh.regread("a2010bd4"))
+			printf("   DLS SEQMISA0DS    :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a20104d8"),Rrh.regread("a20105d8"),Rrh.regread("a20106d8"),Rrh.regread("a20107d8"),Rrh.regread("a20108d8"),Rrh.regread("a20109d8"),Rrh.regread("a2010ad8"),Rrh.regread("a2010bd8"))
+			printf("   DLS RCVFCA0DS     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a20104dc"),Rrh.regread("a20105dc"),Rrh.regread("a20106dc"),Rrh.regread("a20107dc"),Rrh.regread("a20108dc"),Rrh.regread("a20109dc"),Rrh.regread("a2010adc"),Rrh.regread("a2010bdc"))
+			printf("   DLS RCVUPA0DS     :0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",Rrh.regread("a20104e0"),Rrh.regread("a20105e0"),Rrh.regread("a20106e0"),Rrh.regread("a20107e0"),Rrh.regread("a20108e0"),Rrh.regread("a20109e0"),Rrh.regread("a2010ae0"),Rrh.regread("a2010be0"))
+			  puts "                      C0         C1         C2         C3         C0         C1         C2         C3"
+			  puts "                      ANT-A                                       ANT-B"
+			end
+		end
+		puts ""
+	end
+
+
+	# SFP
+	if ( mode == 0xf) || (mode == 0x03) || (mode == 0xe) then
+		puts "SFP interface information "
+		mount =  Rrh.regread( "A0000300" )
+			puts " Port1"
+			puts "  EXT Signal Status"
+		#SFP Mount —10ms sampling
+		if  Rrh.calc(mount,"&","00000001") == "00000001" then
+			printf("   SFPMNT          : Normal\n")
+			if  Rrh.calc(mount,"&","00000002") == "00000002" then
+			printf("   SFPVALM         : Fault\n")
+			else
+			printf("   SFPVALM         : Normal\n")
+			end
+			if  Rrh.calc(mount,"&","00000004") == "00000004" then
+			printf("   SFPTXFLT        : Fault\n")
+			else
+			printf("   SFPTXFLT        : Normal\n")
+			end
+			if  Rrh.calc(mount,"&","00000008") == "00000008" then
+			printf("   SFPLOS          : Fault\n")
+			else
+			printf("   SFPLOS          : Normal\n")
+			end
+			puts ""
+			printf("  Part Info \n")
+			printf("   Vendor Specific : %s \n",Rrh.sfpread(0,0x60,12,"txt"))
+			printf("   Vendor name     : %s \n",Rrh.sfpread(0,0x14,16,"txt"))
+			printf("   Part number     : %s \n",Rrh.sfpread(0,0x28,16,"txt"))
+			printf("   Serial number   : %s \n",Rrh.sfpread(0,0x44,16,"txt"))
+			puts ""
+			printf("  Diagnostic Monitor\n")
+			val = Rrh.sfpread(1,0x60,2,"bin")
+			if val != false then
+				val_wk_i = val.to_i(16)
+				val_wk_i = val_wk_i * 4
+			printf("   Temp            : %d.%02d(C) \n",(val_wk_i/1000), (val_wk_i/10)%100)
+			else
+			printf("   Temp            : %s \n",val)
+			end
+		
+			val = Rrh.sfpread(1,0x62,2,"bin")
+			if val != false then
+				val_wk_i = val.to_i(16)
+				val_wk_i = val_wk_i * 100
+			printf("   Vcc             : %d(uV) \n",val_wk_i)
+			else
+			printf("   Vcc             : %s \n",val)
+			end
+		
+			val = Rrh.sfpread(1,0x64,2,"bin")
+			if val != false then
+				val_wk_i = val.to_i(16)
+				val_wk_i = val_wk_i * 2
+			printf("   TxBias          : %d(uA) \n",val_wk_i)
+			else
+			printf("   TxBias          : %s \n",val)
+			end
+		
+			val = Rrh.sfpread(1,0x66,2,"bin")
+			if val != false then
+				val_wk_i = val.to_i(16)
+				val_wk_i = 10.0 * Math::log10(val_wk_i*0.0001)
+			printf("   TxPower         : %f(dBm) \n",val_wk_i)
+			else
+			printf("   TxPower         : %s \n",val)
+			end
+		
+			val = Rrh.sfpread(1,0x68,2,"bin")
+			if val != false then
+				val_wk_i = val.to_i(16)
+				val_wk_i = 10.0 * Math::log10(val_wk_i*0.0001)
+			printf("   RxPower         : %f(dBm) \n",val_wk_i)
+			else
+			printf("   RxPower         : %s \n",val)
+			end
+		else
+			#SFP UnMount —1us sampling
+			if  Rrh.calc(mount,"&","00000100") == "00000100" then
+				printf("   SFPMNT          : UnMount\n")
+			else
+				printf("   SFPMNT          : Unmount\n")
+			end
+		end
+		puts ""
+	end
+
+	if ( mode == 0xf) || (mode == 0x04) || (mode == 0xe) then
+		puts "M-plane interface information "
+
+		mplane_con = Rrh.get_shmcm("mplane_con")
+		low_vlan = Rrh.get_shmcm("low_vlan")
+		high_vlan = Rrh.get_shmcm("high_vlan")
+		last_vlan = Rrh.get_shmcm("last_vlan")
+		mp_pcp = Rrh.get_shmcm("pcp")
+		ssh_port = Rrh.get_shmcm("ssh_port")
+		ssh_port_callhome = Rrh.get_shmcm("ssh_port_callhome")
+
+		if(mplane_con.to_i(16) == 1) then
+			  puts("  M-plane Mode          : Disable")
+		else
+			  puts("  M-plane Mode          : Enable")
+			puts ""
+			if Rrh.system("/bin/cat /var/lib/dhcp/dhclient.leases 2>/dev/null | /bin/grep lease 1>/dev/null 2>/dev/null") == 0 then
+			  puts "   DHCP Status          : Active"
+			  puts "   DHCP Information "
+			  Rrh.system("/bin/su -c \"/bin/cat /var/lib/dhcp/dhclient.leases\" 2>/dev/null")
+			puts ""
+			else
+			  puts "   DHCP Status          : VLAN-ID Scanning"
+			end
+			if Rrh.system("/bin/ls /proc/net/vlan/fheth* 1>/dev/null 2>/dev/null") == 0 then
+			  puts "   VLAN Information "
+			  Rrh.system("/bin/su -c \"/bin/cat /proc/net/vlan/fheth*\" 2>/dev/null")
+			end
+			puts ""
+			printf("   VLAN-tag             : Active\n")
+			printf("     Vlan-scan-range \n")
+			printf("       lowest-vlan-id   : 0x#{low_vlan[4,4]}(#{low_vlan.to_i(16)})\n");
+			printf("       highest-vlan-id  : 0x#{high_vlan[4,4]}(#{high_vlan.to_i(16)})\n");
+			printf("     Last vlan-id       : 0x#{last_vlan[4,4]}(#{last_vlan.to_i(16)})\n");
+			printf("     PCP                : 0x#{mp_pcp[6,2]}(#{mp_pcp.to_i(16)})\n");
+			puts ""
+			printf("   SSH-ports \n")
+			printf("     call-home-ssh-port : #{ssh_port_callhome.to_i(16)}\n");
+			printf("     server-ssh-port    : #{ssh_port.to_i(16)}\n");
+		end
+		puts ""
+	end
+

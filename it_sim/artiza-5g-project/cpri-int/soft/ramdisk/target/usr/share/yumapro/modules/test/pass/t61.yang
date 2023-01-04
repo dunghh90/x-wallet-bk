@@ -1,0 +1,21 @@
+module t61 {
+    namespace "http://netconfcentral.org/ns/t61";
+    prefix "t61";
+    import t60 { prefix t60; }
+
+    revision 2013-10-01;
+
+    augment /t60:rpc1/t60:input {
+        leaf test1 { type uint64; }
+    }
+
+    augment /t60:npcon1 { 
+      leaf xx { type string; }
+    }
+
+    augment /t60:notif1 {
+      leaf aa { type int32; }
+      leaf bb { type int32; }
+    }
+
+}

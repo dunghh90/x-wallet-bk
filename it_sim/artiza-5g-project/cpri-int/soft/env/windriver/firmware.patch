@@ -1,0 +1,11 @@
+diff -urN a/drivers/soc/xilinx/zynqmp/firmware.c b/drivers/soc/xilinx/zynqmp/firmware.c
+--- a/drivers/soc/xilinx/zynqmp/firmware.c	2018-08-13 09:01:37.000000000 +0900
++++ b/drivers/soc/xilinx/zynqmp/firmware.c	2018-08-13 11:31:36.000000000 +0900
+@@ -446,6 +446,7 @@
+ 
+ 	/* Check PM API version number */
+ 	zynqmp_pm_get_api_version(&pm_api_version);
++	pm_api_version = ZYNQMP_PM_VERSION;
+ 	if (pm_api_version != ZYNQMP_PM_VERSION) {
+ 		panic("%s power management API version error. Expected: v%d.%d - Found: v%d.%d\n",
+ 		       __func__,

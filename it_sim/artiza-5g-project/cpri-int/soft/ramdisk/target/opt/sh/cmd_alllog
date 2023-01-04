@@ -1,0 +1,58 @@
+#!/bin/sh
+
+. /home/user/Desktop/soft/ramdisk/target/opt/sh/setaliases
+echo -n "Get Log Start Time : "
+date +"%Y/%m/%d %H:%M:%S"
+echo "<LGNo01>< UPTIME ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; uptime
+echo "<LGNo02>< VERSION +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; cmd_srcver 2>/dev/null ; su -c "/home/user/Desktop/soft/ramdisk/target/opt/tp/rrh -ver" 2>/dev/null ; su -c "/home/user/Desktop/soft/ramdisk/target/opt/tp/rrh -bfmode" 2>/dev/null
+echo "<LGNo03>< INVENTRY(HEX DUMP) ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; su -c "/home/user/Desktop/soft/ramdisk/target/opt/tp/rrh -erall" 2>/dev/null
+echo "<LGNo04>< INVENTRY(CHARA DISP)+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; cmd_eeprom_disp
+echo "<LGNo05>< INVENTRY(TR DISP)++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; cmd_pfdbg cca dsp traall
+echo "<LGNo06>< RF-INVENTRY(HEX DUMP)++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; su -c "/home/user/Desktop/soft/ramdisk/target/opt/tp/rrh -rferall" 2>/dev/null
+echo "<LGNo07>< CURRENT TIME ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; su -c "/home/user/Desktop/soft/ramdisk/target/opt/tp/rrh -curtime" 2>/dev/null
+echo "<LGNo08>< PROCESS LIST ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_ps
+echo "<LGNo09>< CMD HIS +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; history
+echo "<LGNo10>< HW STAT +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; su -c "/home/user/Desktop/soft/ramdisk/target/opt/du/du -stat" 2>/dev/null
+echo "<LGNo11>< SV BUS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; su -c "/home/user/Desktop/soft/ramdisk/target/opt/tp/rrh -svinfo" 2>/dev/null
+echo "<LGNo12>< SV BUS HIS LOG ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_svb 1024
+echo "<LGNo13>< RESET HIS LOG +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_rst 10000
+echo "<LGNo14>< LOG DMESG +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; dmesg
+echo "<LGNo15>< LOG MW ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_bpf 10000
+echo "<LGNo16>< LOG ASSERT ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_ast 10000
+echo "<LGNo17>< LOG USERLOG +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; cmd_rruplogdump lg
+echo "<LGNo18>< PTP INFO ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; su -c "/home/user/Desktop/soft/ramdisk/target/opt/tp/rrh -ptpinfo 391" 2>/dev/null
+echo "<LGNo19>< FH L1 HIS LOG +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_mac 10000 ; re_his_fhl1
+echo "<LGNo20>< FH STAT HIS LOG +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_fhstat
+echo "<LGNo21>< DU INTERFACE ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; su -c "/home/user/Desktop/soft/ramdisk/targetopt/du/du -ifstat" 2>/dev/null
+echo "<LGNo22>< SFP INFO ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; su -c "/home/user/Desktop/soft/ramdisk/target/opt/tp/rrh -sfpmon all" 2>/dev/null
+echo "<LGNo23>< SFP HIS LOG +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; cmd_sfp_log
+echo "<LGNo24>< SW HW INTERRUPTS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_irq
+echo "<LGNo25>< NETWORK INTERFACE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; ifconfig
+echo "<LGNo26>< NETWORK VLAN INFO +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; su -c "/home/user/Desktop/soft/ramdisk/target/bin/cat /proc/net/vlan/*" 2>/dev/null
+echo "<LGNo27>< NETWORK ARP TABLE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; arp -a
+echo "<LGNo28>< NETWORK STAT A+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; netstat -a
+echo "<LGNo29>< NETWORK STAT S+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; netstat -s
+echo "<LGNo30>< NETWORK STAT R+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; netstat -r
+echo "<LGNo31>< NETWORK STAT I+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; netstat -i
+echo "<LGNo32>< NETWORK PROC TCP ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; su -c "/home/user/Desktop/soft/ramdisk/target/bin/cat /proc/net/tcp" 2>/dev/null
+echo "<LGNo33>< NETWORK PROC UNIX +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; su -c "/home/user/Desktop/soft/ramdisk/target/bin/cat /proc/net/unix" 2>/dev/null
+echo "<LGNo34>< MEMORY INFO +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; vmstat ; su -c "/bin/cat /proc/meminfo"  2>/dev/null ; su -c "/bin/cat /proc/buddyinfo" 2>/dev/null
+echo "<LGNo35>< DISC INFO +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; df -h ;du -sh /tmp ; su -c "/home/user/Desktop/soft/ramdisk/target/usr/bin/du /var" 2>/dev/null
+echo "<LGNo36>< FRONTHAUL INFORMATION +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; cmd_rrhdbg dsp fhinf
+echo "<LGNo37>< DHCP CLIENT LEASE FILE ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; cat /var/lib/dhcp/dhclient.leases
+echo "<LGNo38>< PERFORMANCE INFORMATION +++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; cmd_rrhdbg dsp pfminf ; su -c "/home/user/Desktop/soft/ramdisk/target/opt/du/du -ifstat up" 2>/dev/null ; re_his_upsig
+echo "<LGNo39>< TEMP HIS LOG ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; cmd_pfdbg cca dsp temper 1440
+echo "<LGNo40>< CARRIER INFO ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; cmd_pfdbg cca dsp almlogall 2 10
+echo "<LGNo41>< MP CARRIER INFO +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; su -c "/home/user/Desktop/soft/ramdisk/target/opt/du/du -carinfo" 2>/dev/null
+echo "<LGNo42>< MP DATABASE LOG +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_mplan_cfg
+echo "<LGNo43>< TX POWER DETECT TBL(MMW) ++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_txpow
+echo "<LGNo44>< TX POWER DETECT LOG(MMW) ++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_txpowlog 1000
+echo "<LGNo45>< LUT LOG (SUB6) ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_lutlog
+echo "<LGNo46>< LOG EIO +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_eio 500
+echo "<LGNo47>< LOG FAN SPEED MON +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_fan
+echo "<LGNo48>< RU-MT LOG +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_mtlog 10000
+echo "<LGNo49>< TRX CAL LOG +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_cal ; su -c "/home/user/Desktop/soft/ramdisk/target/bin/cat /var/log/CALlog.log" 2>/dev/null
+echo "<LGNo50>< TOVER Fail Safe LOG +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_dlf
+echo "<LGNo99>< ALARM HIS LOG +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>" ; re_his_alm 10000
+echo -n "Get Log End Time : "
+date +"%Y/%m/%d %H:%M:%S"

@@ -1,0 +1,75 @@
+module yang11-xpath {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/yang11-xpath";
+  prefix yxpath;
+  revision "2016-04-17" {
+  }
+
+
+   list interface {
+       key "name type";
+       leaf name { type string; }
+       leaf type { type string; }
+       leaf enabled {
+         type boolean;
+       }
+       leaf if-type {
+         mandatory true;
+         type identityref {
+           base interface-type;
+         }
+       }
+
+   }
+
+   container mgmt-interface {
+     leaf name {
+        must "count(/interface[re-match(name, 'eth0\\.\\d+')])";
+        type leafref {
+          path "/interface/name";
+        }
+     }
+     leaf type {
+       type leafref {
+         path "/interface[name=current()/../name]/type";
+       }
+       must 'deref(.)/../enabled = "true"' {
+         error-message
+           "The management interface cannot be disabled.";
+       }
+       must 'deref(/inst-id)/enabled = "true"' {
+         error-message
+           "Test2 management interface cannot be disabled.";
+       }
+
+     }
+   }
+
+   leaf inst-id {
+      // point at /interface for must-stmt in type to be true
+      type instance-identifier {
+         require-instance false;
+      }
+   }
+
+   identity interface-type;
+
+   identity ethernet {
+     base interface-type;
+   }
+
+   identity fast-ethernet {
+     base ethernet;
+   }
+
+   identity gigabit-ethernet {
+     base ethernet;
+   }
+
+   augment "/interface" {
+     when 'derived-from(if-type, "ethernet")';
+     leaf aug-test { type string; }
+   }
+
+}

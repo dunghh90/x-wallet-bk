@@ -1,0 +1,61 @@
+module validation-augment {
+
+  namespace "http://www.yumaworks.com.org/ns/validation-augment";
+  prefix "val-aug";
+
+  import validation { prefix val; }
+
+  revision 2014-04-04 {
+    description "YANG validation tests for augmenting nodes.";
+  }
+
+  augment /val:valid3 {
+    leaf-list aug1 {
+      type leafref { path "../../val:valid6/val:v66_a"; }
+      max-elements 2;
+    }
+
+    leaf aug2 {
+      type int32;
+      default 5;
+    }
+
+    leaf aug3 {
+      type int32;
+      must "../val-aug:aug2 > 10";
+    }
+
+    leaf aug4 {
+      type int32;
+      when "../val-aug:aug2 > 1";
+    }
+
+    leaf aug5 {
+      type int32;
+      must "/val:valid2 > 4";
+    }
+
+    leaf aug6 {
+      type int32;
+      when "/val:valid2 > 10";
+    }
+  }
+
+  augment /val:valid4 {
+    leaf aug10 {
+      type int32;
+      default 5;
+    }
+
+    leaf aug11 {
+      type int32;
+      must "../../val:valid3/val-aug:aug2 > 1";
+    }
+
+    leaf aug12 {
+      type int32;
+      when "../../val:valid3/val-aug:aug2 > 10";
+    }
+  }
+
+}

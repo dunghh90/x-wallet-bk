@@ -1,0 +1,8 @@
+f_debug_cpr.c:15:6:f_cpr_dbg_l1Err	240	dynamic,bounded
+f_debug_cpr.c:265:6:f_cpr_dbg_l1Stat	208	dynamic,bounded
+f_debug_cpr.c:334:5:f_cpr_dbg_l1Num	368	dynamic,bounded
+f_debug_cpr.c:401:5:dbgcmd_exec_pf_cpr	144	static
+f_debug_cpr.c:468:5:dbgcmd_exec_direct_cpr_l1_dsp_hist	64	static
+f_debug_cpr.c:486:5:dbgcmd_exec_direct_cpr_l1_dsp_trace	64	static
+f_debug_cpr.c:504:5:dbgcmd_exec_direct_cpr_l1_dsp_sum	64	static
+f_debug_cpr.c:522:5:dbgcmd_exec_direct_cpr_l1_dsp_dly	96	static

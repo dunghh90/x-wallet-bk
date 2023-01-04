@@ -1,0 +1,45 @@
+#
+#  Makefile Include 
+
+export CROSS_COMPILE=
+
+#実機でテストする場合には、以下のように設定すること
+#export CROSS_COMPILE=arm-armv7-linux-gnueabi-
+
+CC					= $(CROSS_COMPILE)gcc
+LD					= $(CROSS_COMPILE)gcc
+AR					= $(CROSS_COMPILE)ar
+STRIP				= $(CROSS_COMPILE)strip
+OBJDUMP				= $(CROSS_COMPILE)objdump
+ARFLAG				= crsv
+CP					= /bin/mv
+#CFLAGS				= -g -O0 -Wall -fstack-protector-all -MMD
+CFLAGS				= -g -O0 -fstack-protector-all -MMD -fPIC -DOPT_RRH_ARCH_ZYNQ
+LDFLAGS				= -Wl,-Map=./file.map
+LDLIBS				= -lm -lrt -ldl -lSegFault
+
+CUNIT_PATH			= ./CUnit/CUnit/Headers
+MRUBY_PATH			= ./mruby
+TARGET_PATH			= ../src
+SYSINC				= $(TARGET_PATH)/sys/inc
+ARCHINC				= $(TARGET_PATH)/sys/inc_arch
+BPFINC				= $(TARGET_PATH)/sys/inc_mw
+APIPATH				= $(TARGET_PATH)/api
+APIINC				= $(APIPATH)/inc
+PFPATH				= $(TARGET_PATH)/pf
+PFCOMPATH			= $(PFPATH)/ft_com
+PFSYSINC			= $(PFPATH)/sys
+INITPATH			= $(TARGET_PATH)/pf/ft_init/init
+INITMWPATH			= $(TARGET_PATH)/pf/ft_init/mw
+CMNPATH				= $(TARGET_PATH)/cmn
+MWPATH				= $(TARGET_PATH)/mw
+OALPATH				= $(MWPATH)/oal
+HALPATH				= $(MWPATH)/hal
+RFICPATH			= $(MWPATH)/rfic_tal
+MPPATH				= $(TARGET_PATH)/mp
+MPSW_SRVPATH_MSG	= $(MPPATH)/server/interface/msg
+MPSW_SRVPATH_FUNC	= $(MPPATH)/server/interface/function
+MPSW_PUB			= $(MPPATH)/public
+BPFXMLINC			= $(TARGET_PATH)/mw/oal/RU/facc/include
+XMLINC				= /usr/include/libxml2
+

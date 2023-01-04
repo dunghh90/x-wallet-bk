@@ -1,0 +1,61 @@
+module silsa-test2 {
+  yang-version 1.1;
+  namespace "http://www.yumaworks.com/ns/silsa_test2";
+  prefix sset;
+
+  revision 2019-05-10 {
+    description "Initial version";
+  }
+
+  leaf get_client_userid {
+    config false;
+    type string;
+  }
+
+  rpc rpc_client_userid {
+    description "Get the userid of the client";
+    output {
+      leaf client_userid {
+        config false;
+        type string;
+      }
+    }
+  }
+
+  container orderedit {
+    list orders {
+      description "Edit order";
+      key "number";
+      leaf number { type int8; }
+
+      action place {
+        input {
+          leaf confirm {
+            type string;
+            mandatory true;
+          }
+        }
+        output {
+          leaf place-message { type string; }
+        }
+      } // action place
+
+      action cancel {
+        input {
+          leaf shipped {
+            mandatory true;
+            type enumeration {
+              enum Yes;
+              enum No;
+            }
+          }
+        }
+        output {
+          leaf cancel-message { type string; }
+        }
+      } // action cancel
+
+    } // list orders
+  } // container orderedit
+
+}

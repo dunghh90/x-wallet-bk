@@ -1,0 +1,39 @@
+module t202 {
+
+  namespace "http://netconfcentral.org/ns/t202";
+
+  prefix t202;
+
+  revision "2015-10-08" {
+  }
+
+   list X {
+     key a;
+     max-elements 1;
+     leaf a { type int32; }
+     leaf b { type int32; }
+   }
+
+   container A {
+    list X {
+     key a;
+     max-elements 1;
+     unique b;
+     leaf a { type int32; }
+     leaf b { type int32; }
+    }
+   }
+
+   container B {
+    presence "test";
+    list X {
+     key a;
+     //max-elements 1;
+     min-elements 1;
+     unique b;
+     leaf a { type int32; }
+     leaf b { type int32; }
+    }
+   }
+
+}

@@ -1,0 +1,42 @@
+module yang11-bad-status {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/yang11-bad-status";
+  prefix ybadstat;
+  revision "2017-12-27" {
+  }
+
+
+   typedef X {
+      type string;
+       status deprecated;  // error
+   }
+
+   augment /mgmt {
+     leaf bad { type int32; status obsolete; }  // not an error
+   }
+
+   grouping Y {
+     leaf type2 {
+       type string;
+       status deprecated;  // not an error
+     }
+   }
+
+   grouping YY {
+     status deprecated;
+     leaf type3 {
+       type string;
+     }
+   }
+
+   container mgmt {
+     leaf name {
+        type X;  // error
+     }
+     leaf bad2 { type int8; status deprecated; }  // not an error
+     uses Y;  // not an error
+     uses YY;  // error
+   }
+
+}

@@ -1,0 +1,5 @@
+m_rc_ExtDataRcv.c:39:6:m_rc_ExtDataRcvRspSubProc	112	static
+m_rc_ExtDataRcv.c:97:6:m_rc_ExtDataRcvReq	80	dynamic,bounded
+m_rc_ExtDataRcv.c:240:6:m_rc_ExtDataRcvReqExe	144	dynamic,bounded
+m_rc_ExtDataRcv.c:423:6:m_rc_ExtDataRcvRsp	80	dynamic,bounded
+m_rc_ExtDataRcv.c:528:6:m_rc_ExtDataRcvRspTo	48	static

@@ -1,0 +1,9 @@
+l2_main_main.c:35:5:main	80	dynamic,bounded
+l2_main_main.c:81:6:l2_main_Init	96	static
+l2_main_main.c:174:6:l2_main_Create	32	static
+l2_main_main.c:217:5:l2_main_signal	64	static
+l2_main_main.c:234:6:l2_main_signalProc	192	dynamic,bounded
+l2_main_main.c:268:6:l2_main_logPrint	48	static
+l2_main_main.c:282:6:l2_main_abortLog	304	static
+l2_main_main.c:298:6:l2_main_logSave	320	static
+l2_main_main.c:316:6:l2_main_logSave_and_Rsp	48	static

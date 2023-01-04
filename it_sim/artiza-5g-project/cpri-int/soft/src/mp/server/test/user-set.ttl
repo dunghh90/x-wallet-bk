@@ -1,0 +1,42 @@
+
+;;;;;;;;;;;;;;;;;
+;;¡“o˜^user”‚ÌŒˆ’è
+inputbox '“o˜^‚·‚éuser”‚Í‚¢‚­‚Â‚Å‚·‚©H' '0`5'
+str2int val inputstr
+usr_num = val
+;;;;;;;;;;;;;;;;;
+
+
+sendln 'config term'
+wait 'f_5g_du@5G_DU#'
+
+sendln 'xran-user-profile'
+wait 'f_5g_du@5G_DU(xran-user-profile)#'
+
+for i 1 val
+	sprintf2 send_txt 'user user%d' i
+	sendln send_txt
+	wait 'f_5g_du@5G_DU(user)#'
+
+	sprintf2 send_txt 'password password%d' i
+	sendln send_txt
+	wait 'f_5g_du@5G_DU(user)#'
+
+	if i%2=1 then
+		sendln 'enabled true'
+		wait 'f_5g_du@5G_DU(user)#'
+
+		sendln 'group sudo'
+		wait 'f_5g_du@5G_DU(user)#'
+	else
+		sendln 'enabled false'
+		wait 'f_5g_du@5G_DU(user)#'
+	endif
+
+	sendln 'exit'
+	wait 'f_5g_du@5G_DU(xran-user-profile)#'
+
+next
+
+sendln 'return'
+

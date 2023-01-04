@@ -1,0 +1,13 @@
+/include/ "system-conf.dtsi"
+&gpio {
+ status = "disable";
+};
+
+&sdhci1 {
+ status = "disable";
+};
+
+&usb0 {
+ status = "disable";
+};
+

@@ -1,0 +1,5 @@
+m_rc_Fld_CmdRcv.c:36:6:m_rc_Fld_CmdRcvReq	128	dynamic,bounded
+m_rc_Fld_CmdRcv.c:181:6:m_rc_Fld_CmdRcvRes	96	dynamic,bounded
+m_rc_Fld_CmdRcv.c:269:6:m_rc_Fld_CmdRcvResConfirmTo	80	dynamic,bounded
+m_rc_Fld_CmdRcv.c:322:6:m_rc_Fld_CmdRcvReqParamChk	48	static
+m_rc_Fld_CmdRcv.c:402:5:m_rc_Fld_CmdRcvl3SendMsg	128	static

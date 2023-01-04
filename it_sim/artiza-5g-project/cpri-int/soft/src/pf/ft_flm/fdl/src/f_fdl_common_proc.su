@@ -1,0 +1,12 @@
+byteswap.h:45:1:__bswap_32	48	static
+f_fdl_common_proc.c:38:6:f_fdl_send_MSInotif	112	static
+f_fdl_common_proc.c:143:6:f_fdl_send_MSIrej	96	static
+f_fdl_common_proc.c:199:5:f_fdl_file_check	32	static
+f_fdl_common_proc.c:234:5:f_fdl_checksum	848	static
+f_fdl_common_proc.c:335:5:f_fdl_get_file_name	336	static
+f_fdl_common_proc.c:401:5:f_fdl_flash_write	336	static
+f_fdl_common_proc.c:616:5:f_fdl_install_check	544	static
+f_fdl_common_proc.c:805:5:f_fdl_install_file_check	320	static
+f_fdl_common_proc.c:884:5:f_fdl_get_install_mani_list	640	static
+f_fdl_common_proc.c:1118:6:f_fdl_file_eep_init	64	static
+f_fdl_common_proc.c:1210:5:f_fdl_install_data_save	368	static

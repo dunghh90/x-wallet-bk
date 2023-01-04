@@ -1,0 +1,10 @@
+#!/bin/sh
+
+. /home/user/Desktop/soft/ramdisk/target/opt/sh/setaliases
+
+killall -9 cmd_socat 2>/dev/null
+
+rm -rf /var/run/netconfd-pro/ncxserver.sock 2>/dev/null
+
+cmd_socat -b 67108864 -z UNIX-LISTEN:/var/run/netconfd-pro/ncxserver.sock,fork UNIX-CONNECT:/tmp/ncxserver.sock &
+

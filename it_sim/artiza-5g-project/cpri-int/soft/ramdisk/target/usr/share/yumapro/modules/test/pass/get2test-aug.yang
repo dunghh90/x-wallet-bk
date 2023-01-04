@@ -1,0 +1,207 @@
+module get2test-aug {
+    namespace "http://yumaworks.com/ns/get2test-aug";
+    prefix "get2test-aug";
+
+    import get2-test {
+        prefix get2test;
+    }
+
+    revision "2019-05-17" {
+        description
+         "YPW-1483: GET2 nodes not present when when-statement is TRUE";
+    }
+
+    revision "2018-08-17" {
+        description
+         "YPW-1288: Restconf query producing malformed json records
+          with bugs.
+          - Add more groupings and augments";
+    }
+    revision "2018-05-14" {
+        description
+         "YPW-1237: malformed JSON when list callback return error";
+    }
+    revision "2018-03-01" {
+        description
+         "YPW-1199: malformed JSON for leaf-lists and lists";
+    }
+    revision "2016-10-18" {
+        description
+         "Initial augmented test module for get2 callbacks";
+    }
+
+    augment "/get2test:get2-ints/get2test:int1" {
+        container cont-info {
+          config false;
+          list info {
+            key name;
+            leaf name { type string; }
+
+            container int-con {
+              leaf int-con-leaf { type int32; }
+            }
+
+            list deeper-list {
+              key name;
+              leaf name { type string; }
+              container deeper-con {
+                leaf int-con-leaf { type int32; }
+              }
+            }
+          }
+        }
+    }
+
+    augment "/get2test:config-cont/get2test:config-list/get2test:noconfig-list" {
+
+      leaf duplex {
+        type string;
+      }
+      leaf auto-negotiation {
+        type boolean;
+        default "true";
+      }
+      leaf-list supported-speed {
+        type string;
+      }
+      leaf discontinuity-time-timeticks {
+        type string;
+      }
+    }
+
+    augment "/get2test:config-cont/get2test:config-list/get2test:noconfig-list" {
+
+      container port-oper-status {
+        config false;
+
+        list port-status {
+          key "index type inst-or-vlan";
+
+          leaf index { type uint32; }
+
+          leaf type {
+            type enumeration {
+              enum "type1" {
+                value 1;
+              }
+              enum "type2" {
+                value 2;
+              }
+              enum "type3" {
+                value 3;
+              }
+            }
+          }
+
+          leaf inst-or-vlan { type string; }
+
+          leaf enable {
+            type boolean;
+            default "true";
+          }
+
+          leaf pdu-rx { type uint32; }
+        }
+      }
+    }
+
+  // YPW-1237: malformed JSON when list callback return error
+  augment "/get2test:get2-ints/get2test:int2" {
+
+    container pause {
+      list dot1p {
+        key "cos";
+
+        leaf cos {
+          type string;
+        }
+
+        leaf pause-rx-pkts {
+          type string;
+        }
+
+        leaf pause-tx-pkts {
+          type string;
+        }
+      }
+
+      leaf pause-rx-pkts {
+        type string;
+      }
+
+      leaf pause-tx-pkts {
+        type string;
+      }
+    }
+  }
+
+  // YPW-1288: Restconf query producing malformed json records with bugs.
+  grouping list-leafs {
+    leaf if-index {
+      type uint32;
+    }
+    leaf index {
+      type string;
+    }
+    leaf port {
+      type uint32;
+    }
+  }
+
+  grouping port-info {
+    leaf leaf1 {
+      type boolean;
+    }
+    leaf leaf2 {
+      type boolean;
+    }
+    leaf leaf3 {
+      type boolean;
+    }
+  }
+
+  augment "/get2test:get2-ints/get2test:int3" {
+
+    container lldp-statistics {
+      config false;
+
+      list intf {
+        key "index";
+        description
+          "KEY is not the FIRST";
+        uses list-leafs;
+      }
+    }
+  }
+
+  augment "/get2test:get2-ints/get2test:int3" {
+
+    container loc-data {
+      container port-info {
+        uses port-info;
+      }
+
+      list prio-name {
+        key "index";
+        uses list-leafs;
+      }
+    }
+  }
+
+  /* YPW-1483: GET2 nodes not present when when-statement is TRUE */
+  augment "/get2test:get2-choice-cont/"
+          + "get2test:int2/"
+          + "get2test:state" {
+
+    when "../get2test:config/get2test:type = 'ettp'";
+
+    container status {
+      leaf high {
+        type boolean;
+      }
+      leaf low {
+        type boolean;
+      }
+    }
+  }
+}

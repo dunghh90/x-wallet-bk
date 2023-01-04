@@ -1,0 +1,21 @@
+module test-when-merge {
+
+  namespace "http://netconfcentral.org/ns/test-when-merge";
+
+  prefix test-when-merge;
+
+  revision "2015-10-08" {
+  }
+
+ container top {
+    leaf A { type int32; }
+    leaf B { type int32; }
+    leaf C { type int32; }
+ }
+
+ augment /top {
+    when "A > 4";
+    leaf D { type int32; }
+ }
+ 
+}

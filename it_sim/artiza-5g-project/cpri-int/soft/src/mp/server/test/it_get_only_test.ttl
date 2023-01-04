@@ -1,0 +1,27 @@
+sendln ""
+
+wait "f_5g_du@5G_DU>"
+sendln "#get xran-beamforming"
+
+sendln "sget /beamforming-config/per-band-config/static-properties"
+sendln "sget /beamforming-config/per-band-config/beam-information/beamforming-properties"
+sendln "sget /beamforming-config/per-band-config/beam-information/beamforming-properties"
+sendln "sget /beamforming-config/per-band-config/beam-information/beamforming-properties[beam-id='4']/beamforming-property"
+
+wait "f_5g_du@5G_DU>"
+sendln "#get xran-module-cap"
+
+sendln "sget /module-capability/band-capabilities"
+sendln "sget /module-capability/ru-capabilities"
+sendln "sget /module-capability/ru-capabilities/format-of-iq-sample"
+sendln "sget /module-capability/ru-capabilities/format-of-iq-sample/compression-method-supported"
+sendln "sget /module-capability/ru-capabilities/ul-mixed-num-required-guard-rbs"
+
+wait "f_5g_du@5G_DU>"
+sendln "#get xran-hardware"
+
+sendln "sget /hardware/component/label-content"
+sendln "sget /hardware/component/product-code"
+sendln "sget /hardware/component/state/availability-state"
+
+

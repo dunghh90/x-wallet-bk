@@ -1,0 +1,11 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+txgain = Rrh.get_shmcm("txgain")
+ if ( txgain.to_i(16) > 0 ) && ( txgain.to_i(16) <= 10 ) then
+	printf("-%d.%ddB\n", txgain.to_i(16) / 10 , txgain.to_i(16) % 10 )
+ else
+	puts "0.0dB"
+ end
+

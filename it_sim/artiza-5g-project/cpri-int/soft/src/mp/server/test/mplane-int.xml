@@ -1,0 +1,22 @@
+<mplane-info xmlns="urn:xran:mplane-interfaces:1.0">
+    <searchable-mplane-access-vlans-info>
+        <searchable-access-vlans>1</searchable-access-vlans>
+        <searchable-access-vlans>20</searchable-access-vlans>
+        <searchable-access-vlans>100</searchable-access-vlans>
+        <searchable-access-vlans>400</searchable-access-vlans>
+        <searchable-access-vlans>4094</searchable-access-vlans>
+        <vlan-range>
+            <lowest-vlan-id>1</lowest-vlan-id>
+            <highest-vlan-id>4094</highest-vlan-id>
+        </vlan-range>
+    </searchable-mplane-access-vlans-info>
+    <m-plane-interfaces>
+        <m-plane-ssh-ports>
+            <call-home-ssh-port>4334</call-home-ssh-port>
+            <server-ssh-port>830</server-ssh-port>
+        </m-plane-ssh-ports>
+    </m-plane-interfaces>
+</mplane-info>
+
+
+

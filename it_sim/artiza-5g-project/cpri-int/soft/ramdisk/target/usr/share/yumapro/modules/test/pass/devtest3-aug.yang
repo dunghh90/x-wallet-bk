@@ -1,0 +1,14 @@
+module devtest3-aug {
+
+   namespace "http://yumaworks.com/ns/devtest3-aug";
+   prefix "d3aug";
+   import devtest3 { prefix d3; }
+
+   revision 2015-04-17;
+
+   augment /d3:X {
+     leaf foo {
+       type int16;
+     }
+   }
+}

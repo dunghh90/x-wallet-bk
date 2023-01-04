@@ -1,0 +1,5 @@
+# 
+# PTP setup
+# 
+puts "JCPLL Skip"
+exit(0)

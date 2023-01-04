@@ -1,0 +1,717 @@
+/*!
+ * @skip  $ld:$
+ * @file  rrhApi_cpri.c
+ * @brief API : CPRI関連
+ * @date  2013/11/05 FFCS)Xut Create.
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2013
+ */
+
+/** @addtogroup RRH_API_CPRI
+ *  @{
+ */
+/********************************************************************************************************************/
+/* include file                                                                                                     */
+/********************************************************************************************************************/
+#include "f_rrh_inc.h"
+#include "f_sys_def.h"
+#include "BPF_RU_IPCM.h"
+
+#include "rrhApi_Com.h"
+#include "rrhApi_Cpri.h"
+/********************************************************************************************************************/
+/**
+ *  @brief  API : CPRI起動通知
+ *  @note   PF EVENT ID : 0xA0000001
+ *          Reponse  ID : -
+ *          TYPE        : MNT
+ *  @param  linkno        : CPRIリンク番号
+ *  @param  sfpLogTrigger : SFP logging trigger
+ *  @param  qid           : response queue id (応答送信先QueueID)
+ *  @param  wtime         : wait time(msec) for response (応答待ち時間。即時応答型でのみ有効)
+ *  @param  data_p        : not use
+ *  @return INT
+ *  @retval ret
+ *  @date   2013/11/05 FFCS)niemsh Create.
+ *  @date   2015/08/12 TDIPS)ikeda FHMでの17リンク対応
+ *  @FeatureID	PF_Cpri-002-001-001
+ *  @Bug_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Cpri_Mnt_StartupLink(USHORT linkno, UINT sfpLogTrigger,
+								INT	qid,	INT	wtime,VOID *data_p)
+{
+	T_API_CPRILINK_STARTUP_IND	apiInd;
+	INT								errcd;
+	INT								ret;
+
+	memset(&apiInd,0,sizeof(apiInd));
+
+	/*fill IF*/
+	apiInd.header.uiEventNo		= D_API_MSGID_CPRI_LINK_STARTUP_IND;/* Event  ID         */
+	apiInd.header.uiSignalkind	= 0;								/* Signal Kind       */
+	apiInd.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;				/* Destination P QID */
+	apiInd.header.uiDstTQueueID	= 0;				/* Destination T QID */
+	apiInd.header.uiSrcPQueueID	= qid;								/* Source P QID      */
+	apiInd.header.uiSrcTQueueID	= 0;								/* Source T QID      */
+	apiInd.header.uiLength		= sizeof(apiInd);					/* Length            */
+	apiInd.link_num = linkno;
+	apiInd.sfpLogTrigger        = sfpLogTrigger;
+
+	/* call MW func */
+	ret = rrhApi_com_msgQSend(
+				D_RRH_PROCQUE_F_PF,					/* Message QID             */
+				(void *)&apiInd,					/* The message to transmit */
+				sizeof(apiInd),						/* The size of message     */
+				&errcd								/* Error code              */
+				);
+
+	/* checking parameter */
+	if( ret != BPF_RU_IPCM_OK ) {
+		rrhApi_com_log(__func__, errcd);
+
+		return BPF_RU_IPCM_NG;
+	}
+
+	return E_API_RCD_OK;
+}
+
+/********************************************************************************************************************/
+/**
+ *  @brief  API : CPRI停止通知
+ *  @param  qid         : response queue id (応答送信先QueueID)
+ *  @param  linkno      : CPRIリンク番号
+ *  @return 処理結果
+ *  @date   2015/10/06 TDI)satou create
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Cpri_Mnt_StopLink(INT qid, USHORT linkno) {
+    T_API_CPRILINK_STOP_IND apiInd;
+    INT ret, errcd;
+
+    memset(&apiInd, 0, sizeof apiInd);
+    apiInd.header.uiEventNo     = D_API_MSGID_CPRI_LINK_STOP_IND;
+    apiInd.header.uiDstPQueueID = D_RRH_PROCQUE_F_PF;
+    apiInd.header.uiSrcPQueueID = qid;
+    apiInd.header.uiLength      = sizeof apiInd;
+    apiInd.link_num             = linkno;
+
+    ret = rrhApi_com_msgQSend(D_RRH_PROCQUE_F_PF, (void*)&apiInd, sizeof apiInd, &errcd);
+    if (BPF_RU_IPCM_OK != ret) {
+        rrhApi_com_log(__func__, errcd);
+        return BPF_RU_IPCM_NG;
+    }
+
+    return E_API_RCD_OK;
+}
+/********************************************************************************************************************/
+/**
+ *  @brief  API : CPRI link enable 通知
+ *  @note   PF EVENT ID : 0xA0000005
+ *          Reponse  ID : -
+ *          TYPE        : MNT
+ *  @param  linkno      : CPRI link number
+ *  @param  qid         : response queue id (応答送信先QueueID)
+ *  @param  wtime       : wait time(msec) for response (応答待ち時間。即時応答型でのみ有効)
+ *  @param  data_p      : not use
+ *  @return INT
+ *  @retval ret
+ *  @date   2013/11/05 FFCS)niemsh Create.
+ *  @date   2015/09/03 TDIPS)ikeda 17リンク対応.
+ *  @FeatureID	PF_Cpri-003-001-001
+ *  @Bug_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Cpri_Mnt_EnableLink( USHORT linkno,
+								INT	qid,	INT	wtime,VOID *data_p)
+{
+	T_API_CPRILINK_ENABLE_IND	apiInd;
+	INT								errcd;
+	INT								ret;
+
+	memset(&apiInd,0,sizeof(apiInd));
+
+	/*fill IF*/
+	apiInd.header.uiEventNo		= D_API_MSGID_CPRI_LINK_ENABLE_IND;/* Event  ID         */
+	apiInd.header.uiSignalkind	= 0;								/* Signal Kind       */
+	apiInd.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;				/* Destination P QID */
+	apiInd.header.uiDstTQueueID	= 0;				/* Destination T QID */
+	apiInd.header.uiSrcPQueueID	= qid;								/* Source P QID      */
+	apiInd.header.uiSrcTQueueID	= 0;								/* Source T QID      */
+	apiInd.header.uiLength		= sizeof(apiInd);					/* Length            */
+	apiInd.link_num = linkno;
+
+	/* call MW func */
+	ret = rrhApi_com_msgQSend(
+				D_RRH_PROCQUE_F_PF,						/* Message QID             */
+				(void *)&apiInd,					/* The message to transmit */
+				sizeof(apiInd),						/* The size of message     */
+				&errcd								/* Error code              */
+				);
+
+	/* checking parameter */
+	if( ret != BPF_RU_IPCM_OK ) {
+		rrhApi_com_log(__func__, errcd);
+
+		return BPF_RU_IPCM_NG;
+	}
+
+	return E_API_RCD_OK;
+}
+/********************************************************************************************************************/
+/**
+ *  @brief  API : CPRI link disable通知
+ *  @note   PF EVENT ID : 0xA0000007
+ *          Reponse  ID : -
+ *          TYPE        : MNT
+ *  @param  linkno      : CPRIリンク番号
+ *  @param  qid         : response queue id (応答送信先QueueID)
+ *  @param  wtime       : wait time(msec) for response (応答待ち時間。即時応答型でのみ有効)
+ *  @param  data_p      : not use
+ *  @return INT
+ *  @retval ret
+ *  @date   2013/11/05 FFCS)niemsh Create.
+ *  @date   2015/09/03 TDIPS)ikeda 17リンク対応.
+ *  @date   2015/09/16 TDI)satou linknoの引数を追加
+ *  @FeatureID	PF_Cpri-003-002-001
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+
+E_RRHAPI_RCODE rrhApi_Cpri_Mnt_DisableLink(	USHORT linkno,
+								INT	qid,	INT	wtime,VOID *data_p)
+{
+	T_API_CPRILINK_DISABLE_IND	apiInd;
+	INT								errcd;
+	INT								ret;
+
+	memset(&apiInd,0,sizeof(apiInd));
+
+	/*fill IF*/
+	apiInd.header.uiEventNo		= D_API_MSGID_CPRI_LINK_DISABLE_IND;/* Event  ID         */
+	apiInd.header.uiSignalkind	= 0;								/* Signal Kind       */
+	apiInd.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;				/* Destination P QID */
+	apiInd.header.uiDstTQueueID	= 0;				/* Destination T QID */
+	apiInd.header.uiSrcPQueueID	= qid;								/* Source P QID      */
+	apiInd.header.uiSrcTQueueID	= 0;								/* Source T QID      */
+	apiInd.header.uiLength		= sizeof(apiInd);					/* Length            */
+	apiInd.link_num = linkno;	/* リンク番号 MKM対応が必要 */
+
+	/* call MW func */
+	ret = rrhApi_com_msgQSend(
+				D_RRH_PROCQUE_F_PF,						/* Message QID             */
+				(void *)&apiInd,					/* The message to transmit */
+				sizeof(apiInd),						/* The size of message     */
+				&errcd								/* Error code              */
+				);
+
+	/* checking parameter */
+	if( ret != BPF_RU_IPCM_OK ) {
+		rrhApi_com_log(__func__, errcd);
+
+		return BPF_RU_IPCM_NG;
+	}
+
+	return E_API_RCD_OK;
+
+}
+/********************************************************************************************************************/
+/**
+ *  @brief  API : CPRI State変化通知予約
+ *  @note   PF EVENT ID : 0xA0000009
+ *          Reponse  ID : -
+ *          TYPE        : MNT
+ *  @param  linkno      : CPRI link number
+ *  @param  qid         : response queue id (応答送信先QueueID)
+ *  @param  wtime       : wait time(msec) for response (応答待ち時間。即時応答型でのみ有効)
+ *  @param  data_p      : not use
+ *  @return INT
+ *  @retval ret
+ *  @date   2013/11/05 FFCS)niemsh Create.
+ *  @FeatureID	PF_Cpri-002-001-001
+ *  @Bug_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Cpri_Mpr_SubscribeLinkState(USHORT linkno,
+								INT	qid,	INT	wtime,VOID *data_p)
+{
+	T_API_CPRILINK_STATE_SUB_REQ	apiInd;
+	INT								errcd;
+	INT								ret;
+	
+	if(rrhApi_com_checkRespQ(qid) != E_API_RCD_OK)
+		return E_API_RCD_EPARAM;
+ 
+	memset(&apiInd,0,sizeof(apiInd));
+	/*fill IF*/
+	apiInd.header.uiEventNo		= D_API_MSGID_CPRI_STATE_SUB_REQ;/* Event  ID         */
+	apiInd.header.uiSignalkind	= 0;								/* Signal Kind       */
+	apiInd.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;					/* Destination P QID */
+	apiInd.header.uiDstTQueueID	= 0;				/* Destination T QID */
+	apiInd.header.uiSrcPQueueID	= qid;								/* Source P QID      */
+	apiInd.header.uiSrcTQueueID	= 0;								/* Source T QID      */
+	apiInd.header.uiLength		= sizeof(apiInd);					/* Length            */
+	apiInd.link_num = linkno;
+
+	/* call MW func */
+	ret = rrhApi_com_msgQSend(
+				D_RRH_PROCQUE_F_PF,						/* Message QID             */
+				(void *)&apiInd,					/* The message to transmit */
+				sizeof(apiInd),						/* The size of message     */
+				&errcd								/* Error code              */
+				);
+
+	/* checking parameter */
+	if( ret != E_API_RCD_OK ) {
+		rrhApi_com_log(__func__, errcd);
+
+		return E_API_RCD_NG;
+	}
+
+	return E_API_RCD_OK;
+}
+/********************************************************************************************************************/
+/**
+ *  @brief  API : CPRI State変化通知予約中止
+ *  @note   PF EVENT ID : 0xA000000B
+ *          Reponse  ID : -
+ *          TYPE        : MNT
+ *  @param  qid         : response queue id (応答送信先QueueID)
+ *  @param  wtime       : wait time(msec) for response (応答待ち時間。即時応答型でのみ有効)
+ *  @param  data_p      : not use
+ *  @return INT
+ *  @retval ret
+ *  @date   2013/11/05 FFCS)niemsh Create.
+ *  @FeatureID	PF_Cpri-002-002-001
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+
+E_RRHAPI_RCODE rrhApi_Cpri_Mnt_UnsubscribeLinkState(
+								INT	qid,	INT	wtime,VOID *data_p)
+{
+	T_API_CPRILINK_STATE_UNSUB_IND	apiInd;
+	INT								errcd;
+	INT								ret;
+
+	memset(&apiInd,0,sizeof(apiInd));
+
+	/*fill IF*/
+	apiInd.header.uiEventNo		= D_API_MSGID_CPRI_STATE_UNSUB_IND;/* Event  ID         */
+	apiInd.header.uiSignalkind		= 0;							/* Signal Kind       */
+	apiInd.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;					/* Destination P QID */
+	apiInd.header.uiDstTQueueID	= 0;				/* Destination T QID */
+	apiInd.header.uiSrcPQueueID	= qid;								/* Source P QID      */
+	apiInd.header.uiSrcTQueueID	= 0;								/* Source T QID      */
+	apiInd.header.uiLength		= sizeof(apiInd);					/* Length            */
+
+	/* call MW func */
+	ret = rrhApi_com_msgQSend(
+				D_RRH_PROCQUE_F_PF,						/* Message QID             */
+				(void *)&apiInd,					/* The message to transmit */
+				sizeof(apiInd),						/* The size of message     */
+				&errcd								/* Error code              */
+				);
+
+	/* checking parameter */
+	if( ret != BPF_RU_IPCM_OK ) {
+		rrhApi_com_log(__func__, errcd);
+
+		return BPF_RU_IPCM_NG;
+	}
+
+	return E_API_RCD_OK;
+}
+/********************************************************************************************************************/
+/**
+ *  @brief  API : CPRIリンク system param 更新
+ *  @note   PF EVENT ID : 0xA001000D
+ *          Reponse  ID : -
+ *          TYPE        : MNT
+ *  @param  qid         : response queue id (応答送信先QueueID)
+ *  @param  wtime       : wait time(msec) for response (応答待ち時間。即時応答型でのみ有効)
+ *  @param  data_p      : not use
+ *  @param  value       : stable timer
+ *  @return INT
+ *  @retval ret
+ *  @date   2013/11/05 FFCS)niemsh Create.
+ *  @FeatureID	PF_Cpri-001-001-001
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+
+E_RRHAPI_RCODE rrhApi_Cpri_Mnt_UpdateSystemPara(
+								INT	qid,	INT	wtime,VOID *data_p,
+								UINT value)
+{
+	T_API_CPRILINK_PARAM_UPDATE_IND apiInd;
+	INT								errcd;
+	INT								ret;
+
+	memset(&apiInd,0,sizeof(apiInd));
+
+	/*fill IF*/
+	apiInd.header.uiEventNo		= D_API_MSGID_CPRI_PARAM_UPDATE_IND;	/* Event  ID         */
+	apiInd.header.uiSignalkind	= 0;								/* Signal Kind       */
+	apiInd.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;					/* Destination P QID */
+	apiInd.header.uiDstTQueueID	= 0;				/* Destination T QID */
+	apiInd.header.uiSrcPQueueID	= qid;								/* Source P QID      */
+	apiInd.header.uiSrcTQueueID	= 0;								/* Source T QID      */
+	apiInd.header.uiLength		= sizeof(apiInd);					/* Length            */
+	apiInd.data.stableValue 			= value;
+	
+	/* call MW func */
+	ret = rrhApi_com_msgQSend(
+				D_RRH_PROCQUE_F_PF,						/* Message QID             */
+				(void *)&apiInd,					/* The message to transmit */
+				sizeof(apiInd),						/* The size of message     */
+				&errcd								/* Error code              */
+				);
+
+	/* checking parameter */
+	if( ret != BPF_RU_IPCM_OK ) {
+		rrhApi_com_log(__func__, errcd);
+
+		return BPF_RU_IPCM_NG;
+	}
+
+	return E_API_RCD_OK;
+}
+/********************************************************************************************************************/
+/**
+ *  @brief  API : CPRI L3リンクERR設定
+ *  @note   PF EVENT ID : 0xA001000F
+ *          Reponse  ID : -
+ *          TYPE        : MNT
+ *  @param  linkno      : CPRI link number
+ *  @param  qid         : response queue id (応答送信先QueueID)
+ *  @param  wtime       : wait time(msec) for response (応答待ち時間。即時応答型でのみ有効)
+ *  @param  data_p      : not use
+ *  @param  onOff       : ON/OFF
+ *  @return INT
+ *  @retval ret
+ *  @date   2013/11/05 FFCS)niemsh Create.
+ *  @FeatureID	PF_Cpri-001-001-001
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Cpri_Mnt_FiberOutput(USHORT linkno,
+								INT	qid,	INT	wtime,VOID *data_p,UINT onOff)
+{
+	T_API_CPRILINK_FIBEROUTPUT_IND apiInd;
+	INT							errcd;
+	INT							ret;
+
+	/*fill IF*/
+	apiInd.header.uiEventNo		= D_API_MSGID_CPRI_FIBEROUTPU_IND;		/* Event  ID         */
+	apiInd.header.uiSignalkind		= 0;								/* Signal Kind       */
+	apiInd.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;					/* Destination P QID */
+	apiInd.header.uiDstTQueueID	= 0;				/* Destination T QID */
+	apiInd.header.uiSrcPQueueID	= qid;								/* Source P QID      */
+	apiInd.header.uiSrcTQueueID	= 0;								/* Source T QID      */
+	apiInd.header.uiLength		= sizeof(apiInd);					/* Length            */
+	apiInd.onOff		= onOff;					/* Length            */
+	apiInd.link_num = linkno;
+
+	/* call MW func */
+	ret = rrhApi_com_msgQSend(
+				D_RRH_PROCQUE_F_PF,					/* Message QID             */
+				(void *)&apiInd,					/* The message to transmit */
+				sizeof(apiInd),						/* The size of message     */
+				&errcd								/* Error code              */
+				);
+
+	/* checking parameter */
+	if( ret != BPF_RU_IPCM_OK ) {
+		rrhApi_com_log(__func__,errcd);
+
+		return E_API_RCD_NG;
+	}
+
+	return E_API_RCD_OK;
+}
+
+
+/********************************************************************************************************************/
+/**
+ *  @brief  API : CPRI link set up 通知 for Debug
+ *  @note   PF EVENT ID : 0xA0000011
+ *          Reponse  ID : -
+ *          TYPE        : MNT
+ *  @param  qid                : queue id
+ *  @param  wtime              : not use
+ *  @param  data_p             : not use
+ *  @param  cpriHDLCBitrate    : HDLCBitrate(3:D_RRH_HDLC_BITRATE_960 4:D_RRH_HDLC_BITRATE_1920)
+ *  @param  cpriLineBitrate    : LineBitrate(0:D_RRH_LINE_BITRATE_1228 1:D_RRH_LINE_BITRATE_2457)
+ *  @param  setcpriState       : CPRI status (0:State A,1:State B,2:State C,3:State D,4:State E,5:State F)
+ *  @param  linkno             : CPRIリンク番号
+ *  @return INT
+ *  @retval ret
+ *  @date   2015/01/21 FJT)Taniguchi Create.
+ *  @date   2015/09/15 TDI)satou CPRIリンク番号の引数を追加
+ *  @FeatureID	PF_Cpri-003-002-001
+ *  @Bug_No	N/A
+ *  @CR_No	N/A
+ *  @TBD_No	N/A
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Cpri_Mnt_SetupLink_Dbg(
+			INT		qid,
+			INT		wtime,
+			VOID	*data_p,
+			UINT	cpriHDLCBitrate,
+			UINT	cpriLineBitrate,
+			UINT	setcpriState,
+			UINT    linkno
+)
+{
+	T_API_CPRILINK_STATE_NTC		apiInd;
+	INT								errcd;
+	INT								ret = 0;
+
+	if(setcpriState > D_RRH_CPRISTAT_F)
+	{
+		rrhApi_com_log(__func__, E_API_RCD_EPARAM);
+		return E_API_RCD_EPARAM;
+	}
+
+	memset(&apiInd,0,sizeof(apiInd));
+	/*fill IF*/
+	apiInd.header.uiEventNo		= D_API_MSGID_CPRI_LINK_SETUP_DEBUG;/* Event  ID         */
+	apiInd.header.uiSignalkind	= 0;								/* Signal Kind       */
+	apiInd.header.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;					/* Destination P QID */
+	apiInd.header.uiDstTQueueID	= 0;								/* Destination T QID */
+	apiInd.header.uiSrcPQueueID	= qid;								/* Source P QID      */
+	apiInd.header.uiSrcTQueueID	= 0;								/* Source T QID      */
+	apiInd.header.uiLength		= sizeof(apiInd);					/* Length            */
+	if(setcpriState >= D_RRH_CPRISTAT_E){
+		apiInd.cpriHDLCBitrate	= cpriHDLCBitrate;
+		apiInd.cpriLineBitrate	= cpriLineBitrate;
+		apiInd.cpriHdlc			= D_RRH_ON;
+	}
+	else{
+		apiInd.cpriEDown		= D_RRH_ON;
+	}
+	apiInd.cpriState			= setcpriState;
+	apiInd.link_num             = (USHORT)linkno;
+	/* call MW func */
+	ret = rrhApi_com_msgQSend(
+				D_RRH_PROCQUE_F_PF,						/* Message QID             */
+				(void *)&apiInd,					/* The message to transmit */
+				sizeof(apiInd),						/* The size of message     */
+				&errcd								/* Error code              */
+				);
+	/* checking parameter */
+	if( ret != BPF_RU_IPCM_OK ) {
+		rrhApi_com_log(__func__, errcd);
+		return BPF_RU_IPCM_NG;
+	}
+	return E_API_RCD_OK;
+}
+
+/********************************************************************************************************************/
+/**
+ *  @brief  API : RE use status set request
+ *  @param  qid                : 送信元メッセージキューID
+ *  @param  linkno             : CPRIリンク番号
+ *  @param  onOff              : 使用(D_RRH_ON)/未使用(D_RRH_OFF)
+ *  @return INT                : 処理結果
+ *  @date   2015/10/05 TDI)satou create
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Cpri_Mnt_SetReUse(INT qid, USHORT linkno, UINT onOff) {
+    T_API_CPRILINK_SET_REUSE_IND    apiInd;
+    INT                             errcd;
+    INT                             ret;
+
+    memset(&apiInd, 0, sizeof apiInd);
+    apiInd.header.uiEventNo     = D_API_MSGID_CPRI_SET_REUSE_IND;
+    apiInd.header.uiSignalkind  = 0;
+    apiInd.header.uiDstPQueueID = D_RRH_PROCQUE_L3;
+    apiInd.header.uiDstTQueueID = 0;
+    apiInd.header.uiSrcPQueueID = qid;
+    apiInd.header.uiSrcTQueueID = 0;
+    apiInd.header.uiLength      = sizeof apiInd;
+    apiInd.link_num             = linkno;
+    apiInd.onoff                = onOff;
+
+    ret = rrhApi_com_msgQSend(D_RRH_PROCQUE_L3, (void*)&apiInd, sizeof apiInd, &errcd);
+    if (BPF_RU_IPCM_OK != ret) {
+        rrhApi_com_log(__func__, errcd);
+        return E_API_RCD_NG;
+    }
+    return E_API_RCD_OK;
+}
+
+/********************************************************************************************************************/
+/**
+ *  @brief  API : 遅延補正要求
+ *  @param  qid                : 送信元メッセージキューID
+ *  @return INT                : 処理結果
+ *  @date   2015/11/04 TDI)satou その他未実装-008 create
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Cpri_Mnt_DelayAdjustStep3(INT qid) {
+    T_API_COMMON_HEADER apiInd;
+    INT ret, errcd;
+
+    memset(&apiInd, 0, sizeof apiInd);
+    apiInd.uiEventNo     = D_API_MSGID_CPRI_DLY_ADJ_STEP3_REQ;
+    apiInd.uiDstPQueueID = D_RRH_PROCQUE_F_PF;
+    apiInd.uiSrcPQueueID = qid;
+    apiInd.uiLength      = sizeof apiInd;
+
+    ret = rrhApi_com_msgQSend(D_RRH_PROCQUE_F_PF, (void*)&apiInd, sizeof apiInd, &errcd);
+    if (BPF_RU_IPCM_OK != ret) {
+        rrhApi_com_log(__func__, errcd);
+        return BPF_RU_IPCM_NG;
+    }
+    return E_API_RCD_OK;
+}
+/*****************************************************************************************************************//**
+ *  @brief  API : 遅延補正要求(Step7)
+ *  @param  qid                : 送信元メッセージキューID
+ *  @param  delayPrmChkEn      : パラメータチェック有効/無効
+ *  @param  tgt_re             : 遅延補正対象RE
+ *  @param  apiRsp             : 応答メッセージコピー先
+ *  @return INT                : 処理結果
+ *  @date   2015/11/04 TDI)satou その他未実装-008 create
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Cpri_Mnt_DelayAdjustStep7(INT qid, INT delayPrmChkEn, USHORT *tgt_re, T_API_CPRILINK_ADJUST_DELAY_STEP7_RSP *apiRsp) {
+    T_API_CPRILINK_ADJUST_DELAY_STEP7 apiInd;
+    INT ret, errcd;
+    USHORT cpr_num, cpr_idx;
+    UINT msgLen;
+
+    memset(&apiInd, 0, sizeof apiInd);
+    apiInd.header.uiEventNo     = D_API_MSGID_CPRI_DLY_ADJ_STEP7_REQ;
+    apiInd.header.uiDstPQueueID = D_RRH_PROCQUE_F_PF;
+    apiInd.header.uiSrcPQueueID = qid;
+    apiInd.header.uiLength      = sizeof apiInd;
+    apiInd.param_check_en       = delayPrmChkEn;
+    for (cpr_num = D_RRH_CPRINO_RE_MIN; cpr_num <= D_RRH_CPRINO_RE_MAX; cpr_num++)
+    {
+        cpr_idx = cpr_num - 1;
+        apiInd.tgt_re[cpr_idx] = *tgt_re;
+        tgt_re++;
+    }
+	
+	/* Queue Clear	*/
+	(VOID)BPF_RU_IPCM_PROCMSGQ_FREE_STACK_BUFF( qid );
+
+    ret = rrhApi_com_msgQSend(D_RRH_PROCQUE_F_PF, (void*)&apiInd, sizeof apiInd, &errcd);
+    if (BPF_RU_IPCM_OK != ret) {
+        rrhApi_com_log(__func__, errcd);
+        return E_API_RCD_NG;
+    }
+
+    ret = rrhApi_com_msgQReceive(qid, 0, sizeof *apiRsp, apiRsp, &msgLen, &errcd);
+    if (BPF_RU_IPCM_OK != ret) {
+        rrhApi_com_log(__func__, errcd);
+        return E_API_RCD_NG;
+    }
+
+    return E_API_RCD_OK;
+}
+/*****************************************************************************************************************//**
+ *  @brief  API : 遅延補正要求(Step10)
+ *  @param  qid                : 送信元メッセージキューID
+ *  @param  cpr_num            : CPRIリンク番号
+ *  @param  isStartup          : 増設か運用中か
+ *  @param  forceStopEn        : 強制停止への遷移有効(D_RRH_ON)/無効(D_RRH_OFF)
+ *  @return INT                : 処理結果
+ *  @date   2015/11/10 TDI)satou その他未実装-017 create
+ *  @date   2016/01/29 TDI)satou eNB-F-15B-3201-00115 応答をメインループで受けるように変更
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Cpri_Mnt_DelayAdjustStep10(INT qid, USHORT cpr_num, USHORT isStartup, USHORT forceStopEn) {
+    T_API_CPRILINK_ADJUST_DELAY_STEP10 apiInd;
+    INT ret, errcd;
+
+    memset(&apiInd, 0, sizeof apiInd);
+    apiInd.header.uiEventNo     = D_API_MSGID_CPRI_DLY_ADJ_STEP10_REQ;
+    apiInd.header.uiDstPQueueID = D_RRH_PROCQUE_F_PF;
+    apiInd.header.uiSrcPQueueID = qid;
+    apiInd.header.uiLength      = sizeof apiInd;
+    apiInd.cpr_num              = cpr_num;
+    apiInd.isStartup            = isStartup;
+    apiInd.forceStopEn          = forceStopEn;
+	
+    ret = rrhApi_com_msgQSend(D_RRH_PROCQUE_F_PF, (void*)&apiInd, sizeof apiInd, &errcd);
+    if (BPF_RU_IPCM_OK != ret) {
+        rrhApi_com_log(__func__, errcd);
+        return E_API_RCD_NG;
+    }
+
+    return E_API_RCD_OK;
+}
+/*****************************************************************************************************************//**
+ *  @brief  API : 遅延補正状態クリア要求
+ *  @param  qid                : 送信元メッセージキューID
+ *  @return INT                : 処理結果
+ *  @date   2016/03/29 TDI)satou create
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Cpri_Mnt_DelayAdjustClear(INT qid) {
+	T_APIIF_COM_REQ apiReq;
+	INT ret, errcd;
+
+    memset(&apiReq, 0, sizeof apiReq);
+    apiReq.header.uiEventNo     = D_API_MSGID_CPRI_DLY_ADJ_CLEAR_REQ;
+    apiReq.header.uiDstPQueueID = D_RRH_PROCQUE_F_PF;
+    apiReq.header.uiSrcPQueueID = qid;
+    apiReq.header.uiLength      = sizeof apiReq;
+
+    ret = rrhApi_com_msgQSend(D_RRH_PROCQUE_F_PF, (void*)&apiReq, sizeof apiReq, &errcd);
+    if (BPF_RU_IPCM_OK != ret) {
+        rrhApi_com_log(__func__, errcd);
+        return E_API_RCD_NG;
+    }
+
+    return E_API_RCD_OK;
+}
+/********************************************************************************************************************/
+/**
+ *  @brief  API : Master SFP power ON request
+ *  @param  qid                : 送信元メッセージキューID
+ *  @param  linkno             : CPRIリンク番号
+ *  @return INT                : 処理結果
+ *  @date   2015/12/24 FJT)koshida create
+ */
+/********************************************************************************************************************/
+E_RRHAPI_RCODE rrhApi_Cpri_Mnt_SetSfpPwr(INT qid, USHORT linkno) {
+    T_API_MSGID_CPRI_CPMPOWERON_IND apiInd;
+    INT                             errcd;
+    INT                             ret;
+
+    memset(&apiInd, 0, sizeof apiInd);
+    apiInd.header.uiEventNo     = D_API_MSGID_CPRI_CPMPOWERON_IND;
+    apiInd.header.uiSignalkind  = 0;
+    apiInd.header.uiDstPQueueID = D_RRH_PROCQUE_F_PF;
+    apiInd.header.uiDstTQueueID = 0;
+    apiInd.header.uiSrcPQueueID = qid;
+    apiInd.header.uiSrcTQueueID = 0;
+    apiInd.header.uiLength      = sizeof apiInd;
+    apiInd.link_num             = linkno;
+
+    ret = rrhApi_com_msgQSend(D_RRH_PROCQUE_F_PF, (void*)&apiInd, sizeof apiInd, &errcd);
+    if (BPF_RU_IPCM_OK != ret) {
+        rrhApi_com_log(__func__, errcd);
+        return E_API_RCD_NG;
+    }
+    return E_API_RCD_OK;
+}
+
+/** @} */
+

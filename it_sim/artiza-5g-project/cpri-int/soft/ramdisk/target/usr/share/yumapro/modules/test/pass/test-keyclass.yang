@@ -1,0 +1,51 @@
+module test-keyclass {
+  namespace "http://www.yumaworks.com/ns/test-keyclass";
+  prefix testkc;
+
+  import test-keyclass2 {
+    prefix testkc2;
+  }
+
+  import yumaworks-extensions {
+    prefix ywx;
+  }
+
+  revision "2017-01-11";
+
+
+  list policy-entry {
+    ywx:sil-priority 160;
+    key "name";
+
+    leaf name {
+      type string;
+    }
+
+    list classifier-entry {
+      key "cname";
+
+      leaf cname {
+        type leafref {
+           path /testkc2:classifier-entry/testkc2:name;
+        }
+      }
+    }
+  }
+
+  list policy-entry-ref {
+    key "name";
+
+    leaf name {
+      type string;
+    }
+
+    list classifier-entry {
+      key "cname";
+
+      leaf cname {
+        type testkc2:cname-ref;
+      }
+    }
+  }
+
+}

@@ -1,0 +1,5 @@
+m_rc_SvMt_DataSend.c:35:7:m_rc_SvMt_DatSndReq	96	dynamic,bounded
+m_rc_SvMt_DataSend.c:161:6:m_rc_SvMt_DatSndRes	96	dynamic,bounded
+m_rc_SvMt_DataSend.c:256:6:m_rc_SvMt_DataSndTo	64	dynamic,bounded
+m_rc_SvMt_DataSend.c:307:6:m_rc_SvMt_DataSndResSend	80	dynamic,bounded
+m_rc_SvMt_DataSend.c:374:8:m_rc_SvMt_DatSndReqParaCheck	48	static

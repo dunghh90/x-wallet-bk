@@ -1,0 +1,10 @@
+m_rc_ReCarStaRep.c:50:6:m_rc_chk_l3layer	144	dynamic,bounded
+m_rc_ReCarStaRep.c:101:6:m_rc_ReCarStaRep	80	dynamic,bounded
+m_rc_ReCarStaRep.c:148:6:m_rc_ReCarStaRep_S3G	12336	dynamic,bounded
+m_rc_ReCarStaRep.c:594:6:m_rc_ReCarStaRep_3G	17056	dynamic,bounded
+m_rc_ReCarStaRep.c:1005:13:m_rc_MakeCarDat_OnlyFHM_S3G	80	static
+m_rc_ReCarStaRep.c:1042:13:m_rc_MakeCarDat_OnlyFHM_S3G_SetDisable	48	static
+m_rc_ReCarStaRep.c:1056:13:m_rc_MakeCarDat_OnlyFHM_S3G_SetEnable	48	static
+m_rc_ReCarStaRep.c:1106:12:m_rc_MakeCarDat_OnlyFHM_3G	64	static
+m_rc_ReCarStaRep.c:1146:13:m_rc_MakeCarDat_OnlyFHM_3G_SetDisable	48	static
+m_rc_ReCarStaRep.c:1160:13:m_rc_MakeCarDat_OnlyFHM_3G_SetEnable	48	static

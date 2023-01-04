@@ -1,0 +1,33 @@
+module test-ex2 {
+
+    namespace "http://yumaworks.com/ns/test-ex2";
+
+    prefix "e2";
+
+    description
+      "Example sourcet module for yangmap
+       test-ex1-yangmap.xml creates the foloowing mapping:
+
+       logicalp -> /logical-ports/logical-port
+         id     ->                    name
+         nest   ->                    nest2
+          A     ->                      name
+          B     ->                      N2
+          C     ->                      N3
+      ";
+
+    revision 2018-02-22;
+
+    // test source (client-facing) data model
+    list logicalp {
+        key "id";   // map to name in test-ex1
+        leaf id { type string; }
+        list nest {
+          key A;
+          leaf A { type string; }
+          leaf B { type int32; }
+          leaf C { type uint32; }
+        }
+    }
+
+}

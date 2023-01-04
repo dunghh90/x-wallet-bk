@@ -1,0 +1,51 @@
+module c23 {
+  namespace "http://yumaworks.com/ns/c23";
+  prefix "c23";
+  revision 2018-09-18;
+
+  leaf pointed-at {
+    type uint32;
+  }
+
+  leaf pointing-at {
+    type leafref {
+      path /pointed-at;
+    }
+  }
+
+
+  container top {
+    leaf pointed-at2 {
+      type uint32;
+    }
+
+    leaf pointing-at2 {
+      type leafref {
+        path /top/pointed-at2;
+      }
+    }
+
+    list toplist {
+      key i;
+      leaf i { type uint32; }
+
+      leaf pointed-at3 {
+        type uint32;
+      }
+
+      leaf pointing-at3 {
+        type leafref {
+          path /top/toplist/pointed-at3;
+        }
+      }
+
+      leaf pointing-at4 {
+        type leafref {
+          path /top/toplist/i;
+        }
+      }
+    }
+
+  }
+
+}

@@ -1,0 +1,24 @@
+module test-extensions {
+
+    namespace "http://netconfcentral.org/ns/test-extensions";
+    prefix "textensions";
+
+    import yuma-ncx { prefix ncx; }
+
+    organization
+        "Netconf Central";
+
+    contact
+        "Andy Bierman";
+
+    revision 2017-09-21 {
+        description "Test module to test ncx extensions; in-progress.";
+    }
+
+
+    leaf pass-string {
+       ncx:password;
+       type string;
+    }
+
+}

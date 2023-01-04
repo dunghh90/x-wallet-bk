@@ -1,0 +1,32 @@
+export ARCH = arm64
+export CROSS_COMPILE = aarch64-wrs-linux-
+export SYSROOT=/opt/windriver/wrlinux-tiny/10.17.41/sysroots/aarch64-wrs-linux
+export PATH += :/opt/windriver/wrlinux-tiny/10.17.41/sysroots/x86_64-wrlinuxsdk-linux/usr/bin/aarch64-wrs-linux/:$SYSROOT
+
+export PGRTOP = $(shell pwd)
+export SRCTOP = $(PGRTOP)/../src
+include $(SRCTOP)/Makefile.in
+export PGR_MESSAGE_CHK = $(PGRTOP)/pgr_mp.log
+export PGR_MESSAGE_ALL = $(PGRTOP)/pgrall_mp.log
+export PGR_MESSAGE_CSV= $(PGRTOP)/pgrall_mp.csv
+export PGR_CHK_SRC = $(PGRTOP)/pgrchk_mp.log
+
+PGRDIRLIST= \
+$(SRCTOP)/mp/server/agent/saa \
+$(SRCTOP)/mp/server/agent/com \
+$(SRCTOP)/mp/server/agent/dbapi \
+$(SRCTOP)/mp/server/agent/callbacks/o-ran_all/src \
+$(SRCTOP)/mp/server/agent/callbacks/o-ran-alarm-id/src \
+$(SRCTOP)/mp/server/agent/callbacks/o-ran-delay-management/src \
+$(SRCTOP)/mp/server/agent/callbacks/o-ran-externalio/src \
+$(SRCTOP)/mp/server/agent/callbacks/o-ran-fan/src \
+$(SRCTOP)/mp/server/agent/callbacks/o-ran-file-management/src \
+$(SRCTOP)/mp/server/agent/callbacks/o-ran-troubleshooting/src
+pgr:
+	@echo '"チェック済指摘","ソースファイル名",行番号,"グループ","指摘ID","メッセージ"' > $(PGR_MESSAGE_CHK)
+	@echo '"チェック済指摘","ソースファイル名",行番号,"グループ","指摘ID","メッセージ"' > $(PGR_MESSAGE_ALL)
+	@echo '' > $(PGR_CHK_SRC)
+	$(foreach dir,$(PGRDIRLIST),\
+		cd $(dir);cp $(PGRTOP)/makepgr_sub ./;make -f makepgr_sub pgr;rm ./makepgr_sub;\
+	)
+	iconv -t SJIS $(PGR_MESSAGE_ALL) > $(PGR_MESSAGE_CSV)

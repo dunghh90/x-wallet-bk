@@ -1,0 +1,180 @@
+
+;
+; ALL ALM ON for mmW
+;
+
+prnpt = '$'
+P_time = 0
+
+;Soft ALM
+sendln '# Soft ALM'
+wait prnpt
+sendln 'rrh -svctl 11 2 1'
+wait prnpt
+pause P_time
+
+;Initialization failure
+sendln '# Initialization failure'
+wait prnpt
+sendln 'rrh -svctl 12 2 1'
+wait prnpt
+pause P_time
+
+;Fronthaul Synchronization Error
+sendln '# Fronthaul Synchronization Error'
+wait prnpt
+sendln 'rrh -svctl 13 1 1'
+wait prnpt
+pause P_time
+
+;Module Clock Faulty
+sendln '# Module Clock Faulty'
+wait prnpt
+sendln 'rrh -svctl 14 1 1'
+wait prnpt
+pause P_time
+
+;Fronthaul faulty
+sendln '# Fronthaul faulty'
+wait prnpt
+sendln 'rrh -svctl 15 1 1'
+wait prnpt
+pause P_time
+
+;PS ALM
+sendln '# PS ALM'
+wait prnpt
+sendln 'rrh -svctl 16 1 1'
+wait prnpt
+pause P_time
+
+;Unit out of order
+sendln '# Unit out of order'
+wait prnpt
+sendln 'rrh -svctl 17 1 1'
+wait prnpt
+pause P_time
+
+;RF module fault
+sendln '# RF module fault'
+wait prnpt
+sendln 'rrh -svctl 18 1 1'
+wait prnpt
+pause P_time
+
+;Temperature too low
+sendln '# Temperature too low'
+wait prnpt
+sendln 'rrh -svctl 32 1 1'
+wait prnpt
+pause P_time
+
+;Unit dangerously overheating
+sendln '# Unit dangerously overheating'
+wait prnpt
+sendln 'rrh -svctl 33 1 1'
+wait prnpt
+pause P_time
+
+;No fan detected
+sendln '# No fan detected'
+wait prnpt
+sendln 'rrh -svctl 34 1 1'
+wait prnpt
+pause P_time
+
+;FAN PS ALM
+sendln '# FAN PS ALM'
+wait prnpt
+sendln 'rrh -svctl 35 1 1'
+wait prnpt
+pause P_time
+
+;Cooling fan broken FAN#1
+sendln '# Cooling fan broken FAN#1'
+wait prnpt
+sendln 'rrh -svctl 36 1 1'
+wait prnpt
+pause P_time
+
+;Cooling fan broken FAN#2
+sendln '# Cooling fan broken FAN#2'
+wait prnpt
+sendln 'rrh -svctl 37 1 1'
+wait prnpt
+pause P_time
+
+;Cooling fan broken FAN#3
+sendln '# Cooling fan broken FAN#3'
+wait prnpt
+sendln 'rrh -svctl 38 1 1'
+wait prnpt
+pause P_time
+
+;SFP Type Error
+sendln '# SFP Type Error'
+wait prnpt
+sendln 'rrh -svctl 39 1 1'
+wait prnpt
+pause P_time
+
+;Tx Sleep
+sendln '# Tx Sleep'
+wait prnpt
+sendln 'rrh -svctl 40 1 1'
+wait prnpt
+pause P_time
+
+;Tx OFF
+sendln '# Tx OFF'
+wait prnpt
+sendln 'rrh -svctl 41 1 1'
+wait prnpt
+pause P_time
+
+;TEST Mode
+sendln '# TEST Mode'
+wait prnpt
+sendln 'rrh -svctl 42 1 1'
+wait prnpt
+pause P_time
+
+;Forced alarm
+sendln '# Forced alarm'
+wait prnpt
+sendln 'rrh -svctl 43 1 1'
+wait prnpt
+pause P_time
+
+;;; ANT ALM ;;;
+
+;TX out of order (ANT_A)
+sendln '# TX out of order (ANT_A)'
+wait prnpt
+sendln 'rrh -svctl 19 1 10'
+wait prnpt
+pause P_time
+
+;TX out of order (ANT_B)
+sendln '# TX out of order (ANT_B)'
+wait prnpt
+sendln 'rrh -svctl 20 1 11'
+wait prnpt
+pause P_time
+
+;RX out of order (ANT_A)
+sendln '# RX out of order (ANT_A)'
+wait prnpt
+sendln 'rrh -svctl 23 1 1'
+wait prnpt
+pause P_time
+
+;RX out of order (ANT_B)
+sendln '# RX out of order (ANT_B)'
+wait prnpt
+sendln 'rrh -svctl 24 1 2'
+wait prnpt
+pause P_time
+
+
+

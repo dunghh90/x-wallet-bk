@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export PATH=/opt/proc:/opt/sh:/opt/debug:/opt/tp:/opt/lnk:/opt/agent/bin:$PATH
+re_eepw 40 14 1>/dev/null 2>/dev/null
+re_eepw 41 12 1>/dev/null 2>/dev/null
+. /opt/sh/cmd_start_qemu_2nd 28g

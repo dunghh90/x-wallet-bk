@@ -1,0 +1,50 @@
+module def-idref {
+
+  namespace "http://netconfcentral.org/ns/def-idref";
+  prefix def-idref;
+  revision "2016-11-08";
+
+  identity A;
+
+  identity B;
+
+  identity C;
+
+  identity D {
+    base A;
+  }
+
+  identity E {
+    base B;
+  }
+
+  identity F {
+    base E;
+  }
+
+  identity G {
+    base A;
+  }
+
+  leaf l1 {
+    type identityref {
+      base C;
+    }
+    default F;
+  }
+
+  leaf l2 {
+    type identityref {
+      base B;
+    }
+    default D;
+  }
+
+  leaf l3 {
+    type identityref {
+      base C;
+    }
+    default G;
+  }
+
+}

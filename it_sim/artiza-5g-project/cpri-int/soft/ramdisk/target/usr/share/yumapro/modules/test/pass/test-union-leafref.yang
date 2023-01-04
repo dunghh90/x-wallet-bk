@@ -1,0 +1,40 @@
+module test-union-leafref {
+  yang-version 1.1;
+
+  namespace "http://yumaworks.com/ns/test-union-leafref";
+  prefix "tunion-leafref";
+  import ietf-inet-types { prefix inet; }
+  import hooks-test { prefix hk; }
+
+  revision 2019-04-04 {
+    description
+      "YPW-1454: Crash when edit Union type with leafrefs";
+  }
+
+  typedef test-type {
+    type union {
+      type inet:ip-address;
+      type hk:listname-ref;
+    }
+  }
+
+  leaf test-address { type test-type; }
+
+  leaf test-leaf { type uint32; }
+
+  container object {
+    presence "Not created by default";
+
+    leaf-list pool {
+      type union {
+        type leafref {
+          path "../../test-address";
+        }
+        type leafref {
+          path "../../test-leaf";
+        }
+      }
+    }
+  }
+
+}

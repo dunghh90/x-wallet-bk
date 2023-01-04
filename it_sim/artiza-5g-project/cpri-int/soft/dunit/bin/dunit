@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export LD_PRELOAD=$LD_PRELOAD:../lib/libct_lib.so:/lib/x86_64-linux-gnu/libSegFault.so
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../lib
+
+./dunitcore $*

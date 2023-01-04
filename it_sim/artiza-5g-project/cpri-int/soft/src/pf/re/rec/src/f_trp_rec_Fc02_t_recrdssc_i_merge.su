@@ -1,0 +1,4 @@
+f_trp_rec_Fc02_t_recrdssc_i_merge.c:28:6:f_trp_rec_Fc02_t_recrdssc_i_merge	59456	dynamic,bounded
+f_trp_rec_Fc02_t_recrdssc_i_merge.c:257:8:f_trp_rec_Fc02_t_recrdssc_i_ConvFuncKindToId	80	static
+f_trp_rec_Fc02_t_recrdssc_i_merge.c:302:6:f_trp_rec_Fc02_t_recrdssc_i_GetFuncEvery	384	static
+f_trp_rec_Fc02_t_recrdssc_i_merge.c:459:6:f_trp_rec_Fc02_t_recrdssc_i_ushortsort_asc	64	static

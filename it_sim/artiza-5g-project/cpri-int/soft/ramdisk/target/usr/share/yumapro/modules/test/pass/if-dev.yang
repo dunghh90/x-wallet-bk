@@ -1,0 +1,13 @@
+module if-dev {
+
+    namespace "http://yumaworks.com/ns/if-dev";
+    prefix "if-dev";
+
+    import ietf-interfaces { prefix if; }
+
+    revision 2015-04-17;
+
+    deviation /if:interfaces-state {
+      deviate not-supported;
+    }
+}

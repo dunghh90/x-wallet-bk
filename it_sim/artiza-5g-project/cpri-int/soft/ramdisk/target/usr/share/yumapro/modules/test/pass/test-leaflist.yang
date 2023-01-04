@@ -1,0 +1,83 @@
+module test-leaflist {
+  namespace "http://www.yumaworks.com/ns/test-leaflist";
+  prefix test-ll;
+
+  revision "2017-08-21" {
+    description
+      "Initial version. Test module for YPW-1076.
+       DB-API/YANG-PATCH create multiple leaf-list entries problem";
+  }
+
+  typedef state {
+    type enumeration {
+      enum disabled;
+      enum enabled;
+    }
+  }
+
+  typedef admin-state {
+    type state;
+  }
+
+  typedef stats {
+    type enumeration {
+      enum cpu;
+      enum fans;
+      enum memory;
+      enum port;
+      enum power;
+      enum temperature;
+    }
+  }
+
+  typedef duration {
+    type enumeration {
+      enum 30m;
+      enum 60m;
+      enum 3h;
+      enum 12h;
+      enum 24h;
+    }
+  }
+
+  container pm {
+
+    container configuration {
+
+      container bulkstats {
+
+        container instance {
+
+          list bulkstats-instance {
+            key name;
+
+            leaf name {
+              type string {
+                length "1..31";
+              }
+            }
+            leaf admin-state {
+              type admin-state;
+            }
+            leaf-list statistics {
+              type stats;
+            }
+            leaf interval {
+              type duration;
+            }
+            leaf-list duration {
+              type string;
+            }
+            leaf-list instance-id {
+              type uint32;
+            }
+          }
+
+        }
+      }
+    }
+  }
+
+}
+
+

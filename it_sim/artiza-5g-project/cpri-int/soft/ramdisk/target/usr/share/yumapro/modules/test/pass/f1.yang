@@ -1,0 +1,37 @@
+module f1 {
+  namespace "http://yumaworks.com/f1";
+  prefix f1;
+  revision 2017-10-31;
+
+  feature A;
+  feature B;
+  feature F1;
+
+  container top-f1 {
+    leaf A {
+      if-feature A;
+      type string;
+    }
+    leaf B {
+      if-feature B;
+      type string;
+    }
+  }
+
+
+  rpc rpc-f1 {
+    if-feature F1;
+    input {
+      leaf A {
+        if-feature A;
+        type string;
+      }
+      leaf B {
+        if-feature B;
+        type string;
+      }
+    }
+  }
+
+
+}

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+su -c "rm -rf gets" 2>/dev/null
+su -c "rm -rf edits" 2>/dev/null
+su -c "rm -rf rpcs" 2>/dev/null
+su -c "rm -rf regres" 2>/dev/null
+su -c "rm -rf perf" 2>/dev/null
+
+echo "Setup M-plane Scripts Env"
+su -c "ln -s /opt/scripts/o-ran/gets ./gets" 2>/dev/null
+su -c "ln -s /opt/scripts/o-ran/edits ./edits" 2>/dev/null
+su -c "ln -s /opt/scripts/o-ran/rpcs ./rpcs" 2>/dev/null
+su -c "ln -s /opt/scripts/o-ran/regres ./regres" 2>/dev/null
+su -c "ln -s /opt/scripts/o-ran/perf ./perf" 2>/dev/null
+

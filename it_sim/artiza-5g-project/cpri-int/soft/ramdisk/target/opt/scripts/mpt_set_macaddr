@@ -1,0 +1,23 @@
+#!/bin/sh
+
+TARGET_MAC_ADDR=`ifconfig fheth0 | grep HWaddr | sed -e "s/ //g" | sed -e "s/fheth0Linkencap:EthernetHWaddr//g"`
+CLI_MAC_ADDR=`ifconfig eth0 | grep HWaddr | sed -e "s/ //g" | sed -e "s/eth0Linkencap:EthernetHWaddr//g"`
+
+echo "XML Setting the CLI and RU Mac address"
+echo " RU MAC address:"$TARGET_MAC_ADDR
+echo " CLI MAC address:"$CLI_MAC_ADDR
+
+su -c "sed -i 's/RU_MAC_ADDRESS/'$TARGET_MAC_ADDR'/' ./edits/*.xml" 2>/dev/null
+su -c "sed -i 's/RU_MAC_ADDRESS/'$TARGET_MAC_ADDR'/' ./misc/*.xml" 2>/dev/null
+su -c "sed -i 's/RU_MAC_ADDRESS/'$TARGET_MAC_ADDR'/' ./regres/*.xml" 2>/dev/null
+su -c "sed -i 's/RU_MAC_ADDRESS/'$TARGET_MAC_ADDR'/' /tmp/*.xml" 2>/dev/null
+
+su -c "sed -i 's/CU_MAC_ADDRESS/'$CLI_MAC_ADDR'/' ./edits/*.xml" 2>/dev/null
+su -c "sed -i 's/CU_MAC_ADDRESS/'$CLI_MAC_ADDR'/' ./misc/*.xml" 2>/dev/null
+su -c "sed -i 's/CU_MAC_ADDRESS/'$CLI_MAC_ADDR'/' ./regres/*.xml" 2>/dev/null
+su -c "sed -i 's/CU_MAC_ADDRESS/'$CLI_MAC_ADDR'/' /tmp/*.xml" 2>/dev/null
+
+
+echo "OK"
+
+exit 0

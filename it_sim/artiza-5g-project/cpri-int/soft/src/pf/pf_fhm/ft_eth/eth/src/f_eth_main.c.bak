@@ -1,0 +1,115 @@
+/*!
+ * @skip	$ld:$
+ * @file	f_eth_main.c
+ * @brief	ETHスレッドメイン処理
+ * @date	2013/11/11 ALPHA)中村 Create
+ *
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2013
+ */
+
+/*!
+ * @addtogroup RRH_PF_ETH
+ * @{
+ */
+#include "f_eth_inc.h"
+
+/*!
+ *	@brief	f_eth_main
+ *	@note	関数処理内容.
+ *			-# pf_mainからの要求でスレッド起動を行う。
+ *				-# 送信MSG領域初期化を行う。
+ *				-# IP設定を行う。
+ *				-# pf_mainへ「Task Init completion notice」を送信する。
+ *			-# メッセージ受信待ちに待機し、APIからのイベントを受信する。
+ *				-# APIからIP設定変更要求受信時、指定されたパラメータでIP設定を行う。
+ *				-# 送信元APIにIP設定終了レスポンスを送信する。
+ * @retval		D_SYS_OK		0:正常終了
+ * @return		処理結果
+ * @warning		N/A
+ * @FeatureID	PF-ETH-001-001-001
+ * @Bug_No		N/A
+ * @CR_No		N/A
+ * @TBD_No		N/A
+ * @date 2013/11/11 ALPHA)中村 Create
+ */
+VOID f_eth_main()
+{
+
+	T_SYS_INIT_COMP_NTC			*sndMsg;			/* 送信メッセージ(初期化完了通知)	*/
+	UINT						rcvSize;
+	INT							rtn_bpf;
+	INT							errcd;
+	T_API_DBG_IFCONFIG_REQ* 	reqp = NULL;
+
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ENTER, "[f_eth_main] ENTER" );
+
+	/* スレッド名表示		*/
+	prctl(PR_SET_NAME, "pf_eth", 0, 0, 0);
+
+	/* BPFへスレッド情報登録	*/
+	BPF_RM_SVRM_THREAD_INFO_SET(	D_RRH_PROCID_PF,				/* ProcessID		*/
+									D_SYS_THDID_PF_ETH,				/* ThreadID			*/
+								    D_SYS_THDQID_PF_ETH,				    /* ThreadQueueID	*/
+								    (unsigned long int)pthread_self());	/* 2020/12/28 M&C) Merge 4G FHM src (add 4th param)	*/
+	
+	/* スレッド状態遷移(初期化状態) */
+	f_ethw_thdState = D_ETH_THD_STSD_INIT;
+
+	/*	スレッド起動時のIP設定設定			*/
+	(VOID)f_eth_init_IPset();
+
+	/****************************************************************************************************************/
+	/* 初期化完了通知送信																							*/
+	/****************************************************************************************************************/
+	/* バッファ取得 */
+	rtn_bpf = BPF_RU_IPCM_PROCMSG_ADDRGET(	E_BPF_RU_IPCM_BUFF_KIND_TASK,		/* Buffer種別						*/
+										sizeof(T_SYS_INIT_COMP_NTC),			/* MessageSize						*/
+										(VOID **)&sndMsg,						/* MessageBuffer					*/
+										&errcd );								/* ErrorCode						*/
+	if( rtn_bpf != D_RRH_OK )
+	{
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, "Procmsg Addrget error=%08x", rtn_bpf );
+	}
+	
+	/* 送信MSG作成 */
+	sndMsg->head.uiEventNo		= D_SYS_MSGID_INIT_COMP_NTC;					/* メッセージID						*/
+	sndMsg->head.uiDstPQueueID	= D_RRH_PROCQUE_PF;								/* 返信先PQID						*/
+	sndMsg->head.uiDstTQueueID	= D_SYS_THDQID_PF_MAIN;							/* 送信先TQID						*/
+	sndMsg->head.uiSrcPQueueID	= D_RRH_PROCQUE_PF;								/* 送信元PQID						*/
+	sndMsg->head.uiSrcTQueueID	= D_SYS_THDQID_PF_ETH;							/* 送信元TQID						*/
+	sndMsg->head.uiLength		= sizeof(T_SYS_INIT_COMP_NTC);					/* データ部バイト長					*/
+	
+	BPF_RU_IPCM_MSGQ_SEND(	D_SYS_THDQID_PF_MAIN,								/* 送信MSGキューID					*/
+							(VOID *)sndMsg );	
+
+	/* スレッド状態遷移(通常運用状態) */
+	f_ethw_thdState = D_ETH_THD_STSD_IDLE;
+
+	/********************************************************************************************/
+	/* メッセージ受信待ち																		*/
+	/********************************************************************************************/
+	while(1)
+	{
+		/****************************************************************************************/
+		/* メッセージ受信																		*/
+		/****************************************************************************************/
+		BPF_RU_IPCM_MSGQ_RECV(
+					D_SYS_THDQID_PF_ETH,			/* 受信MSGキューID			*/
+					0,								/* 受信待ち時間				*/
+					(VOID**)&reqp,					/* メッセージ受信バッファ	*/
+					&rcvSize	);					/* 受信Messageサイズ		*/
+
+		/* APIからのIP設定 */
+		(VOID)f_eth_api_IPset((VOID*)reqp);
+
+		/* 通信用共有メモリの解放	*/
+		(VOID)BPF_RU_IPCM_PROCMSG_ADDRFREE( (VOID*)reqp );
+
+	}
+
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_RETURN, "[f_eth_main] RETURN" );
+
+	return;
+}
+
+/* @} */

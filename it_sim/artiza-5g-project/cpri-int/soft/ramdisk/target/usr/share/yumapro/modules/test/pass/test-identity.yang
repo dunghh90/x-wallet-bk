@@ -1,0 +1,36 @@
+module test-identity {
+
+  namespace "http://netconfcentral.org/ns/test-identity";
+  prefix tid;
+  revision "2016-04-17" {
+  }
+
+
+  identity tbase;
+
+  identity tbase-1 {
+    base tbase;
+  }
+
+  identity tbase-2 {
+    base tbase-1;
+  }
+
+  identity tbase-3 {
+    base tbase-2;
+  }
+
+  identity tbase-4 {
+    base tbase-3;
+  }
+
+  identity tbase-5 {
+    base tbase-4;
+  }
+
+  identity tbase-6 {
+    base tbase-5;
+  }
+
+
+}

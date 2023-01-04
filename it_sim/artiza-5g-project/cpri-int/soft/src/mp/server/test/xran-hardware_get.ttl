@@ -1,0 +1,7 @@
+sendln "sget /hardware/component/label-content"
+wait 'f_5g_du@5G_DU>'
+sendln "sget /hardware/component/product-code"
+wait 'f_5g_du@5G_DU>'
+sendln "sget /hardware/component/state/availability-state"
+wait 'f_5g_du@5G_DU>'
+

@@ -1,0 +1,25 @@
+module test-oc3 {
+  namespace "http://www.yumaworks.com/ns/test-oc3";
+  prefix toc3;
+
+  import test-oc4 { prefix toc4-plussomemore; }
+
+  revision "2019-03-05" {
+    description
+      "Initial revision. Test module for Open Config modules";
+  }
+
+  augment "/toc4-plussomemore:instances/toc4-plussomemore:instance/" +
+          "toc4-plussomemore:afts/toc4-plussomemore:mpls/toc4-plussomemore:label-entry/toc4-plussomemore:state" {
+
+    description "";
+    uses instance;
+  }
+
+  grouping instance {
+    leaf instance {
+      type toc4-plussomemore:instance-ref;
+    }
+  }
+
+}

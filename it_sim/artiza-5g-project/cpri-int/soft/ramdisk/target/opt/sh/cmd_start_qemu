@@ -1,0 +1,42 @@
+#!/bin/sh
+
+export PATH=/home/user/Desktop/soft/ramdisk/target/opt/proc:/home/user/Desktop/soft/ramdisk/target/opt/sh:/home/user/Desktop/soft/ramdisk/target/opt/debug:/opt/tp:/home/user/Desktop/soft/ramdisk/target/opt/lnk:/home/user/Desktop/soft/ramdisk/target/opt/agent/bin:$PATH
+killall -9 DU_mw DU_init DU_pf 1>/dev/null 2>/dev/null
+
+
+if [ ! -d /home/user/Desktop/soft/ramdisk/target//var/log/troublelog ]; then
+  #insmod /opt/lkm/rruploglevel.ko name="reg","spi","i2c","qspi","rsc_buf","rsc_tim","rsc_sem","trc","trc_init","trc_pf","trc_ptp","trc_ptp_h","trc_api","trc_rfic","ptplog","ptpinfo","ptpapr","trc_cal"
+  mkdir /home/user/Desktop/soft/ramdisk/target/var/log/troublelog
+  mkdir /home/user/Desktop/soft/ramdisk/target/var/log/troublelog_rst
+  mkdir /home/user/Desktop/soft/ramdisk/target/var/log/sendlog
+  mkdir /home/user/Desktop/soft/ramdisk/target/var/log/healthchklog
+  mkdir /home/user/Desktop/soft/ramdisk/target/var/run/netconfd-pro
+  chown -R f_5g_du:f_5g_du /home/f_5g_du
+  mv /home/user/Desktop/soft/ramdisk/target/opt/lkm/fheth_qemu.ko /home/user/Desktop/soft/ramdisk/target/opt/lkm/fheth.ko
+  echo "Profile copy for QEMU..."
+  echo "export LD_PRELOAD=/home/user/Desktop/soft/ramdisk/target/usr/local/lib64/libbpf_devc_qemu.so" >> /etc/profile
+  cp /home/user/Desktop/soft/ramdisk/qemu/opt/tp/* /home/user/Desktop/soft/ramdisk/target//opt/tp/
+  cp /home/user/Desktop/soft/ramdisk/qemu/opt/sh/* /home/user/Desktop/soft/ramdisk/target//opt/sh/
+  cp /home/user/Desktop/soft/ramdisk/qemu/var/lib/dhcp/* /home/user/Desktop/soft/ramdisk/target//var/lib/dhcp/
+  cp /home/user/Desktop/soft/ramdisk/qemu/tmp/* /home/user/Desktop/soft/ramdisk/target//tmp/
+fi
+
+echo "Set LD_PRELOAD, Pseudo device access mode start..."
+#export LD_PRELOAD=/home/user/Desktop/soft/ramdisk/target/usr/local/lib64/libSegFault.so:/home/user/Desktop/soft/ramdisk/target/usr/local/lib64/libbpf_devc_qemu.so
+export OPE_STATE=1
+
+echo "Start LOG ..."
+/home/user/Desktop/soft/ramdisk/target/opt/sh/cmd_rruplogstart
+
+echo "Please start start QEMU sh"
+echo ""
+echo "If you want to test sub6 4.5G..."
+echo " $ . cmd_start_qemu_sub6_45g"
+echo ""
+echo "If you want to test sub6 3.7G..."
+echo " $ . cmd_start_qemu_sub6_37g"
+echo ""
+echo "If you want to test mmw 28G..."
+echo " $ . cmd_start_qemu_mmw_28g "
+echo ""
+

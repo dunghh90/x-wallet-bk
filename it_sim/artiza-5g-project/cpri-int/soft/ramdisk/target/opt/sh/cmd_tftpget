@@ -1,0 +1,31 @@
+#!/bin/sh
+
+if [ $# -lt 1 ]; then
+  echo "Input param error"
+  echo $0 "<filename> <target>"
+  echo "<filename> : filename "
+  echo "<target>   : target ip address ,e.g.)10.0.2.2 "
+  exit 1
+fi
+
+echo "Start TFTP get file ..."
+
+if [ $# -lt 2 ]; then
+ tftp -g -r $1 10.0.2.2 
+  if [ $? -eq 0 ]; then
+    echo "Finish"
+  else
+    echo "Error !!!!!!!!!!!!!!!!!!!!"
+    exit 1
+  fi
+else
+ tftp -g -r $1 $2
+ if [ $? -eq 0 ]; then
+    echo "Finish"
+ else
+   echo "Error !!!!!!!!!!!!!!!!!!!!"
+   exit 1
+ fi
+fi
+
+exit 0

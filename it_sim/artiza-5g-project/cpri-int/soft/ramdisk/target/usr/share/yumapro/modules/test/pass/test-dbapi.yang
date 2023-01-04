@@ -1,0 +1,38 @@
+module test-dbapi {
+  namespace "http://www.yumaworks.com/ns/test-dbapi";
+  prefix tdbapi;
+
+  revision "2017-08-30";
+
+  container log {
+
+    list log-filter {
+      key "destination filter-name";
+
+      leaf destination {
+        type enumeration {
+          enum flash;
+          enum ram;
+        }
+      }
+
+      leaf filter-name {
+        type string {
+          length "1..16";
+        }
+      }
+
+      container port-list {
+        leaf-list port-number {
+          type string {
+            pattern
+              '[0-9]{1,4}|[0-9]{1,4}[./][0-9]{1,4}';
+          }
+        }
+      }
+    }
+  }
+
+}
+
+

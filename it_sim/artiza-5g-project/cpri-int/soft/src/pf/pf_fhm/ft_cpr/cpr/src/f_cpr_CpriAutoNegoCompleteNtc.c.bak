@@ -1,0 +1,198 @@
+/*********************************************************************************/
+/**
+ *  @skip $Id:$
+ *  @file f_cpr_CpriAutoNegoCompleteNtc.c
+ *  @brief  CPRI Auto Nego Complete Notification function
+ *  @date 2015/04/08 FFCS)fuxg create
+ * 
+ *  ALL Rights Reserved, Copyright (c) FUJITSU Limited 2015-
+ */
+/*********************************************************************************/
+
+/** @addtogroup RRH_PF_CPR
+* @{ */
+
+#include "f_sys_inc.h"
+#include "f_cpr_inc.h"
+#include "rrhApi_Cpri.h"
+
+/**
+* @brief 	CPRI Auto Nego Complete Notification function
+* @note  	CPRI Auto Nego Complete Notification function.\n
+* @param 	buff_adr [in] the buffer address pointer of received message
+* @return 	None
+* @date 	2015/04/08 FFCS)fuxg create
+ *  @date   2015/8/4 TDIPS)ikeda rev.27800 2.4Gビットレート対応
+ *  @date   2015/8/4 TDIPS)ikeda rev.27819 オートネゴ修正
+* @warning	N/A
+* @FeatureID	RRH-012-000
+* @Bug_No	N/A
+* @CR_No	N/A
+* @TBD_No	N/A
+*
+*/
+VOID f_cpr_CpriAutoNegoCompleteNtc(UINT * buff_adr)
+{
+	T_SYS_AUTO_NEGO_COMPLETE_NTC*		autonegocomplete_p;
+	UINT						cpriStat;			/* CPRI Status */
+	UINT						a_lapbstatus;		/* LAPB status register value */
+	T_API_CPRILINK_STATE_NTC	apiNtc;
+	T_SYS_AUTO_NEGO_STOP_IND	autonego_stop_ind;
+	T_SYS_AUTO_NEGO_START_IND	autonego_start_ind;
+	UINT 						num;
+	CHAR *		bitratename[] = { "2.4","4.9G","9.8G"};
+
+	/* initial */
+	cpriStat = 0;
+	memset(&apiNtc, 0, sizeof(apiNtc));
+	memset(&autonego_stop_ind, 0, sizeof(autonego_stop_ind));
+	memset(&autonego_start_ind, 0, sizeof(autonego_start_ind));
+
+	/* Get CPRI state from IF */
+	autonegocomplete_p = (T_SYS_AUTO_NEGO_COMPLETE_NTC*)buff_adr;
+
+	/* Assert log */
+	BPF_COM_PLOG_TRACE_CPRI( E_TRC_LV_INFO, 
+						"CPRI Auto Nego Complete NTC!Bit Rate = %s(%d), result = %d", 
+						bitratename[autonegocomplete_p->bit_rate],
+						autonegocomplete_p->bit_rate,
+						autonegocomplete_p->auto_nego_result);
+
+	/* result check */
+	if(autonegocomplete_p->auto_nego_result == D_SYS_OK)
+	{
+		/* bit rate update */
+		f_cprw_bitrate_real = autonegocomplete_p->bit_rate;
+
+		/* auto nego complete flag on */
+		f_cprw_autonego_complete_flag = D_SYS_ON;
+
+		/* CPRI Status check */
+		BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI,
+							D_RRH_REG_CPRI_CPSTAT, &cpriStat);
+
+		if(cpriStat >= D_RRH_CPRISTAT_E)
+		{
+			/* CPRI Auto Nego Stop */
+			autonego_stop_ind.thdif.uiEventNo = D_SYS_MSGID_AUTONEGO_STOP_IND;
+			autonego_stop_ind.thdif.uiDstPQueueID = D_RRH_PROCQUE_PF;
+			autonego_stop_ind.thdif.uiDstTQueueID = D_SYS_THDQID_PF_NEGO;
+			autonego_stop_ind.thdif.uiSrcPQueueID = D_RRH_PROCQUE_PF;
+			autonego_stop_ind.thdif.uiSrcTQueueID = D_SYS_THDQID_PF_CPRI;
+			autonego_stop_ind.thdif.uiLength = sizeof(autonego_stop_ind);
+
+			/* write running history */
+			f_cpr_cm_runHisSet(D_CPR_SENDIEVEFLG, (UCHAR*)&autonego_stop_ind);
+
+			/* send auto nego start indication to pf_nego */
+			f_com_msgQSend( D_SYS_THDQID_PF_NEGO, 
+							(CHAR*)&autonego_stop_ind,
+							sizeof(autonego_stop_ind), 
+							D_SYS_THDQID_PF_CPRI, 
+							f_cprw_thrdState, 
+							D_SYS_MSGID_AUTONEGO_STOP_IND );
+
+			apiNtc.cpriState = D_RRH_CPRISTAT_E;
+			apiNtc.cpriEDown = D_RRH_OFF;
+
+			/* bit rate setting */
+			apiNtc.cpriLineBitrate = f_cprw_bitrate_real;
+			
+			/* LAPB status register */
+			BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI,
+						D_RRH_REG_CM_LAXIST, &a_lapbstatus);
+			
+			/* ACT status */
+			if(a_lapbstatus == D_SYS_NUM0)
+			{
+				apiNtc.cpriHdlc = D_RRH_ON;
+			}
+
+			apiNtc.header.uiEventNo = D_API_MSGID_CPRI_STATE_STATE_NTC;
+			apiNtc.header.uiLength = sizeof(apiNtc);
+			apiNtc.link_num = D_RRH_CPRINO_REC; /* CPRI番号 REC */
+
+			/* bitrate 取得 */
+			BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI, D_RRH_REG_CPRI_CPTXCW, &apiNtc.cpriHDLCBitrate);
+			apiNtc.cpriHDLCBitrate &= D_RRH_HDLC_RATE_MASK;
+
+			/* log */
+			BPF_COM_PLOG_TRACE_CPRI(E_TRC_LV_INFO, "L3 Start!Bit Rate = %s(%d)", 
+										bitratename[apiNtc.cpriLineBitrate],
+										apiNtc.cpriLineBitrate);
+
+			/* if f_cprw_cprStatChgNtc_QID has valid, send notice to apl */
+			for(num = 0; num < sizeof(f_cprw_cprStatChgNtc_QID) / sizeof(UINT); num++)
+			{
+				if(f_cprw_cprStatChgNtc_QID[num] != 0)
+				{
+					apiNtc.header.uiDstPQueueID = f_cprw_cprStatChgNtc_QID[num];
+					
+					/* write running history */
+					f_cpr_cm_runHisSet(D_CPR_SENDIEVEFLG, (UCHAR*)&apiNtc);
+
+					/* send message to apl */
+					f_com_sendMsgToApl(f_cprw_cprStatChgNtc_QID[ num], &apiNtc, sizeof(apiNtc),
+									apiNtc.header.uiEventNo, D_SYS_THDQID_PF_CPRI);
+				}
+			}
+		}
+	}
+	else
+	{
+		/* next rate auto nego start */
+		autonego_start_ind.thdif.uiEventNo = D_SYS_MSGID_AUTONEGO_START_IND;
+		autonego_start_ind.thdif.uiDstPQueueID = D_RRH_PROCQUE_PF;
+		autonego_start_ind.thdif.uiDstTQueueID = D_SYS_THDQID_PF_NEGO;
+		autonego_start_ind.thdif.uiSrcPQueueID = D_RRH_PROCQUE_PF;
+		autonego_start_ind.thdif.uiSrcTQueueID = D_SYS_THDQID_PF_CPRI;
+		autonego_start_ind.thdif.uiLength = sizeof(autonego_start_ind);
+
+		/* rate change */
+		if(autonegocomplete_p->bit_rate == D_COM_LINE_BITRATE_98G)
+		{
+			autonego_start_ind.bit_rate = D_COM_LINE_BITRATE_49G;
+		}
+		else if(autonegocomplete_p->bit_rate == D_COM_LINE_BITRATE_49G)
+		{
+			/* CPS SFP 型番確認 サポート品種 */
+			if ( f_support_sfp[D_RRH_CPRINO_REC] == D_RRH_ON )
+			{
+				autonego_start_ind.bit_rate = D_COM_LINE_BITRATE_98G;
+			}
+			else
+			{
+				autonego_start_ind.bit_rate = D_COM_LINE_BITRATE_24G;
+			}
+		}
+		else if(autonegocomplete_p->bit_rate == D_COM_LINE_BITRATE_24G)
+		{
+			/* CPS SFP 型番確認 サポート品種 */
+			if ( f_support_sfp[D_RRH_CPRINO_REC] == D_RRH_ON )
+			{
+				autonego_start_ind.bit_rate = D_COM_LINE_BITRATE_24G;
+			}
+			else
+			{
+				autonego_start_ind.bit_rate = D_COM_LINE_BITRATE_98G;
+			}
+		}
+		else
+		{}
+
+		/* write running history */
+		f_cpr_cm_runHisSet(D_CPR_SENDIEVEFLG, (UCHAR*)&autonego_start_ind);
+
+		/* send auto nego start indication to pf_nego */
+		f_com_msgQSend( D_SYS_THDQID_PF_NEGO, 
+						(CHAR*)&autonego_start_ind,
+						sizeof(autonego_start_ind), 
+						D_SYS_THDQID_PF_CPRI, 
+						f_cprw_thrdState, 
+						D_SYS_MSGID_AUTONEGO_START_IND );
+	}
+
+	return;
+}
+/* @} */
+

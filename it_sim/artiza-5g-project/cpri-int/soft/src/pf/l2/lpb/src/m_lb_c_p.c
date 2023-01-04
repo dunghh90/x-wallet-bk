@@ -1,0 +1,609 @@
+/*!
+ * @skip    $Id$
+ * @file    m_lb_c_p.c
+ * @brief   全リンク制御関数
+ * @date    2008.07.22 FFCS)Shihzh create.
+ *
+ * ALL Rights Reserved, Copyright (c) FUJITSU Limited 2008
+*/
+
+
+/********************************************************************************************************/
+
+/*! @addtogroup RRH_L2_LPB
+ * @{ */
+
+
+
+#include "m_cm_header.h"
+#include "tm_lb_header.h"
+
+
+#include "m_lb_header.h"
+#include "rrhApi_L2.h"
+
+/********************************************************************************************************/
+
+/*!
+ *  @brief   Initialize processing	(tm_lb_0_m0e0s0p)
+ *  @note    Initialize internal table and send initialize response to init task
+ *  @param   a_source		[in]  起動元タスクID
+ *  @param   a_inf_p		[in]  受信メッセージアドレス
+ *  @param   a_event		[in]  起動要因
+ *  @return  None
+ *  @date    2008.07.22 FFCS)Shihzh create.
+ *  @date    2015.08.11 TDIPS)ikeda 17リンク対応
+ */
+void tm_lb_0_m0e0s0p(UINT a_source, UINT a_event, UINT * a_inf_p)
+{
+	CMT_TSKIF_HEAD *head_p;
+	INT	ret_buf;
+	USHORT	linkno;
+
+	ret_buf = cm_BReq(CMD_BUFCA_TSKIF, sizeof(CMT_TSKIF_HEAD), (VOID **)&head_p);
+	if(ret_buf != CMD_RES_OK)
+	{
+		cm_Assert(CMD_ASL_DBGHIGH, ret_buf, "tm_lb_0_m0e0s0p:cm_BReq NG");
+		return;
+	}
+
+	for (linkno = D_RRH_CPRINO_REC; linkno < D_RRH_CPRINO_NUM; linkno++)
+	{
+		/*Set link state to state A*/
+// 擬似環境
+//		lbw_mngtbl[linkno].lap_dt.status = LBD_L2_L2ACTSTS;
+		lbw_mngtbl[linkno].lap_dt.status = LBD_L2_INFSTS;
+// 擬似環境
+		lbw_mngtbl[linkno].t1_id = CMD_TIMID_LPB_T1 + linkno;						/*	 タイマ1 IDセーブ    */
+		lbw_mngtbl[linkno].t2_id = CMD_TIMID_LPB_T2 + linkno;						/*	 タイマ2 IDセーブ    */
+		lbw_mngtbl[linkno].t3_id = CMD_TIMID_LPB_T3 + linkno;						/*	 タイマ3 IDセーブ    */
+		lbw_mngtbl[linkno].t4_id = CMD_TIMID_LPB_T4 + linkno;						/*	 タイマ4 IDセーブ    */
+		lbw_mngtbl[linkno].l2bsydettmr_id = CMD_TIMID_L2BSYDET + linkno;		/* ビジータイマ IDセーブ	 */
+		lbw_mngtbl[linkno].l1bsydettmr_id = CMD_TIMID_L1BSYDET + linkno;		/* ビジータイマ IDセーブ	 */
+		lbw_mngtbl[linkno].link_num = linkno;							/*	回線番号セーブエリア */
+		lbw_mngtbl[linkno].lap_dt.n1 = LBD_L2PRMTR_N1;
+		lbw_mngtbl[linkno].lap_dt.n2 = LBD_L2PRMTR_N2;
+		lbw_mngtbl[linkno].lap_dt.ownk = LBD_L2PRMTR_K;
+		lbw_mngtbl[linkno].lap_dt.peerk = LBD_L2PRMTR_K - CMD_NUM1;
+		lbw_mngtbl[linkno].lap_dt.t1 = LBD_L2PRMTR_T1;
+		lbw_mngtbl[linkno].lap_dt.t2 = LBD_L2PRMTR_T2;
+		lbw_mngtbl[linkno].lap_dt.t3 = LBD_L2PRMTR_T3;
+		lbw_mngtbl[linkno].lap_dt.t4 = LBD_L2PRMTR_T4;
+		lbw_mngtbl[linkno].lap_dt.l2bsytmrval = LBD_L2BSYTMRVAL;
+		lbw_mngtbl[linkno].lap_dt.l1bsytmrval = LBD_L1BSYTMRVAL;
+		lbw_mngtbl[linkno].nsRejSnd = 0xFFFFFFFF;
+
+		if (linkno == D_RRH_CPRINO_REC)
+		{
+			lbw_mngtbl[linkno].lap_dt.own_adr = LBD_L2OWNADDR;
+			lbw_mngtbl[linkno].lap_dt.per_adr = LBD_L2PERADDR;
+		}
+		else
+		{
+			lbw_mngtbl[linkno].lap_dt.per_adr = LBD_L2OWNADDR;
+			lbw_mngtbl[linkno].lap_dt.own_adr = LBD_L2PERADDR;
+		}
+
+		lbw_mngTblForLog_off[linkno] = &(lbw_mngtbl[linkno].cmd_rsp_flg);
+		lbw_mngTblForLog_size[linkno] = sizeof(lbw_mngtbl[linkno]) - ((UINT)&(lbw_mngtbl[linkno].cmd_rsp_flg) - (UINT)&lbw_mngtbl[linkno] );
+
+		lbw_stscnt[linkno] = 0;
+		/*Set current time to Statistics log count*/
+		cm_RtcGet(&lbw_stslog[linkno][lbw_stscnt[linkno]].datetime);
+		/*Set current time to abort log count*/
+		cm_RtcGet(&lbw_ablog[linkno][lbw_abcnt[linkno]].datetime);
+
+		lbw_mngTblForLog_off[linkno] = CMD_NUM0;
+		lbw_mngTblForLog_size[linkno] = CMD_NUM0;
+		lbw_stscnt[linkno] = CMD_NUM0;
+		lbw_abcnt[linkno] = CMD_NUM0;
+		lbw_L2StsNotiTbl_cur[linkno] = CMD_NUM0;
+		lbw_L3DstrbtTbl_cur[linkno] =CMD_NUM0;
+		cm_MemClr(lbw_L3DstrbtTbl[linkno], sizeof(lbw_L3DstrbtTbl[linkno]));
+		cm_MemClr(lbw_L2StsNotiDstrbtTbl[linkno], sizeof(lbw_L2StsNotiDstrbtTbl[linkno]));
+		lbw_lnk_set_respQId[linkno] = CMD_NUM0;
+		lbw_lnk_rel_respQId[linkno] = CMD_NUM0;
+
+		cm_MemClr(&lbw_lnkStatLog[linkno],sizeof(lbw_lnkStatLog[linkno]));
+	}
+
+	BPF_RU_IPCM_BUFFER_FULL_OCCUR_CALLBACK_SET(tm_lb_buffer_full_set);
+	BPF_RU_IPCM_BUFFER_FULL_CLEAR_CALLBACK_SET(tm_lb_buffer_full_clear);
+											/* LAPB走行履歴書込み	*/
+	tm_lb_RunHisSet(LBD_RUNHIS_FLG_SND, CMD_TSKID_INI, CMD_TSKIF_INIRSP, NULL);
+
+	/*Enter init task with init response*/
+
+	head_p->uiLength = sizeof(CMT_TSKIF_HEAD);
+	head_p->uiEventNo = CMD_TSKIF_INIRSP;
+	head_p->uiSrcTQueueID = CMD_TSKID_LPB;
+	head_p->uiDstTQueueID = CMD_TSKID_INI;
+
+
+	ret_buf = cm_Enter(CMD_TSKID_INI, CMD_QRB_NORMAL, CMD_TSKIF_INIRSP, head_p);
+	if(ret_buf != CMD_RES_OK)
+	{
+		cm_Assert(CMD_ASL_DBGHIGH, ret_buf, "cm_Enter NG" );
+	}
+												/*Change task state to Normal state*/
+	lbw_tskstt = LBD_STT_NORMAL; // 擬似環境 20210309 LBD_STT_L2SETUP;
+
+	return;
+}
+
+/********************************************************************************************************/
+
+/*!
+ *  @brief   単一のリンクIF	(tm_lb_0_m0e1s1p)(Normal state)
+ *  @note    All lapb protocol related event will be perfromed at this branch.
+ *  @param   a_source		[in]
+ *  @param   a_inf_p		[in]
+ *  @param   a_event		[in]
+ *  @return  None
+ *  @date    2008.07.22 FFCS)Shihzh create.
+ *  @date    2015.08.11 TDIPS)ikeda　17リンク対応
+ *  @date    2015.11.20 TDI)satou IT2問処番号No.191
+ */
+void	tm_lb_0_m0e1s1p(UINT a_source, UINT a_event, UINT * a_inf_p)
+{
+	struct LBT_MNGTBL* s_lblap_p;                           /*!< */
+	UINT		inter_no;                                   /*!< */
+
+	if(a_inf_p == NULL)
+	{
+		/*error log*/
+		cm_Assert(CMD_ASL_USELOW, CMD_NUM0, "tm_lb_0_m0e1s1p CPRI_Sig_ABNORMAL");
+		return;
+	}
+
+
+										/*Get current link mng table*/
+	s_lblap_p= get_mngtbl(a_inf_p);
+
+										/*transfer external event to internal event*/
+	inter_no = tm_lb_trans(a_event,s_lblap_p,a_inf_p);
+/*	tm_lb_l2state_log_begin(s_lblap_p->link_num, inter_no);*/
+										/*function table will be called*/
+	lbr_1_m1[s_lblap_p->lap_dt.status][inter_no](s_lblap_p,a_inf_p);
+
+/*	tm_lb_l2state_log_end(s_lblap_p->link_num); */
+
+    if (( s_lblap_p->link_num < D_RRH_CPRINO_RE_MIN ) && ( lbw_tskevent == CMD_NUM4 ))
+    {
+        lbw_tskstt = LBD_STT_L2SETUP;
+    }
+
+	return;
+}
+
+
+/********************************************************************************************************/
+
+/*!
+ *  @brief   タイムアウト発生処理(tm_lb_0_m0e2s1p)(Normal state)
+ *  @note    This branch is including T1,T2,T3,T4,LAPB引継ぎ間隔タイマ and Layer 2 busy timer time out
+ *  @param   a_source		[in]  起動元タスクID
+ *  @param   a_inf_p		[in]  受信メッセージアドレス
+ *  @param   a_event		[in]  起動要因
+ *  @return  None
+ *  @date    2008.07.22 FFCS)Shihzh create.
+ *  @date    2015.08.11 TDIPS)ikeda タイムアウト17リンク対応
+ */
+void	tm_lb_0_m0e2s1p(UINT a_source, UINT a_event, UINT * a_inf_p)
+{
+	struct LBT_MNGTBL* s_lblap_p;                           /*!< */
+	UINT		inter_no;                                   /*!< */
+
+	if (a_source >= E_RRH_TIMID_LPB_T1 && a_source < E_RRH_TIMID_L1BSYDET_MAX)
+	{
+		 if (a_source < E_RRH_TIMID_LPB_T1_MAX)
+		 {
+			inter_no = LBD_T1TIMEOUT;
+		 }
+		 else if (a_source < E_RRH_TIMID_LPB_T2_MAX)
+		 {
+			inter_no = LBD_T2TIMEOUT;
+		 }
+		 else if (a_source < E_RRH_TIMID_LPB_T3_MAX)
+		 {
+			inter_no = LBD_T3TIMEOUT;
+		 }
+		 else if (a_source < E_RRH_TIMID_LPB_T4_MAX)
+		 {
+			inter_no = LBD_T4TIMEOUT;
+		 }
+		 else if (a_source < E_RRH_TIMID_L2BSYDET_MAX)
+		 {
+			inter_no = LBD_L2BSYDETTIMEOUT;
+		 }
+		 else
+		 {
+			inter_no = LBD_L1BSYDETTIMEOUT;
+		 }
+	}
+	else
+	{
+		cm_Assert(CMD_ASL_USELOW, CMD_NUM0, "tm_lb_0_m0e2s1p CPRI_Sig_ABNORMAL4");
+		return;
+	}
+
+	s_lblap_p= get_mngtbl(a_inf_p);
+
+/*	tm_lb_l2state_log_begin(s_lblap_p->link_num, inter_no);	*/
+	lbr_1_m1[s_lblap_p->lap_dt.status][inter_no](s_lblap_p,a_inf_p);
+/*	tm_lb_l2state_log_end(s_lblap_p->link_num);	*/
+
+	return;
+}
+
+/********************************************************************************************************/
+
+/*!
+ *  @brief   単一のリンクIF	(tm_lb_0_m0e1s2p)(Normal state)
+ *  @note    All lapb protocol related event will be perfromed at this branch.
+ *  @param   a_source		[in]
+ *  @param   a_inf_p		[in]
+ *  @param   a_event		[in]
+ *  @return  None
+ *  @date    2015.08.11 TDIPS)ikeda 17リンク対応　SABM対応
+ *  @date    2015.11.13 TDI)satou その他未実装-013 RECのL1DATCNFは処理させる(バッファ解放漏れになるため)
+ */
+void	tm_lb_0_m0e1s2p(UINT a_source, UINT a_event, UINT * a_inf_p)
+{
+	struct LBT_MNGTBL* s_lblap_p;                           /*!< */
+	UINT		inter_no;                                   /*!< */
+
+	if(a_inf_p == NULL)
+	{
+		/*error log*/
+		cm_Assert(CMD_ASL_USELOW, CMD_NUM0, "tm_lb_0_m0e1s2p CPRI_Sig_ABNORMAL");
+		return;
+	}
+
+
+										/*Get current link mng table*/
+	s_lblap_p= get_mngtbl(a_inf_p);
+
+										/*transfer external event to internal event*/
+	inter_no = tm_lb_trans(a_event,s_lblap_p,a_inf_p);
+
+	if (( s_lblap_p->link_num >= D_RRH_CPRINO_RE_MIN ) || ( LBD_L1DATCNF == inter_no ))
+	{
+		/*	tm_lb_l2state_log_begin(s_lblap_p->link_num, inter_no);	*/
+										/*function table will be called*/
+		lbr_1_m1[s_lblap_p->lap_dt.status][inter_no](s_lblap_p,a_inf_p);
+		/*	tm_lb_l2state_log_end(s_lblap_p->link_num);	*/
+	}
+
+	return;
+}
+
+
+/********************************************************************************************************/
+
+/*!
+ *  @brief   タイムアウト発生処理(tm_lb_0_m0e2s2p)(Normal state)
+ *  @note    This branch is including T1,T2,T3,T4,LAPB引継ぎ間隔タイマ and Layer 2 busy timer time out
+ *  @param   a_source		[in]  起動元タスクID
+ *  @param   a_inf_p		[in]  受信メッセージアドレス
+ *  @param   a_event		[in]  起動要因
+ *  @return  None
+ *  @date    2015.08.11 TDIPS)ikeda タイムアウト17リンク対応、SABM対応
+ */
+void	tm_lb_0_m0e2s2p(UINT a_source, UINT a_event, UINT * a_inf_p)
+{
+	struct LBT_MNGTBL* s_lblap_p;                           /*!< */
+	UINT		inter_no;                                   /*!< */
+
+	if (a_source >= E_RRH_TIMID_LPB_T1 && a_source < E_RRH_TIMID_L1BSYDET_MAX)
+	{
+		 if (a_source < E_RRH_TIMID_LPB_T1_MAX)
+		 {
+			inter_no = LBD_T1TIMEOUT;
+		 }
+		 else if (a_source < E_RRH_TIMID_LPB_T2_MAX)
+		 {
+			inter_no = LBD_T2TIMEOUT;
+		 }
+		 else if (a_source < E_RRH_TIMID_LPB_T3_MAX)
+		 {
+			inter_no = LBD_T3TIMEOUT;
+		 }
+		 else if (a_source < E_RRH_TIMID_LPB_T4_MAX)
+		 {
+			inter_no = LBD_T4TIMEOUT;
+		 }
+		 else if (a_source < E_RRH_TIMID_L2BSYDET_MAX)
+		 {
+			inter_no = LBD_L2BSYDETTIMEOUT;
+		 }
+		 else
+		 {
+			inter_no = LBD_L1BSYDETTIMEOUT;
+		 }
+	}
+	else
+	{
+		cm_Assert(CMD_ASL_USELOW, CMD_NUM0, "tm_lb_0_m0e2s2p CPRI_Sig_ABNORMAL4");
+		return;
+	}
+
+	s_lblap_p= get_mngtbl(a_inf_p);
+
+	if ( s_lblap_p->link_num >= D_RRH_CPRINO_RE_MIN )
+	{
+		/*	tm_lb_l2state_log_begin(s_lblap_p->link_num, inter_no);	*/
+		lbr_1_m1[s_lblap_p->lap_dt.status][inter_no](s_lblap_p,a_inf_p);
+		/*	tm_lb_l2state_log_end(s_lblap_p->link_num);	*/
+	}
+
+	return;
+}
+
+/********************************************************************************************************/
+
+/*!
+ *  @brief   単一のリンクIF	(tm_lb_0_m0e3s2p)(Normal state)
+ *  @note    All lapb protocol related event will be perfromed at this branch.
+ *  @param   a_source		[in]
+ *  @param   a_inf_p		[in]
+ *  @param   a_event		[in]
+ *  @return  None
+ *  @date    2015.08.11 TDIPS)ikeda 17リンク対応、SABM対応
+ */
+void	tm_lb_0_m0e3s2p(UINT a_source, UINT a_event, UINT * a_inf_p)
+{
+	struct LBT_MNGTBL* s_lblap_p;                           /*!< */
+	UINT		inter_no;                                   /*!< */
+
+	if(a_inf_p == NULL)
+	{
+		/*error log*/
+		cm_Assert(CMD_ASL_USELOW, CMD_NUM0, "tm_lb_0_m0e3s2p CPRI_Sig_ABNORMAL");
+		return;
+	}
+
+
+										/*Get current link mng table*/
+	s_lblap_p= get_mngtbl(a_inf_p);
+
+										/*transfer external event to internal event*/
+	inter_no = tm_lb_trans(a_event,s_lblap_p,a_inf_p);
+
+/*	tm_lb_l2state_log_begin(s_lblap_p->link_num, inter_no);	*/
+										/*function table will be called*/
+	lbr_1_m1[s_lblap_p->lap_dt.status][inter_no](s_lblap_p,a_inf_p);
+
+/*	tm_lb_l2state_log_end(s_lblap_p->link_num);	*/
+
+	if ( s_lblap_p->link_num < D_RRH_CPRINO_RE_MIN )
+	{
+		lbw_tskstt = LBD_STT_NORMAL;
+	}
+
+	return;
+}
+
+/********************************************************************************************************************/
+/*!
+ *  @brief  lpb data receiving buffer occuring process.
+ *  @note   When buffer busy happened,notify LAPB task with L2 busy
+ *  @param  bufkind  [in]  buffer kind
+ *
+ *  @return Result code is returned
+ *  @retval -
+ *  @date   2013/12/31 FFCS)hongj Create
+ *  @date    2015.08.11 TDIPS)ikeda 17リンク対応
+ */
+/********************************************************************************************************************/
+
+void tm_lb_buffer_full_set(int bufkind)
+{
+	UINT				a_ret;
+	CMT_TSKIF_L2BSY		*sndbf_p;
+	USHORT linkno;
+
+	if(bufkind > E_BPF_RU_IPCM_SHMKIND_LAPBR_LL)
+	{
+		/*error processing*/
+		cm_Assert(CMD_ASL_DBGHIGH, bufkind, "invalid buffer kind");
+		return;
+	}
+
+	for (linkno = D_RRH_CPRINO_REC; linkno < D_RRH_CPRINO_NUM; linkno++ )
+	{
+		a_ret = cm_BReq(CMD_BUFCA_TSKIF, sizeof(CMT_TSKIF_L2BSY), (VOID * *)&sndbf_p);
+		if(a_ret != CMD_RES_OK)
+		{
+			/*error processing*/
+			cm_MAbort(CMD_ALMCD_BUFGET, (CHAR *)"m_hd_bufdetn",
+							(CHAR *)"Breq NG",a_ret, sizeof(CMT_TSKIF_L2BSY), CMD_NUM0);
+		}
+
+		sndbf_p->head.uiLength = sizeof(CMT_TSKIF_L2BSY);
+		sndbf_p->head.uiEventNo = CMD_TSKIF_L2BSY;
+		sndbf_p->head.uiDstTQueueID = CMD_TSKID_LPB;
+		sndbf_p->head.uiSrcTQueueID = CMD_TSKID_INI;
+		sndbf_p->head.uiDstPQueueID = D_RRH_PROCQUE_L2;
+		sndbf_p->head.uiSrcPQueueID = D_RRH_PROCQUE_L2;
+		sndbf_p->buftyp = bufkind % 4;
+		sndbf_p->link_num = linkno;
+
+		a_ret = cm_Enter(CMD_TSKID_LPB, CMD_QRB_NORMAL, CMD_TSKIF_L2BSY, (VOID *)sndbf_p);
+		if(a_ret != CMD_RES_OK)
+		{
+			/*error processing*/
+			cm_Assert(CMD_ASL_DBGHIGH, a_ret, "cm_Enter NG");
+		}
+	}
+
+	return;
+}
+
+/********************************************************************************************************************/
+/*!
+ *  @brief  lpb data receiving buffer ceasing process.
+ *  @note   When buffer busy happened,notify LAPB task with L2 clear
+ *  @param  bufkind  [in]  buffer kind
+ *
+ *  @return Result code is returned
+ *  @retval -
+ *  @date   2013/12/31 FFCS)hongj Create
+ *  @date    2015.08.11 TDIPS)ikeda 17リンク対応
+ */
+/********************************************************************************************************************/
+
+void tm_lb_buffer_full_clear(int bufkind)
+{
+	UINT				a_ret;
+	CMT_TSKIF_L2BSYCLR	*sndbf_p;
+	USHORT linkno;
+
+	if(bufkind > E_BPF_RU_IPCM_SHMKIND_LAPBR_LL)
+	{
+		/*error processing*/
+		cm_Assert(CMD_ASL_DBGHIGH, bufkind, "invalid buffer kind");
+		return;
+	}
+
+	for (linkno = D_RRH_CPRINO_REC; linkno < D_RRH_CPRINO_NUM; linkno++ )
+	{
+		a_ret = cm_BReq(CMD_BUFCA_TSKIF, sizeof(CMT_TSKIF_L2BSYCLR), (VOID * *)&sndbf_p);
+		if(a_ret != CMD_RES_OK)
+		{
+			/*error processing*/
+			cm_MAbort(CMD_ALMCD_BUFGET, (CHAR *)"m_hd_bufcnln",
+							(CHAR *)"Breq NG",a_ret, sizeof(CMT_TSKIF_L2BSYCLR), CMD_NUM0);
+		}
+		sndbf_p->head.uiLength = sizeof(CMT_TSKIF_L2BSYCLR);
+		sndbf_p->head.uiEventNo = CMD_TSKIF_L2BSYCLR;
+		sndbf_p->head.uiDstTQueueID = CMD_TSKID_LPB;
+		sndbf_p->head.uiSrcTQueueID = CMD_TSKID_INI;
+		sndbf_p->head.uiDstPQueueID = D_RRH_PROCQUE_L2;
+		sndbf_p->head.uiSrcPQueueID = D_RRH_PROCQUE_L2;
+		sndbf_p->buftyp = bufkind % 4;
+		sndbf_p->link_num = linkno;
+
+		a_ret = cm_Enter(CMD_TSKID_LPB, CMD_QRB_NORMAL, CMD_TSKIF_L2BSYCLR, (VOID *)sndbf_p);
+		if(a_ret != CMD_RES_OK)
+		{
+			/*error processing*/
+			cm_Assert(CMD_ASL_DBGHIGH, a_ret, "cm_Enter NG = %d");
+		}
+	}
+
+	return;
+}
+
+
+/********************************************************************************************************************/
+/*!
+ *  @brief  lpb data receiving buffer ceasing process.
+ *  @note   When buffer busy happened,notify LAPB task with L2 clear
+ *  @param  a_inf_p [in] received message
+ *
+ *  @return Result code is returned
+ *  @retval -
+ *  @date    2015.08.11 TDIPS)ikeda 17リンク対応
+ */
+/********************************************************************************************************************/
+struct LBT_MNGTBL* get_mngtbl(UINT * a_inf_p)
+{
+	USHORT linkno;
+	CMT_TSKIF_HEAD* a_msg;
+
+	a_msg = (CMT_TSKIF_HEAD*)a_inf_p;
+	linkno = D_RRH_CPRINO_REC;
+
+	switch(a_msg->uiEventNo)
+	{
+														/* L2 DEACT依頼			*/
+		case CMD_TSKIF_L2BSY:
+			linkno = ((CMT_TSKIF_L2BSY*)a_msg)->link_num;
+			break;
+														/* 自受信ビジーの解除	*/
+		case CMD_TSKIF_L2BSYCLR:
+			linkno = ((CMT_TSKIF_L2BSYCLR*)a_msg)->link_num;
+			break;
+														/* L1データ受信通知		*/
+		case CMD_TSKIF_L1DATRCVNTC:
+			linkno = ((CMT_TSKIF_L1DATRCVNTC*)a_msg)->link_num;
+			break;
+														/* Layer 1 Data CNF		*/
+		case CMD_TSKIF_L1DATCNF:
+			linkno = ((CMT_TSKIF_L1DATCNF*)a_msg)->link_num;
+			break;
+
+		case CMD_TSKIF_L1DATTXREQ:
+			linkno = ((LBT_TSKIF_CPRICOM*)a_msg)->link_num;
+			break;
+														/* CPRI信号送信通知	(D_API_MSGID_L2_CPRIMSG_SEND_IND)	*/
+		case CMD_TSKIF_CPRISNDNTC:
+			linkno = ((CMT_TSKIF_CPRISND_SIGNALGET*)a_msg)->cprisnd_inf.link_num;
+			break;
+														/* L2 STOP依頼 (未使用)	*/
+		case CMD_TSKIF_L2STPREQ:
+			break;
+														/* L3 test 開始通知		*/
+		case CMD_TSKIF_L3MODESTRNTC:
+			linkno = ((L2_L3_TEST_NOTI*)a_msg)->link_num;
+			break;
+														/* L3 test 停止通知		*/
+		case CMD_TSKIF_L3MODESTPNTC:
+			linkno = ((L2_L3_TEST_NOTI*)a_msg)->link_num;
+			break;
+														/* タイムアウト発生通知 */
+		case CMD_TSKIF_TIMOUTNTC :
+			if (a_msg->uiSignalkind >= E_RRH_TIMID_LPB_T1)
+			{
+				 if (a_msg->uiSignalkind < E_RRH_TIMID_LPB_T1_MAX)
+				 {
+					 linkno = a_msg->uiSignalkind - E_RRH_TIMID_LPB_T1;
+				 }
+				 else if (a_msg->uiSignalkind < E_RRH_TIMID_LPB_T2_MAX)
+				 {
+					 linkno = a_msg->uiSignalkind - E_RRH_TIMID_LPB_T2;
+				 }
+				 else if (a_msg->uiSignalkind < E_RRH_TIMID_LPB_T3_MAX)
+				 {
+					 linkno = a_msg->uiSignalkind - E_RRH_TIMID_LPB_T3;
+				 }
+				 else if (a_msg->uiSignalkind < E_RRH_TIMID_LPB_T4_MAX)
+				 {
+					 linkno = a_msg->uiSignalkind - E_RRH_TIMID_LPB_T4;
+				 }
+				 else if (a_msg->uiSignalkind < E_RRH_TIMID_L2BSYDET_MAX)
+				 {
+					 linkno = a_msg->uiSignalkind - E_RRH_TIMID_L2BSYDET;
+				 }
+				 else if (a_msg->uiSignalkind < E_RRH_TIMID_L1BSYDET_MAX)
+				 {
+					 linkno = a_msg->uiSignalkind - E_RRH_TIMID_L1BSYDET;
+				 }
+			}
+			break;
+														/* データリンク設定要求 (D_API_MSGID_L2_LINK_SETUP_REQ) */
+		case CMD_TSKIF_ESTREQ:
+			linkno = ((T_API_L2LINK_SETUP_REQ*)a_inf_p)->link_num;
+			break;
+														/* データリンク解放 (D_API_MSGID_L2_LINK_DEACT_IND)	*/
+		case CMD_TSKIF_L2DEACTREQ:
+			linkno = ((T_API_L2LINK_DEACT_IND*)a_inf_p)->link_num;
+			break;
+														/* データリンク解放要求 (D_API_MSGID_L2_LINK_REL_REQ)		*/
+		case CMD_TSKIF_RELREQ:
+			linkno = ((T_API_L2LINK_REL_REQ*)a_inf_p)->link_num;
+			break;
+														/* 初期化要求			*/
+		case CMD_TSKIF_INIREQ:
+			break;
+
+			/*Others						*/
+		default:
+			break;
+
+	}
+	return &lbw_mngtbl[linkno];
+}
+/* @} */
+

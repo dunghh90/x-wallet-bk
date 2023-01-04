@@ -1,0 +1,2009 @@
+module get2-test {
+  yang-version 1.1;
+  namespace "http://yumaworks.com/ns/get2-test";
+  prefix "get2test";
+
+  import ietf-inet-types { prefix inet; }
+  import ietf-interfaces { prefix if; }
+  import yumaworks-extensions { prefix ywx; }
+
+    revision "2019-11-18" {
+        description
+         "- YPW-1577: XPath filter retrieval malfunction in case of
+                      nested lists;
+          - YPW-1578: XGET request on tager leaf-list malfunction;
+          - YPW-1581: XGET request problem on nested GET2 lists with no keys;
+          - YPW-1578(2): XGET request on leafy target malfunction.
+          - YPW-1578(3): XGET request on leafy target malfunction
+         ";
+    }
+
+    revision "2019-09-09" {
+        description
+         "- YPW-1553: Get request with XPath filtering produces
+                      malformed output when the target is a list
+                      with no keys;
+          - YPW-1561: GET2 request on anydata type produces
+                      incorrect output;
+          - YPW-1563: Incorrect Duplicate entry error occurs when get
+                      multiple key list;
+          - YPW-1565: GET2 with XPath filtering on choice node as a
+                      target malfunction;
+          - FD-102324: duplicate entry in reply for Xpath request.
+         ";
+    }
+
+    revision "2019-07-30" {
+        description
+         "- YPW-1534: GET with Xpath filtering malfunction for GET2
+                      callbacks;
+          - YPW-1533: Crash in the get_lookupQ.
+         ";
+    }
+
+    revision "2019-06-20" {
+        description
+         "- YPW-1514: GETNEXT request malfunction for GET2 lists with no
+                      keys defined;
+          - YPW-1504: GET2 on operational leaf target malfunction. Add more
+                      Container + container + target leaf test scenario";
+    }
+
+    revision "2019-04-04" {
+        description
+         "- FD-100219: GET2 callbacks for choice;
+          - YPW-1448: netconfd: skipping GET2 callbacks for choice inside
+          config=true container";
+    }
+
+    revision "2019-03-18" {
+        description
+         "- FD-100193: Key value for nested list object;
+          - YPW-1409: netconfd: SIL-SA gets wrong key value for nested list
+          object with same name";
+    }
+
+    revision "2019-02-13" {
+        description
+         "- FD-100164: Add more tests to examine getcb return errors;
+          - YPW-1408: malformed JSON on choice callback";
+    }
+
+    revision "2018-12-03" {
+        description
+         " - YPW-1346: P-container without terminals must not be
+              skipped for GET2";
+    }
+
+    revision "2018-11-08" {
+        description
+         "- YPW-1335: Extra comma in RESTCONF json output after absent
+          P-container.
+          Added more Non presence and Presence containers to test
+
+          - Add no ticket test. Keys order in definition and keys in the tree
+          - YPW-1343: malformed JSON output after invalid operational
+            leaf in container.
+            Added get2-topcont container with a config false leaf inside";
+    }
+
+    revision "2018-09-07" {
+        description
+         "YPW-1302: get2 on leaf nodes with CONFIG=TRUE parents only
+         - Added more test nodes.
+         - Added more config NP containers with get2 children";
+    }
+
+    revision "2018-08-13" {
+        description
+         "Config true parent with nested NP cont problem
+         - Added more test nodes. NPCONT Config parent with get2 nested nodes";
+    }
+
+    revision "2018-07-09" {
+        description
+         "YPW-1222: incorrect output on <get> with xpath filtering on
+         get2 target node with config=true parent
+         - Added more test nodes. NPCONT Config parent with get2 nested nodes";
+    }
+
+    revision "2018-06-08" {
+        description
+         "YPW-1250: XPath filtering problems with get2 targets
+          within config true parent nodes
+         - Added more test nodes. Config parent with get2 nested nodes";
+    }
+
+    revision "2018-05-02" {
+        description
+         "YPW-1227: Union type value btyp always set to
+         NCX_BT_STRING in GET2 callbacks:
+         - Added more containers and a list with union leafs";
+    }
+
+    revision "2017-10-06" {
+        description
+         "YPW-1108: GET2 for leaf-list, malformed JSON, missing a comma";
+    }
+
+    revision "2017-09-13" {
+        description
+         "Add more test cont/list for the issues:
+          - YPW-1087: server returns malformed JSON in case of bulk get
+          - YPW-1090:  malformed json with GET2 on containers that have no
+            terminal nodes, but several sub-containers.";
+    }
+
+    revision "2017-01-19" {
+        description
+         "YPW-953: Add new import ietf-interfaces to use in new test scenario
+          Add new grouping with choice to test proper case selection;
+
+          YPW-944: Add test cases for NP container that should always exist in
+          case of edit | get operations";
+    }
+
+    revision "2016-12-12" {
+        description
+         "Add test cases for multiple separate lists inside container
+          'int1', 'int2', 'int3' to test proper callback invokation
+          YPW-938";
+    }
+
+    revision "2016-11-06" {
+        description
+         "Add more test cases for get2 with config = true parents;
+          Add grouping 'get2-group';
+          Add new import to test key defined from typedefs";
+    }
+
+    revision "2015-08-07" {
+        description
+         "Initial test module for get2 callbacks";
+    }
+
+    leaf get2-leaf {
+       config false;
+       type int32;
+    }
+
+    leaf-list get2-leaf-list {
+       config false;
+       type int32;
+    }
+
+    container get2-pcon {
+       config false;
+       presence "this is a test";
+       leaf pcon-leaf { type int32; }
+    }
+
+    choice get2-choice {
+      config false;
+      case A {
+        leaf A1 { type string; }
+        leaf A2 { type string; }
+      }
+      container B {
+        leaf B1 { type uint8; }
+      }
+      case C {
+        choice C0 {
+          default C0.1;
+          case C0.1 {
+            leaf X {
+              type string;
+              default "red";
+            }
+            leaf Y {
+              type string;
+              default "blue";
+            }
+          }
+          leaf C0.2 { type uint32; }
+        }
+        container C1 {
+          leaf C3 { type int8; }
+          leaf C2b {
+            type int16;
+            default 101;
+          }
+          container C2a {
+            leaf C2a1 { type int32; }
+          }
+        }
+      }
+    }
+
+
+    /* test scenario for choice stmt inside the container
+     * with two callback for complex objects
+     */
+    container thing-main {          // get2 CB
+      config false;
+
+      leaf D { type int8; }
+
+      choice thing-choice {         // get2 CB
+        case A {
+          leaf A1 { type string; }
+          leaf A2 { type string; }
+        }
+        case B {
+          leaf B3 { type string; }
+          leaf B2 { type string; }
+        }
+        case C {                    // active case
+          leaf C1 {type string; }
+          leaf C2 {type string; }
+        }
+      }
+    }
+
+    list get2-list {
+      config false;
+      key "D1 D2";
+      leaf D1 { type int8; }
+      leaf D2 { type int16; }
+      leaf D3 {
+        type int32;
+      }
+      leaf-list D4 { type int32; }
+
+      list int {
+        key name;
+        leaf name { type string; }
+        container int-con {
+          leaf int-con-leaf { type int32; }
+        }
+      }
+    }
+
+    grouping get2-group {
+
+        list nextlist {
+            key "address";
+            leaf address {
+               type inet:ip-address;
+            }
+
+            leaf default {
+               type uint32;
+               default "0";
+            }
+
+            leaf nondefault {
+               type uint32;
+            }
+        }
+    }
+
+    /* YPW-953: get2 for choice/case does not return data when
+     * case and leaf inside have the same names
+     */
+    grouping get2-choice-group {
+
+      choice choice-type {
+        case interface {          // active case
+          leaf interface {
+            type if:interface-ref;
+          }
+        }
+
+        case case-network {
+          leaf next-hop-host {
+            type inet:ip-address;
+          }
+        }
+      }
+    }
+
+    container config-cont {
+      list config-list {
+        key "A B";
+        leaf A { type string; }
+        leaf B { type int32; }
+
+        list noconfig-list {
+          config false;
+          key "E1";
+          leaf E1 { type uint8; }
+          leaf E2 { type boolean; }
+          leaf E3 { type empty; }
+
+          container routes {
+
+            list route {
+              key "ip";
+
+                leaf ip {
+                  type inet:ip-prefix;
+                  mandatory true;
+                }
+
+                uses get2-group;
+            }
+          }
+        }
+      }
+    }
+
+    container get2-ints {
+      config false;
+
+      list int1 {
+        key name;
+        leaf name { type string; }
+        container int-con {
+          leaf int-con-leaf { type int32; }
+        }
+      }
+
+      list int2 {
+        key name;
+        leaf name { type string; }
+        leaf leaf { type string; }
+
+        uses get2-choice-group;
+      }
+
+      list int3 {
+        key name;
+        leaf name { type string; }
+        leaf leaf { type string; }
+      }
+    }
+
+    notification get2-notif {
+      leaf N1 { type int8; }
+      leaf N2 { type int16; }
+      leaf N3 { type string; }
+    }
+
+    /* YPW-944: NP container should always exist in
+     * case of edit | get operations
+     */
+    container config-NPcont {
+
+      container nonconfig-NPcont {
+        config false;
+
+        list nonconfig-list {
+          key "ip";
+
+          leaf ip {
+            type inet:ip-prefix;
+            mandatory true;
+          }
+
+        }
+      }
+    }
+
+    // YPW-1087: server returns malformed JSON in case of bulk get
+    container alarms {
+      config false;
+
+      list active {
+        key "id";
+
+        leaf id {
+          type uint32;
+        }
+
+        leaf boolean {
+          type boolean;
+        }
+      }
+    }
+
+    // YPW-1090: malformed json with GET2 on containers that have no
+    // terminal nodes, but several sub-containers.
+    container lanes {
+      config false;
+
+      list lane {
+        key "id";
+
+        leaf id {
+          type string;
+        }
+
+        container rx {
+
+          container power {
+            leaf actual {
+              type string;
+            }
+            leaf max {
+              type string;
+            }
+          }
+
+          container status {
+            leaf high {
+              type boolean;
+            }
+            leaf low {
+              type boolean;
+            }
+          }
+        }
+
+        container tx {
+
+          container power {
+            leaf actual {
+              type string;
+            }
+            leaf max {
+              type string;
+            }
+          }
+
+          container status {
+            leaf high {
+              type boolean;
+            }
+            leaf low {
+              type boolean;
+            }
+          }
+        }
+      }
+    }
+
+    // YPW-1108: GET2 for leaf-list, malformed JSON, missing a comma
+    container ll-cont {
+      config false;
+      leaf-list test-ll { type string; }
+    }
+
+    container ll-cont2 {
+      config false;
+      leaf-list test-ll { type uint32; }
+    }
+
+    container ll-cont3 {
+      config false;
+      leaf-list test-ll { type boolean; }
+    }
+
+    // YPW-1227: Union type issue: For union key leaf, btyp
+    // always set to NCX_BT_STRING
+    typedef int-type {
+      type int32 {
+        range "0..7777";
+      }
+    }
+
+    typedef union-type {
+      type union {
+        type int-type;
+        type enum-type;
+        //type string;
+      }
+    }
+
+    typedef enum-type {
+      type enumeration {
+        enum zero ;
+        enum one ;
+        enum two;
+        enum three;
+        enum four;
+        enum five;
+        enum six;
+      }
+    }
+
+    list union-list {
+      config false;
+      key "union-leaf";
+
+      leaf union-leaf {
+        type union-type;
+      }
+    }
+
+    container union-cont {
+      config false;
+
+      leaf union-leaf {
+        type union-type;
+      }
+
+      container union-cont2 {
+
+         leaf union-leaf {
+           type union-type;
+         }
+      }
+    }
+
+  // YPW-1250: XPath filtering problems with get2 targets
+  // within config true parent nodes
+  grouping id-container {
+    container id {                     // get2 callback
+      config false;
+      leaf bin-name {
+        type string;
+      }
+    }
+  }
+
+  container waveserver {
+
+    list modem {
+      key "name";
+
+      leaf name {
+        type string;
+      }
+
+      container bin {                  // get2 callback
+        config false;
+
+        uses id-container;
+      }
+      container history {             // get2 callback
+        config false;
+
+        list bins {                   // get2 callback
+          key "name";
+          config false;
+
+          leaf name {
+            type string;
+          }
+          uses id-container;
+        }
+      }
+    }
+  }
+
+  container topconf-cont {
+    container nestedconf-cont {
+      list oper-list {               // get2 callback
+        config false;
+          key "name";
+          leaf name {type string;}
+          leaf leaf2 {type string;}
+      }
+    }
+  }
+
+  /* Config true parent with nested NP cont problem */
+  grouping get2-session-state {
+    container state {
+      config false;
+
+      leaf high {
+        type boolean;
+      }
+      leaf low {
+        type boolean;
+      }
+
+      container status {
+        leaf high {
+          type boolean;
+        }
+        leaf low {
+          type boolean;
+        }
+      }
+    }
+  }
+
+  container get2-sesmgr {
+    container devices {
+
+      list device {
+        key name;
+
+        leaf name {
+          type string;
+        }
+      }
+    }
+
+    container users {
+      list user {
+        key name;
+
+        leaf name {
+          type string;
+        }
+        leaf user {
+          type string;
+          mandatory true;
+        }
+      }
+    }
+
+    container sessions {
+      list session {
+        key name;
+        leaf name { type string; }
+
+        leaf device-ref {
+          type string;
+        }
+
+        uses get2-session-state;
+      }
+
+      list callhome-session {
+        key name;
+        config false;
+        leaf name { type string; }
+        leaf data { type string; }
+      }
+    }
+  }
+
+  // YPW1302: get2 on leaf nodes with CONFIG=TRUE parents only
+  // list/cont/get-leafs
+  list top-config-list {
+    key "id";
+    leaf id {
+      type uint16;
+    }
+
+    container config-cont {
+      leaf config-leaf {
+        type string;
+      }
+
+      // nested config false leafs children
+      leaf defects {
+        type string;
+        config false;
+        mandatory true;
+      }
+      leaf count {
+        type int32;
+        config false;
+        mandatory true;
+      }
+    }
+  }
+
+  // list/list/cont/get-leafs
+  list top-config-list2 {
+    key "id";
+    leaf id {
+      type uint16;
+    }
+
+    list config-list {
+      key "id";
+      leaf id {
+        type uint16;
+      }
+
+      container config-cont {
+        leaf config-leaf {
+          type string;
+        }
+
+        // nested config false leafs children
+        leaf defects {
+          type string;
+          config false;
+          mandatory true;
+        }
+        leaf count {
+          type int32;
+          config false;
+          mandatory true;
+        }
+      }
+    }
+  }
+
+  // list/list/get-leafs
+  list top-config-list3 {
+    key "id";
+    leaf id {
+      type uint16;
+    }
+
+    list config-list {
+      key "id";
+      leaf id {
+        type uint16;
+      }
+
+      // nested config false leafs children
+      leaf defects {
+        type string;
+        config false;
+        mandatory true;
+      }
+      leaf count {
+        type int32;
+        config false;
+        mandatory true;
+      }
+    }
+  }
+
+  // cont/cont/get-leafs
+  container top-config-cont {
+    container config-cont {
+      leaf config-leaf {
+        type string;
+      }
+
+      // nested config false leafs children
+      leaf defects {
+        type string;
+        config false;
+        mandatory true;
+      }
+      leaf count {
+        type int32;
+        config false;
+        mandatory true;
+      }
+    }
+  }
+
+  // cont/list/cont/get-leafs
+  container top-config-cont2 {
+
+    list ptp {
+      key "id";
+      leaf id {
+        type string;
+        mandatory true;
+      }
+
+      container cont {               // get2 callback
+        config false;
+
+        leaf high {
+          type boolean;
+          config false;
+          mandatory true;
+        }
+        leaf low {
+          type boolean;
+          config false;
+          mandatory true;
+        }
+      }
+
+      container state {
+        leaf config-node {
+          type string;
+        }
+
+        // nested config false leafs children
+        leaf defects {                // get2 callback
+          when "../../properties2/xcvr-type = 'WaveLogic Ai'";
+          type string;
+          config false;
+        }
+        leaf count {                  // get2 callback
+          when "../../properties2/xcvr-type = 'WaveLogic Ai'";
+          type int32;
+          config false;
+        }
+
+        leaf parent-id {              // get2 callback
+          type leafref {
+            path "/top-config-cont2/ptp/id";
+          }
+          config false;
+        }
+
+        leaf config-node2 {
+          type string;
+        }
+
+        container properties {
+          leaf type {
+            type string;
+          }
+
+          // nested config false leafs children
+          leaf defects {              // get2 callback
+            type string;
+            config false;
+          }
+          leaf count {                // get2 callback
+            type int32;
+            config false;
+          }
+        }
+      }
+
+      container properties2 {
+        leaf xcvr-type {
+          type string;
+        }
+        leaf count {                // get2 callback
+          type int32;
+          config false;
+        }
+        leaf defects {              // get2 callback
+          type string;
+          units "Gbps";
+          config false;
+        }
+        leaf forward-error-correction {
+          type boolean;
+        }
+
+        container thresholds {
+          leaf type {
+            type string;
+          }
+          leaf count {              // get2 callback
+            type int32;
+            config false;
+          }
+          leaf defects {            // get2 callback
+            type string;
+            config false;
+          }
+        }
+
+        container transmitter {
+          leaf type {
+            type string;
+          }
+
+          container cont {          // get2 callback
+            config false;
+
+            leaf high {
+              type boolean;
+              config false;
+              mandatory true;
+            }
+            leaf low {
+              type boolean;
+              config false;
+              mandatory true;
+            }
+          }
+        }
+      }
+
+      container properties3 {
+        container diagnostic {
+          leaf count {                // get2 callback
+            type int32;
+            config false;
+          }
+          leaf defects {              // get2 callback
+            type string;
+            config false;
+          }
+        }
+
+        list oper-list {               // get2 callback
+          config false;
+          key "name";
+          leaf name {type string;}
+          leaf leaf2 {type string;}
+        }
+      }
+    }
+  }
+
+  /* YPW-1335: Extra comma in RESTCONF json output after absent
+   * P-container
+   */
+  container mock {              // get2 callback
+    config false;
+
+    leaf name {
+      type string;
+    }
+    leaf serial-no {
+      type string;
+    }
+
+    container nonpresence {
+
+      container presence {
+        presence "Presence container with NO any leafs";
+      }
+      container presence2 {
+        presence "Presence container with terminal leafs";
+        leaf name {type string;}
+        leaf leaf2 {type string;}
+      }
+      container nonpresence2 {
+        description "Non-Presence";
+      }
+    }
+  }
+
+  // No ticket test. Keys order in definition and keys in the tree
+  list get2-list-key-order {
+    config false;
+
+    key "D1 D2";
+
+    leaf D2 { type int16; }
+    leaf D3 { type int32; }
+    leaf-list D4 { type int32; }
+    leaf D1 { type int8; }
+
+    list nested-list {
+      key "D2 D1";
+      leaf-list D4 { type int32; }
+      leaf D1 { type int8; }
+      leaf D2 { type int16; }
+      leaf D3 { type int32; }
+    }
+  }
+
+  // YPW-1343: malformed JSON output after invalid operational
+  // leaf in container
+  container get2-topcont {
+
+    // leaf returns length error
+    leaf leaf-a {
+      type string {
+        length "18..60";
+      }
+      config false;
+    }
+
+    // leaf returns no-instance error
+    leaf leaf-b {
+      type string;
+      config false;
+    }
+
+    // leaf returns okay value
+    leaf leaf-c {
+      type string;
+      config false;
+    }
+
+    // leaf exist
+    leaf leaf-d {
+      type string;
+    }
+
+    // leaf returns no-instance error
+    leaf leaf-e {
+      type string;
+      config false;
+    }
+
+    // leaf returns length error
+    leaf leaf-f {
+      type string {
+        length "18..60";
+      }
+      config false;
+    }
+
+    // leaf returns okay value
+    leaf leaf-g {
+      type string;
+      config false;
+    }
+  }
+
+  /* YPW-1346: P-container without terminals must not be skipped for GET2 */
+  container get2-presence {             // get2 callback return error
+    config false;
+    presence "Presence container with NO any leafs";
+
+    list oper-list {               // get2 callback
+      config false;
+      key "name";
+      leaf name {type string;}
+      leaf leaf2 {type string;}
+    }
+  }
+
+  container get2-presence2 {             // get2 callback
+    config false;
+    presence "Presence container with NO any leafs";
+
+    list oper-list {               // get2 callback
+      config false;
+      key "name";
+      leaf name {type string;}
+      leaf leaf2 {type string;}
+    }
+  }
+
+  container ports-test {
+    config true;
+    ywx:sil-priority 40;
+
+    list port {
+      key display-name;
+
+      leaf display-name {
+        mandatory true;
+        ywx:sil-priority 41;
+        type string;
+      }
+
+      leaf port-type {
+        mandatory true;
+        ywx:sil-priority 42;
+
+        type enumeration {
+          enum front-port;
+          enum cpu-port;
+          enum loopback-port;
+        }
+      }
+
+      leaf active {
+        config false;
+        when "../port-type = 'front-port' or " +
+             "../port-type = 'loopback-port'";
+        type boolean;
+      }
+
+      leaf admin-state {
+        when "../port-type = 'front-port'";
+        ywx:sil-priority 44;
+        type boolean;
+        default false;
+      }
+
+      leaf loopback {
+        when "../port-type = 'front-port'";
+        ywx:sil-priority 45;
+        type boolean;
+        default false;
+      }
+
+      leaf link-state {
+        config false;
+        when "../port-type = 'front-port'";
+        type string;
+      }
+    }
+  }
+
+
+  /* YPW-1408: malformed JSON on choice callback */
+  grouping alarm {
+    container resource-cont {
+      container device {
+        leaf high {
+          type boolean;
+        }
+        leaf low {
+          type boolean;
+        }
+      }
+
+      /* Test choice-container relations */
+      container resource-cont2 {
+        choice resource-choice {
+          case circuit-pack {
+            leaf pack-name {
+              type string;
+              mandatory true;
+            }
+          }
+          case port-case {        // active case
+            container port-cont {
+              leaf high {
+                type boolean;
+              }
+              leaf low {
+                type boolean;
+              }
+            }
+          }
+        }
+      }
+
+      /* Test choice-leaf relations */
+      container resource-cont3 {
+        choice resource-choice {
+          case circuit-pack {     // active case
+            leaf pack-name {
+              type string;
+              mandatory true;
+            }
+          }
+          case port-case {
+            container port-cont {
+              leaf high {
+                type boolean;
+              }
+              leaf low {
+                type boolean;
+              }
+            }
+          }
+        }
+      }
+
+      /* Test choice-list relations */
+      container resource-cont4 {
+        choice resource-choice {
+          case circuit-pack {
+            leaf pack-name {
+              type string;
+              mandatory true;
+            }
+          }
+          case port-case {        // active case
+            list port-list {
+              key "id";
+
+              leaf id {
+                type uint32;
+              }
+
+              leaf boolean {
+                type boolean;
+              }
+            }
+          }
+        }
+      }
+
+      /* Test choice-leaf-cont relations */
+      container resource-cont5 {
+        choice resource-choice {
+          case circuit-pack {
+            leaf pack-name {
+              type string;
+              mandatory true;
+            }
+          }
+          case port-case {      // active case
+            leaf port-name {
+              type string;
+              mandatory true;
+            }
+            container port-cont {
+              leaf high {
+                type boolean;
+              }
+              leaf low {
+                type boolean;
+              }
+            }
+          }
+        }
+      }
+
+      /* Test choice-leaf-cont relations */
+      container resource-cont6 {
+        choice resource-choice {
+          case circuit-pack {
+            leaf pack-name {
+              type string;
+              mandatory true;
+            }
+          }
+          case port-case {      // active case
+            container port-cont {
+              leaf high {
+                type boolean;
+              }
+              leaf low {
+                type boolean;
+              }
+            }
+
+            leaf port-name {
+              type string;
+              mandatory true;
+            }
+          }
+        }
+      }
+
+      /* Test choice-leaf-list relations */
+      container resource-cont7 {
+        choice resource-choice {
+          case circuit-pack {
+            leaf pack-name {
+              type string;
+              mandatory true;
+            }
+          }
+          case port-case {      // active case
+            leaf port-name {
+              type string;
+              mandatory true;
+            }
+
+            list port-list {
+              key "id";
+
+              leaf id {
+                type uint32;
+              }
+
+              leaf boolean {
+                type boolean;
+              }
+            }
+          }
+        }
+      }
+
+      /* Test choice-list-leaf relations */
+      container resource-cont8 {
+        choice resource-choice {
+          case circuit-pack {
+            leaf pack-name {
+              type string;
+              mandatory true;
+            }
+          }
+          case port-case {      // active case
+            list port-list {
+              key "id";
+
+              leaf id {
+                type uint32;
+              }
+
+              leaf boolean {
+                type boolean;
+              }
+            }
+
+            leaf port-name {
+              type string;
+              mandatory true;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  container active-alarm-list {
+    presence "top level container can't be NP in Yumapro";
+    config false;
+
+    list activeAlarms {
+      key "id";
+
+      leaf id {
+        type uint32;
+      }
+
+      leaf boolean {
+        type boolean;
+      }
+
+      uses alarm;
+    }
+  }
+
+  /* YPW-1409:  Key value for nested list object */
+  container topcon {
+    config false;
+    presence "This is to test GET2";
+    list list1 {
+      key name;
+      leaf name { type string; }
+      leaf col1 { type int32; }
+      list list2 {
+        key name;
+        leaf name { type string; }
+        leaf col2 { type int32; }
+      }
+    }
+  }
+
+  container topcon2 {
+    config false;
+    presence "This is to test GET2";
+    list list1 {
+      key name;
+      leaf name { type string; }
+      leaf col1 { type int32; }
+      list list2 {
+        key name;
+        leaf name { type string; }
+        leaf col2 { type int32; }
+      }
+    }
+  }
+
+  grouping get2-choice-cont-group {
+
+    choice choice-type {
+      config false;
+      case interface {          // active case
+        leaf interface {
+          type if:interface-ref;
+        }
+      }
+
+      case case-network {
+        leaf next-hop-host {
+          type inet:ip-address;
+        }
+      }
+    }
+  }
+
+  container get2-choice-cont {
+    presence "This is used to test GET2 on choice";
+
+    list int2 {
+      key name;
+      leaf name { type string; }
+      container state {
+        presence "This is to test GET2";
+        config false;
+      }
+      container config {
+        leaf type {
+          type string;
+        }
+      }
+      uses get2-choice-cont-group;
+    }
+  }
+
+  container container-parent {
+    presence "Test for GET request on enum leaf inside container/container";
+    container container-child {
+      config false;
+      leaf leaf-1 {
+        type string;
+        mandatory true;
+      }
+      leaf leaf-2 {
+        type string;
+      }
+    }
+  }
+
+  /* YPW-1504: GET2 on operational leaf target malfunction */
+  container container-parent2 {
+
+    container container-child {
+      config false;
+      leaf leaf-1 {
+        type string;
+        mandatory true;
+      }
+      leaf leaf-2 {
+        type string;
+      }
+    }
+  }
+
+  /* YPW-1514: GETNEXT request malfunction for GET2 lists with no
+   * keys defined
+   */
+  grouping key-group {
+    leaf key-id {
+      type uint16;
+      mandatory true;
+    }
+    leaf leaf-2 {
+      type uint16;
+    }
+
+    /* YPW-1581: XGET request problem on nested GET2 lists with no keys */
+    list affected-objects {
+      leaf name {
+        type string {
+          length "1..255";
+        }
+        mandatory true;
+      }
+      min-elements 1;
+      max-elements 100;
+    }
+  }
+
+  container nokey-cont {
+    list nokey-list {
+      uses key-group;
+    }
+    config false;
+  }
+
+
+  /* YPW-1534: GET with Xpath filtering malfunction for GET2 callbacks
+   */
+  container get2-xpath-conf {
+    presence "Test";
+    container get2-xpath-test {
+
+      list port {
+        config false;
+        key name;
+        leaf name {
+          type string;
+        }
+
+        leaf type { type string; }
+      }
+    }
+  }
+
+  container get2-xpath-state {
+    config false;
+    container get2-xpath-test {
+
+      list port {
+        key name;
+        leaf name {
+          type string;
+        }
+      }
+    }
+  }
+
+  /* Crash in the get_lookupQ */
+  list nested-list {
+    key name;
+    leaf name { type string; }
+
+    container int-con {
+      leaf int-con-leaf { type int32; }
+
+      list int2 {
+        key name;
+        leaf name { type string; }
+
+        container int-con {
+          leaf int-con-leaf { type int32; }
+
+          list int3 {
+            key name;
+            leaf name { type string; }
+
+            container int-con {
+              leaf int-con-leaf { type int32; }
+
+              list int4 {
+                key name;
+                leaf name { type string; }
+                container int-con {
+                  leaf int-con-leaf { type int32; }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* YPW-1553: Get request with XPath filtering produces
+   * malformed output when the target is a list with no keys
+   */
+  container config-Pcont {
+    presence "Test";
+    container nonconfig-NPcont {
+      config false;
+
+      leaf high {
+        type boolean;
+        mandatory true;
+      }
+      leaf low {
+        type boolean;
+        mandatory true;
+      }
+
+      list nonconfig-list {
+        key "ip";
+
+        leaf ip {
+          type inet:ip-prefix;
+          mandatory true;
+        }
+      }
+    }
+  }
+
+  /* YPW-1561: GET2 request on anydata type produces
+   * incorrect output
+   */
+  container get2-cont-anydata {
+    presence "Test";
+    config false;
+    anydata template;
+  }
+
+  list get2-list-anydata {
+    config false;
+
+    key "name";
+    leaf name { type string; }
+
+    anydata template;
+  }
+
+  container get2-cont-anydata2 {
+    presence "Test";
+
+    container container-child {
+      config false;
+      leaf leaf-1 {
+        type string;
+        mandatory true;
+      }
+      leaf leaf-2 {
+        type string;
+      }
+
+      anyxml template;
+
+      leaf leaf-3 {
+        type string;
+      }
+    }
+  }
+
+  container get2-cont-anydata3 {
+    presence "Test";
+
+    list get2-list-anydata {
+      config false;
+      key "name";
+
+      leaf name { type string; }
+
+      anydata template;
+
+      leaf leaf-2 {
+        type string;
+      }
+    }
+  }
+
+  /* YPW-1563: Incorrect Duplicate entry error occurs when get
+   * multiple key list
+   */
+  container get2-cont-dupkey {
+    presence "Test";
+
+    list nested-list {
+      key "D1 D2";
+      config false;
+
+      leaf-list D4 { type int32; }
+      leaf D1 { type int8; }
+      leaf D2 { type int16; }
+      leaf D3 { type int32; }
+    }
+  }
+
+  /* YPW-1534: GET with Xpath filtering malfunction for GET2 callbacks
+   */
+  container get2-xpath-conf2 {
+    presence "Test";
+    container get2-xpath-test {
+
+      list port {                  // get2 CB
+        config false;
+        key name;
+        leaf name {
+          type string;
+        }
+
+        leaf type { type string; }
+
+        container status {         // get2 CB
+          leaf high {
+            type boolean;
+          }
+          leaf low {
+            type boolean;
+          }
+        }
+
+        leaf nexttype { type string; }
+
+        uses grouping-with-choice;
+      }
+    }
+  }
+
+  /* YPW-1565: GET2 with XPath filtering on choice node as a
+   * target malfunction
+   */
+  grouping grouping-with-choice {
+    choice thing-choice {          // get2 CB
+      case A {
+        leaf A1 { type string; }
+        leaf A2 { type string; }
+      }
+      case B {
+        leaf B3 { type string; }
+        leaf B2 { type string; }
+      }
+      case C {                     // active case
+        leaf C1 {type string; }
+        leaf C2 {type string; }
+
+        container choice-cont {    // get2 CB
+          leaf C3 { type int8; }
+
+          container C2a {          // get2 CB
+            leaf C2a1 { type int32; }
+          }
+        }
+      }
+    }
+  }
+
+  /* FD-102324: duplicate entry in reply for Xpath request */
+  identity event-type-base { }
+
+  identity object-deleted {
+    base event-type-base;
+  }
+
+  identity state-change {
+    base event-type-base;
+  }
+
+  identity attribute-value-change {
+    base event-type-base;
+  }
+
+  typedef event-type-typedef {
+    type identityref {
+      base event-type-base;
+    }
+  }
+
+  grouping event-common-grouping {
+    leaf name { type int8; }
+    leaf identity { type int16; }
+    leaf type {
+      type event-type-typedef;
+    }
+    leaf description {
+      type string;
+    }
+
+    anydata data {  }
+
+   /* ypw-1568: GET2 request with XPath filtering malfunction
+    * in case the target is ENUM type key leaf
+    */
+    leaf support {
+      when "../type = 'get2test:state-change'";
+      type boolean;
+      default false;
+    }
+    leaf protocol-version {
+      type string;
+      default "1.0";
+    }
+  }
+
+  container ev {
+    presence "Test";
+
+    container log {                    // get2 CB
+      config false;
+
+      container events {               // get2 CB
+        list event {                   // get2 CB
+          key "name identity";
+
+          uses event-common-grouping;
+        }
+      }
+    }
+  }
+
+  /* ypw-1568: GET2 request with XPath filtering malfunction
+   * in case the target is ENUM type key leaf
+   */
+  container get2-xpath-conf3 {
+    presence "Test";
+
+    container get2-xpath-test {        // get2 CB
+      config false;
+      list port {                      // get2 CB
+        key name;
+
+        leaf name {
+          type enumeration {
+            enum ECPRI;
+            enum IEEE;
+            enum IEEE2;
+          }
+        }
+
+        leaf support {
+          when "../name = 'ECPRI'";
+          type boolean;
+          default false;
+        }
+        leaf protocol-version {
+          type string;
+          default "1.0";
+        }
+      }
+    }
+  }
+
+  container get2-xpath-conf4 {
+    presence "Test";
+
+    container xpath-test {             // get2 CB
+      config false;
+      container xpath-test2 {          // get2 CB
+        list port {                    // get2 CB
+          key name;
+
+          leaf name {
+            type string;
+          }
+
+          leaf support {
+            when "../name = 'ECPRI'";
+            type boolean;
+            default false;
+          }
+          leaf protocol-version {
+            type string;
+            default "1.0";
+          }
+        }
+      }
+    }
+  }
+
+  /* YPW-1565: GET2 with XPath filtering on choice node as a
+   * target malfunction
+   */
+  grouping grouping-with-choice2 {
+    choice object-unit-id {           // get2 CB
+      config false;
+
+      case C {                        // active case
+        leaf C1 {type string; }
+        leaf C2 {type string; }
+      }
+
+      case TRANSPORT {
+        list tr-measured-result{
+          leaf name{
+            type string;
+          }
+          leaf count {
+            type uint64;
+            mandatory true;
+          }
+        }
+      }
+    }
+  }
+
+  container get2-xpath-conf5 {
+    presence "Test";
+
+    list port {
+      key "name";
+      leaf name {
+        type enumeration {
+          enum RX_ON_TIME;
+          enum RX_EARLY;
+          enum RX_LATE;
+          enum RX_CORRUPT;
+          enum RX_DUPL;
+          enum RX_TOTAL;
+        }
+      }
+      uses grouping-with-choice2;
+    }
+  }
+
+  /* FD-102349: Clients get duplicate entry errors when running xget */
+  container mplane-info {
+    presence "Test";
+
+    container interfaces {
+      list interface {
+        key name;
+
+        leaf name {
+          type string;
+        }
+
+        container info {                  // get2 callback
+          config false;
+
+          list port {                     // get2 callback
+            key name;
+            leaf name {
+              type string;
+            }
+
+            leaf type { type string; }
+          }
+        }
+      }
+    }
+  }
+
+  /* YPW-1577: XPath filter retrieval malfunction in case of nested lists */
+  container get2-xpath-conf6 {          // get2 callback
+    config false;
+    presence "Test";
+
+    list interface {                    // get2 callback
+      key name;
+      leaf name { type string; }
+      leaf type { type string; }
+      leaf nexttype { type string; }
+
+      list port {                       // get2 callback
+        key name;
+        leaf name { type string; }
+        leaf type { type string; }
+        leaf nexttype { type string; }
+      }
+    }
+  }
+
+  container get2-xpath-conf7 {
+    presence "Test";
+
+    list conf-list {
+      key key1;
+      leaf key1 { type string; }
+
+      list interface {                    // get2 callback
+        config false;
+        key key2;
+        leaf key2 { type string; }
+        leaf type { type string; }
+        leaf nexttype { type string; }
+
+        list port {                       // get2 callback
+          key key3;
+          leaf key3 { type string; }
+          leaf type { type string; }
+          leaf nexttype { type string; }
+        }
+      }
+    }
+  }
+
+  /* YPW-1578: XGET request on tager leaf-list malfunction */
+  container get2-xpath-state2 {             // get2 callback
+    config false;
+
+    leaf-list type { type string; }
+    leaf-list nexttype { type string; }
+
+    list state-list {                       // get2 callback
+      key name;
+      leaf name { type string; }
+      leaf-list ll-type { type string; }
+      leaf-list ll-nexttype { type string; }
+
+      container state-cont {                // get2 callback
+        leaf-list type { type string; }
+        leaf-list nexttype { type string; }
+
+        list interface {                    // get2 callback
+          key name;
+          leaf name { type string; }
+          leaf-list ll-type { type string; }
+          leaf-list ll-nexttype { type string; }
+
+          container nextcont {              // get2 callback
+            leaf-list type { type string; }
+            leaf-list nexttype { type string; }
+          }
+        }
+      }
+    }
+  }
+
+  /* YPW-1578(2): XGET request on leafy target malfunction */
+  container get2-xpath-conf8 {
+    presence "Test";
+
+    list conf-list {
+      key key1;
+      leaf key1 { type string; }
+
+      container cont {              // get2 callback
+        config false;
+        leaf-list type { type string; }
+        leaf-list nexttype { type string; }
+        leaf leaftype { type string; }
+      }
+    }
+  }
+
+  /* YPW-1578(3): XGET request on leafy target malfunction */
+  container get2-xpath-conf9 {
+    presence "Test";
+
+    list interface {                    // get2 callback
+      config false;
+      key name;
+      leaf name { type string; }
+      leaf-list ll-type { type string; }
+      leaf-list ll-nexttype { type string; }
+    }
+  }
+
+  /* YPW-1582: XGET and SGET request on choice/case/leaf target malfunction */
+  container get2-xpath-conf10 {
+    presence "Test";
+
+    list port {
+      key name;
+      leaf name {
+        type enumeration {
+          enum RX_ON_TIME;
+          enum RX_EARLY;
+          enum RX_LATE;
+          enum RX_CORRUPT;
+          enum RX_DUPL;
+          enum RX_TOTAL;
+        }
+      }
+
+      leaf defects {
+        type string;
+        config false;
+        mandatory true;
+      }
+      leaf count {
+        type int32;
+        config false;
+        mandatory true;
+      }
+    }
+  }
+
+  container get2-xpath-conf11 {
+    presence "Test";
+
+    list port {
+      key name;
+      leaf name { type string; }
+
+      leaf defects {
+        type string;
+      }
+      leaf count {
+        type int32;
+      }
+    }
+  }
+
+  container get2-xpath-state3 {
+    config false;
+
+    list port {
+      key name;
+      leaf name { type string; }
+
+      leaf type { type string; }
+      leaf nexttype { type string; }
+      leaf-list ll-type { type string; }
+      leaf-list ll-nexttype { type string; }
+    }
+  }
+}

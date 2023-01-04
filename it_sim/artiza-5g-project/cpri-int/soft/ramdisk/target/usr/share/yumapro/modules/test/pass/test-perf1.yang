@@ -1,0 +1,42 @@
+module test-perf1 {
+
+    namespace "http://netconfcentral.org/ns/test-perf1";
+    prefix "tp1";
+
+    revision 2012-11-30 {
+        description "Initial revision.";
+    }
+
+    container test-perf1 {
+      description "Test R/W contention performance";
+      leaf tp1-int32 { 
+         config true;
+         type uint32;
+      }
+      leaf tp1-int64 { 
+         config true;
+         type uint64;
+      }
+      leaf tp1-int64-writer-id { 
+         config true;
+         type uint64;
+      }
+      leaf tp1-int64-writing-first { 
+         config true;
+         type boolean;
+      }
+      leaf tp1-int64-writing-other { 
+         config true;
+         type boolean;
+      }
+      leaf tp1-str { 
+         config true;
+         type string;
+      }
+      leaf tp1-timestamp { 
+         config true;
+         type string;
+      }
+    }
+
+}

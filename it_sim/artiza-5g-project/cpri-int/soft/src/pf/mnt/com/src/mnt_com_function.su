@@ -1,0 +1,5 @@
+mnt_com_function.c:18:19:mnt_com_get_tcpconn_simulator	48	static
+mnt_com_function.c:30:19:mnt_com_get_tcpconn_monitor	48	static
+mnt_com_function.c:42:8:mnt_com_conv_linkno_internal_to_simu	48	static
+mnt_com_function.c:66:8:mnt_com_conv_linkno_simu_to_internal	48	static
+mnt_com_function.c:92:6:mnt_com_conv_linkhandle_to_internalrange	64	static

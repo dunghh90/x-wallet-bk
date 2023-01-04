@@ -1,0 +1,133 @@
+module hooks-test-dev {
+  namespace "http://netconfcentral.org/ns/hooks-test-dev";
+  prefix "hooks-dev";
+
+  import hooks-test {
+    prefix "hk";
+  }
+
+  import hooks-test-augm {
+    prefix "hooks-augm";
+  }
+
+  revision "2019-02-06" {
+    description
+      "YPW-1391: deviation replace does not replace data type.
+       Add new deviation to replace node type from inet-address to string.
+       To test deviation 'replace'";
+  }
+
+  revision "2017-05-03" {
+    description
+      "Initial version";
+  }
+
+  deviation /hk:interfaces/hk:interface/hooks-augm:negotiation1 {
+    deviate add {
+     must "(true() = contains(../hk:name,'interface1')) or "
+         + "(true() = contains(../hk:name,'interface2')) or "
+         + "(true() = contains(../hk:name,'interface3'))" {
+
+         error-message "Custom Error Message";
+      }
+    }
+  }
+
+  deviation /hk:interfaces/hk:interface/hooks-augm:negotiation2 {
+    deviate add {
+
+      must "(../hk:name[contains(.,'interface1')]) or (../hk:name[contains(.,'interface2')])" {
+
+        error-message "Custom Error Message";
+      }
+    }
+  }
+
+  deviation /hk:interfaces/hk:interface/hooks-augm:negotiation3 {
+    deviate add {
+
+      must "../hk:name[contains(.,'interface1')]" {
+
+        error-message "Custom Error Message";
+      }
+    }
+  }
+
+  deviation /hk:interfaces/hk:interface/hooks-augm:negotiation5 {
+    deviate add {
+
+      must "(../hk:name[contains(.,'interface1')]) and "
+         + "(../hk:type[contains(.,'test')])" {
+
+        error-message "Custom Error Message";
+      }
+    }
+  }
+
+  deviation /hk:interfaces/hk:interface/hooks-augm:negotiation6 {
+    deviate add {
+
+      must "((../hk:name[contains(.,'interface1')]) or "
+         + "(../hk:name[contains(.,'interface2')])) and "
+         + "((../hk:type[contains(.,'test')]) or "
+         + "(../hk:type[contains(.,'t-e-s-t')]))" {
+
+        error-message "Custom Error Message";
+      }
+    }
+  }
+
+  deviation /hk:interfaces/hk:interface/hooks-augm:negotiation10 {
+    deviate add {
+
+      must "substring(string(../hk:name),1,10) = 'interface1' or "
+         + "substring(string(../hk:name),1,10) = 'interface2' or "
+         + "substring(string(../hk:name),1,10) = 'interface3' " {
+
+        error-message "Custom Error Message";
+      }
+    }
+  }
+
+  deviation /hk:interfaces/hk:interface/hooks-augm:negotiation11 {
+    deviate add {
+
+      must "starts-with(string(../hk:type), 'test') or "
+         + "starts-with(string(../hk:type), 't-e') " {
+
+        error-message "Custom Error Message";
+      }
+    }
+  }
+
+  deviation /hk:interfaces/hk:interface/hooks-augm:negotiation12 {
+    deviate add {
+
+      must "substring(../hk:name,1,10) = 'interface1' or "
+         + "substring(../hk:name,1,10) = 'interface2' or "
+         + "substring(../hk:name,1,10) = 'interface3' " {
+
+        error-message "Custom Error Message";
+      }
+    }
+  }
+
+  deviation /hk:interfaces/hk:interface/hooks-augm:negotiation13 {
+    deviate add {
+
+      must "starts-with(../hk:type, 'test') or "
+         + "starts-with(../hk:type, 't-e') " {
+
+        error-message "Custom Error Message";
+      }
+    }
+  }
+
+  // YPW-1391: deviation replace does not replace data type
+  deviation /hk:destinations/hk:destination/hk:config/hk:destination-address {
+    deviate replace {
+      type uint32;
+    }
+  }
+
+}

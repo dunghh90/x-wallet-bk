@@ -1,0 +1,165 @@
+module test-action {
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/test-action";
+  prefix taction;
+
+  revision 2019-06-17 {
+    description
+      "Initial revision.";
+  }
+
+  container time {
+    presence "";
+
+    container x0 {
+      config false;
+
+      container x1 {
+        container x2 {
+
+          action z {
+            input {
+              leaf w {
+                type string;
+                mandatory true;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    container x1 {
+      config false;
+
+      action z {
+        input {
+          leaf w {
+            type string;
+            mandatory true;
+          }
+        }
+      }
+    }
+
+    container x2 {
+
+      action z {
+        input {
+          leaf w {
+            type string;
+            mandatory true;
+          }
+        }
+      }
+    }
+
+    list l1 {
+      key k1;
+      leaf k1 { type int16; }
+
+      action z {
+        input {
+          leaf w {
+            type string;
+            mandatory true;
+          }
+        }
+      }
+    }
+
+    container l2 {
+      config false;
+
+      container x1 {
+        container x2 {
+
+          list l1 {
+            key k1;
+            leaf k1 { type int16; }
+
+            action z {
+              input {
+                leaf w {
+                  type string;
+                  mandatory true;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  } // end of the Presence container
+
+  container time2 {
+    container x0 {
+      config false;
+
+      container x1 {
+        container x2 {
+
+          action z {
+            input {
+              leaf w {
+                type string;
+                mandatory true;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    container x1 {
+      config false;
+
+      action z {
+        input {
+          leaf w {
+            type string;
+            mandatory true;
+          }
+        }
+      }
+    }
+
+    list l1 {
+      key k1;
+      leaf k1 { type int16; }
+
+      action z {
+        input {
+          leaf w {
+            type string;
+            mandatory true;
+          }
+        }
+      }
+    }
+
+    container l2 {
+      config false;
+
+      container x1 {
+        container x2 {
+
+          list l1 {
+            key k1;
+            leaf k1 { type int16; }
+
+            action z {
+              input {
+                leaf w {
+                  type string;
+                  mandatory true;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+}

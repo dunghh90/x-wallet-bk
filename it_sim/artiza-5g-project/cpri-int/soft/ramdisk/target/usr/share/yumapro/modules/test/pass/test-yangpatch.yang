@@ -1,0 +1,74 @@
+module test-yangpatch {
+  yang-version 1.1;
+
+  namespace "http://netconfcentral.org/ns/test-yangpatch";
+  prefix "tyangpatch";
+
+  revision 2019-04-01 {
+    description "Test module in-progress.";
+  }
+
+  container time {
+    container foo-list {
+
+      list bar {
+        key "name";
+
+        leaf name {
+          type string;
+        }
+
+        leaf booltype {
+          type boolean;
+        }
+
+
+        leaf severity {
+          type enumeration {
+            enum cleared {
+              value 1;
+            }
+            enum indeterminate {
+              value 2;
+            }
+            enum minor {
+              value 3;
+            }
+            enum warning {
+              value 4;
+            }
+            enum major {
+              value 5;
+            }
+            enum critical {
+              value 6;
+            }
+          }
+        }
+
+        leaf ip {
+          type string;
+        }
+        leaf port {
+          type uint32;
+        }
+      }
+    }
+  }
+
+  container nonlist {
+    leaf x {
+      type uint32;
+      default 6;
+    }
+    container nt {
+      leaf str {
+        type string;
+      }
+      leaf zz {
+        type uint32;
+        default 8;
+      }
+    }
+  }
+}

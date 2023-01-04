@@ -1,0 +1,292 @@
+/*!
+ * @skip  $ld:$
+ * @file  f_nego_main.c
+ * @brief the entrance of pf_nego thread
+ * @author FFCS)fuxg create
+ * @date 2015/04/22 FFCS)fuxg create
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2015-
+ */
+
+#include "f_sys_inc.h"
+#include "f_nego_inc.h"
+#include "rrhApi_Nego.h"
+
+/*!
+ * @addtogroup RRH_PF_NEGO
+ * @{
+ */
+
+/**
+* @brief	pf_nego thread main function
+* @note 	Judge the input message and dispatch it to the corresponding handle function.\n
+*
+*
+*
+* @retval 	None
+* @date 	2015/04/22 FFCS)fuxg create
+* @warning	N/A
+* @FeatureID	RRH-012-000
+* @Bug_No	N/A
+* @CR_No	N/A
+* @TBD_No	N/A
+*/
+
+VOID f_nego_main()
+{
+	/************************************************************/
+	/* Local parameter declaration								*/
+	/************************************************************/
+	CHAR	cRcvMsg[1024];    /* receievd message buffer*/
+	INT		rcvsize;
+	INT		errcd;
+
+	/* スレッド名表示		*/
+	prctl(PR_SET_NAME, "pf_nego", 0, 0, 0);
+	
+	/* BPFへスレッド情報登録	*/
+	BPF_RM_SVRM_THREAD_INFO_SET(D_RRH_PROCID_PF,				/* ProcessID		*/
+								D_SYS_THDID_PF_NEGO,			/* ThreadID			*/
+								D_SYS_THDQID_PF_NEGO,				    /* ThreadQueueID	*/
+								(unsigned long int)pthread_self());	/* 2020/12/28 M&C) Merge 4G FHM src (add 4th param)	*/
+	
+	/************************************************************/
+	/* Initialize the tables									*/
+	/************************************************************/
+	f_nego_Init( );
+	
+	/***********************************************************/
+	/*	Message Receive and Function dispatched 			   */
+	/***********************************************************/
+	for(;;)
+	{
+		memset(cRcvMsg,0,sizeof(cRcvMsg));
+
+		/************************************************************/
+		/* Receive the message from queue							*/
+		/************************************************************/
+		f_com_msgQReceive( D_SYS_THDQID_PF_NEGO, 
+						   sizeof(cRcvMsg), 
+						   cRcvMsg, &rcvsize,&errcd );
+		
+		/* analyze and dispatch message */
+		f_nego_anlz( (UINT*)cRcvMsg );
+	}
+
+	return;
+}
+
+/**
+* @brief	pf_nego log function
+* @note 	run history message log function.\n
+* @param 	sndrcv_flg [in] send/receive flag
+* @param 	datap [in] the buffer address pointer of received message
+* @@retval 	None
+* @date 	2015/04/22 FFCS)fuxg create
+* @warning	N/A
+* @FeatureID	RRH-012-000
+* @Bug_No	N/A
+* @CR_No	N/A
+* @TBD_No	N/A
+*/
+
+VOID f_nego_cm_runHisSet(UINT sndrcv_flg, UCHAR* datap) 
+{
+	T_RRH_SYSTEM_TIME	datetime;				/* 時刻情報			*/
+	UINT		sig_kind;						/* 信号種別(保存用)	*/
+	UINT		datas[2] = {0};
+	UINT		event_id;
+	UINT		task_id;
+	
+	/************************/
+	/* 収集データ初期値設定 */
+	/************************/
+	sig_kind = -1;						/* 信号種別(保存用)	  */
+	event_id = ((T_RRH_HEAD*)datap)->uiEventNo;
+	task_id = ((T_RRH_HEAD*)datap)->uiSrcPQueueID;
+	
+	/******************/
+	/* 収集データ設定 */
+	/******************/
+	switch (event_id)
+	{
+		/* 受信イベント */
+		case D_SYS_MSGID_AUTONEGO_START_IND:
+			datas[0] = ((T_SYS_AUTO_NEGO_START_IND *)datap)->bit_rate;
+			break;
+
+		/* 受信イベント */
+		case D_SYS_MSGID_AUTONEGO_STOP_IND:
+			break;
+
+		/* 受信イベント */
+		case D_SYS_MSGID_AUTONEGO_RESTART_IND:
+			datas[0] = ((T_SYS_AUTO_NEGO_RESTART_IND *)datap)->bit_rate;
+			break;
+
+		/* 送信イベント */
+		case D_SYS_MSGID_AUTONEGO_COMPLETE_NTC:
+			datas[0] = ((T_SYS_AUTO_NEGO_COMPLETE_NTC *)datap)->bit_rate;
+			datas[1] = ((T_SYS_AUTO_NEGO_COMPLETE_NTC *)datap)->auto_nego_result;
+			break;
+
+	 	default:
+			break;
+	}
+
+	/****************************/
+	/* 収集データテーブル書込み */
+	/****************************/
+	/* 時刻情報収集 */
+	BPF_HM_DEVC_GETTIME( &datetime );
+
+	/* ヘッダデータ設定 */
+	f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx].head.setFlg     = 1;
+	f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx].head.month      = datetime.month;
+	f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx].head.day        = datetime.day;
+	f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx].head.hour       = datetime.hour;
+	f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx].head.min        = datetime.min;
+	f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx].head.sec        = datetime.sec;
+	f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx].head.msec       = datetime.msec;
+	f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx].head.sndrcvFlg  = (UCHAR)sndrcv_flg;
+	f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx].head.msgId      = event_id;
+	f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx].head.taskId     = (USHORT)task_id;
+	f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx].head.sig_kind   = (USHORT)sig_kind;
+	f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx].body[0]         =  datas[0];
+	f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx].body[1]         =  datas[1];
+	
+	/**********************/
+	/* 次走行履歴書込準備 */
+	/**********************/
+	/* 書込位置更新 */
+	f_nego_runhis_tbl.write_idx++;
+	if (f_nego_runhis_tbl.write_idx >= D_NEGO_RUNHIS_FACENUM_MAX)
+	{
+		f_nego_runhis_tbl.write_idx = 0;
+	}
+
+	/* 次情報書込みエリア0クリア                                */
+	/* (ログが一周したときに、どの面が最新かわかりやすいように) */
+	memset((UCHAR*)&f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx], 0,
+				sizeof(f_nego_runhis_tbl.inf[f_nego_runhis_tbl.write_idx]));
+
+	return;
+}
+
+
+VOID f_nego_logPrint(FILE *outf)
+{
+	UINT index;
+	UINT printIdx;
+	CHAR *strSndRcv[] = {"RCV","SND"};
+	CHAR *bitratename[] = { "2.4G","4.9G","9.8G"};
+	
+	fprintf(outf,"PF nego running history----------------------------------------\n");
+
+	printIdx = 0;
+
+	for(index = 0; index < D_NEGO_RUNHIS_FACENUM_MAX; index++)
+	{
+		if(f_nego_runhis_tbl.inf[index].head.setFlg == 0)
+		{
+			continue;
+		}
+
+		fprintf(outf,"No.%03d [%2d-%2d %02d:%02d:%02d.%03d] %s;%08x;%04x;%04x\n",printIdx,
+			f_nego_runhis_tbl.inf[index].head.month,
+			f_nego_runhis_tbl.inf[index].head.day,
+			f_nego_runhis_tbl.inf[index].head.hour,
+			f_nego_runhis_tbl.inf[index].head.min,
+			f_nego_runhis_tbl.inf[index].head.sec,
+			f_nego_runhis_tbl.inf[index].head.msec,
+			strSndRcv[f_nego_runhis_tbl.inf[index].head.sndrcvFlg],
+			f_nego_runhis_tbl.inf[index].head.msgId,
+			f_nego_runhis_tbl.inf[index].head.taskId,
+			f_nego_runhis_tbl.inf[index].head.sig_kind);
+		
+		fprintf(outf," %04d %04d\n",
+				f_nego_runhis_tbl.inf[index].body[0],
+				f_nego_runhis_tbl.inf[index].body[1]);
+
+		printIdx++;
+	}
+
+	fprintf(outf,"pf_nego thread status:%d\n", f_nego_thrdState);
+	fprintf(outf,"hard set flag:%d\n", f_nego_hard_set_flag);
+	fprintf(outf,"auto nego bit rate:%s(%d)\n", bitratename[f_nego_bitrate], f_nego_bitrate);
+	fprintf(outf,"auto nego 4S count:%d\n", f_nego_4s_count);
+	fprintf(outf,"auto nego hfn count:%d\n", f_nego_hfn_count);
+	fprintf(outf,"auto nego 2.4g result flag(dbg):%d\n", f_nego_dbg_result_24g);
+	fprintf(outf,"auto nego 4.9g result flag(dbg):%d\n", f_nego_dbg_result_49g);
+	fprintf(outf,"auto nego 9.8g result flag(dbg):%d\n", f_nego_dbg_result_98g);
+
+ 	return;
+}
+
+
+/**
+* @brief		Auto Nego Result Set for Debug
+* @note 		Auto Nego Result Set for Debug
+* @param 		buff_adr [in] the buffer address pointer of received message
+* @@retval 		None
+* @date 		2015/04/27 FFCS)fuxg
+ *  @date   2015/8/4 TDIPS)ikeda rev.27800 2.4Gビットレート対応
+ *  @date   2015/8/4 TDIPS)ikeda rev.27819 オートネゴ修正
+* @warning		N/A
+* @FeatureID	PF_Cpri-001-001-001
+* @Bug_No		N/A
+* @CR_No		N/A
+* @TBD_No		N/A
+*/
+VOID f_nego_dbg_bitrate_result(UINT * buff_adr)
+{
+	T_API_NEGO_BITRATERESULT_DBG	apiNtc;
+	CHAR *	bitratename[] = { "2.4G","4.9G","9.8G"};
+
+	memcpy(&apiNtc, buff_adr, sizeof(apiNtc));
+
+	BPF_COM_PLOG_TRACE_CPRI( E_TRC_LV_INFO, 
+								"Auto Nego Result DBG!Bit Rate = %s(%d), result = %d", 
+								bitratename[apiNtc.line_bit_rate],
+								apiNtc.line_bit_rate,
+								apiNtc.result);
+
+	/* Bit rate */	
+	if(apiNtc.line_bit_rate == D_COM_LINE_BITRATE_24G)
+	{
+		if(apiNtc.result == D_SYS_OK)
+		{
+			f_nego_dbg_result_24g = D_SYS_OK;
+		}
+		else
+		{
+			f_nego_dbg_result_24g = D_SYS_NG;
+		}
+	}
+	else if(apiNtc.line_bit_rate == D_COM_LINE_BITRATE_49G)
+	{
+		if(apiNtc.result == D_SYS_OK)
+		{
+			f_nego_dbg_result_49g = D_SYS_OK;
+		}
+		else
+		{
+			f_nego_dbg_result_49g = D_SYS_NG;
+		}
+	}
+	else
+	{
+		if(apiNtc.result == D_SYS_OK)
+		{
+			f_nego_dbg_result_98g = D_SYS_OK;
+		}
+		else
+		{
+			f_nego_dbg_result_98g = D_SYS_NG;
+		}
+	}
+
+	return;
+}
+
+
+/* @} */

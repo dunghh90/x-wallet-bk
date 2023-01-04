@@ -1,0 +1,14 @@
+module test-insert {
+
+    namespace "http://netconfcentral.org/ns/test-insert";
+    prefix "tins";
+    revision 2016-08-11;
+
+    list A {
+      key a;
+      ordered-by user;
+      leaf a { type int32; }
+      leaf b { type int32; }
+    }
+
+}

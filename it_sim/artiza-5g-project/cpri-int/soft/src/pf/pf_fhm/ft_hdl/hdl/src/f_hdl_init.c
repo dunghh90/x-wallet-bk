@@ -1,0 +1,109 @@
+/*!
+ * @skip  $ld:$
+ * @file  f_hdl_init.c
+ * @brief pf_hdl 初期状態 処理
+ * @date  2013/03/19 ALPHA)松延 Create
+ * @date  2013/11/10 ALPHA)鮫島 modify for docomo zynq 
+ *
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2015
+ */
+
+/*!
+ * @addtogroup RRH_PF_HDL
+ * @{
+ */
+
+#include "f_hdl_inc.h"
+
+/*!
+ * @brief 関数機能概要:pf_hdlスレッド初期状態処理。
+ * @note  関数処理内容.
+ *		-# PF内テーブル初期化
+ *		-# スレッド間キュー生成処理
+ *		-# 各スレッド生成・起動(割り込み通知先管理テーブル情報よりIRQ毎に生成起動)
+ *		-# 初期化完了通知送信
+ *
+ * @return UINT
+ * @retval D_RRH_OK		0:正常終了
+ * @retval D_RRH_NG		1:異常終了
+ * @warning		N/A
+ * @FeatureID	PF-Hdl-001-001-001
+ * @Bug_No		N/A
+ * @CR_No		N/A
+ * @TBD_No		N/A
+ * @date 2013/03/19 ALPHA)松延 Create
+ * @date 2013/11/10 ALPHA)鮫島 modify for docomo zynq
+ * @date 2015/04/15 ALPHA)鎌田 modify for TDD
+ */
+UINT f_hdl_init()
+{
+	T_SYS_INIT_COMP_NTC*	sndMsg;												/* 送信メッセージ(初期化完了通知)	*/
+	UINT					thdIniCnt	= 0;
+	INT						endcd		= 0;
+	INT						errcd;
+	UINT					threadId	= 0;									/*	スレッドID格納変数				*/
+	INT						iErrorCode	= 0;									/*	詳細エラーコード				*/
+	
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ENTER, "[f_hdl_init] ENTER" );
+	
+	/****************************************************************************************************************/
+	/* 各スレッド生成・起動																							*/
+	/****************************************************************************************************************/
+	for(thdIniCnt = 0; thdIniCnt < D_RRH_HDLTHDNO_MAX; thdIniCnt++)
+	{
+		if( strlen(f_hdlw_thdCreMng[thdIniCnt].thdName) != 0 ) {	/* スレッド名が空文字の場合はスレッド生成しない */
+
+			/*	スレッドを生成		*/
+			endcd = BPF_RU_ITCM_THREAD_CREATE(
+							(unsigned long int *)&threadId,						/* ISスレッド名称					*/
+							BPF_RU_ITCM_SCHED_FIFO,								/* IAスレッド優先度					*/
+							(INT)f_hdlw_thdCreMng[thdIniCnt].thdPriority,		/* オプション						*/
+							(INT)f_hdlw_thdCreMng[thdIniCnt].thdStackSize,		/* IAスレッドスタックサイズ			*/
+							(INT*)(FUNCPTR)f_hdlw_thdCreMng[thdIniCnt].thdFunc,	/* IAスレッドメイン関数ポインタ		*/
+							D_RRH_NULL,											/* NIスレッド番号(For Log)			*/
+							&iErrorCode );										/* NIスレッド状態(For Log)			*/
+	
+			/*	ERRORの場合	*/
+			if(endcd != BPF_RU_ITCM_OK )
+			{
+				BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, "CREATE NG %d threadid=%d thdPriority=%d thdStackSize=%d",
+					endcd,(UINT)threadId,(INT)f_hdlw_thdCreMng[thdIniCnt].thdPriority,(INT)f_hdlw_thdCreMng[thdIniCnt].thdStackSize);
+			}
+		}
+	}
+	
+	/* バッファ取得 */
+	endcd = BPF_RU_IPCM_PROCMSG_ADDRGET(E_BPF_RU_IPCM_BUFF_KIND_TASK,			/* Buffer種別						*/
+										sizeof(T_SYS_INIT_COMP_NTC),			/* MessageSize						*/
+										(VOID **)&sndMsg,						/* MessageBuffer					*/
+										&errcd );								/* ErrorCode						*/
+	if( endcd != BPF_RU_IPCM_OK )
+	{
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, " ADDRGET NG %d ", endcd );
+		return D_RRH_NG;
+	}
+
+	/****************************************************************************************************************/
+	/* 初期化完了通知送信																							*/
+	/****************************************************************************************************************/
+	/* 送信MSG作成 */
+	sndMsg->head.uiEventNo		= D_SYS_MSGID_INIT_COMP_NTC;					/* メッセージID						*/
+	sndMsg->head.uiDstPQueueID	= D_RRH_PROCQUE_F_PF;								/* 返信先PQID						*/
+	sndMsg->head.uiDstTQueueID	= D_SYS_THDQID_PF_F_MAIN;							/* 送信先TQID						*/
+	sndMsg->head.uiSrcPQueueID	= D_RRH_PROCQUE_F_PF;								/* 送信元PQID						*/
+	sndMsg->head.uiSrcTQueueID	= D_SYS_THDQID_PF_HDLM;							/* 送信元TQID						*/
+
+	
+	endcd = BPF_RU_IPCM_MSGQ_SEND(	D_SYS_THDQID_PF_F_MAIN,						/* 送信MSGキューID					*/
+							(VOID *)sndMsg );									/* 送信MSGポインタ					*/
+	if( endcd != BPF_RU_IPCM_OK )
+	{
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ERROR, " MSGQ_SEND NG %d ", endcd );
+		return D_RRH_NG;
+	}
+	
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_RETURN, "[f_hdl_init] RETURN" );
+	return D_RRH_OK;
+}
+
+/* @} */

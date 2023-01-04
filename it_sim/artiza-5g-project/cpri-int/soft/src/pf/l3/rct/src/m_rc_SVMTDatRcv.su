@@ -1,0 +1,4 @@
+m_rc_SVMTDatRcv.c:35:6:m_rc_SndSVMTDatRcvReq	112	dynamic,bounded
+m_rc_SVMTDatRcv.c:179:6:m_rc_RcvSVMTDatRcvRes	80	dynamic,bounded
+m_rc_SVMTDatRcv.c:254:6:m_rc_SVMTDatRcvTO	48	static
+m_rc_SVMTDatRcv.c:316:6:m_rc_SVMTDatRcvResSnd	96	static

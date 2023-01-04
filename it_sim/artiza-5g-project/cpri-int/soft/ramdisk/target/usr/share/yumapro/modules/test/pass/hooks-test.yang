@@ -1,0 +1,843 @@
+module hooks-test {
+    namespace "http://netconfcentral.org/ns/hooks-test";
+    prefix "hk";
+    import yumaworks-extensions { prefix ywx; }
+    import ietf-inet-types { prefix inet; }
+
+    revision 2019-10-21 {
+      description
+        "YPW-1570: IDREF issue with prefix validation in when stmt
+                   Add container to interface/interface to emulate
+                   Open Config style modules";
+    }
+
+    revision 2019-09-17 {
+      description
+        "YPW-1556: EDIT2 editop malfanction during REPLACE operation;
+                   Add container with nested lists to test Replace
+                   Operation for EDIT2 callbacks";
+    }
+
+    revision 2019-08-26 {
+      description
+        "YPW-1546: Rollback Phase problem with NP-Containers.
+         Add container with nested lists to test Rollback Phase";
+    }
+
+    revision 2019-02-06 {
+      description
+        "- YPW-1391: deviation replace does not replace data type.
+            Add new deviation to replace node type from inet-address to
+            string. To test deviation 'replace'
+         - YPW-1305: Ordered insertion in agt_val_add_edit()
+            Added more user-ordered list and leaf-list for reg tests";
+    }
+
+    revision 2018-12-05 {
+        description
+            "- YPW-1348: Add_Edit API problem in case of identical edit
+              value names from different modules
+              Add top containers to test Set-Hook";
+    }
+
+    revision 2018-07-16 {
+        description
+            "Add leaf 'trigger-sethook' to test Set Hook and
+             Delete-children-first mode
+              - YPW-1270
+              ";
+    }
+
+    revision 2018-06-12 {
+        description
+            "Add more test cases, add 2 Presense containers with leafs.
+             -YPW-1254: Rollback fails for leaf-list in case of edit 2 mode
+              ";
+    }
+
+    revision 2018-01-19 {
+        description
+            "Add more test cases for bugs.
+             -YPW-1171: EDIT2 merge does not provide children records.
+              ";
+    }
+
+    revision 2017-08-20 {
+        description
+            "Add more test cases for bugs. Add xftp-config/server
+             container and list, and edit2 callbacks for them
+             -YPW-1077
+             Add more test cases, add 'test-leaf-ref-iref',
+             'test-leaf-ref-union' lists and 'some-container'
+             container and EDIT2 callbacks for them
+             -YPW-1079
+              ";
+    }
+
+    revision 2017-04-04 {
+        description
+            "Add list and container to /interfaces/interface
+             Add new import 'ietf-inet-types'
+             Add new groupings to test the bug
+             Add a leaf to check that callback was invoked
+             - YPW-1026
+             - YPW-1027 ";
+    }
+
+    revision 2016-10-03 {
+        description
+            "Add additional defaults, and non-def nodes into
+            /interfaces NP-container.
+             - YPW-913 ";
+    }
+
+    revision 2016-08-10 {
+        description
+            "Add test scenario for server assert deleting
+            container with defaults in Rollback phase.
+             - YPW-853 ";
+    }
+
+
+    revision 2016-08-08 {
+        description
+            "both newval and curval shows the same value
+             in the SIL edit function.
+             - YPW-865 ";
+    }
+
+    revision 2016-07-25 {
+        description
+            "edit2 callback with defaults nodes problems
+             - YPW-855 ";
+    }
+
+    revision 2016-07-11 {
+        description
+            "Add typdef to test leafref nodes in augment
+             - YPW-834
+             - YPW-835 ";
+    }
+
+    revision 2016-07-08 {
+        description
+            "Add multiple test scenario for Hooks
+             and Edit1 and Edit2.
+             - YPW-786
+             - YWP-840
+             - YPW-801 ";
+    }
+
+    revision 2016-01-20 {
+        description "Initial revision.";
+    }
+
+  /*
+   * Typedefs
+   */
+
+    typedef listname-ref {
+      type leafref {
+        path "/hk:interfaces/hk:interface/hk:name";
+      }
+      description
+        "Reference to interface name.";
+    }
+
+
+  /*
+   * Identities
+   */
+
+  /* YPW-1570: IDREF issue with prefix validation in when stmt. */
+  identity tbase;
+
+  identity tbase-1 {
+    base tbase;
+  }
+
+  identity tbase-2 {
+    base tbase-1;
+  }
+
+  identity tbase-3 {
+    base tbase-2;
+  }
+
+  /*
+   * Configuration data nodes
+   */
+
+  /* YPW-1570: IDREF issue with prefix validation in when stmt. */
+  grouping interface-common-config {
+    leaf description {
+      type string;
+    }
+
+    leaf enabled {
+      type boolean;
+      default "true";
+    }
+  }
+
+  grouping interface-phys-config {
+    leaf name {
+      type string;
+    }
+
+    leaf type {
+      type identityref {
+        base hk:tbase;
+      }
+      mandatory true;
+    }
+
+    leaf mtu {
+      type uint16;
+    }
+
+    uses interface-common-config;
+  }
+
+
+    container A {
+      ywx:sil-priority 10;
+      list list1 {
+         ywx:sil-priority 11;
+         key "a";
+         leaf a { type int32; }
+         leaf b { type uint32; }
+         leaf c {
+             ywx:sil-priority 50;
+             type string;
+         }
+         leaf d { type string; }
+      }
+      list list2 {
+         ywx:sil-priority 5;
+         key "a";
+         leaf a { type int32; }
+         leaf b { type uint32; }
+      }
+
+      container e {
+        leaf-list ee {
+          ordered-by user;
+          // min-elements 2;
+          max-elements 5;
+          type string {
+            pattern [a-e][1-9]+;
+          }
+        }
+
+        container eee {
+          list list6 {
+            ywx:sil-priority 2;
+            key "a";
+            leaf a { type int32; }
+            leaf b { type uint32; }
+          }
+
+          leaf defl {
+            type string;
+            default "defval";
+          }
+        }
+
+        leaf eeee {
+          type string;
+          default "test";
+        }
+      }
+    }
+
+    container B {
+      ywx:sil-priority 8;
+      leaf C {
+        ywx:sil-priority 42;
+        type int8;
+      }
+      list list3 {
+         ywx:sil-priority 12;
+         key "a";
+         leaf a { type int32; }
+         leaf b { type uint32; }
+         leaf c {
+             ywx:sil-priority 4;
+             type string;
+         }
+         leaf d {
+             ywx:sil-priority 3;
+             type string;
+         }
+         list list4 {
+           ywx:sil-priority 9;
+           key "a";
+           leaf a { type int32; }
+           leaf b { type uint32; }
+         }
+         list list5 {
+           ywx:sil-priority 2;
+           key "a";
+           leaf a { type int32; }
+           leaf b { type uint32; }
+         }
+      }
+      leaf-list D {
+        ywx:sil-priority 4;
+        type int8;
+      }
+
+      leaf defleaf {
+        type uint32;
+        default "11";
+      }
+    }
+
+  // YPW-786 test scenario with DELETE Set-hook
+  // with mandatory and when stmt defined externally
+  // (via augment)
+  container interfaces {
+    ywx:sil-priority 25;
+
+    list interface {              // Set & Transaction Hooks & Edit2
+                                  // Subtree format
+      key "name";
+
+      leaf name {
+        type string;
+      }
+      leaf type {
+        type string;
+        mandatory true;
+      }
+
+      leaf defleaf1 {
+        type uint32;
+        default "11";
+      }
+
+      leaf-list D {
+        type string;
+      }
+
+      /* YPW-1027: verify that callback was invoked  */
+      leaf invocation-check {
+        type string;
+      }
+
+      /* verify deletion with Set-Hook */
+      leaf trigger-sethook {
+        when "../hk:type = 'sethook-test'";
+        type empty;
+      }
+
+      list rule {                // edit2
+        key "seq-no";
+        leaf seq-no {
+          type uint32 {
+            range "1..4294967295";
+          }
+        }
+
+        container condition {    // edit2
+          uses match-node;
+        }
+      }
+
+      /* YPW-1570: Issue with prefix validation in identity-ref
+       * Emulate Open config setup
+       */
+      container config {
+        presence "Not created by default";
+        uses interface-phys-config;
+      }
+    }
+
+    leaf defleaf {
+      type uint32;
+      default "11";
+    }
+
+    leaf non-def {
+      type uint32;
+    }
+
+    leaf defleaf2 {
+      type uint32;
+      default "11";
+    }
+  }
+
+  // YPW-801 edit2 callback with set-hook callback problem
+  container ports {               // edit2 cb
+    ywx:sil-priority 110;
+
+    list port {                   // edit2 cb
+      key "name";
+
+      leaf name {
+        type string;
+      }
+      leaf breakout-mode {        // Set-Hook cb
+        type string;
+        default "oneone";
+      }
+    }
+
+    container ports-state {       // edit1 cb
+      config false;
+
+      list port {
+        key "name";
+
+        leaf name {
+          type string;
+        }
+
+        leaf speed {
+          type int16;
+        }
+      }
+    }
+  }
+
+  // YPW-855: edit2 callback with defaults nodes problems
+  container a-NPcontainer {        // edit2 cb
+
+    leaf b { type string; default "bee (default)"; }
+    leaf c { type string; default "cee (default)"; }
+    leaf x { type string; }
+  }
+
+  container d-Pcontainer {        // edit2 cb
+
+    presence "Not created by default";
+    leaf e { type string; default "ee (default)";  }
+    leaf f { type string; default "eff (default)"; }
+    leaf x { type string; }
+  }
+
+  list g-list {                   // edit2 cb
+
+    key h;
+    leaf h { type string; }
+    leaf i { type string; default "aye (default)"; }
+    leaf x { type string; }
+  }
+
+
+    // YPW-865: both newval and curval shows the same value
+    // in the SIL edit function
+
+    container edit1-test {      // EDIT1 cb
+
+      list edit1-list {          // EDIT1 cb
+         key "name";
+
+         leaf name {
+           type string;
+         }
+         leaf type {
+           type string;
+           mandatory true;
+         }
+         leaf description {
+            type string;
+         }
+
+         leaf def { type string; default "def (default)"; }
+      }
+    }
+
+    // YPW-853: server assert deleting container with defaults
+    // in Rollback phase
+
+    list delete-test {      // edit2
+        key name;
+
+        leaf name {
+           type string;
+        }
+
+        container container-test {
+            leaf def { type string; default "def (default)"; }
+        }
+    }
+
+  // FD#1130: configs mismatch
+  grouping match-node {
+    container match-ip {      // edit2
+      uses nodes;
+    }
+  }
+
+  grouping nodes {
+    uses more-nodes;
+
+    leaf dscp {
+      type inet:dscp;
+    }
+    leaf ip-protocol {
+      type uint8 {
+        range "0..255";
+      }
+    }
+  }
+
+  grouping more-nodes {
+    leaf destination-prefix {
+      type inet:ip-prefix;
+    }
+    leaf source-prefix {
+      type inet:ip-prefix;
+    }
+  }
+
+  // YPW-1077: netconf crashes when the leaf is using a when statement
+  typedef protocol {
+    type enumeration {
+      enum tftp;
+      enum ftp;
+      enum sftp;
+      enum xftp;
+      enum http;
+    }
+  }
+
+  grouping server-config {
+    leaf protocol {
+      type protocol;
+    }
+
+    leaf address {
+      type string {
+        length 0..253;
+      }
+    }
+
+    leaf login-id {
+      when "../protocol != 'tftp'";
+      type string {
+        length 0..32;
+      }
+    }
+  }
+
+  container xftp-config {     // edit2 cb
+    list server {             // edit2 cb
+      key protocol;
+
+      uses server-config;
+    }
+  }
+
+
+  // YPW-1079: Leafref as key not working
+  grouping all-type-leaves {
+    leaf uint16-leaf {
+      type uint16;
+    }
+    leaf uint32-leaf {
+      type uint32;
+    }
+  }
+
+  grouping all-type-union-leaf {
+    leaf union-leaf-int8 {
+      type union {
+        type int8;
+        type string;
+      }
+    }
+    leaf union-leaf-int16 {
+      type union {
+        type int16;
+        type string;
+      }
+    }
+  }
+
+  container some-container {    // edit2 cb
+    ywx:sil-priority 100;
+
+    uses all-type-union-leaf;
+    uses all-type-leaves;
+  }
+
+  list test-leaf-ref-union {    // edit2 cb
+    uses all-type-union-leaf;
+
+    ywx:sil-priority 50;
+
+    key 'leaf-ref-key';
+    leaf leaf-ref-key {
+      type leafref {
+        path "/some-container/union-leaf-int8";
+      }
+    }
+  }
+
+  list test-leaf-ref-iref {     // edit2 cb
+    uses all-type-leaves;
+
+    ywx:sil-priority 200;
+
+    key 'i-ref-key';
+    leaf i-ref-key {
+      type leafref {
+        path "/some-container/uint16-leaf";
+      }
+    }
+  }
+
+  // YPW-1171: EDIT2 merge does not provide children records.
+  grouping my-c6 {
+    container c6 {               // edit2 cb
+      leaf port {
+        type int16;
+        default 49;
+      }
+    }
+  }
+
+  grouping my-c4 {
+    container c4s {            // edit2 cb
+      list c4 {                // edit2 cb
+        key "x";
+
+        leaf x { type int8;}
+
+        container c5 {         // edit2 cb
+          uses my-c6;
+        }
+      }
+    }
+  }
+
+  container myc1 {             // edit2 cb
+    leaf c1-leaf { type string; }
+
+    uses my-c4;
+  }
+
+  // YPW-1254: Rollback fails for leaf-list in case of edit 2 mode
+  container bnode {           // edit2 cb
+    presence "Hiding the cont for better testing";
+    leaf b1leaf { type string; }
+    leaf b2leaf { type string; }
+  }
+
+  container anode {           // edit2 cb
+    presence "Hiding the cont for better testing";
+    leaf a1leaf { type string; }
+    leaf a2leaf { type string; }
+    leaf defleaf { type string; default "def (default)"; }
+    leaf-list a3leaflist { type string; }
+  }
+
+
+  /* YPW-1248: Add_Edit API problem in case of identical edit
+   * value names from different modules
+   */
+  container ptps {             // edit2 cb
+    presence "Not created by default";
+    list ptp {                 // edit2 cb
+      key "ptp-id";
+      leaf ptp-id {
+        type string;
+        mandatory true;
+      }
+      container state {        // edit2 cb && Set-Hook
+        leaf admin-state {
+          type boolean;
+        }
+        leaf operational-state {
+          type boolean;
+          config false;
+        }
+      }
+    }
+  }
+  container otn-ports {         // edit2 cb
+    presence "Not created by default";
+    list ports {                // edit2 cb
+      key "port-id";
+      leaf port-id {
+        type string;
+      }
+      container state {          // edit2 cb
+        leaf admin-state {
+          type enumeration {
+            enum "enabled" {
+              value 1;
+            }
+            enum "disabled" {
+              value 2;
+            }
+          }
+        }
+        leaf operational-state {
+          type string;
+          config false;
+        }
+      }
+    }
+  }
+
+  // YPW-1391: deviation replace does not replace data type
+  container destinations {
+    presence "Hide it from REG TEST";
+
+    list destination {
+      key "destination-address-leafref destination-port-leafref";
+
+      leaf destination-address-leafref {
+        type leafref {
+          path "../config/destination-address";
+        }
+      }
+
+      leaf destination-port-leafref {
+        type leafref {
+          path "../config/destination-port";
+        }
+      }
+
+      container config {
+        uses telemetry-stream;
+      }
+    }
+  }
+
+  grouping telemetry-stream {
+    leaf destination-address {
+      type inet:ip-address;
+    }
+    leaf destination-port {
+      type uint16;
+    }
+  }
+
+  /* YPW-1305: Ordered insertion in agt_val_add_edit() */
+  leaf insert-list-check {
+    type string;
+  }
+
+  leaf insert-leaf-list-check {
+    type string;
+  }
+
+  leaf move-list-check {
+    type string;
+  }
+
+  leaf move-leaf-list-check {
+    type string;
+  }
+
+  list hook-list-test {
+    key name;
+    ordered-by user;
+
+    leaf name {
+      type string;
+    }
+    leaf a2 {
+      type string;
+    }
+    leaf b2 {
+      type uint32;
+      default 5;
+    }
+  }
+
+  leaf-list hook-leaf-list-test {
+    ordered-by user;
+    type string;
+  }
+
+  list hook-list-test2 {
+    key name;
+    ordered-by user;
+
+    leaf name {
+      type string;
+    }
+    leaf a2 {
+      type string;
+    }
+    leaf b2 {
+      type uint32;
+      default 5;
+    }
+  }
+
+  leaf-list hook-leaf-list-test2 {
+    ordered-by user;
+    type string;
+  }
+
+  list hook-list-test3 {
+    key name;
+    ordered-by user;
+
+    leaf name {
+      type string;
+    }
+    leaf a2 {
+      type string;
+    }
+    leaf b2 {
+      type uint32;
+      default 5;
+    }
+  }
+
+  /* YPW-1546: Rollback Phase problem with NP-Containers */
+  container rollback-cont {                 // edit2 cb
+    presence "Hide it from REG TEST";
+
+    list rollback-list1 {                   // edit2 cb
+      key "name";
+
+      leaf name {
+        type string;
+      }
+
+      list rollback-list2 {                 // edit2 cb
+        key "b1leaf";
+
+        /* Forcing Rollback based on value of this leaf
+         * If it is |rollback2| then force the Rollback
+         */
+        leaf b1leaf {
+          type string;
+        }
+      }
+    }
+  }
+
+
+  /* YPW-1556: EDIT2 editop malfanction during REPLACE operation */
+  container authorization {                 // edit2 cb
+    presence "Hide it from REG TEST";
+
+    list cmd-authorization {                // edit2 cb
+      key "name";
+      leaf name {
+        type string;
+      }
+      leaf cmd-type {
+        type string;
+      }
+
+      container server-group {              // edit2 cb
+        leaf-list methods {
+          type string;
+          ordered-by user;
+        }
+      }
+    }
+  }
+}

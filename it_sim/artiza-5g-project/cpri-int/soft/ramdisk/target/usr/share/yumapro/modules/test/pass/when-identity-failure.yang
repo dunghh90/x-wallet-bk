@@ -1,0 +1,33 @@
+module when-identity-failure {
+
+    namespace "http://netconfcentral.org/ns/when-identity-failure";
+    prefix "whenif";
+
+    import ietf-interfaces { prefix if; }
+    import iana-if-type { prefix ianaift; }
+
+    revision "2016-07-05";
+
+
+    list prefix-test {
+      key name;
+
+      leaf name {
+        type string;
+      }
+
+      leaf type {
+        type identityref {
+          base if:interface-type;
+        }
+        mandatory true;
+      }
+
+
+      leaf duplex {
+        when "../type = 'ianaift:ethernetCsmacd'";
+        type string;
+      }
+    }
+
+}

@@ -1,0 +1,3 @@
+l2_com_endian_util.c:25:8:l2_com_swap_USHORT	48	static
+l2_com_endian_util.c:39:6:l2_com_swap_UINT	48	static
+l2_com_endian_util.c:72:6:l2_com_swap_convert	272	dynamic,bounded

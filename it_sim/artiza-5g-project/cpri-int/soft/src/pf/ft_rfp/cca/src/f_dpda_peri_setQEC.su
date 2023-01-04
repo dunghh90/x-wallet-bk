@@ -1,0 +1,4 @@
+f_dpda_peri_setQEC.c:58:5:f_dpda_com_AntState	64	static
+f_dpda_peri_setQEC.c:91:5:f_dpda_com_AllAntCarState	48	static
+f_dpda_peri_setQEC.c:142:6:f_dpda_peri_setQEC	64	static
+f_dpda_peri_setQEC.c:364:6:f_dpda_com_clearQEC	32	static

@@ -1,0 +1,9 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+flg=Rrh.eepread(0x3ce)
+if flg.downcase != "ff" then
+	Rrh.eepwrite(0x3ce,0xFF)
+end
+puts DuCode::ERR_DESCRIPTION[0]

@@ -1,0 +1,61 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+if ARGV.length < 3 then
+	puts "usage:"+$0+" <p1> <p2> <p3>",
+		"(m):<p1> is Low  VID (0x0~0xFFF).",
+		"(m):<p2> is High VID (0x0~0xFFF).",
+		"(m):<p3> is PCP (0x0~0x7)."
+	Rrh.exit(1)
+end
+
+lowvid  = ARGV[0]
+highvid = ARGV[1]
+pcp     = ARGV[2]
+
+if lowvid[0..1] != "0x" || highvid[0..1] != "0x" || pcp[0..1] != "0x" then
+	puts DuCode::ERR_DESCRIPTION[1]
+	Rrh.exit(1)
+end
+
+lowvid_i  = Rrh.hex_check(lowvid)
+highvid_i = Rrh.hex_check(highvid)
+pcp_i     = Rrh.hex_check(pcp)
+
+if lowvid_i == false || highvid_i == false  || pcp_i == false then
+	puts DuCode::ERR_DESCRIPTION[1]
+	Rrh.exit(1)
+else
+	if lowvid_i > 0xFFF || lowvid_i < 0 then
+		puts DuCode::ERR_DESCRIPTION[2]
+		Rrh.exit(1)
+	end
+
+
+	if highvid_i > 0xFFF || highvid_i < 0 then
+		puts DuCode::ERR_DESCRIPTION[2]
+		Rrh.exit(1)
+	end
+
+	if pcp_i > 0x7 || pcp_i < 0 then
+		puts DuCode::ERR_DESCRIPTION[2]
+		Rrh.exit(1)
+	end
+
+	if lowvid_i > highvid_i then
+		puts DuCode::ERR_DESCRIPTION[2]
+		Rrh.exit(1)
+	end
+
+end
+
+Rrh.eepwrite(0x0320,lowvid_i/256)
+Rrh.eepwrite(0x0321,lowvid_i%256)
+Rrh.eepwrite(0x0322,highvid_i/256)
+Rrh.eepwrite(0x0323,highvid_i%256)
+Rrh.eepwrite(0x0327,pcp_i)
+Rrh.eepwrite(0x0328,1)
+
+puts DuCode::ERR_DESCRIPTION[0]
+

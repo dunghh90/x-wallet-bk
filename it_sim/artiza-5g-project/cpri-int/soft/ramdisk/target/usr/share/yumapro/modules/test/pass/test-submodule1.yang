@@ -1,0 +1,23 @@
+submodule test-submodule1 {
+
+  belongs-to test-submodule {
+    prefix "test-sub";
+  }
+
+  revision "2017-08-14";
+
+  grouping bgp-global-config {
+
+    leaf as {
+      type uint32;
+      mandatory true;
+    }
+  }
+
+  grouping bgp-global-base {
+    container config {
+      uses bgp-global-config;
+    }
+  }
+
+}

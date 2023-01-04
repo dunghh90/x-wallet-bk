@@ -1,0 +1,110 @@
+module test-choice1 {
+
+  namespace "http://netconfcentral.org/ns/test-choice1";
+
+  prefix tchoice1;
+
+  revision "2017-09-22";
+
+  container top-cont {
+    choice protocol {
+      leaf A { type int32; }
+      leaf B { type string; }
+    }
+  }
+
+  rpc test-A {
+    input {
+      container node {
+        choice protocol {
+          leaf A { type int32; }
+          leaf B { type string; }
+        }
+      }
+    }
+  }
+
+
+  rpc test-AA {
+    input {
+      container node {
+        choice protocol {
+          leaf A { type int32; }
+          leaf B { type string; }
+        }
+      }
+      container node2 {
+        choice protocol {
+          leaf A { type int32; }
+          leaf B { type string; }
+        }
+      }
+    }
+  }
+
+  rpc test-AAA {
+    input {
+      list X {
+        min-elements 1;
+        key A;
+        leaf A { type string; }
+        leaf B { type string; }
+      }
+      leaf Y { type string; }
+      leaf Z { type string; }
+    }
+  }
+
+
+  rpc test-B {
+    input {
+      leaf A { type string; }
+      leaf B { type empty; }
+      leaf C { type string; }
+      container node {
+        choice protocol {
+          leaf A { type int32; }
+          leaf B { type string; }
+        }
+      }
+      choice D {
+        leaf E { type int8; }
+        leaf F { type int16; }
+        case G {
+          leaf G1 { type int8; }
+          leaf G2 { type int16; }
+        }
+      }
+    }
+  }
+
+  rpc test-C {
+    input {
+      leaf A { type int32; }
+      leaf B { type string; }
+      leaf C { type int32; }
+      leaf D { type string; }
+    }
+  }
+
+  rpc test-D {
+    input {
+      choice CH {
+        mandatory true;
+        case CH1 {
+          leaf A { type int32; }
+          leaf B { type string; }
+        }
+        case CH2 {
+          leaf C { type int32; }
+          leaf D { type string; }
+        }
+      }
+      leaf A1 { type string; }
+      leaf A2 { type string; }
+
+    }
+  }
+
+
+}

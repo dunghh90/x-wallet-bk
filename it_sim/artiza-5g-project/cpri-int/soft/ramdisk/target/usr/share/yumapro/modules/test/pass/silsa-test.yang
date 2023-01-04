@@ -1,0 +1,147 @@
+
+module silsa-test {
+  yang-version 1.1;
+  namespace "http://www.yumaworks.com/ns/silsa_test";
+  prefix sset;
+
+  revision "2019-06-26" {
+        description
+         "YPW-1493: netconfd: must-stmt and leafref validation not retrieving
+         GET2 callback data correctly";
+    }
+
+  revision "2018-08-02";
+
+  container addresses {
+    list address {
+      key "last-name first-name";
+      leaf last-name {
+        type string;
+        description
+          "Last name of the person who is associated with this address";
+      }
+      leaf first-name {
+        type string;
+        description
+          "First name of the person who is associated with this address";
+      }
+      leaf street {
+        type string;
+        description "street address";
+      }
+      leaf city {
+        type string;
+        description "City address";
+      }
+      leaf state {
+        type string;
+        description "State name";
+      }
+      leaf zipcode {
+        type string { length "5 | 10"; }
+        description "zipcode";
+      }
+      list phone {
+        key phone-type;
+        leaf phone-type {
+          type enumeration {
+            enum cell;
+            enum home;
+            enum work;
+          }
+        }
+        leaf phone-number {
+          mandatory true;
+          type string;
+        }
+      }  // list phone
+    } // list address
+  } // container addresses
+
+  container orderdetails {
+    list orders {
+      key "order-number";
+      leaf order-number {
+        mandatory true;
+        type uint8;
+      }
+      leaf product-name{
+        mandatory true;
+        type string;
+      }
+      leaf delivery-status{
+        type enumeration {
+          enum Yes;
+          enum No;
+        }
+      }
+    } // list orders
+  } // container orderdetails
+
+  rpc payment{
+    description "Payment method chosen by the customer";
+    output {
+      leaf rpc_leaf{
+        type string;
+      }
+    }
+  } // rpc payment
+
+
+  notification orderdelivered {
+      description
+        "Indicates if the placed order has been delivered.";
+
+      leaf orderstatus {
+          description
+            "Indicates the final order status";
+          type enumeration {
+              enum delivered {
+                description
+                  "The order is delivered.";
+              }
+              enum cancelled {
+                description
+                  "The order was cancelled.";
+              }
+              enum returned {
+              description
+                "The order was returned.";
+            }
+          }
+      }
+  }
+
+  container rpccontainer {
+    presence "This is a test for must inside RPC";
+    config false;
+    leaf name { type string; }
+    list rpclist {
+      key list-name;
+      leaf list-name { type string; }
+      leaf a { type string; }
+      leaf b { type string; }
+    }
+  }
+  rpc rpc1 {
+    description "Testing MUST inside RPC";
+    input {
+      leaf rpcleaf {
+        type leafref {
+          path "/rpccontainer/rpclist/list-name";
+        }
+        must "/rpccontainer/rpclist[list-name = current()][a = 'false' and b = 'false']" {
+          error-message "This passes only if a::false and b::false";
+        }
+        mandatory true;
+      }
+    }
+    output {
+      leaf rpcout{
+        type string;
+      }
+    }
+  } // rpc rpc-1
+
+} // module address
+

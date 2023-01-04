@@ -1,0 +1,320 @@
+/*!
+ * @skip		$ld:$
+ * @file		f_main_init.c
+ * @brief		pf_main 初期状態処理
+ * @author		alpha)中嶋
+ * @date		2013/11/11 alpha)中嶋 Create
+ * @date  		2014/12/15 ALPHA) okabe Create RRH-013-000 共通ppc対応
+ * @date  		2015/04/16 ALPHA) tomioka Create RRH-013-000 TDD対応
+ * @date  		2015/05/11 ALPHA) tomioka modify for PGR対応
+ * @date  		2015/06/09 ALPHA) tomioka modify RRH-007-000 TDD-Zynq対応
+
+ *
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2015
+ */
+
+/*!
+ * @addtogroup RRH_PF_MAIN
+ * @{
+ */
+
+#include "f_main_inc.h"
+
+#define D_MAIN_BOOTUPTIME 10	/* 10sec PowerON ~ OS起動開始前までのだいたいの時間 */
+
+/*!
+ * @brief 関数機能概要:起動時刻取得関数
+ * @note  関数処理内容:EEPROMおよびRTCから起動時刻を取得する
+ * @param  N/A
+ * @return N/A
+ * @date 2015/04/22 FJT)Taniguchi RRH-001-000 BSP
+ */
+static VOID f_main_setSysTime( VOID )
+{
+	struct tm				curr;
+	struct tm				next;
+	time_t					base;
+	struct timespec			timecount;
+	T_RRH_SYSTEM_TIME		tDateTime_pre;
+	T_RRH_SYSTEM_TIME		tDateTime;
+	T_RRH_TRAINVTBL			*invTbl;
+	int						errcd;
+
+	(VOID)BPF_RU_IPCM_PROCSHM_ADDRGET(E_RRH_SHMID_APL_INVENTORY, (VOID **)&invTbl, &errcd);
+	if(invTbl == NULL){
+		cmn_com_assert_th_get(f_mainw_assert_p, D_RRH_LOG_AST_LV_CRITICAL, "Sharedmem get errcd=%x",errcd);
+		return;
+	}
+	(void)clock_gettime( CLOCK_MONOTONIC_COARSE , &timecount );
+	(VOID)BPF_HM_DEVC_GETTIME(&tDateTime_pre);
+	if(invTbl->timesave_flg == D_RRH_ON){
+		memcpy((UCHAR*)&tDateTime , invTbl->timesaveinfo, sizeof(invTbl->timesaveinfo));	/* マイクロ秒カウンタ以外をコピー */
+		tDateTime.ucount = 0;
+		tDateTime.year = ntohs(tDateTime.year);	/* 2byteなのでendian変換 */
+		if(
+			((tDateTime.year > 2099)||(tDateTime.year < 2000)) ||
+			((tDateTime.month > 12)||(tDateTime.month < 1))    ||
+			((tDateTime.day > 31)||(tDateTime.day < 1))        ||
+			(tDateTime.hour > 23)                               ||
+			(tDateTime.min > 59)                                ||
+			(tDateTime.sec > 59)                                ||
+			(tDateTime.msec > 99)
+		){
+			memcpy((UCHAR*)&tDateTime,(UCHAR*)&tDateTime_pre,sizeof(tDateTime));
+		}
+		else{
+			/* リセット時刻を秒カウンタに変換する */
+			memset(&curr,0,sizeof(curr));
+			curr.tm_sec =  tDateTime.sec;
+			curr.tm_min =  tDateTime.min;
+			curr.tm_hour = tDateTime.hour;
+			curr.tm_mday =tDateTime.day;
+			curr.tm_mon = tDateTime.month - 1;
+			curr.tm_year = tDateTime.year - 1900;
+			base = mktime(&curr);
+			if( -1 == base ){ base = 0; }
+			/* 前回のリセット時刻 + リセット~OS起動前(約10秒) +  OS起動~この処理までの時間 */
+			base += ( D_MAIN_BOOTUPTIME + timecount.tv_sec );
+			if( localtime_r(&base,&next) != NULL){
+				tDateTime.msec = 0;
+				tDateTime.sec = next.tm_sec;
+				tDateTime.min = next.tm_min;
+				tDateTime.hour = next.tm_hour;
+				tDateTime.day = next.tm_mday;
+				tDateTime.month = next.tm_mon + 1;
+				tDateTime.year = next.tm_year + 1900;
+			}
+		}
+	}
+	else{
+		memcpy((UCHAR*)&tDateTime,(UCHAR*)&tDateTime_pre,sizeof(tDateTime));
+	}
+	cmn_com_assert_th_get(f_mainw_assert_p, D_RRH_LOG_AST_LV_INFO, "pre %04d:%02d:%02d %02d:%02d:%02d.%02d0",
+		tDateTime_pre.year,
+		tDateTime_pre.month,
+		tDateTime_pre.day,
+		tDateTime_pre.hour,
+		tDateTime_pre.min,
+		tDateTime_pre.sec,
+		tDateTime_pre.msec
+	);
+	(VOID)BPF_HM_DEVC_SETTIME(tDateTime);
+	cmn_com_assert_th_get(f_mainw_assert_p, D_RRH_LOG_AST_LV_INFO, "next %04d:%02d:%02d %02d:%02d:%02d.%02d0",
+		tDateTime.year,
+		tDateTime.month,
+		tDateTime.day,
+		tDateTime.hour,
+		tDateTime.min,
+		tDateTime.sec,
+		tDateTime.msec
+	);
+	if( invTbl->timesave_flg == D_RRH_ON ){
+		invTbl->timesave_flg = D_RRH_OFF;
+		(void)BPF_HM_DEVC_EEPROM_WRITE(D_RRH_EEP_TIMESAVE_FLG, &(invTbl->timesave_flg));
+	}
+	return;
+}
+
+
+/*!
+ * @brief		f_main_init
+ * @note		pf_mainスレッド初期状態処理.
+ *					-# BPF初期化
+ *					-# 各種ログ展開
+ *					-# 装置種別取得
+ *					-# シグナルハンドラ登録
+ *					-# テーブル初期化処理
+ *					-# RTC時間設定
+ *					-# 装置構成情報取得
+ *					-# リセット要因設定
+ *					-# プロセス起動
+ * @param		*rcvMsg_p	[in]	受信メッセージ
+ * @retval		D_SYS_OK	0:正常終了
+ * @return		処理結果
+ * @warning		dip_sw(CPRI)確認しOFFの場合pf_wdtのみ起動する。初期化完了通知は返却しない
+ * @FeatureID	PF-MAIN-001-001-001
+ * @Bug_No		N/A
+ * @CR_No		N/A
+ * @TBD_No		N/A
+ * @date		2013/11/11 alpha)中嶋
+ * @date  		2014/12/15 ALPHA) okabe Create RRH-013-000 共通ppc対応
+ * @date  		2015/04/16 ALPHA) tomioka Create RRH-013-000 TDD対応
+ * @date  		2015/06/09 ALPHA) tomioka modify RRH-007-000 TDD-Zynq対応
+ * @date        2015/07/16 ALPHA) ueda modify for M-RRU-ZSYS-01646対応
+ * @date		2015/08/12 TDIPS) maruyama modify カード起動処理の呼び出し方法変更
+ */
+UINT f_main_init(VOID* rcvMsg_p)
+{
+	UINT						uiRet 		= D_SYS_OK;
+	INT							rtn_bpf			= 0;
+	UINT						regw_data = 0;
+    UINT                        resetReason = D_RRH_RST_RSN_UNKNWN;
+    CHAR                        errMsg[64];
+
+	BPF_COM_PLOG_TRACE_START(D_RRH_PROCID_F_PF);	/* proc trace start */
+	f_mainw_assert_p = f_cmn_com_assert_th_create(D_RRH_LOG_AST_DEFAULT,"main thread");
+
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ENTER, "[f_main_init] ENTER" );
+
+	/************************************************************/
+	/* BPF初期化												*/
+	/************************************************************/
+	uiRet = f_main_iniBpf();
+	if(D_SYS_OK != uiRet)
+	{
+		/* BPF初期化失敗のためコンソールにログ出力 */
+		BPF_COM_LOG_DMESG("f_main_iniBpf error rtn = 0x%08x \n", uiRet);
+		f_com_abort(D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_FNC);
+	}
+
+	/* BPFへスレッド情報登録	*/
+	BPF_RM_SVRM_THREAD_INFO_SET(	D_RRH_PROCID_F_PF,				/* ProcessID		*/
+									D_SYS_THDID_PF_F_MAIN,			/* ThreadID			*/
+									D_SYS_THDQID_PF_F_MAIN,			/* ThreadQueueID	*/
+								    (unsigned long int)pthread_self());	/* 2020/12/28 M&C) Merge 4G FHM src (add 4th param)	*/
+
+	/************************************************************/
+	/* 装置種別取得												*/
+	/************************************************************/
+	uiRet = f_main_rrhKindGet();
+	if(D_SYS_OK != uiRet)
+	{
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR, "f_main_rrhKindGet error uiRet=%08x", uiRet);
+		f_com_abort(D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_FNC);
+	}
+
+	/************************************************************/
+	/* 各種ログ展開												*/
+	/************************************************************/
+	uiRet = f_main_loadLog();
+	if(D_SYS_OK != uiRet)
+	{
+		/* 各種ログの展開失敗 */
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR, "f_main_loadLog error uiRet=%08x", uiRet);
+		f_com_abort(D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_FNC);
+	}
+
+	/************************************************************/
+	/* アプリ初期化開始ログ取得									*/
+	/************************************************************/
+	BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ENTER, "PF Main Start.");
+
+	/************************************************************/
+	/* シグナルハンドラ登録										*/
+	/************************************************************/
+	rtn_bpf = BPF_RM_SVRM_SIGNAL_HANDLE_ENTRY((VOID*)&f_main_sigHandler, &f_mainw_sigSetVal,D_RRH_ON);
+	if(rtn_bpf != BPF_RM_SVRM_COMPLETE)
+	{
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR, "Signal Handler error. rtn_bpf=%08x", rtn_bpf);
+		f_com_abort(D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_FNC);
+	}
+
+	/* ABORT時にCALLされるログ出力関数を登録しておく	*/
+	memset(&f_cmnw_almlogfunc,0,sizeof(T_CMN_ALMLOG_FUNCTION_LIST));
+	f_cmnw_almlogfunc.func_num = 1;
+	f_cmnw_almlogfunc.func_list[0].func_addr = (VOIDFUNCPTR)f_com_abortLogFHM;
+
+	/************************************************************/
+	/* テーブル初期化処理										*/
+	/************************************************************/
+	f_main_iniTbl();
+
+	/************************************************************/
+	/* インベントリ情報展開開始ログ取得							*/
+	/************************************************************/
+	BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ENTER, "INV Info Start.");
+
+	/************************************************************/
+	/* 装置構成情報取得処理										*/
+	/************************************************************/
+	uiRet = f_main_getInv();
+	if(D_SYS_OK != uiRet)
+	{
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR, "f_main_getInv error. uiRet=%08x", uiRet);
+		f_com_abort(D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_FNC);
+	}
+
+	/************************************************************/
+	/* インベントリ情報展開完了ログ取得							*/
+	/************************************************************/
+	BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ENTER, "INV Info Completion.");
+	
+	/************************************************************/
+	/* カード起動処理											*/
+	/************************************************************/
+	switch(f_comw_reKind)
+	{
+	case E_RRH_REKIND_FHM:
+		uiRet =f_main_iniCard_tdd();
+		break;
+	default:
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR, "f_main_iniCard error(RE Kind not FHM) \n");
+		uiRet = D_SYS_NG;
+		break;
+	}
+	if(D_SYS_OK != uiRet)
+	{
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR, "f_main_iniCard error. uiRet=%08x", uiRet);
+		f_com_abort(D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_FNC);
+	}
+
+	/************************************************************/
+	/* エッジ設定処理											*/
+	/************************************************************/
+	regw_data = D_RRH_SOC_ICDICFR3_INIT_VAL;
+	(VOID)BPF_HM_DEVC_REG_WRITE( D_RRH_LOG_REG_LV_WRITE, D_RRH_REG_SOC_ICDICFR3, &regw_data );
+	regw_data = D_RRH_SOC_ICDICFR4_INIT_VAL;
+	(VOID)BPF_HM_DEVC_REG_WRITE( D_RRH_LOG_REG_LV_WRITE, D_RRH_REG_SOC_ICDICFR4, &regw_data );
+	regw_data = D_RRH_SOC_ICDICFR5_INIT_VAL;
+	(VOID)BPF_HM_DEVC_REG_WRITE( D_RRH_LOG_REG_LV_WRITE, D_RRH_REG_SOC_ICDICFR5, &regw_data );
+	
+	/************************************************************/
+	/* RTC時間をOSに設定										*/
+	/************************************************************/
+	f_main_setSysTime();
+	
+	/************************************************************/
+	/* RTC Set after											*/
+	/************************************************************/
+	BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ENTER, "RTC set after.");
+	
+    /************************************************************/
+    /* リセット要因設定                                         */
+    /************************************************************/
+    uiRet = f_main_setRstRsn(&resetReason, errMsg);
+    if(D_SYS_OK != uiRet)
+    {
+        BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ERROR, "f_main_setRstRsn error. uiRet=%08x", uiRet);
+        f_com_abort(D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_FNC);
+    }
+
+	/************************************************************/
+	/*WDT停止(リセット)解除                                     */
+	/************************************************************/
+	(VOID)BPF_HM_DEVC_WDT_SET( D_SYS_AXI_TIMER_CLR, D_SYS_SWDT_TIMER_CLR );
+	
+	/************************************************************/
+	/*WDT起動                                                   */
+	/************************************************************/
+	(VOID)BPF_HM_DEVC_WDT_SET( D_SYS_AXI_TIMER_SET, D_SYS_SWDT_TIMER_SET );
+	
+	/************************************************************/
+	/* プロセス起動開始ログ取得									*/
+	/************************************************************/
+	BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_ENTER, "Proc Create Start.");
+	
+	/************************************************************/
+	/* プロセス起動処理											*/
+	/************************************************************/
+	f_main_threadCreate();
+	
+	/************************************************************/
+	/* プロセス起動終了ログ取得									*/
+	/************************************************************/
+	BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_RETURN, "Proc Create Completion.");
+
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_RETURN, "[f_main_init] RETURN" );
+	return D_SYS_OK;
+}
+
+/*! @} */

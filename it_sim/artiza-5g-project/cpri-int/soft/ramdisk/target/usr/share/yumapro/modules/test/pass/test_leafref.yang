@@ -1,0 +1,99 @@
+
+module test_leafref {
+    namespace "http://www.yumaworks.com/ns/test_leafref";
+    prefix leafref;
+
+    import test_tpdef { prefix "tpdef"; revision-date 2016-07-29; }
+
+    organization "YumaWorks, Inc";
+
+    revision 2016-07-29 {
+        description
+            "Add new scenariour with, with no prefixes,
+             leafref in local/external augments with/with no
+             prefixes, etc";
+    }
+
+    revision 2016-07-01 {
+        description
+            "Initial version";
+    }
+
+  /*
+   * Typedefs
+   */
+
+    typedef test-ref {
+        type leafref {
+            path "/not-event/testnode";
+        }
+    }
+
+    typedef test.2-ref {
+        type leafref {
+            path "/leafref:not-event/leafref:testnode2";
+        }
+    }
+
+  /*
+   * Configuration data nodes
+   */
+
+    notification event {
+
+        leaf node-ref {
+            type tpdef:node-ref;
+        }
+    }
+
+    container not-event {
+
+        leaf node.2-ref {
+            type tpdef:node.2-ref;
+        }
+
+        leaf testnode {
+            type boolean;
+        }
+        leaf testnode2 {
+            type boolean;
+        }
+    }
+
+  /*
+   * External Augments
+   */
+
+    augment "/tpdef:topnode/tpdef:listnode" {
+
+        leaf leafnode9 {
+            type tpdef:node.4-ref;
+
+        }
+    }
+    augment "/tpdef:topnode/tpdef:listnode" {
+
+        leaf leafnode10 {
+            type leafref:test-ref;
+
+        }
+    }
+    augment "/tpdef:topnode/tpdef:listnode" {
+
+        leaf leafnode11 {
+            type test.2-ref;
+
+        }
+    }
+    augment "/tpdef:topnode/tpdef:listnode" {
+
+        leaf leafnode12 {
+            type test-ref;
+
+        }
+    }
+
+
+}
+
+

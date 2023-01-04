@@ -1,0 +1,32 @@
+module yang11-bad-enum {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/yang11-bad-enum";
+  prefix yenum;
+  revision "2016-11-22";
+
+    typedef my-base-enumeration-type {
+       type enumeration {
+         enum white {
+           value 1;
+         }
+         enum yellow {
+           value 2;
+         }
+         enum red {
+           value 3;
+         }
+       }
+     }
+
+   leaf T2 {
+     type my-base-enumeration-type {
+       // illegal enum refinement
+       enum yellow {
+         value 4; // illegal value change
+       }
+       enum black; // illegal addition of new name
+     }
+   }
+
+}

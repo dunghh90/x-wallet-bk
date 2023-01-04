@@ -1,0 +1,4 @@
+m_rc_ReCardCnt.c:47:6:m_rc_ReCardCnt	96	dynamic,bounded
+m_rc_ReCardCnt.c:180:8:m_rc_ReCardCntChk	144	dynamic,bounded
+m_rc_ReCardCnt.c:257:8:m_rc_ReCardCntExec	512	static
+m_rc_ReCardCnt.c:372:8:m_rc_ReCardCntChk_CntKind	48	static

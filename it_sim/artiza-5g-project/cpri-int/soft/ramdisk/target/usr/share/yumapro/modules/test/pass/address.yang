@@ -1,0 +1,52 @@
+
+module address {
+  namespace "http://www.yumaworks.com/ns/address";
+  prefix addr;
+
+  revision "2016-01-22";
+
+  container addresses {
+    list address {
+      key "last-name first-name";
+      leaf last-name {
+        type string;
+        description
+          "Last name of the person who is associated with this address";
+      }
+      leaf first-name {
+        type string;
+        description
+          "First name of the person who is associated with this address";
+      }
+      leaf street {
+        type string;
+        description "street address";
+      }
+      leaf city {
+        type string;
+        description "City address";
+      }
+      leaf zipcode {
+        type string { length "5 | 10"; }
+        description "zipcode";
+      }
+      list phone {
+        key phone-type;
+        leaf phone-type {
+          type enumeration {
+            enum cell;
+            enum home;
+            enum work;
+          }
+        }
+        leaf phone-number {
+          mandatory true;
+          type string;
+        }
+      }  // list phone
+    } // list address
+  } // container addresses
+
+} // module address
+
+

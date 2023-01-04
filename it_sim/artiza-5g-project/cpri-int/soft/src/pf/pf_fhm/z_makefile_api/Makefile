@@ -1,0 +1,33 @@
+all: alllib
+clean: allclean
+
+alllib:
+	#ft_com
+	cd ../../../pf/ft_com/api/makefile;make
+	#ft_cpr
+	cd ../ft_cpr/api/makefile;make
+	#ft_fmg
+	cd ../ft_fmg/api/makefile;make
+	#ft_log
+	cd ../ft_log/api/makefile;make
+	#ft_rsv
+	cd ../ft_rsv/api/makefile;make
+
+
+allclean:
+
+	#ft_com
+	cd ../../../pf/ft_com/api/makefile;make clean
+	#ft_cpr
+	cd ../ft_cpr/api/makefile;make clean
+	#ft_fmg
+	cd ../ft_fmg/api/makefile;make clean
+	#ft_log
+	cd ../ft_log/api/makefile;make clean
+	#ft_rsv
+	cd ../ft_rsv/api/makefile;make clean
+
+
+
+
+

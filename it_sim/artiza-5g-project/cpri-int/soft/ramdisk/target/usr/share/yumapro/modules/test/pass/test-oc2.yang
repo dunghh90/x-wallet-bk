@@ -1,0 +1,57 @@
+module test-oc2 {
+  namespace "http://www.yumaworks.com/ns/test-oc2";
+  prefix toc2;
+
+  import ietf-yang-types { prefix yang; }
+  import ietf-inet-types { prefix inet; }
+
+  revision "2019-03-05" {
+    description
+      "Initial revision. Test module for Open Config modules";
+  }
+
+  grouping ethernet-header-config {
+
+    leaf source-mac {
+      type yang:mac-address;
+    }
+
+    leaf source-mac-mask {
+      type yang:mac-address;
+    }
+  }
+
+  grouping ethernet-header-top {
+    container l2 {
+      presence "";
+
+      container config {
+        uses ethernet-header-config;
+      }
+
+      container state {
+        config false;
+        uses ethernet-header-config;
+      }
+    }
+  }
+
+  grouping ipv4-protocol-fields-top {
+    container ipv4 {
+      presence "";
+
+      container config {
+        leaf source-address {
+          type inet:ipv4-prefix;
+        }
+
+        leaf destination-address {
+          type inet:ipv4-prefix;
+        }
+      }
+    }
+  }
+
+}
+
+

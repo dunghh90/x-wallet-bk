@@ -1,0 +1,2 @@
+m_dl_init.c:42:9:m_dl_init	80	dynamic,bounded
+m_dl_init.c:171:9:m_dl_init_sysp	112	dynamic,bounded

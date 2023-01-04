@@ -1,0 +1,4 @@
+m_rc_SVMTCntRel.c:38:6:m_rc_SndSVMTCntRelReq	176	dynamic,bounded
+m_rc_SVMTCntRel.c:210:6:m_rc_RcvSVMTCntRelRes	80	dynamic,bounded
+m_rc_SVMTCntRel.c:303:6:m_rc_SVMTCntRelTO	64	static
+m_rc_SVMTCntRel.c:356:6:m_rc_SVMTCntRelResSnd	96	static

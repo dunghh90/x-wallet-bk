@@ -1,0 +1,10 @@
+mnt_main_main.c:49:5:main	80	dynamic,bounded
+mnt_main_main.c:98:5:mnt_main_Init	48	dynamic,bounded
+mnt_main_main.c:160:6:mnt_main_Create	32	static
+mnt_main_main.c:196:6:mnt_main_TcpServerInit	112	dynamic,bounded
+mnt_main_main.c:264:5:mnt_main_signal	64	static
+mnt_main_main.c:279:6:mnt_main_signalProc	192	dynamic,bounded
+mnt_main_main.c:315:6:mnt_main_logPrint	48	static
+mnt_main_main.c:329:6:mnt_main_abortLog	304	static
+mnt_main_main.c:345:6:mnt_main_logSave	320	static
+mnt_main_main.c:374:6:mnt_main_logSave_and_Rsp	48	static

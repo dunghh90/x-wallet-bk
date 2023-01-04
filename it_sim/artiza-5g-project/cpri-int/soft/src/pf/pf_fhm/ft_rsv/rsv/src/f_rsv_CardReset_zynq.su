@@ -1,0 +1,3 @@
+f_rsv_CardReset_zynq.c:30:6:f_rsv_CardReset	80	static
+f_rsv_CardReset_zynq.c:73:6:f_rsv_AllReL1Reset	48	static
+f_rsv_CardReset_zynq.c:96:6:f_rsv_ReL1Reset	48	static

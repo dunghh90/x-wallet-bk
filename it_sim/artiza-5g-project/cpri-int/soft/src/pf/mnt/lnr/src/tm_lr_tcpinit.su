@@ -1,0 +1,2 @@
+tm_lr_tcpinit.c:39:6:tm_lr_TcpInit	144	dynamic,bounded
+tm_lr_tcpinit.c:294:6:tm_lr_cm_SrvSocketInit	112	dynamic,bounded

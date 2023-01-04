@@ -1,0 +1,58 @@
+module test-augm {
+  namespace "http://yumaworks.com/ns/test-augm";
+  prefix "taugm";
+
+  revision "2017-12-05" {
+    description
+      "Initial version.
+       Test module to test external augments with NP containers";
+  }
+
+  grouping group {
+    leaf someleaf {
+      type uint32;
+      default 33;
+    }
+  }
+
+   container sync {
+      container global {
+
+         leaf baseGlobalConfigLeafA {
+            type uint32;
+            default 25;
+         }
+         leaf baseGlobalConfigLeafB {
+             type uint32;
+             default 50;
+         }
+      }
+   }
+
+  container test-engine {
+
+    leaf enabled {
+      type boolean;
+      default "false";
+    }
+
+    container listen {
+      choice transport {
+        default udp;
+        case udp {
+          container udp {
+            leaf ip {
+              type string;
+              default "defip";
+            }
+            leaf port {
+              type uint32;
+              default 830;
+            }
+          }
+        }
+      }
+    }
+  }
+
+}

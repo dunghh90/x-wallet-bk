@@ -1,0 +1,7 @@
+m_rc_TrxRel.c:51:6:m_rc_TrxRel_Transfer_Req	208	dynamic,bounded
+m_rc_TrxRel.c:293:6:m_rc_TrxRel_Trans_TO	80	dynamic,bounded
+m_rc_TrxRel.c:351:6:m_rc_TrxRel_Snd_Rsp	112	dynamic,bounded
+m_rc_TrxRel.c:504:6:m_rc_TrxRel_Rcv_Rsp	80	dynamic,bounded
+m_rc_TrxRel.c:551:6:m_rc_TrxRel_Rcv_Rsp_3G	80	dynamic,bounded
+m_rc_TrxRel.c:610:6:m_rc_TrxRel_Rcv_Rsp_LTE	80	dynamic,bounded
+m_rc_TrxRel.c:672:6:m_rc_CPRIdis_TrxRel	96	static

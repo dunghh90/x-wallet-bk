@@ -1,0 +1,331 @@
+module test-oc1 {
+  yang-version "1";
+
+  namespace "http://www.yumaworks.com/ns/test-oc1";
+  prefix toc1;
+
+  import test-oc2 { prefix toc2; }
+
+  include test-oc-submod;
+
+  revision 2019-08-15 {
+    description
+      "YPW-1543: Leafref validataion malfunction when
+                 IDREF type leafref reference another IDREF type leafref.
+       - Added test scenario for openconfig-network-instance YANG module";
+  }
+
+  revision 2019-03-05 {
+    description
+      "Initial revision. Test module for Open Config modules";
+  }
+
+  identity ACL_TYPE {
+    description
+      "Base identity for the test";
+  }
+
+  identity ACL_L2 {
+    base ACL_TYPE;
+  }
+
+  identity ACL_IPV4 {
+    base ACL_TYPE;
+  }
+
+  // INSTANCE_TYPE identity statements
+  identity NETWORK_INSTANCE_TYPE { }
+
+  identity DEFAULT_INSTANCE {
+    base NETWORK_INSTANCE_TYPE;
+  }
+
+  identity L3VRF {
+    base NETWORK_INSTANCE_TYPE;
+  }
+
+  identity L2VSI {
+    base NETWORK_INSTANCE_TYPE;
+  }
+
+  // PROTOCOL_TYPE IDREF
+  identity INSTALL_PROTOCOL_TYPE {  }
+
+  identity BGP {
+    base INSTALL_PROTOCOL_TYPE;
+  }
+
+  identity ISIS {
+    base INSTALL_PROTOCOL_TYPE;
+  }
+
+  identity OSPF {
+    base INSTALL_PROTOCOL_TYPE;
+  }
+
+  identity OSPF3 {
+    base INSTALL_PROTOCOL_TYPE;
+  }
+
+  identity STATIC {
+    base INSTALL_PROTOCOL_TYPE;
+  }
+
+  identity DIRECTLY_CONNECTED {
+    base INSTALL_PROTOCOL_TYPE;
+  }
+
+  // ADDRESS_FAMILY IDREF
+  identity ADDRESS_FAMILY { }
+
+  identity IPV4 {
+    base ADDRESS_FAMILY;
+  }
+
+  identity IPV6 {
+    base ADDRESS_FAMILY;
+  }
+
+  identity MPLS {
+    base ADDRESS_FAMILY;
+  }
+
+  identity L2_ETHERNET {
+    base ADDRESS_FAMILY;
+  }
+
+
+  grouping acl-set-config {
+    leaf name {
+      type string;
+    }
+
+    leaf type {
+      type identityref {
+        base ACL_TYPE;
+      }
+    }
+
+    leaf description {
+      type string;
+    }
+  }
+
+  grouping access-list-entries-top {
+
+    container acl-entries {
+      presence "";
+
+      list acl-entry {
+        key "sequence-id";
+
+        leaf sequence-id {
+          type leafref {
+            path "../config/sequence-id";
+          }
+        }
+
+        container config {
+          leaf sequence-id {
+            type uint32;
+          }
+        }
+
+        container state {
+          config false;
+        }
+
+        /* Local IDREF with NO prefix */
+        uses toc2:ethernet-header-top {
+          when "../../config/type='ACL_L2'";
+        }
+
+        /* Local IDREF with prefix */
+        uses toc2:ipv4-protocol-fields-top {
+          when "../../config/type='toc1:ACL_L2'";
+        }
+      }
+    }
+  }
+
+  grouping acl-set-top {
+
+    container acl-sets {
+      presence "";
+
+      list acl-set {
+        key "name type";
+
+        leaf name {
+          type leafref {
+            path "../config/name";
+          }
+        }
+
+        leaf type {
+          type leafref {
+            path "../config/type";
+          }
+        }
+
+        container config {
+          uses acl-set-config;
+        }
+
+        container state {
+          config false;
+          uses acl-set-config;
+        }
+
+        uses access-list-entries-top;
+      }
+    }
+  }
+
+  grouping acl-config {}
+
+  grouping acl-top {
+
+    container acl {
+      presence "reg test";
+
+      container config {
+        uses acl-config;
+      }
+
+      container state {
+        config false;
+        uses acl-config;
+      }
+
+      uses acl-set-top;
+    }
+  }
+
+
+
+  /* YPW-1543: Leafref validataion malfunction when
+   * IDREF type leafref reference another IDREF type leafref.
+   */
+  grouping network-instance-config {
+    leaf name {
+      type string;
+    }
+
+    leaf type {
+      type identityref {
+        base NETWORK_INSTANCE_TYPE;
+      }
+    }
+  }
+
+  grouping table-config {
+    leaf protocol {
+      type leafref {
+        path "../../../../protocols/protocol/config/identifier";
+      }
+    }
+
+    leaf address-family {
+      type identityref {
+        base ADDRESS_FAMILY;
+      }
+    }
+  }
+
+  grouping protocols-config {
+    leaf identifier {
+      type identityref {
+        base INSTALL_PROTOCOL_TYPE;
+      }
+    }
+
+    leaf name {
+      type string;
+    }
+  }
+
+  grouping network-instance-top {
+    description
+      "Test Tree from the openconfig-network-instance YANG module";
+
+    container network-instances {
+      presence "";
+
+      list network-instance {
+        key "name";
+
+        leaf name {
+          type leafref {
+            path "../config/name";
+          }
+        }
+
+        container config {
+          uses network-instance-config;
+        }
+
+        container state {
+          config false;
+          uses network-instance-config;
+        }
+
+        container tables {
+          list table {
+            key "protocol address-family";
+
+            leaf protocol {
+              type leafref {
+                path "../config/protocol";
+              }
+            }
+
+            leaf address-family {
+              type leafref {
+                path "../config/address-family";
+              }
+            }
+
+            container config {
+              uses table-config;
+            }
+
+            container state {
+              config false;
+              uses table-config;
+            }
+          }
+        }
+
+        container protocols {
+          list protocol {
+            key "identifier name";
+
+            leaf identifier {
+              type leafref {
+                path "../config/identifier";
+              }
+            }
+
+            leaf name {
+              type leafref {
+                path "../config/name";
+              }
+            }
+
+            container config {
+              uses protocols-config;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // data definition statements
+  uses acl-top;
+  uses network-instance-top;
+
+}
+
+

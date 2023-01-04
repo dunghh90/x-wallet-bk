@@ -1,0 +1,22 @@
+module testdup3 {
+    namespace "http://netconfcentral.org/ns/testdup3";
+    prefix "tdup3";
+
+    import testdup1 { prefix t1; }
+    import testdup2 { prefix t2; }
+
+    revision 2013-09-20;
+        
+    leaf dupleaf { type string; }
+
+    augment /t1:dupcon {
+      leaf dupleaf { type string; }
+      leaf-list dupleaflist { type string; }
+    }
+
+    augment /t2:dupcon {
+      leaf-list dupleaflist { type string; }
+      leaf dupleaf { type string; }
+    }
+
+}

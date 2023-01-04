@@ -1,0 +1,85 @@
+CFLAGS+= -D__GNU__ -DBITNESS=64 -DCCS_LINUX -DCCS_LITTLE_ENDIAN -DHOST_COMPILATION -DKYLLIKKI -DLINUX -DLINUX_STACK -D_GNU_SOURCE
+PGRSRCLIST = $(shell find ./ -name '*.c')
+PGRAOLIST = $(PGRSRCLIST:.c=.c.ao)
+PGRINCLIST = \
+-I$(SRCTOP)/tools/debug/inc \
+-I$(SRCTOP)/tools/tp/mruby/include \
+-I$(SRCTOP)/api/inc \
+-I$(SRCTOP)/pf/ft_init/init/inc \
+-I$(SRCTOP)/pf/ft_main/main/inc \
+-I$(SRCTOP)/pf/ft_dhcp/dhcp/inc \
+-I$(SRCTOP)/pf/ft_eqs/eqs/inc \
+-I$(SRCTOP)/pf/ft_hdl/hdl/inc \
+-I$(SRCTOP)/pf/ft_lgc/lgc/inc \
+-I$(SRCTOP)/pf/ft_nma/nma/inc \
+-I$(SRCTOP)/pf/ft_ptp/ptp/inc \
+-I$(SRCTOP)/pf/ft_rfp/rfa/inc \
+-I$(SRCTOP)/pf/ft_rfp/cca/inc \
+-I$(SRCTOP)/pf/ft_fhs/fhs/inc \
+-I$(SRCTOP)/pf/ft_flm/fdl/inc \
+-I$(SRCTOP)/pf/ft_flm/ful/inc \
+-I$(SRCTOP)/pf/ft_eom/eom/inc \
+-I$(SRCTOP)/pf/ft_pfm/pfm/inc \
+-I$(SRCTOP)/pf/ft_sfp/sfp/inc \
+-I$(SRCTOP)/pf/ft_wdt/wdt/inc \
+-I$(SRCTOP)/pf/ft_com/com/inc \
+-I$(SRCTOP)/pf/ft_eio/eio/inc \
+-I$(SRCTOP)/pf/ft_mti/mti/inc \
+-I$(SRCTOP)/mw/oal/COM/plog/include \
+-I$(SRCTOP)/mw/oal/COM/log/include \
+-I$(SRCTOP)/mw/oal/COM/end/include \
+-I$(SRCTOP)/mw/oal/COM/com/include \
+-I$(SRCTOP)/mw/oal/COM/string/include \
+-I$(SRCTOP)/mw/oal/RU/hrtm/include \
+-I$(SRCTOP)/mw/oal/RU/ipcm/include \
+-I$(SRCTOP)/mw/oal/RU/facc/include \
+-I$(SRCTOP)/mw/oal/RU/mblm/include \
+-I$(SRCTOP)/mw/oal/RU/itcm/include \
+-I$(SRCTOP)/mw/hal/HM/devc/include \
+-I$(SRCTOP)/mw/oal/RM/svrm/include \
+-I$(SRCTOP)/mw/rfic_tal/app/example \
+-I$(SRCTOP)/mw/rfic_tal/devices/adi_hal \
+-I$(SRCTOP)/mw/rfic_tal/devices/talise \
+-I$(SRCTOP)/mw/inc \
+-I$(SRCTOP)/sys/inc \
+-I$(SRCTOP)/sys/inc_mw \
+-I$(SRCTOP)/sys/inc_arch \
+-I$(SRCTOP)/cmn/dcm/inc \
+-I$(SRCTOP)/cmn/com/inc \
+-I$(SRCTOP)/cmn/cmu/inc \
+-I$(SRCTOP)/cmn/debug/inc \
+-I$(SRCTOP)/pf/sys \
+-I$(SRCTOP)/tools/tp/rrh/rrhlib/ \
+-I$(SRCTOP)/pf/ft_com/com/src/ \
+-I$(SRCTOP)/tools/rrupfdump_v3/ \
+-I$(SRCTOP)/tools/devctl/ \
+-I$(SRCTOP)/mp/public \
+-I$(SRCTOP)/mp/server/interface/msg \
+-I$(SRCTOP)/mp/server/interface/function \
+-I$(SRCTOP)/pf/ft_ptp/zlptp/zlApi/include \
+-I$(SRCTOP)/pf/ft_ptp/zlptp/zlApr/include \
+-I$(SRCTOP)/pf/ft_ptp/zlptp/zlDpll/include \
+-I$(SRCTOP)/pf/ft_ptp/zlptp/zlUserPorting/include \
+-I$(SRCTOP)/pf/ft_ptp/zlptp/zlPtp/include \
+-I$(SRCTOP)/pf/ft_ptp/zlptp/zlUserUtils/include \
+-I$(SRCTOP)/pf/ft_ptp/zlptp/zlUserExamples/include \
+-I$(SRCTOP)/mp/server/agent/com \
+-I/opt/windriver/wrlinux-tiny/10.17.41/sysroots/aarch64-wrs-linux/usr/include/libxml2 \
+-I/opt/windriver/wrlinux-tiny/10.17.41/sysroots/aarch64-wrs-linux/usr/include/libxml2/libxml \
+-I/opt/windriver/wrlinux-tiny/10.17.41/sysroots/aarch64-wrs-linux/usr/include/yumapro/platform \
+-I/opt/windriver/wrlinux-tiny/10.17.41/sysroots/aarch64-wrs-linux/usr/include/yumapro/ncx \
+-I/opt/windriver/wrlinux-tiny/10.17.41/sysroots/aarch64-wrs-linux/usr/include/yumapro/agt \
+-I/opt/windriver/wrlinux-tiny/10.17.41/sysroots/aarch64-wrs-linux/usr/include/yumapro/sil-sa \
+-I/opt/windriver/wrlinux-tiny/10.17.41/sysroots/aarch64-wrs-linux/usr/include/yumapro/ycontrol
+
+
+pgr:$(PGRAOLIST)
+
+.SUFFIXES: .c .c.ao
+
+.c.c.ao:
+	@pgrfake $(CFLAGS) $(PGRINCLIST) -c $<
+	@echo $< >> $(PGR_CHK_SRC)
+	@sed -n -e '/^0/p' -e '/^1/p' $<.message >> $(PGR_MESSAGE_ALL)
+	@sed -n -e '/^0/p' $<.message >> $(PGR_MESSAGE_CHK)
+	@rm $<.message

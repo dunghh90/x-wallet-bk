@@ -1,0 +1,6 @@
+m_dl_Main.c:44:6:m_dl_main	80	dynamic,bounded
+m_dl_Main.c:231:6:m_dl_getCpriSys_from_timerid	64	static
+m_dl_Main.c:281:6:m_dl_fhm_main	176	dynamic,bounded
+m_dl_Main.c:385:6:m_dl_rec_main	224	dynamic,bounded
+m_dl_Main.c:524:6:m_dl_cm_RunHisSet	128	static
+m_dl_Main.c:691:6:m_dl_logPrint	176	dynamic,bounded

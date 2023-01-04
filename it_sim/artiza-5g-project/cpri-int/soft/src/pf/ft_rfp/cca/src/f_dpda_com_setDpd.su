@@ -1,0 +1,4 @@
+f_dpda_com_setDpd.c:13:5:f_dpda_com_setDpdStart	96	dynamic,bounded
+f_dpda_com_setDpd.c:73:5:f_dpda_com_setDpdStop	64	static
+f_dpda_com_setDpd.c:121:6:f_dpda_com_setDpdFailSafe_lutlogsave	144	dynamic,bounded
+f_dpda_com_setDpd.c:233:6:f_dpda_com_setDpdFailSafe	64	dynamic,bounded

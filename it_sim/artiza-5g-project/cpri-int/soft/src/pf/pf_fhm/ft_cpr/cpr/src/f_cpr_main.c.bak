@@ -1,0 +1,333 @@
+/*!
+ * @skip  $ld:$
+ * @file  f_cpr_main.c
+ * @brief the entrance of pf_cpri thread
+ * @author FFCS)Wangjuan create
+ * @date 2013/11/14 FFCS)niemsh create
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2013
+ */
+
+#include "f_sys_inc.h"
+#include "f_cpr_inc.h"
+#include "rrhApi_Cpri.h"
+
+
+/*!
+ * @addtogroup RRH_PF_CPR
+ * @{
+ */
+
+/**
+* @brief	CPRI management main function
+* @note 	Judge the input message and dispatch it to the corresponding handle function.\n
+*
+*
+*
+* @@retval 	None
+* @date 		2013/11/14 FFCS)niemsh create
+* @warning	N/A
+* @FeatureID	PF_Cpri-001-001-001
+* @Bug_No	N/A
+* @CR_No	N/A
+* @TBD_No	N/A
+*/
+
+VOID f_cpr_main()
+{
+
+	/************************************************************/
+	/* Local parameter declaration								*/
+	/************************************************************/
+	CHAR cRcvMsg[1024];    /* receievd message buffer*/
+	INT		rcvsize;
+	INT		errcd;
+
+	/* スレッド名表示		*/
+	prctl(PR_SET_NAME, "pf_cpr", 0, 0, 0);
+	
+	/* BPFへスレッド情報登録	*/
+	BPF_RM_SVRM_THREAD_INFO_SET(	D_RRH_PROCID_PF,				/* ProcessID		*/
+									D_SYS_THDID_PF_CPRI,			/* ThreadID			*/
+									D_SYS_THDQID_PF_CPRI,			/* ThreadQueueID	*/
+									(unsigned long int)pthread_self());	/* 2020/12/28 M&C) Merge 4G FHM src (add 4th param)	*/
+
+	/************************************************************/
+	/* Initialize the tables									*/
+	/************************************************************/
+	f_cpr_Init( ); 				   
+	
+	/***********************************************************/
+	/*	Message Receive and Function dispatched 			   */
+	/***********************************************************/	 
+	for(;;)
+	{
+		memset(cRcvMsg,0,sizeof(cRcvMsg));
+
+		/************************************************************/
+		/* Receive the message from queue							*/
+		/************************************************************/
+		f_com_msgQReceive( D_SYS_THDQID_PF_CPRI, 
+						   sizeof(cRcvMsg), 
+						   cRcvMsg, &rcvsize,&errcd );
+		
+		/* write running history */
+		f_cpr_cm_runHisSet(D_CPR_RECVIEVEFLG,(UCHAR*)cRcvMsg);
+		
+		/* analyze and dispatch message   */
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ENTER,"EvtNo:%X",((T_RRH_HEAD*)cRcvMsg)->uiEventNo);
+		f_cpr_anlz( (UINT*)cRcvMsg ); 	 
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_RETURN,"EvtNo:%X",((T_RRH_HEAD*)cRcvMsg)->uiEventNo);
+	}
+
+	return;
+}
+
+/**
+* @brief	CPRI management log function
+* @note 	Judge the input message and dispatch it to the corresponding handle function.\n
+* @param 	sndrcv_flg [in] source task id
+* @param 	datap [in] the buffer address pointer of received message
+* @@retval 	None
+* @date 		2014/01/14 FFCS)niemsh create
+ *  @date   2015/8/4 TDIPS)ikeda 17リンク対応
+* @warning	N/A
+* @FeatureID	PF_Cpri-001-001-001
+* @Bug_No	N/A
+* @CR_No	N/A
+* @TBD_No	N/A
+*/
+
+VOID f_cpr_cm_runHisSet(UINT sndrcv_flg, UCHAR* datap) 
+{
+	T_RRH_SYSTEM_TIME	datetime;				/* 時刻情報			*/
+	UINT		sig_kind;						/* 信号種別(保存用)	*/
+	UINT		datas[8] = {0};
+	UINT		event_id;
+	UINT		task_id;
+	USHORT linkno;
+	
+	/************************/
+	/* 収集データ初期値設定 */
+	/************************/
+
+	sig_kind = -1;						/* 信号種別(保存用)	  */
+	event_id = ((T_RRH_HEAD*)datap)->uiEventNo;
+	task_id = ((T_RRH_HEAD*)datap)->uiSrcPQueueID;
+	
+	/******************/
+	/* 収集データ設定 */
+	/******************/
+	switch (event_id)
+	{
+		/* 受信イベント */
+		case D_SYS_MSGID_CPRISTACHGNTC: /* CPRI State変化通知 */
+			linkno = ((T_SYS_CPRIST_IRQNTC*)datap)->link_num;
+			datas[0] = ((T_SYS_CPRIST_IRQNTC *)datap)->data1;
+			datas[1] = ((T_SYS_CPRIST_IRQNTC *)datap)->data2;
+			datas[2] = ((T_SYS_CPRIST_IRQNTC *)datap)->data3;
+			break;
+
+		/* 受信イベント */
+		case D_SYS_MSGID_AUTONEGO_COMPLETE_NTC: /* Auto Nego Complete 通知 */
+			linkno = D_RRH_CPRINO_REC;
+			datas[0] = ((T_SYS_AUTO_NEGO_COMPLETE_NTC *)datap)->bit_rate;
+			datas[1] = ((T_SYS_AUTO_NEGO_COMPLETE_NTC *)datap)->auto_nego_result;
+			break;
+
+		/* 送信イベント */
+		case D_SYS_MSGID_AUTONEGO_START_IND: /* Auto Nego Start Indication */
+			linkno = D_RRH_CPRINO_REC;
+			datas[0] = ((T_SYS_AUTO_NEGO_START_IND *)datap)->bit_rate;
+			break;
+
+		/* 送信イベント */
+		case D_SYS_MSGID_AUTONEGO_RESTART_IND: /* Auto Nego ReStart Indication */
+			linkno = D_RRH_CPRINO_REC;
+			datas[0] = ((T_SYS_AUTO_NEGO_RESTART_IND *)datap)->bit_rate;
+			break;
+
+		/* 送信イベント */
+		case D_API_MSGID_CPRI_STATE_STATE_NTC: /* CPRI State Notification */
+			linkno = ((T_API_CPRILINK_STATE_NTC*)datap)->link_num;
+			datas[0] = ((T_API_CPRILINK_STATE_NTC *)datap)->cpriHDLCBitrate;
+			datas[1] = ((T_API_CPRILINK_STATE_NTC *)datap)->cpriLineBitrate;
+			datas[2] = ((T_API_CPRILINK_STATE_NTC *)datap)->cpriHdlc;
+			datas[3] = ((T_API_CPRILINK_STATE_NTC *)datap)->cpriEDown;
+			datas[4] = ((T_API_CPRILINK_STATE_NTC *)datap)->hfnSync;
+			datas[5] = ((T_API_CPRILINK_STATE_NTC *)datap)->cpriState;
+			break;
+
+	 	default:
+			return;
+	}
+
+	/****************************/
+	/* 収集データテーブル書込み */
+	/****************************/
+	/* 時刻情報収集 */
+	BPF_HM_DEVC_GETTIME( &datetime );
+	/* ヘッダデータ設定 */
+	f_cprw_runhis_tbl[linkno].inf[f_cprw_runhis_tbl[linkno].write_idx].head.setFlg	 = 1;
+	f_cprw_runhis_tbl[linkno].inf[f_cprw_runhis_tbl[linkno].write_idx].head.month      = datetime.month;
+	f_cprw_runhis_tbl[linkno].inf[f_cprw_runhis_tbl[linkno].write_idx].head.day        = datetime.day;
+	f_cprw_runhis_tbl[linkno].inf[f_cprw_runhis_tbl[linkno].write_idx].head.hour       = datetime.hour;
+	f_cprw_runhis_tbl[linkno].inf[f_cprw_runhis_tbl[linkno].write_idx].head.min        = datetime.min;
+	f_cprw_runhis_tbl[linkno].inf[f_cprw_runhis_tbl[linkno].write_idx].head.sec        = datetime.sec;
+	f_cprw_runhis_tbl[linkno].inf[f_cprw_runhis_tbl[linkno].write_idx].head.msec       = datetime.msec;
+	f_cprw_runhis_tbl[linkno].inf[f_cprw_runhis_tbl[linkno].write_idx].head.sndrcvFlg = (UCHAR)sndrcv_flg;
+	f_cprw_runhis_tbl[linkno].inf[f_cprw_runhis_tbl[linkno].write_idx].head.msgId   =  event_id;
+	f_cprw_runhis_tbl[linkno].inf[f_cprw_runhis_tbl[linkno].write_idx].head.taskId    = (USHORT)task_id;
+	f_cprw_runhis_tbl[linkno].inf[f_cprw_runhis_tbl[linkno].write_idx].head.sig_kind   = (USHORT)sig_kind;
+	memcpy(f_cprw_runhis_tbl[linkno].inf[f_cprw_runhis_tbl[linkno].write_idx].body,datas,sizeof(datas));
+	
+	/**********************/
+	/* 次走行履歴書込準備 */
+	/**********************/
+	/* 書込位置更新 */
+	f_cprw_runhis_tbl[linkno].write_idx++;
+	if (f_cprw_runhis_tbl[linkno].write_idx >= D_CPR_RUNHIS_FACENUM_MAX)
+	{
+		f_cprw_runhis_tbl[linkno].write_idx = 0;
+	}
+	/* 次情報書込みエリア0クリア                                */
+	/* (ログが一周したときに、どの面が最新かわかりやすいように) */
+	memset((UCHAR*)&f_cprw_runhis_tbl[linkno].inf[f_cprw_runhis_tbl[linkno].write_idx], 0,
+				sizeof(f_cprw_runhis_tbl[linkno].inf[f_cprw_runhis_tbl[linkno].write_idx]));
+
+	return;
+}
+
+
+VOID f_cpr_logPrint(FILE *outf)
+{
+	UINT index;
+	UINT printIdx;
+	UINT bodyIdx;
+	CHAR *strSndRcv[] = {"RCV","SND"};
+	CHAR *bitratename[] = { "2.4G","4.9G","9.8G"};
+	USHORT linkno;
+	
+	for (linkno = D_RRH_CPRINO_REC; linkno < D_RRH_CPRINO_NUM; linkno++ )
+	{
+		fprintf(outf,"PF cpr running history CPRINO %03d ----------------------------------------\n", linkno);
+
+		printIdx = 0;
+		for(index = 0; index < D_CPR_RUNHIS_FACENUM_MAX;index++)
+		{
+			if(f_cprw_runhis_tbl[linkno].inf[index].head.setFlg == 0)
+			{
+				continue;
+			}
+
+			fprintf(outf,"No.%03d [%2d-%2d %02d:%02d:%02d.%03d] %s;%08x;%04x;%04x\n",printIdx,
+				f_cprw_runhis_tbl[linkno].inf[index].head.month,
+				f_cprw_runhis_tbl[linkno].inf[index].head.day,
+				f_cprw_runhis_tbl[linkno].inf[index].head.hour,
+				f_cprw_runhis_tbl[linkno].inf[index].head.min,
+				f_cprw_runhis_tbl[linkno].inf[index].head.sec,
+				f_cprw_runhis_tbl[linkno].inf[index].head.msec,
+				strSndRcv[f_cprw_runhis_tbl[linkno].inf[index].head.sndrcvFlg],
+				f_cprw_runhis_tbl[linkno].inf[index].head.msgId,
+				f_cprw_runhis_tbl[linkno].inf[index].head.taskId,
+				f_cprw_runhis_tbl[linkno].inf[index].head.sig_kind);
+
+				for(bodyIdx = 0;bodyIdx < 8;bodyIdx++)
+				{
+					fprintf(outf," %02x%02x %02x%02x",
+						f_cprw_runhis_tbl[linkno].inf[index].body[bodyIdx * 4],
+						f_cprw_runhis_tbl[linkno].inf[index].body[bodyIdx * 4 + 1],
+						f_cprw_runhis_tbl[linkno].inf[index].body[bodyIdx * 4 + 2],
+						f_cprw_runhis_tbl[linkno].inf[index].body[bodyIdx * 4 + 3]);
+
+					if((bodyIdx % 4) == 3)
+                    {
+					    fprintf(outf,"\n");
+                    }
+				}
+
+			printIdx++;
+		}
+
+		fprintf(outf,"auto nego complete flag:%d\n", f_cprw_autonego_complete_flag);
+		fprintf(outf,"real bit rate:%s(%d)\n", bitratename[f_cprw_bitrate_real], f_cprw_bitrate_real);
+
+		for(index = 0; index < sizeof(f_cprw_cprStatChgNtc_QID) / sizeof(UINT); index++)
+		{
+			if(f_cprw_cprStatChgNtc_QID[index] != 0)
+			{
+				fprintf(outf,"f_cprw_cprStatChgNtc_QID[%d]:%d\n", index, f_cprw_cprStatChgNtc_QID[index]);
+			}
+		}
+	}
+
+ 	return;
+}
+/**
+* @brief		CPRI management debug function for CPRI-MT SIM mode 
+* @note 		CPRI management debug function for CPRI-MT SIM mode 
+* @param 		buff_adr [in] the buffer address pointer of received message
+* @@retval 		None
+* @date 		2015/01/21 FJT)Taniguchi
+* @date         2015/10/16 TDIPS)ikeda M-RRU-ZSYS-01787 HDLCレートを取得してメッセージに代入
+* @date         2015/10/16 TDIPS)ikeda M-RRU-ZSYS-01787 修正内容取り消し
+* @warning		N/A
+* @FeatureID	PF_Cpri-001-001-001
+* @Bug_No		M-RRU-ZSYS-01787
+* @CR_No		N/A
+* @TBD_No		N/A
+*/
+VOID f_cpr_dbg_link_setup(UINT * buff_adr)
+{
+	T_API_CPRILINK_STATE_NTC	apiNtc;
+	UINT						a_num;
+	T_SYS_AUTO_NEGO_RESTART_IND	autonego_restart_ind;
+
+	memcpy(&apiNtc, buff_adr, sizeof(apiNtc));
+	memset(&autonego_restart_ind, 0, sizeof(autonego_restart_ind));
+
+	memset(&apiNtc.header,0,sizeof(apiNtc.header));
+	apiNtc.header.uiEventNo = D_API_MSGID_CPRI_STATE_STATE_NTC;
+	apiNtc.header.uiLength = sizeof(apiNtc);
+
+	if((apiNtc.cpriEDown != 0) && (apiNtc.link_num == D_RRH_CPRINO_REC)){
+		if(f_cprw_autonego_complete_flag != D_SYS_OFF){
+		/* rate nego complete flag OFF */
+		f_cprw_autonego_complete_flag = D_SYS_OFF;
+		/* CPRI Auto Nego restart by same bit rate */
+		autonego_restart_ind.thdif.uiEventNo = D_SYS_MSGID_AUTONEGO_RESTART_IND;
+		autonego_restart_ind.thdif.uiDstPQueueID = D_RRH_PROCQUE_PF;
+		autonego_restart_ind.thdif.uiDstTQueueID = D_SYS_THDQID_PF_NEGO;
+		autonego_restart_ind.thdif.uiSrcPQueueID = D_RRH_PROCQUE_PF;
+		autonego_restart_ind.thdif.uiSrcTQueueID = D_SYS_THDQID_PF_CPRI;
+		autonego_restart_ind.thdif.uiLength = sizeof(autonego_restart_ind);
+		autonego_restart_ind.bit_rate = f_cprw_bitrate_real;
+		/* send auto nego start indication to pf_nego */
+		f_com_msgQSend( D_SYS_THDQID_PF_NEGO, 
+						(CHAR*)&autonego_restart_ind,
+						sizeof(autonego_restart_ind), 
+						D_SYS_THDQID_PF_CPRI, 
+						f_cprw_thrdState, 
+						D_SYS_MSGID_AUTONEGO_RESTART_IND );
+		}
+	}
+
+	for(a_num = 0; a_num < sizeof(f_cprw_cprStatChgNtc_QID) / sizeof(UINT);a_num++)
+	{
+		if(f_cprw_cprStatChgNtc_QID[ a_num])
+		{
+			apiNtc.header.uiDstPQueueID = f_cprw_cprStatChgNtc_QID[a_num];
+		
+			/* write running history */
+			f_cpr_cm_runHisSet(D_CPR_SENDIEVEFLG, (UCHAR*)&apiNtc);
+
+			f_com_sendMsgToApl(f_cprw_cprStatChgNtc_QID[ a_num], &apiNtc, sizeof(apiNtc),
+				apiNtc.header.uiEventNo, D_SYS_THDQID_PF_CPRI);
+		}
+	}
+
+	return;
+
+}
+
+
+/* @} */

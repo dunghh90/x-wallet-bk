@@ -1,0 +1,2 @@
+m_mk_subCardstatus.c:35:6:m_mk_subCardstatus	64	dynamic,bounded
+m_mk_subCardstatus.c:57:6:m_mk_unSubCardstatus	64	dynamic,bounded

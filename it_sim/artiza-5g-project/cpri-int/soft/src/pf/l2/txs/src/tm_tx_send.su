@@ -1,0 +1,3 @@
+tm_tx_send.c:45:6:tm_tx_Send	144	dynamic,bounded
+tm_tx_send.c:252:6:tm_tx_cm_SndMonMsg	96	static
+tm_tx_send.c:297:6:tm_tx_cm_SndSimuMsg	96	dynamic,bounded

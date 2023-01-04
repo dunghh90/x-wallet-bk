@@ -1,0 +1,24 @@
+module yang11-empty {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/yang11-empty";
+  prefix ytempty;
+  revision "2016-04-16";
+
+  list int2 {
+    key "test test2";
+    leaf test { type empty; }
+    leaf test2 { type empty; }
+    leaf type { type string; }
+  }
+
+  typedef u-test {
+    type union {
+      type empty;
+      type string;
+    }
+  }
+
+  leaf u-leaf { type u-test; }
+
+}

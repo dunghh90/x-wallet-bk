@@ -1,0 +1,11 @@
+m_rc_ReCardStaRep.c:93:6:m_rc_ReCardStaRep	80	dynamic,bounded
+m_rc_ReCardStaRep.c:154:6:m_rc_ReCardStaRep_3G	5456	dynamic,bounded
+m_rc_ReCardStaRep.c:577:6:m_rc_ReCardStaRep_S3G	3792	dynamic,bounded
+m_rc_ReCardStaRep.c:1322:6:m_rc_GetSvitem	48	static
+m_rc_ReCardStaRep.c:1385:6:m_rc_GetSvitemfunc	48	static
+m_rc_ReCardStaRep.c:1446:6:m_rc_GetExtSvitem	48	static
+m_rc_ReCardStaRep.c:1484:6:m_rc_GetExtSvitem_3G	48	static
+m_rc_ReCardStaRep.c:1521:8:m_rc_ConvFuncKindToId	80	static
+m_rc_ReCardStaRep.c:1569:6:m_rc_GetFuncEvery	384	static
+m_rc_ReCardStaRep.c:1731:9:m_rc_GetInitValue_S3G	3296	dynamic,bounded
+m_rc_ReCardStaRep.c:1872:5:m_rc_IsSwap	32	static

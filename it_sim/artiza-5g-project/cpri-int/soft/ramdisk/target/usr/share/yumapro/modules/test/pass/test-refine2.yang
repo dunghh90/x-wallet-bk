@@ -1,0 +1,41 @@
+module test-refine2 {
+
+  namespace "urn:yumaworks:params:xml:ns:yang:test-refine2";
+  prefix "tr";
+  revision 2016-10-04;
+
+  grouping G {
+    leaf name { type string; }
+  }
+
+  grouping G1 {
+    uses G {
+      refine name {
+        default "X";
+      }
+    }
+  }
+
+  grouping G2 {
+    uses G1 {
+      refine name {
+        default "Y";
+      }
+    }
+  }
+
+  grouping G3 {
+    uses G2 {
+      refine name {
+        default "Z";
+      }
+    }
+  }
+
+  uses G3 {
+    refine name {
+      default "W";
+    }
+  }
+
+}

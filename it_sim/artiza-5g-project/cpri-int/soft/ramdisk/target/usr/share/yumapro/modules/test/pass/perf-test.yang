@@ -1,0 +1,28 @@
+module perf-test {
+
+  namespace "http://netconfcentral.org/ns/perf-test";
+  prefix ptest;
+
+
+  container myContainer {
+
+    leaf myObject {
+      type uint32;
+    }
+
+    list myItems {
+        config true;
+
+        key "name";
+
+        leaf name {
+          type string;
+        }
+
+        leaf value {
+          type uint32;
+        }
+    }
+  }
+
+}

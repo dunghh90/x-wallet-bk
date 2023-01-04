@@ -1,0 +1,14 @@
+
+while 1
+	sendln 'admin-state locked'
+	wait 'f_5g_du@5G_DU(state)#'
+	sendln 'apply'
+	wait 'f_5g_du@5G_DU(state)#'
+	mpause 1100
+	sendln 'admin-state unlocked'
+	wait 'f_5g_du@5G_DU(state)#'
+	sendln 'apply'
+	wait 'f_5g_du@5G_DU(state)#'
+	mpause 1100
+endwhile
+

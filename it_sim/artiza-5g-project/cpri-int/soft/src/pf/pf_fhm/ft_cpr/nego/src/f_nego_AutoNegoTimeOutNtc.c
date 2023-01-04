@@ -1,0 +1,302 @@
+/*********************************************************************************/
+/**
+ *  @skip $Id:$
+ *  @file f_nego_AutoNegoTimeOutNtc.c
+ *  @brief  Auto Nego TimeOut Notification function
+ *  @date 2015/04/22 FFCS)fuxg create
+ * 
+ *  ALL Rights Reserved, Copyright (c) FUJITSU Limited 2015-
+ */
+/*********************************************************************************/
+
+/** @addtogroup RRH_PF_NEGO
+* @{ */
+
+#include "f_sys_inc.h"
+#include "f_nego_inc.h"
+
+/**
+* @brief 	Auto Nego TimeOut Notification function
+* @note  	Auto Nego TimeOut Notification function.\n
+* @param 	buff_adr [in] the buffer address pointer of received message
+* @return 	None
+* @date 	2015/04/22 FFCS)fuxg create
+* @date     2015/8/4 TDIPS)ikeda rev.27800 2.4Gビットレート対応
+* @date     2015/8/4 TDIPS)ikeda rev.27819 オートネゴ修正
+* @date     2015/09/05 TDI)satou レジスタアドレスのdefineを修正
+* @warning	N/A
+* @FeatureID	RRH-012-000
+* @Bug_No	N/A
+* @CR_No	N/A
+* @TBD_No	N/A
+*
+*/
+VOID f_nego_AutoNegoTimeOutNtc(UINT * buff_adr)
+{
+	T_SYS_AUTO_NEGO_COMPLETE_NTC autonego_complete_ntc;
+	INT		ret;
+	INT		errcd;
+	UINT	regVal;
+	CHAR *	bitratename[] = { "2.4G","4.9G","9.8G"};
+
+	/* initial */
+	memset(&autonego_complete_ntc, 0, sizeof(autonego_complete_ntc));
+
+	/* 4S count */
+	f_nego_4s_count++;
+
+	/* CPP PHY LyncUP confirm incomplete */
+	if( (f_nego_hard_set_flag == D_NEGO_HARD_SET_LYNCUP_START) ||
+		(f_nego_hard_set_flag == D_NEGO_HARD_SET_LYNCUP_RESTART) )
+	{
+		/* read and clear CPP PHY LyncUP ST */
+		BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI, D_RRH_REG_CNTS_CDRST, &regVal);
+
+		/* CPP PHY LyncUP confirm */
+		if((regVal & 0x00000001) == 0x00000001)
+		{
+			/* hard set flag confirm */
+			if(f_nego_hard_set_flag == D_NEGO_HARD_SET_LYNCUP_START)
+			{
+				/* Hard set before Hfn Sync in case of start */
+				f_nego_HardSetHfnSync_Start();
+
+				/* hard set flag */
+				f_nego_hard_set_flag = D_NEGO_HARD_SET_HFNSYNC_START;
+			}
+			else if(f_nego_hard_set_flag == D_NEGO_HARD_SET_LYNCUP_RESTART)
+			{
+				/* Hard set before Hfn Sync in case of restart */
+				f_nego_HardSetHfnSync_ReStart();
+
+				/* hard set flag */
+				f_nego_hard_set_flag = D_NEGO_HARD_SET_HFNSYNC_RESTART;
+			}
+		}
+		else
+		{
+			/* HFNSYNC count clean */
+			f_nego_hfn_count = 0;
+
+			/* 4S timer over */
+			if(f_nego_4s_count >= (D_NEGO_BIT_RATE_TIME_4SEC * 1000 / D_NEGO_ONE_SHOT_TIME_10MSEC))
+			{
+				/* send auto nego complete notification(result NG) to pf_cpr */
+				autonego_complete_ntc.thdif.uiEventNo = D_SYS_MSGID_AUTONEGO_COMPLETE_NTC;
+				autonego_complete_ntc.thdif.uiDstPQueueID = D_RRH_PROCQUE_F_PF;
+				autonego_complete_ntc.thdif.uiDstTQueueID = D_SYS_THDQID_PF_CPRI;
+				autonego_complete_ntc.thdif.uiSrcPQueueID = D_RRH_PROCQUE_F_PF;
+				autonego_complete_ntc.thdif.uiSrcTQueueID = D_SYS_THDQID_PF_NEGO;
+				autonego_complete_ntc.thdif.uiLength = sizeof(autonego_complete_ntc);
+				autonego_complete_ntc.bit_rate = f_nego_bitrate;
+
+				/* result control by debug command */ 
+				if(
+					((f_nego_bitrate == D_COM_LINE_BITRATE_24G) &&
+					(f_nego_dbg_result_24g == D_SYS_OK)) ||
+					((f_nego_bitrate == D_COM_LINE_BITRATE_49G) &&
+					(f_nego_dbg_result_49g == D_SYS_OK)) ||
+					((f_nego_bitrate == D_COM_LINE_BITRATE_98G) && 
+					(f_nego_dbg_result_98g == D_SYS_OK)) )
+				{
+					autonego_complete_ntc.auto_nego_result = D_SYS_OK;
+				}
+				else
+				{
+					autonego_complete_ntc.auto_nego_result = D_SYS_NG;
+				}
+
+				BPF_COM_PLOG_TRACE_CPRI( E_TRC_LV_INFO, "CNTS_CPRSTA:0x%x", regVal);
+
+				/* write running history */
+				f_nego_cm_runHisSet(D_NEGO_SENDIEVEFLG, (UCHAR*)&autonego_complete_ntc);
+
+				/* send auto nego start indication to pf_nego */
+				f_com_msgQSendFHM( D_SYS_THDQID_PF_CPRI, 
+								(CHAR*)&autonego_complete_ntc,
+								sizeof(autonego_complete_ntc), 
+								D_SYS_THDQID_PF_NEGO, 
+								f_nego_thrdState, 
+								D_SYS_MSGID_AUTONEGO_COMPLETE_NTC );
+
+				f_nego_thrdState = D_NEGO_THRDSTA_IDLE;
+
+				return;
+			}
+		}
+	}
+	
+	/* CPP PHY LyncUP confirm over */
+	if( (f_nego_hard_set_flag == D_NEGO_HARD_SET_HFNSYNC_START) ||
+		(f_nego_hard_set_flag == D_NEGO_HARD_SET_HFNSYNC_RESTART) )
+	{
+		/* HFN SYNC confirm */
+		BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI,
+				D_RRH_REG_CPRI_CPST, &regVal);
+
+		if((regVal & 0x00000001) == 0x00000001)
+		{
+			f_nego_hfn_count++;
+
+			/* hfn count confirm */
+			if(f_nego_hfn_count == D_NEGO_HFNSYNC_TIMES)
+			{
+				/* send auto nego complete notification(result OK) to pf_cpr */
+				autonego_complete_ntc.thdif.uiEventNo = D_SYS_MSGID_AUTONEGO_COMPLETE_NTC;
+				autonego_complete_ntc.thdif.uiDstPQueueID = D_RRH_PROCQUE_F_PF;
+				autonego_complete_ntc.thdif.uiDstTQueueID = D_SYS_THDQID_PF_CPRI;
+				autonego_complete_ntc.thdif.uiSrcPQueueID = D_RRH_PROCQUE_F_PF;
+				autonego_complete_ntc.thdif.uiSrcTQueueID = D_SYS_THDQID_PF_NEGO;
+				autonego_complete_ntc.thdif.uiLength = sizeof(autonego_complete_ntc);
+				autonego_complete_ntc.bit_rate = f_nego_bitrate;
+
+				/* check debug flag */
+				if( ( (f_nego_bitrate == D_COM_LINE_BITRATE_24G) &&
+					( (f_nego_dbg_result_24g == D_SYS_OK) || (f_nego_dbg_result_24g == D_SYS_ALLF_INT) ) ) ||
+					( (f_nego_bitrate == D_COM_LINE_BITRATE_49G) &&
+					( (f_nego_dbg_result_49g == D_SYS_OK) || (f_nego_dbg_result_49g == D_SYS_ALLF_INT) ) ) ||
+					( (f_nego_bitrate == D_COM_LINE_BITRATE_98G) && 
+					( (f_nego_dbg_result_98g == D_SYS_OK) || (f_nego_dbg_result_98g == D_SYS_ALLF_INT) ) ) )
+				{
+					autonego_complete_ntc.auto_nego_result = D_SYS_OK;
+				}
+				else
+				{
+					autonego_complete_ntc.auto_nego_result = D_SYS_NG;
+				}
+
+				/* write running history */
+				f_nego_cm_runHisSet(D_NEGO_SENDIEVEFLG, (UCHAR*)&autonego_complete_ntc);
+
+				/* send auto nego start indication to pf_nego */
+				f_com_msgQSendFHM( D_SYS_THDQID_PF_CPRI, 
+								(CHAR*)&autonego_complete_ntc,
+								sizeof(autonego_complete_ntc), 
+								D_SYS_THDQID_PF_NEGO, 
+								f_nego_thrdState, 
+								D_SYS_MSGID_AUTONEGO_COMPLETE_NTC );
+
+				/* log */
+				BPF_COM_PLOG_TRACE_CPRI(E_TRC_LV_INFO,"CPRI Start Up!Bit Rate = %s(%d)", 
+											bitratename[f_nego_bitrate],
+											f_nego_bitrate);
+			}
+			/* 4S timer over */
+			else if(f_nego_4s_count >= (D_NEGO_BIT_RATE_TIME_4SEC * 1000 / D_NEGO_ONE_SHOT_TIME_10MSEC))
+			{
+				/* send auto nego complete notification(result NG) to pf_cpr */
+				autonego_complete_ntc.thdif.uiEventNo = D_SYS_MSGID_AUTONEGO_COMPLETE_NTC;
+				autonego_complete_ntc.thdif.uiDstPQueueID = D_RRH_PROCQUE_F_PF;
+				autonego_complete_ntc.thdif.uiDstTQueueID = D_SYS_THDQID_PF_CPRI;
+				autonego_complete_ntc.thdif.uiSrcPQueueID = D_RRH_PROCQUE_F_PF;
+				autonego_complete_ntc.thdif.uiSrcTQueueID = D_SYS_THDQID_PF_NEGO;
+				autonego_complete_ntc.thdif.uiLength = sizeof(autonego_complete_ntc);
+				autonego_complete_ntc.bit_rate = f_nego_bitrate;
+
+				/* result control by debug command */ 
+				if( ((f_nego_bitrate == D_COM_LINE_BITRATE_24G) &&
+					(f_nego_dbg_result_24g == D_SYS_OK)) ||
+					((f_nego_bitrate == D_COM_LINE_BITRATE_49G) &&
+					(f_nego_dbg_result_49g == D_SYS_OK)) ||
+					((f_nego_bitrate == D_COM_LINE_BITRATE_98G) && 
+					(f_nego_dbg_result_98g == D_SYS_OK)) )
+				{
+					autonego_complete_ntc.auto_nego_result = D_SYS_OK;
+				}
+				else
+				{
+					autonego_complete_ntc.auto_nego_result = D_SYS_NG;
+				}
+
+				BPF_COM_PLOG_TRACE_CPRI( E_TRC_LV_INFO, "CPRI_CPST:0x%x", regVal);
+
+				/* write running history */
+				f_nego_cm_runHisSet(D_NEGO_SENDIEVEFLG, (UCHAR*)&autonego_complete_ntc);
+
+				/* send auto nego start indication to pf_nego */
+				f_com_msgQSendFHM( D_SYS_THDQID_PF_CPRI, 
+								(CHAR*)&autonego_complete_ntc,
+								sizeof(autonego_complete_ntc), 
+								D_SYS_THDQID_PF_NEGO, 
+								f_nego_thrdState, 
+								D_SYS_MSGID_AUTONEGO_COMPLETE_NTC );
+
+				f_nego_thrdState = D_NEGO_THRDSTA_IDLE;
+
+				return;
+			}
+		}
+		else
+		{
+			/* hfn count clean */
+			f_nego_hfn_count = 0;
+
+			/* 4S timer over */
+			if(f_nego_4s_count >= (D_NEGO_BIT_RATE_TIME_4SEC * 1000 / D_NEGO_ONE_SHOT_TIME_10MSEC))
+			{
+				/* send auto nego complete notification(result NG) to pf_cpr */
+				autonego_complete_ntc.thdif.uiEventNo = D_SYS_MSGID_AUTONEGO_COMPLETE_NTC;
+				autonego_complete_ntc.thdif.uiDstPQueueID = D_RRH_PROCQUE_F_PF;
+				autonego_complete_ntc.thdif.uiDstTQueueID = D_SYS_THDQID_PF_CPRI;
+				autonego_complete_ntc.thdif.uiSrcPQueueID = D_RRH_PROCQUE_F_PF;
+				autonego_complete_ntc.thdif.uiSrcTQueueID = D_SYS_THDQID_PF_NEGO;
+				autonego_complete_ntc.thdif.uiLength = sizeof(autonego_complete_ntc);
+				autonego_complete_ntc.bit_rate = f_nego_bitrate;
+
+				/* result control by debug command */ 
+				if( ((f_nego_bitrate == D_COM_LINE_BITRATE_24G) &&
+					(f_nego_dbg_result_24g == D_SYS_OK)) ||
+					((f_nego_bitrate == D_COM_LINE_BITRATE_49G) &&
+					(f_nego_dbg_result_49g == D_SYS_OK)) ||
+					((f_nego_bitrate == D_COM_LINE_BITRATE_98G) && 
+					(f_nego_dbg_result_98g == D_SYS_OK)) )
+				{
+					autonego_complete_ntc.auto_nego_result = D_SYS_OK;
+				}
+				else
+				{
+					autonego_complete_ntc.auto_nego_result = D_SYS_NG;
+				}
+
+				BPF_COM_PLOG_TRACE_CPRI( E_TRC_LV_INFO, "CPRI_CPST:0x%x", regVal);
+
+				/* write running history */
+				f_nego_cm_runHisSet(D_NEGO_SENDIEVEFLG, (UCHAR*)&autonego_complete_ntc);
+
+				/* send auto nego start indication to pf_nego */
+				f_com_msgQSendFHM( D_SYS_THDQID_PF_CPRI, 
+								(CHAR*)&autonego_complete_ntc,
+								sizeof(autonego_complete_ntc), 
+								D_SYS_THDQID_PF_NEGO, 
+								f_nego_thrdState, 
+								D_SYS_MSGID_AUTONEGO_COMPLETE_NTC );
+
+				f_nego_thrdState = D_NEGO_THRDSTA_IDLE;
+
+				return;
+			}
+		}
+	}
+
+	/* 10msec timer start */
+	ret = BPF_RU_HRTM_REGISTER(
+			BPF_RU_HRTM_REG_ONCE,
+			E_RRH_TIMID_AUTO_NEGO,
+			D_NEGO_ONE_SHOT_TIME_10MSEC,
+			D_SYS_MSGID_AUTONEGO_TIMEOUT_NTC,
+			D_SYS_THDQID_PF_NEGO,
+			&errcd
+		);
+
+	if( ret != BPF_RU_HRTM_COMPLETE )
+	{
+		/* Assert log */
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_INFO, 
+							"Timer Register NG!ret = %d, errcd = %d", 
+							ret, errcd);
+	}
+	
+	return;
+}
+/* @} */
+

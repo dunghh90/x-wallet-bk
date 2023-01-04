@@ -1,0 +1,54 @@
+module test-inet {
+
+    namespace "http://netconfcentral.org/ns/test-inet";
+    prefix "tinet";
+    import ietf-inet-types { prefix inet; }
+
+    revision 2017-11-13 {
+        description "Test module of leafs using inet-inet-types.";
+    }
+
+    grouping inet-group {
+        leaf t-ip-version { type inet:ip-version; }
+        leaf t-dscp { type inet:dscp; }
+        leaf t-ipv6-flow-label { type inet:ipv6-flow-label; }
+        leaf t-port-number { type inet:port-number; }
+        leaf t-as-number { type inet:as-number; }
+        leaf t-ip-address { type inet:ip-address; }
+        leaf t-ipv4-address { type inet:ipv4-address; }
+        leaf t-ipv6-address { type inet:ipv6-address; }
+        leaf t-ip-address-no-zone { type inet:ip-address-no-zone; }
+        leaf t-ipv4-address-no-zone { type inet:ipv4-address-no-zone; }
+        leaf t-ipv6-address-no-zone { type inet:ipv6-address-no-zone; }
+        leaf t-ip-prefix { type inet:ip-prefix; }
+        leaf t-ipv4-prefix { type inet:ipv4-prefix; }
+        leaf t-ipv6-prefix { type inet:ipv6-prefix; }
+        leaf t-domain-name { type inet:domain-name; }
+        leaf t-host { type inet:host; }
+        leaf t-uri { type inet:uri; }
+    }
+
+    grouping host {
+      choice address-or-hostname {
+        mandatory true;
+        case address {
+          leaf address {
+            mandatory true;
+            type inet:ip-address;
+          }
+        }
+        case name {
+          leaf name {
+            mandatory true;
+            type inet:domain-name;
+          }
+        }
+      }
+    }
+
+    container inet {
+      presence "not top-mandatory";
+      uses inet-group;
+      uses host;
+    }
+}

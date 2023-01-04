@@ -1,0 +1,2 @@
+f_dpda_car_setBwandNco.c:15:5:f_dpda_car_setTxBwandNco	128	dynamic,bounded
+f_dpda_car_setBwandNco.c:120:5:f_dpda_car_setRxBwandNco	128	dynamic,bounded

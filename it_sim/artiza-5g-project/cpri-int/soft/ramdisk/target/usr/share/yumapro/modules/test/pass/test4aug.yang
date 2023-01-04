@@ -1,0 +1,22 @@
+module test4aug {
+
+    namespace "http://netconfcentral.org/ns/test4aug";
+    prefix "t4aug";
+    import test4 { prefix t4; }
+
+    revision 2013-09-05 {
+        description "Initial revision.";
+    }
+
+    augment /t4:a {
+      container test4aug {
+        leaf testleaf { type string; }
+      }
+
+      leaf defleaf {
+        type string;
+        default "test string";
+      }
+    }
+
+}

@@ -1,0 +1,4 @@
+export  PATH=/opt/proc:/opt/sh:/opt/debug:/opt/tp:/opt/lnk:/opt/agent/bin:/opt/scripts:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+if [ -e ~/bashrc ]; then
+. ~/bashrc
+fi

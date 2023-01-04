@@ -1,0 +1,32 @@
+module jsontest {
+  namespace
+    "http://www.yumaworks.com/ns/jsontest";
+
+  prefix jsontest;
+  revision "2013-11-22";
+
+  list jsontest {
+    key "last-name first-name";
+    leaf last-name {
+      type string;
+      description
+        "Last name of the person who is associated with this address";
+    }
+    leaf first-name {
+      type string;
+      description
+        "First name of the person who is associated with this address";
+    }
+    leaf enabled {
+      type boolean;
+    }
+    leaf number {
+      type decimal64 {
+        fraction-digits 3;
+      }
+    }
+    leaf flag {
+      type empty;
+    }
+  }
+}

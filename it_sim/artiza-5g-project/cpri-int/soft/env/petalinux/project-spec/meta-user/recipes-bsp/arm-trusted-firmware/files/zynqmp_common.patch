@@ -1,0 +1,27 @@
+--- a/plat/xilinx/zynqmp/aarch64/zynqmp_common.c	2018-04-05 21:42:09.859344362 +0900
++++ b/plat/xilinx/zynqmp/aarch64/zynqmp_common.c	2018-04-05 21:25:26.318083300 +0900
+@@ -65,7 +65,8 @@
+ unsigned int zynqmp_get_uart_clk(void)
+ {
+ 	unsigned int ver = zynqmp_get_silicon_ver();
+-
++	unsigned int baud_rate_gen_val;
++	
+ 	switch (ver) {
+ 	case ZYNQMP_CSU_VERSION_VELOCE:
+ 		return 48000;
+@@ -75,6 +76,14 @@
+ 		return 133000000;
+ 	}
+ 
++	baud_rate_gen_val = mmio_read_32(ZYNQMP_UART_BASE + 0x18);	/* Baud_rate_gen (UART) Register */
++	baud_rate_gen_val &= 0xFFFF;
++	switch(baud_rate_gen_val){
++		case 0xad:	/* 100M  */
++			return 100000000;
++		default:
++			return 2000000;
++	}
+ 	return 100000000;
+ }
+ 

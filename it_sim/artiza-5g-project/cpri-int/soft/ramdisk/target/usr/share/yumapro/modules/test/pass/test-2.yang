@@ -1,0 +1,11 @@
+  module test-2 {
+    namespace "http://netconfcentral.org/ns/test-2";
+    prefix "test2";
+    revision "2016-06-03";
+ 
+    container stuff {
+      leaf a { type string; }
+      leaf b { type string; }
+      leaf c { type string; }
+    }
+  }

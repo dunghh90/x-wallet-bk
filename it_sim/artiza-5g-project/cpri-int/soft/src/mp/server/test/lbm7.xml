@@ -1,0 +1,5 @@
+<maintenance-domain xmlns="urn:xran:lbm:1.0">
+     <id>id-7</id>
+     <name>name-7</name>
+     <md-level>7</md-level>
+</maintenance-domain>

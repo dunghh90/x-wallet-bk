@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo -n "CAP DUMP TIME :"
+
+date +"%Y/%m/%d %H:%M:%S"
+
+echo "FAIL:ANT-"$1" "$2"CAL FAIL"
+
+cmd_devctl r B0E00000 1CE0
+
+exit 0

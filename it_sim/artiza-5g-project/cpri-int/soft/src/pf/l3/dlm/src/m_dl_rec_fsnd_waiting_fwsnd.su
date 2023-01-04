@@ -1,0 +1,2 @@
+m_dl_rec_fsnd_waiting_fwsnd.c:34:6:m_dl_rec_fsnd_waiting_fwsnd	80	dynamic,bounded
+m_dl_rec_fsnd_waiting_fwsnd.c:74:6:m_dl_rec_fwsnd_waiting_fwsnd	144	dynamic,bounded

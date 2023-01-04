@@ -1,0 +1,159 @@
+module test-nested-choices {
+
+  namespace "http://netconfcentral.org/ns/test-nested-choices";
+  prefix "nested";
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+
+  organization
+    "Netconf Central";
+
+  contact
+    "Andy Bierman";
+
+  description
+    "YANG test module for nested choices";
+
+  revision 2018-01-04 {
+      description "Test module in-progress.";
+  }
+
+
+  list video-input-ts {
+    key input-ts-index;
+
+    leaf input-ts-index {
+      type uint32;
+    }
+
+    leaf input-ts-name {
+      type string;
+      default " ";
+    }
+
+    leaf input-ts-decryption-enabled {
+      type boolean;
+      default false;
+    }
+
+    choice input-ts {
+      mandatory true;
+
+      case unicast-video-input-ts {
+        choice unicast-destination {
+          mandatory true;
+
+          case address {
+            choice unicast-destination4 {
+              mandatory true;
+
+              case address3 {
+                leaf unicast-ts-destination-ip-address4 {
+                  type inet:ip-address;
+                  mandatory true;
+                }
+              }
+
+              case interface4 {
+                leaf unicast-ts-interface-name4 {
+                  type string;
+                  mandatory true;
+                }
+              }
+            }
+
+            leaf unicast-ts-destination-ip-address {
+              type inet:ip-address;
+              mandatory true;
+            }
+          }
+
+          case interface {
+            leaf unicast-ts-interface-name {
+              type string;
+              mandatory true;
+            }
+          }
+        }
+
+        leaf unicast-ts-destination-udp-port {
+          type inet:port-number;
+          mandatory true;
+        }
+
+        container yang-ext1 {
+          choice unicast-destination2 {
+            mandatory true;
+
+            case address2 {
+              choice unicast-destination3 {
+                mandatory true;
+
+                case address3 {
+                  leaf unicast-ts-destination-ip-address3 {
+                    type inet:ip-address;
+                    mandatory true;
+                  }
+                }
+
+                case interface3 {
+                  leaf unicast-ts-interface-name3 {
+                    type string;
+                    mandatory true;
+                  }
+                }
+              }
+
+              leaf unicast-ts-destination-ip-address2 {
+                type inet:ip-address;
+                mandatory true;
+              }
+            }
+
+            case interface2 {
+              leaf unicast-ts-interface-name2 {
+                type string;
+                mandatory true;
+              }
+            }
+          }
+        }
+      }
+
+      case multicast-video-input-ts {
+        list multicast {
+          key "source-ip-address destination-ip-address";
+          min-elements 1;
+          max-elements 2;
+
+          leaf source-ip-address {
+            type inet:ip-address;
+            mandatory true;
+          }
+
+          leaf destination-ip-address {
+            type inet:ip-address;
+            mandatory true;
+          }
+
+          leaf destination-udp-port {
+            type inet:port-number;
+            default 0;
+          }
+
+          leaf priority {
+            type int8;
+            mandatory true;
+          }
+        }
+      }
+
+      case yang-choice-ext {
+
+      }
+    }
+  }
+
+}

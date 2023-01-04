@@ -1,0 +1,74 @@
+module t9 {
+
+  namespace "http://netconfcentral.org/ns/t9";
+
+  prefix t9;
+
+  revision "2011-07-01" {
+    description 
+      "Bug report";
+  }
+
+  identity t9-base;
+  identity t9-base1 { base t9-base; }
+  identity t9-base2 { base t9-base; }
+  identity t9-base3 { base t9-base; }
+
+  list t9-one {
+    key "id1";
+    leaf id1 { type string; }
+    leaf id2 { type int8; }
+    list two {
+      key "a b c";
+      leaf a { type string; }
+      leaf b { type int32; }
+      leaf c { type boolean; }
+      leaf d { type int32; }
+    }
+  }
+
+
+  list t9-two {
+    key "tbits tenum tbool tint tuint tdec64 tstring tbinary
+         tinst tunion tleafref tidref ";
+    leaf tbits {
+      type bits {
+        bit one;
+        bit two;
+        bit three;
+      }
+    }
+    leaf tenum {
+      type enumeration {
+        enum a;
+        enum b;
+        enum c;
+      }
+    }
+    leaf tbool { type boolean; }
+    leaf tint { type int32; }
+    leaf tuint { type uint32; }
+    leaf tdec64 {
+      type decimal64 { fraction-digits 4; }
+    }
+    leaf tstring { type string; }
+    leaf tbinary { type binary; }
+    leaf tinst { type instance-identifier; }
+    leaf tunion {
+      type union {
+        type int8;
+        type boolean;
+        type string;
+      }
+    }
+    leaf tleafref {
+      type leafref { path /t9:t9-one/t9:id2; }
+    }
+    leaf tidref {
+      type identityref { base t9-base; }
+    }
+    leaf col1 { type string; }
+    leaf col2 { type int32; }
+  }
+
+}

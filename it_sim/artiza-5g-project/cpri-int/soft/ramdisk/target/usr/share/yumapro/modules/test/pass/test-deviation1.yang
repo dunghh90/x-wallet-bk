@@ -1,0 +1,35 @@
+module test-deviation1 {
+  namespace "http://netconfcentral.org/ns/mytest-deviation1";
+  prefix "mytest";
+
+  revision 2019-11-05 { }
+
+  grouping group-test {
+    leaf group-leaf {
+      type leafref {
+        path "/mytest:c2/mytest:addVal";
+      }
+    }
+  }
+
+  typedef addVal-ref {
+     type leafref {
+       path "/mytest:c2/mytest:addVal";
+     }
+  }
+
+  container c1 {
+    leaf name { type string; }
+    uses group-test;
+
+    leaf group-leaf2 {
+      type leafref {
+        path "/mytest:c2/mytest:addVal";
+      }
+    }
+  }
+
+  container c2 {
+     leaf addVal { type string; }
+  }
+}

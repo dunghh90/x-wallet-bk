@@ -1,0 +1,34 @@
+#!/bin/sh
+
+echo "Set LD_PRELOAD, Pseudo device access mode start..."
+export LD_PRELOAD=/home/user/Desktop/soft/ramdisk/target/usr/local/lib64/libSegFault.so:/home/user/Desktop/soft/ramdisk/target/usr/local/lib64/libbpf_devc_qemu.so
+export OPE_STATE=1
+ulimit -c unlimited
+export SAA_LOGLEVEL="debug2"
+export NSA_LOGLEVEL="debug"
+
+cmd_devctl er 41 1>/dev/null 2>/dev/null
+freq=$1
+if [ $freq = "45g" ] ; then
+echo "Setup sub6 4.5G ..." > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+	cp -f /home/user/Desktop/soft/ramdisk/qemu/reg/dev_eeprom_sub6_45g.cfg /home/user/Desktop/soft/ramdisk/qemu/reg/dev_eeprom.cfg
+elif  [ $freq = "37g" ] ; then
+echo "Setup sub6 3.7G ..." > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+	cp -f /home/user/Desktop/soft/ramdisk/qemu/reg/dev_eeprom_sub6_37g.cfg /home/user/Desktop/soft/ramdisk/qemu/reg/dev_eeprom.cfg
+else
+echo "Setup mmW 28G ..." > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+	cp -f /home/user/Desktop/soft/ramdisk/qemu/reg/dev_eeprom_mmw_28g.cfg /home/user/Desktop/soft/ramdisk/qemu/reg/dev_eeprom.cfg
+fi
+
+echo "Start DU Middle Process ..." > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+DU_mw
+
+echo "Start Debug Lan Port  ..." > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+ifconfig eth0 10.0.2.15 up
+
+
+echo "Start DU Init Process..." > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+DU_init &
+
+echo "Start Logrotate handler  ..." > /home/user/Desktop/soft/ramdisk/target/dev/kmsg
+cmd_logrotate_handler &

@@ -1,0 +1,10 @@
+m_rc_TrxSet.c:52:6:m_rc_TrxSetChk_S3G	320	dynamic,bounded
+m_rc_TrxSet.c:297:8:m_rc_TrxSetChk_3G	288	dynamic,bounded
+m_rc_TrxSet.c:442:6:m_rc_TrxSet_Transfer_Req_3G	224	dynamic,bounded
+m_rc_TrxSet.c:645:6:m_rc_TrxSet_Transfer_Req_LTE	272	dynamic,bounded
+m_rc_TrxSet.c:851:6:m_rc_TrxSet_Transfer_Req	80	dynamic,bounded
+m_rc_TrxSet.c:907:6:m_rc_TrxSet_Trans_TO	80	dynamic,bounded
+m_rc_TrxSet.c:977:6:m_rc_TrxSet_Rcv_Rsp_3G	80	dynamic,bounded
+m_rc_TrxSet.c:1071:6:m_rc_TrxSet_Rcv_Rsp_LTE	80	dynamic,bounded
+m_rc_TrxSet.c:1169:6:m_rc_TrxSet_Snd_Rsp	112	dynamic,bounded
+m_rc_TrxSet.c:1309:6:m_rc_TrxSet_Rcv_Rsp	80	dynamic,bounded

@@ -1,0 +1,86 @@
+module testcase {
+
+    namespace "http://netconfcentral.org/ns/testcase";
+    prefix "tcase";
+
+    organization
+        "Netconf Central";
+
+    contact
+        "Andy Bierman";
+
+    description
+        "YANG testcase module ";
+
+    revision 2016-03-01 {
+        description "Test module for case and choice.";
+    }
+
+    container casetest1 {
+      presence "testing case one";
+      leaf leaf.1 { type string; }
+
+      choice choice.1 {
+        mandatory true;
+        case case.1 {
+          leaf leaf.2 { type string; }
+          leaf leaf.3 { type int32; mandatory true; }
+        }
+        case case.2 {
+          leaf leaf.4 { type string; }
+        }
+      }
+    }
+
+    container casetest2 {
+      choice choice.2 {
+        case case.1 {
+          leaf case.1 {         // SAME NAME AS CASE
+              type string;
+          }
+        }
+        case case.2 {
+          leaf choice.2 {       // SAME NAME AS CHOICE
+            type string;
+          }
+        }
+      }
+    }
+
+    list casetest3 {
+      key "keyleaf";
+
+      leaf keyleaf { type string; }
+
+      choice choice.2 {
+        case case.1 {
+          leaf case.1 {         // SAME NAME AS CASE
+              type string;
+          }
+        }
+        case case.2 {
+          leaf choice.2 {       // SAME NAME AS CHOICE
+            type string;
+          }
+        }
+      }
+    }
+
+  choice choicetest {           // TOP NODE CHOICE
+    case case.1.1 {
+      leaf choicetest {         // SAME NAME AS CHOICE
+        type string;
+        }
+      leaf leaf.1 {
+        type string;
+        mandatory true;
+      }
+    }
+    leaf leaf.2 {
+      type string;
+      mandatory true;
+      }
+    leaf leaf.3 { type int8; }
+  }
+
+}

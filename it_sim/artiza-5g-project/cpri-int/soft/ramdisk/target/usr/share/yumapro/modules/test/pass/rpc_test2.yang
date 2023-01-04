@@ -1,0 +1,22 @@
+module rpc_test2 {
+
+    namespace "http://netconfcentral.org/ns/rpc_test2";
+    prefix "rpct2";
+
+    import rpc_test1 { prefix rpct1; }
+    import hooks-test { prefix hk; }
+
+    revision 2016-07-14 {
+        description
+            "Initial revision";
+    }
+
+    augment "/rpct1:test-augm/rpct1:input" {
+      leaf name {
+         type leafref {
+            path "/hk:interfaces/hk:interface/hk:name";
+         }
+      }
+    }
+ 
+}

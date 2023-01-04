@@ -1,0 +1,41 @@
+module test-oc5 {
+  namespace "http://www.yumaworks.com/ns/test-oc5";
+  prefix toc5;
+
+  revision "2019-03-05" {
+    description
+      "Initial revision. Test module for Open Config modules";
+  }
+
+  grouping aft-top {
+    container afts {
+      presence "";
+
+      container mpls {
+        list label-entry {
+          key "label";
+
+          leaf label {
+            type leafref {
+              path "../config/label";
+            }
+          }
+
+          container config {
+            leaf label {
+              type string;
+            }
+          }
+
+          container state {
+            config false;
+            leaf label {
+              type string;
+            }
+          }
+        }
+      }
+    }
+  }
+
+}

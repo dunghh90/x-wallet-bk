@@ -1,0 +1,38 @@
+module yang11-leafref {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/yang11-leafref";
+  prefix ytl;
+  revision "2016-04-16";
+
+  leaf leafref1 {
+    type leafref {
+      path /int/name;
+      require-instance false;
+    }
+  }
+
+  leaf inst1 {
+    type instance-identifier {
+      require-instance false;
+    }
+  }
+
+  list int {
+    key "name type";
+    leaf name { type string; }
+    leaf type { type string; }
+    leaf enabled { type boolean; }
+  }
+
+  typedef lref1 {
+    type leafref { path "/int/name"; }
+    //default "t0";
+  }
+
+  leaf ut3 {
+    type lref1;
+    // default test2;
+  }
+
+}

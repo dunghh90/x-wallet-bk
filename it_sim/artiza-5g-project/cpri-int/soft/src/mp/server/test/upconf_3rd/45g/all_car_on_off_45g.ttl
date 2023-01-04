@@ -1,0 +1,63 @@
+
+prompt = 'f_5g_du@5G_DU>'
+
+;interfaceİ’è
+include '45G_interface.ttl'
+pause 5
+
+;processing-elementİ’è
+include '45G_procelm.ttl'
+pause 5
+
+;01.low-level-rx-endpoints(“¯)
+sendln'edit-config config=@uplane_rxendp_all_sub6.xml'
+wait prompt
+
+;02.low-level-tx-endpoints(“¯)
+sendln'edit-config config=@uplane_txendp_all_sub6.xml'
+wait prompt
+
+;03.rx-array-carriers(“¯)
+sendln'edit-config config=@uplane_rxcar_all_45g.xml'
+wait prompt
+
+;04.tx-array-carriers(“¯)
+sendln'edit-config config=@uplane_txcar_all_45g.xml'
+wait prompt
+
+;05.low-level-rx-links(“¯)
+sendln'edit-config config=@uplane_rxlink_all_sub6.xml'
+wait prompt
+
+;06.low-level-tx-links(“¯)
+sendln'edit-config config=@uplane_txlink_all_sub6.xml'
+wait prompt
+
+;07.get(disable)
+sendln'sget /user-plane-configuration'
+wait prompt
+
+;08.active-rx(“¯)
+sendln'edit-config config=@uplane_rxact_all.xml'
+wait prompt
+
+;09.active-tx(“¯)
+sendln'edit-config config=@uplane_txact_all.xml'
+wait prompt
+
+;10.get(ready)
+sendln'sget /user-plane-configuration'
+wait prompt
+
+;11.inactive-rx(“¯)
+sendln'edit-config config=@uplane_rxinact_all.xml'
+wait prompt
+
+;12.inactive-tx(“¯)
+sendln'edit-config config=@uplane_txinact_all.xml'
+wait prompt
+
+;13.get(disable)
+sendln'sget /user-plane-configuration'
+wait prompt
+

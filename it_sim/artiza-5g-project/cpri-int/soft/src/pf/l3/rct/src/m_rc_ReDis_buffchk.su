@@ -1,0 +1,4 @@
+m_rc_ReDis_buffchk.c:38:6:m_rc_ReDis_buffchk	96	dynamic,bounded
+m_rc_ReDis_buffchk.c:123:6:m_rc_RelFLDMT_CpriDwn	112	dynamic,bounded
+m_rc_ReDis_buffchk.c:182:6:m_rc_RelSVMT_CpriDwn	112	dynamic,bounded
+m_rc_ReDis_buffchk.c:241:6:m_rc_forceStopErrRel	112	dynamic,bounded

@@ -1,0 +1,4 @@
+f_trp_com_undefine.c:30:5:BPF_RU_MACC_BCMP	64	static
+f_trp_com_undefine.c:56:5:BPF_RU_MACC_BCOPY	64	static
+f_trp_com_undefine.c:89:5:BPF_RU_UTTM_GETTIME	64	static
+f_trp_com_undefine.c:100:5:BPF_RU_UTTM_GETLOCALTIME	80	static

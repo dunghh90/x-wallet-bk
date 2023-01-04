@@ -1,0 +1,173 @@
+#!/bin/sh
+
+if [ "$1" = "lg" ]; then
+echo "<MPLANE LAST Netconf Server ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+tail -n 1000 /home/user/Desktop/soft/ramdisk/target/var/log/netconfd-pro.log 2>/dev/null
+echo ""
+fi
+
+if [ "$1" = "mplan_srv" -o "$1" = "lg" -o "$1" = "mplan" ]; then
+echo "<MPLANE Netconf Server +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/mplan_srv.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/mplan_srv.pcap 2>/dev/null
+fi
+
+if [ "$1" = "mplan_saa" -o "$1" = "lg" -o "$1" = "mplan" ]; then
+echo "<MPLANE Sub-Agent ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/mplan_saa.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/mplan_saa.pcap 2>/dev/null
+fi
+
+if [ "$1" = "mplan_spv" -o "$1" = "lg" -o "$1" = "mplan" ]; then
+echo "<MPLANE Sub-Agent supervision ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/mplan_spv.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/mplan_spv.pcap 2>/dev/null
+fi
+
+if [ "$1" = "mplan_pfm" -o "$1" = "lg" -o "$1" = "mplan" ]; then
+echo "<MPLANE Sub-Agent performance-management notification ++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/mplan_pfm.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/mplan_pfm.pcap 2>/dev/null
+fi
+
+if [ "$1" = "mplan_not" -o "$1" = "lg" -o "$1" = "mplan" ]; then
+echo "<MPLANE Sub-Agent notification +++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/mplan_not.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/mplan_not.pcap 2>/dev/null
+fi
+
+if [ "$1" = "plog_stat" -o "$1" = "lg" ]; then
+echo "<LOG of statistic ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cat /proc/rru/statistic
+fi
+
+if [ "$1" = "reg" -o "$1" = "lg" ]; then
+echo "<REG LOG  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/reg.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/reg.pcap 2>/dev/null
+fi
+
+if [ "$1" = "rsc_sem" -o "$1" = "lg" ]; then
+echo "<SEM LOG  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/rsc_sem.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/rsc_sem.pcap 2>/dev/null
+fi
+
+if [ "$1" = "rsc_tim" -o "$1" = "lg" ]; then
+echo "<TIM LOG  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/rsc_tim.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/rsc_tim.pcap 2>/dev/null
+fi
+
+if [ "$1" = "rsc_buf" -o "$1" = "lg" ]; then
+echo "<BUF LOG  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/rsc_buf.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/rsc_buf.pcap 2>/dev/null
+fi
+
+if [ "$1" = "spi" -o "$1" = "lg" ]; then
+echo "<SPI LOG  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/spi.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/spi.pcap 2>/dev/null
+fi
+
+if [ "$1" = "i2c" -o "$1" = "lg" ]; then
+echo "<I2C LOG  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/i2c.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/i2c.pcap 2>/dev/null
+fi
+
+if [ "$1" = "qspi" -o "$1" = "lg" ]; then
+echo "<QSPI LOG  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/qspi.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/qspi.pcap 2>/dev/null
+fi
+
+if [ "$1" = "trc_oth" -o "$1" = "lg" ]; then
+echo "<OTHER LOG  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/trc_oth.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/trc_oth.pcap 2>/dev/null
+fi
+
+
+if [ "$1" = "trc_init" -o "$1" = "lg" ]; then
+echo "<DU_init TRACE LOG  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/trc_init.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/trc_init.pcap 2>/dev/null
+fi
+
+if [ "$1" = "if_init" -o "$1" = "lg" ]; then
+echo "<DU_init IF LOG  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/rtif_init.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/rtif_init.pcap 2>/dev/null
+fi
+
+
+if [ "$1" = "trc_pf" -o "$1" = "lg" ]; then
+echo "<DU_pf TRACE LOG  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/trc_pf.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/trc_pf.pcap 2>/dev/null
+fi
+
+if [ "$1" = "if_pf" -o "$1" = "lg" ]; then
+echo "<DU_pf IF LOG  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/rtif_pf.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/rtif_pf.pcap 2>/dev/null
+fi
+
+
+if [ "$1" = "trc_rfic" -o "$1" = "lg" ]; then
+echo "<DU_pf RFIC LOG  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/trc_rfic.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/trc_rfic.pcap 2>/dev/null
+fi
+
+if [ "$1" = "trc_cal" -o "$1" = "lg" ]; then
+echo "<DU_pf CAL LOG  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/trc_cal.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/trc_cal.pcap 2>/dev/null
+fi
+
+if [ "$1" = "ptpapr" -o "$1" = "lg" ]; then
+echo "<PTP APR LOG  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/ptpapr.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/ptpapr.pcap 2>/dev/null
+fi
+
+if [ "$1" = "trc_ptp" -o "$1" = "lg" ]; then
+echo "<PTP TRACE LOG  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/trc_ptp.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/trc_ptp.pcap 2>/dev/null
+fi
+
+if [ "$1" = "if_ptp" -o "$1" = "lg" ]; then
+echo "<PTP IF LOG  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/rtif_ptp.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/rtif_ptp.pcap 2>/dev/null
+fi
+
+if [ "$1" = "ptplog" -o "$1" = "lg" ]; then
+echo "<PTP LOG  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/ptplog.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/ptplog.pcap 2>/dev/null
+fi
+
+if [ "$1" = "ptpinfo" -o "$1" = "lg" ]; then
+echo "<PTP INFO  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/ptpinfo.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/ptpinfo.pcap 2>/dev/null
+fi
+
+if [ "$1" = "trc_ptp_h" -o "$1" = "lg" ]; then
+echo "<PTP HIGH LEVEL INFO  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/trc_ptp_h.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/trc_ptp_h.pcap 2>/dev/null
+fi
+
+if [ "$1" = "pgc" ]; then
+echo "<PGC LOG  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>"
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/pgc_log.pcap.old0 2>/dev/null
+cmd_rrupfdump -d /home/user/Desktop/soft/ramdisk/target/var/log/pgc_log.pcap 2>/dev/null
+fi
+
+

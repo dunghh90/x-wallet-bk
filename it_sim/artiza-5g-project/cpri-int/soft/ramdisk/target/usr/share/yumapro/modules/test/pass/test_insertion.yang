@@ -1,0 +1,17 @@
+module test_insertion {
+    namespace "http://www.yumaworks.com/ns/test_insertion";
+    prefix "tinsert";
+    revision "2016-10-01";
+    
+    container insert_cont {
+
+        list insert_list {
+            key "insert_key";
+            ordered-by user;
+
+            leaf insert_key {
+                type string;
+            }
+        }
+    }
+}

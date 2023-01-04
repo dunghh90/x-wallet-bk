@@ -1,0 +1,4 @@
+f_dpda_act_carrierOffSettingRequest.c:16:5:f_dpda_act_txCarrierOffSettingRequest	96	dynamic,bounded
+f_dpda_act_carrierOffSettingRequest.c:153:5:f_dpda_act_rxCarrierOffSettingRequest	80	dynamic,bounded
+f_dpda_act_carrierOffSettingRequest.c:238:5:f_dpda_act_testtxCarrierOffSettingRequest	112	dynamic,bounded
+f_dpda_act_carrierOffSettingRequest.c:394:5:f_dpda_act_carrierOffSettingRequest	80	static

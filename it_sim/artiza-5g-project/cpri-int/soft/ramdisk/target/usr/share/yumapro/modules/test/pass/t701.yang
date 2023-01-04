@@ -1,0 +1,20 @@
+module t701 {
+
+  namespace "http://netconfcentral.org/ns/t701";
+
+  prefix t701;
+
+  revision "2015-12-05" {
+  }
+
+  list t701 {
+     key name;
+     leaf name { type string; }
+     
+     leaf mtu {
+         type uint32;
+         default "1500";
+     }
+  }
+
+}

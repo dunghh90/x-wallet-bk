@@ -1,0 +1,11 @@
+#!/bin/sh
+
+while [ 1 ]
+do
+	sleep 60
+
+	/home/user/Desktop/soft/ramdisk/target/usr/sbin/logrotate /home/user/Desktop/soft/ramdisk/target/etc/logrotate.conf
+
+
+
+done

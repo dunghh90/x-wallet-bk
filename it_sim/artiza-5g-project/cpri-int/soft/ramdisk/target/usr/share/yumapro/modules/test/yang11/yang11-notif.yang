@@ -1,0 +1,47 @@
+module yang11-notif {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/yang11-notif";
+  prefix ynotif;
+  revision "2016-03-12" {
+  }
+
+  grouping N1 {
+    notification notif1 {
+      leaf t1 { type int32; }
+      leaf t2 { type int8; }
+    }
+  }
+
+  augment /server {
+    notification N2 {
+      container c1;
+      leaf c2 { type int8; }
+    }
+  }
+
+  augment /server {
+    uses N1;
+  }
+
+  list server {
+       key name;
+       leaf name {
+         type string;
+       }
+       notification n2 {
+           leaf X { type int8; }
+           leaf Y { type int8; }
+           leaf Z { type int8; }
+        }
+   }
+
+   container C1 {
+     uses N1 {
+       augment notif1 {
+         leaf XX { type int32; }
+       }
+     }
+   }
+
+}

@@ -1,0 +1,310 @@
+module test-def-case {
+  namespace "http://www.yumaworks.com/ns/test-def-case";
+  prefix tdefcase;
+
+  revision 2017-06-23 {
+    description "New test scenarios.
+        YPW-1043.";
+  }
+
+  revision 2017-05-17 {
+    description "More new test scenarios.
+        YPW-1041.";
+  }
+
+  revision 2017-01-10 {
+    description "Initial Test module";
+  }
+
+  container def_case_cont {
+    choice def_case_choice {
+      default def_case_one;
+
+      case def_case_one {
+        leaf one {
+          type string;
+          default "default";
+        }
+      }
+
+      case def_case_two {
+        leaf two {
+          type string;
+        }
+      }
+    }
+  }
+
+  list entity {
+    key "name";
+
+    leaf name {
+      type string;
+    }
+
+    choice role {
+      case generator {
+        leaf generator-h-frame-size {
+          type uint32;
+        }
+      }
+
+      case reflector {
+        leaf assoc-gen-vendor-type {
+          type enumeration {
+            enum other;
+            enum ciena;
+          }
+          default ciena;
+        }
+
+        leaf reflection-level {
+          type boolean;
+        }
+
+        leaf reflector-mac-validation {
+          type boolean;
+          default true;
+        }
+      }
+    }
+  }
+
+  container sat {
+    list entity {
+      key "name";
+
+      leaf name {
+        type string;
+      }
+
+      choice role {
+        case generator {
+          leaf generator-h-frame-size {
+            type uint32;
+          }
+        }
+
+        case reflector {
+          leaf assoc-gen-vendor-type {
+            type enumeration {
+              enum other;
+              enum ciena;
+            }
+            default ciena;
+          }
+
+          leaf reflection-level {
+            type boolean;
+          }
+
+          leaf reflector-mac-validation {
+            type boolean;
+            default true;
+          }
+        }
+      }
+    }
+  }
+
+  container sat2 {
+    presence "Presence container";
+    list entity {
+      key "name";
+
+      leaf name {
+        type string;
+      }
+
+      choice role {
+        case generator {
+          leaf generator-h-frame-size {
+            type uint32;
+          }
+        }
+
+        case reflector {
+          leaf assoc-gen-vendor-type {
+            type enumeration {
+              enum other;
+              enum ciena;
+            }
+            default ciena;
+          }
+
+          leaf reflection-level {
+            type boolean;
+          }
+
+          leaf reflector-mac-validation {
+            type boolean;
+            default true;
+          }
+        }
+      }
+    }
+  }
+
+  container sat3 {
+    list entity {
+      key "name";
+
+      leaf name {
+        type string;
+      }
+
+      container nested-cont {
+        container nested-cont2 {
+          container nested-cont3 {
+            choice role {
+              case generator {
+                leaf generator-h-frame-size {
+                  type uint32;
+                }
+              }
+
+              case reflector {
+                leaf assoc-gen-vendor-type {
+                  type enumeration {
+                    enum other;
+                    enum ciena;
+                  }
+                  default ciena;
+                }
+
+                leaf reflection-level {
+                  type boolean;
+                }
+
+                leaf reflector-mac-validation {
+                  type boolean;
+                  default true;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  container sat4 {
+
+    choice role {
+      case generator {
+        leaf generator-h-frame-size {
+          type uint32;
+        }
+      }
+
+      case reflector {
+        leaf assoc-gen-vendor-type {
+          type enumeration {
+            enum other;
+            enum ciena;
+          }
+          default ciena;
+        }
+
+        leaf reflection-level {
+          type boolean;
+        }
+
+        leaf reflector-mac-validation {
+          type boolean;
+          default true;
+        }
+      }
+    }
+  }
+
+  list top-entity {
+    key "name";
+    leaf name {
+      type string;
+    }
+
+    list entity {
+      key "name";
+
+      leaf name {
+        type string;
+      }
+
+      choice role {
+        case generator {
+          leaf generator-h-frame-size {
+            type uint32;
+          }
+        }
+
+        case reflector {
+          leaf assoc-gen-vendor-type {
+            type enumeration {
+              enum other;
+              enum ciena;
+            }
+            default ciena;
+          }
+
+          leaf reflection-level {
+            type boolean;
+          }
+
+          leaf reflector-mac-validation {
+            type boolean;
+            default true;
+          }
+        }
+      }
+    }
+  }
+
+  container sat5 {
+
+    container inner-cont {
+      leaf name {
+        type string;
+      }
+    }
+
+    list entity {
+      key "name";
+
+      leaf name {
+        type string;
+      }
+
+      choice role {
+        case generator {
+          leaf generator-h-frame-size {
+            type uint32;
+          }
+        }
+
+        case reflector {
+          leaf assoc-gen-vendor-type {
+            type enumeration {
+              enum other;
+              enum ciena;
+            }
+            default ciena;
+          }
+
+          leaf reflection-level {
+            type boolean;
+          }
+
+          leaf reflector-mac-validation {
+            type boolean;
+            default true;
+          }
+        }
+      }
+    }
+  }
+
+
+}
+
+

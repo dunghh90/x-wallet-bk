@@ -1,0 +1,4 @@
+f_cpr_sfp_log.c:38:20:f_cpr_sfp_log_conv_sfp_speed	48	static
+f_cpr_sfp_log.c:71:22:f_cpr_sfp_log_check_sfp_support	64	static
+f_cpr_sfp_log.c:107:6:f_cpr_sfp_log_make	192	static
+f_cpr_sfp_log.c:287:6:f_cpr_sfp_log	64	static

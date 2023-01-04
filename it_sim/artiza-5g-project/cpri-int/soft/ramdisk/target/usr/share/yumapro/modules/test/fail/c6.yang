@@ -1,0 +1,43 @@
+module c6 {
+  yang-version 1.1;
+  namespace "http://yumaworks.com/ns/c6";
+  prefix "c6";
+  revision 2018-06-23;
+
+  grouping emc-config-grouping {
+    description
+      "Configuration subtree for Element Management Controller";
+    container emc {
+      presence
+        "Presence activates EMC function.";
+      description
+        "Configuration parameters for EMC";
+      container ma-list {
+        description
+          "List of subordinate remote Management Agents";
+        list ma {
+          key name;
+          description
+            "Management Agent record";
+          leaf name {
+            type string;
+            description
+              "The user-assigned name of the MA";
+          }
+          leaf uri {
+            type string;
+            description
+              "Management URI.";
+          }
+        }
+      }
+    }
+  }
+
+  container c6 {
+    uses emc-config-grouping;
+  }
+
+
+
+}

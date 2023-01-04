@@ -1,0 +1,18 @@
+module devtest2-dev {
+
+   namespace "http://yumaworks.com/ns/devtest2-dev";
+   prefix "d2dev";
+   import devtest2 { prefix d2; }
+
+   revision 2015-04-17;
+
+   deviation /d2:foo {
+     deviate not-supported;
+   }
+   deviation /d2:bar {
+     deviate replace {
+       type d2:foo-type;
+     }
+   }
+
+}

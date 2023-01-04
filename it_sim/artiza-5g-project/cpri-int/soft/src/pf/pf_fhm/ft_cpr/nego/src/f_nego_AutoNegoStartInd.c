@@ -1,0 +1,346 @@
+/*********************************************************************************/
+/**
+ *  @skip $Id:$
+ *  @file f_nego_AutoNegoStartInd.c
+ *  @brief  Auto Nego Start Indication function
+ *  @date 2015/04/22 FFCS)fuxg create
+ * 
+ *  ALL Rights Reserved, Copyright (c) FUJITSU Limited 2015
+ */
+/*********************************************************************************/
+
+/** @addtogroup RRH_PF_CPR
+* @{ */
+
+#include "f_sys_inc.h"
+#include "f_nego_inc.h"
+
+/**
+* @brief 	Auto Nego Start Indication in case of start function
+* @note  	Auto Nego Start Indication in case of start function.\n
+* @param 	buff_adr [in] the buffer address pointer of received message
+* @return 	None
+* @date 	2015/04/22 FFCS)fuxg create
+* @date 	2015/06/17 ALPHA)ueda RRH-007-000 TDD-Zynq対応
+* @date     2015/8/4 TDIPS)ikeda rev.27800 2.4Gビットレート対応
+* @date     2015/8/4 TDIPS)ikeda rev.27819 オートネゴ修正
+* @date     2015/09/05 TDI)satou レジスタアドレスのdefineを修正
+* @warning	N/A
+* @FeatureID	RRH-012-000
+* @Bug_No	N/A
+* @CR_No	N/A
+* @TBD_No	N/A
+*
+*/
+VOID f_nego_AutoNegoStartInd(UINT * buff_adr)
+{
+	T_SYS_AUTO_NEGO_START_IND*		autonego_start_p;
+	INT 		ret;
+	INT 		errcd;
+	UINT		regVal;
+	UINT		num;
+	CHAR *		bitratename[] = { "2.4G","4.9G","9.8G"};
+
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_ENTER, "EvtNo:0x%x", ((T_RRH_HEAD*)buff_adr)->uiEventNo);
+
+	/* initial */
+	f_nego_4s_count = 0;
+	f_nego_hfn_count = 0;
+
+	autonego_start_p = (T_SYS_AUTO_NEGO_START_IND*)buff_adr;
+	f_nego_bitrate = autonego_start_p->bit_rate;
+
+	/* log */
+	BPF_COM_PLOG_TRACE_CPRI(E_TRC_LV_INFO, "Auto Nego Start!Bit Rate = %s(%d)", 
+								bitratename[f_nego_bitrate], f_nego_bitrate);
+
+	/* Hard set before CPP PHY LyncUP */
+	f_nego_HardSetLyncUp_Start();
+
+	/* hard set flag */
+	f_nego_hard_set_flag = D_NEGO_HARD_SET_LYNCUP_START;
+
+	/* CPP PHY Done confirm */
+	for(num = 0; num < (D_NEGO_PHYDONE_TIME_100MSEC / D_NEGO_PHYDONE_TIME_POLLING); num++)
+	{
+		usleep(D_NEGO_PHYDONE_TIME_POLLING * 1000);
+		f_nego_4s_count += (D_NEGO_PHYDONE_TIME_POLLING / D_NEGO_ONE_SHOT_TIME_10MSEC);
+		
+		BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI,
+									D_RRH_REG_CNTS_STA1, &regVal);
+
+		if((regVal & 0x00000040) == 0x00000040)
+		{
+			break;
+		}
+	}
+
+	/* CPP PHY Done confirm NG */
+	if(num >= (D_NEGO_PHYDONE_TIME_100MSEC / D_NEGO_PHYDONE_TIME_POLLING) )
+	{
+		BPF_COM_LOG_ASSERT(D_RRH_LOG_AST_LV_CRITICAL, "CPP PHY Done confirm NG!CNTS_STA2:0x%x", regVal);
+	
+		/* ALM */
+		f_com_abort(D_SYS_THDID_PF_F_MAIN, D_RRH_ALMCD_STNG);
+		return;
+	}
+
+	/* read and clear CPP PHY LyncUP ST */
+	BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI, D_RRH_REG_CNTS_CDRST, &regVal);
+	BPF_COM_PLOG_TRACE_CPRI( E_TRC_LV_INFO, "CNTS_CDRST:0x%x", regVal);
+
+	/* CPP PHY LyncUP confirm */
+	if((regVal & 0x00000001) == 0x00000001)
+	{
+		/* Hard set before Hfn Sync */
+		f_nego_HardSetHfnSync_Start();
+
+		/* hard set flag */
+		f_nego_hard_set_flag = D_NEGO_HARD_SET_HFNSYNC_START;
+
+		/* HFN SYNC confirm */
+		BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI,
+				D_RRH_REG_CPRI_CPST, &regVal);
+
+		BPF_COM_PLOG_TRACE_CPRI( E_TRC_LV_INFO, "CPRI_CPST:0x%x", regVal);
+
+		if((regVal & 0x00000001) == 0x00000001)
+		{
+			f_nego_hfn_count++;
+		}
+	}
+
+	/* 10msec timer start */
+	ret = BPF_RU_HRTM_REGISTER(
+			BPF_RU_HRTM_REG_ONCE,
+			E_RRH_TIMID_AUTO_NEGO,
+			D_NEGO_ONE_SHOT_TIME_10MSEC,
+			D_SYS_MSGID_AUTONEGO_TIMEOUT_NTC,
+			D_SYS_THDQID_PF_NEGO,
+			&errcd
+		);
+
+	if( ret != BPF_RU_HRTM_COMPLETE )
+	{
+		/* Assert log */
+		BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_INFO, 
+							"Timer Register NG!ret = %d, errcd = %d", 
+							ret, errcd);
+	}
+	
+	f_nego_thrdState = D_NEGO_THRDSTA_RUN;
+
+	BPF_COM_LOG_ASSERT( D_RRH_LOG_AST_LV_RETURN, "EvtNo:0x%x", ((T_RRH_HEAD*)buff_adr)->uiEventNo);
+	
+	return;
+}
+
+
+/**
+* @brief 	Hard Set before CPP PHY LyncUP function
+* @note  	Hard Set before CPP PHY LyncUP function.\n
+*
+* @return 	None
+* @date 	2015/04/22 FFCS)fuxg create
+* @date 	2015/06/17 ALPHA)ueda RRH-007-000 TDD-Zynq対応
+* @date     2015/11/19 TDI)satou 問処番号No.190
+* @warning	N/A
+* @FeatureID	RRH-012-000
+* @Bug_No	N/A
+* @CR_No	N/A
+* @TBD_No	「FHM Toffset初期値設定」設定値未定
+*/
+VOID f_nego_HardSetLyncUp_Start()
+{
+    static INT first_Toffset_FHM = D_RRH_ON;    /* Toffset_FHMの初期値設定は1回だけ */
+	UINT	regVal;
+	UINT	Toffset_FHM;
+
+	/* EXT PLL Hold Over set */
+	f_nego_pll_holdover_value |= 0x00000008;
+	BPF_HM_DEVC_EXT_PLL_WRITE(D_RRH_REG_PLL_LMK4826_HOLDOVER_FORCE, f_nego_pll_holdover_value);
+	
+	/* 122.88 Mhz Output Stop */
+	BPF_HM_DEVC_REG_WRITE_BITOFF(	D_RRH_LOG_REG_LV_READ_WRITE_CPRI, 
+									D_RRH_REG_CNTS_CLKCNT, 
+									0x00000001);
+
+	/* CPP Disable set */
+	BPF_HM_DEVC_REG_WRITE_BITOFF(	D_RRH_LOG_REG_LV_READ_WRITE_CPRI, 
+									D_RRH_REG_CPRI_SFPCNT, 
+									0x00000004);
+
+
+	Toffset_FHM = 0x00680;
+
+	if(f_nego_bitrate == D_COM_LINE_BITRATE_24G)
+	{
+		/* FHM Toffset初期値設定 */
+	    if (first_Toffset_FHM == D_RRH_ON)
+	    {
+            regVal = Toffset_FHM;
+            BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_MIX_FHMTOFST, &regVal);
+            first_Toffset_FHM = D_RRH_OFF;
+	    }
+
+		/* CPP Line Bit Rate set */
+		regVal = (UINT)(BIT1 | BIT0);
+		BPF_HM_DEVC_REG_WRITE_BITOFF(D_RRH_LOG_REG_LV_READ_WRITE_CPRI, D_RRH_REG_CNTS_BITRATE, regVal);
+
+		/* CPP PHY set 2.4G */
+		regVal = 0x00001861;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE1, &regVal);
+		regVal = 0x00003038;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE2, &regVal);
+		regVal = 0x000080C2;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE3, &regVal);
+		regVal = 0x00002BFF;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE4, &regVal);
+		regVal = 0x00000746;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE5, &regVal);
+		regVal = 0x00001800;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE6, &regVal);
+		regVal = 0x00004C03;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE7, &regVal);
+		regVal = 0x0000017C;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE8, &regVal);
+		regVal = 0x00000260;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE9, &regVal);
+
+		/* CPS VOD/Emphasis設定 */
+		regVal = 0x000F0006;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPRI_PHYCNT, &regVal);
+	}
+	else if(f_nego_bitrate == D_COM_LINE_BITRATE_49G)
+	{
+		/* FHM Toffset初期値設定 */
+        if (first_Toffset_FHM == D_RRH_ON)
+        {
+            regVal = Toffset_FHM;
+            BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_MIX_FHMTOFST, &regVal);
+            first_Toffset_FHM = D_RRH_OFF;
+        }
+
+		/* CPP Line Bit Rate set */
+		BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI,
+		        D_RRH_REG_CNTS_BITRATE, &regVal);
+		regVal &= 0xFFFFFFFC;
+		regVal |= 0x00000001;
+		BPF_HM_DEVC_REG_WRITE(	D_RRH_LOG_REG_LV_WRITE_CPRI,
+		        D_RRH_REG_CNTS_BITRATE, &regVal);
+
+		/* CPP PHY set 4.9G */
+		regVal = 0x00001861;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE1, &regVal);
+		regVal = 0x00003038;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE2, &regVal);
+		regVal = 0x000080C1;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE3, &regVal);
+		regVal = 0x00004BFF;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE4, &regVal);
+		regVal = 0x00000756;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE5, &regVal);
+		regVal = 0x00001800;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE6, &regVal);
+		regVal = 0x00004C03;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE7, &regVal);
+		regVal = 0x0000017C;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE8, &regVal);
+		regVal = 0x00000160;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE9, &regVal);
+
+		/* CPS VOD/Emphasis設定 */
+		regVal = 0x0006000B;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPRI_PHYCNT, &regVal);
+	}
+	else
+	{
+		/* FHM Toffset初期値設定 */
+        if (first_Toffset_FHM == D_RRH_ON)
+        {
+            regVal = Toffset_FHM;
+            BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_MIX_FHMTOFST, &regVal);
+            first_Toffset_FHM = D_RRH_OFF;
+        }
+
+		/* CPP Line Bit Rate set */
+		BPF_HM_DEVC_REG_READ(D_RRH_LOG_REG_LV_READ_CPRI,
+		        D_RRH_REG_CNTS_BITRATE, &regVal);
+		regVal &= 0xFFFFFFFC;
+		regVal |= 0x00000002;
+		BPF_HM_DEVC_REG_WRITE(	D_RRH_LOG_REG_LV_WRITE_CPRI,
+		        D_RRH_REG_CNTS_BITRATE, &regVal);
+
+		/* CPP PHY set 9.8G or 4.9G or 2.4G */
+		regVal = 0x000018A1;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE1, &regVal);
+		regVal = 0x0000303D;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE2, &regVal);
+		regVal = 0x000080C0;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE3, &regVal);
+		regVal = 0x00008BFF;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE4, &regVal);
+		regVal = 0x00000766;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE5, &regVal);
+		regVal = 0x00001E00;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE6, &regVal);
+		regVal = 0x00004C05;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE7, &regVal);
+		regVal = 0x0000057C;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE8, &regVal);
+		regVal = 0x00000060;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPHYM_RATE9, &regVal);
+
+		/* CPS VOD/Emphasis設定 */
+		regVal = 0x000A0014;
+		BPF_HM_DEVC_REG_WRITE(D_RRH_LOG_REG_LV_WRITE_CPRI, D_RRH_REG_CPRI_PHYCNT, &regVal);
+	}
+
+	/* CPP PHY reset on */
+	BPF_HM_DEVC_REG_WRITE_BITON(	D_RRH_LOG_REG_LV_READ_WRITE_CPRI, 
+									D_RRH_REG_CNTS_CPSSERRST, 
+									0x00000002);
+	
+	return;
+}
+
+
+/**
+* @brief 	Hard Set before CPP HfnSync in case of start function
+* @note  	Hard Set before CPP HfnSync in case of start function.\n
+*
+* @return 	None
+* @date 	2015/04/22 FFCS)fuxg create
+* @date 	2015/06/17 ALPHA)ueda RRH-007-000 TDD-Zynq対応
+* @warning	N/A
+* @FeatureID	RRH-012-000
+* @Bug_No	N/A
+* @CR_No	N/A
+* @TBD_No	N/A
+*
+*/
+VOID f_nego_HardSetHfnSync_Start()
+{
+	/* 122.88 Mhz Output Restart */
+	BPF_HM_DEVC_REG_WRITE_BITON(	D_RRH_LOG_REG_LV_READ_WRITE_CPRI, 
+									D_RRH_REG_CNTS_CLKCNT, 
+									0x00000001);
+	
+	/* EXT PLL Hold Over release */
+	f_nego_pll_holdover_value &= 0xFFFFFFF7;
+	BPF_HM_DEVC_EXT_PLL_WRITE(D_RRH_REG_PLL_LMK4826_HOLDOVER_FORCE, f_nego_pll_holdover_value);
+
+	/* wait 150msec */
+	usleep(D_NEGO_HFNSYNC_WAIT_TIME_150MSEC * 1000);
+	f_nego_4s_count += (D_NEGO_HFNSYNC_WAIT_TIME_150MSEC / D_NEGO_ONE_SHOT_TIME_10MSEC);
+	
+	/* CPP Enable  */
+	BPF_HM_DEVC_REG_WRITE_BITON(	D_RRH_LOG_REG_LV_READ_WRITE_CPRI, 
+									D_RRH_REG_CPRI_SFPCNT,
+									0x00000004);
+	return;
+}
+
+
+/* @} */
+

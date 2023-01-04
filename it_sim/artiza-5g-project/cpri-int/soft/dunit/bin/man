@@ -1,0 +1,152 @@
+# please input ./dunit example.rb 
+
+if ARGV.length == 0 then
+ puts "input parameter error"
+ exit 1
+end
+
+def func_man( name , desc , param, ret , eg )
+	puts "=========================================================================="
+	puts "Module NAME"
+	print "  ",name,"\n"
+	puts "DESCRIPTION"
+	print "  ",desc,"\n"
+	puts "PARAMS"
+	print "  ",param,"\n"
+	puts "RETURN"
+	print "  ",ret,"\n"
+	puts "Eg."
+	print "  ",eg,"\n"
+	return
+end
+
+puts "=========================================================================="
+puts "Dunit Modules for Test scripts "
+
+ARGV.length.times { | count |
+	if(ARGV[count].to_s == "Core" ) or (ARGV[count].to_s.downcase == "all") then
+		func_man("r = Core.dmsg(\"p\")","debug display module.","p is enable part name","r is current debug value","Core.dmsg(\"CORE\")   # => debug enable CORE parts ")
+		puts "  Core.dmsg(\"SYS\")    # => debug enable SYStemcall parts  \n" + 
+			 "  Core.dmsg(\"OAL\")    # -> debug enable OAL parts  \n" + 
+			 "  Core.dmsg(\"HAL\")    # -> debug enable COM parts  \n" + 
+			 "  Core.dmsg(\"CMN\")    # -> debug enable CMN parts  \n" + 
+			 "  Core.dmsg(\"RFIC\")   # -> debug enable RFIC parts  \n" + 
+			 "  Core.dmsg(\"INIT\")   # -> debug enable INIT parts \n" + 
+			 "  Core.dmsg(\"PF\")     # -> debug enable PF parts  \n" + 
+			 "  Core.dmsg(\"ALL\")    # -> debug enable ALL parts  \n" + 
+			 "  Core.dmsg(\"OFF\")    # -> debug ALL disable           "
+
+		func_man("Core.require(\"p\")"			,"Other scripts call module."			,"p is script file name","true or false","Core.require(\"./verbose\")")
+		func_man("Core.sys_rcinit(\"p\")"		,"return code init systemcall."			,"p is systemcall name" ,"true or false","Core.sys_rcinit(\"open\")")
+		func_man("Core.sys_rcset(\"p1\",\"p2\")","return code set systemcall."			,"p1 is systemcall name\n" + "  p2 is return code","true or false","Core.sys_rcset(\"open\")")
+		func_man("Core.sys_rcget(\"p\")"		,"return code get systemcall."			,"p is systemcall name","current return code ","puts Core.sys_rcget(\"open\")")
+		func_man("Core.oal_rcinit(\"p\")" 		,"return code init OAL module."			,"p is OAL name","true or false","Core.oal_rcinit(\"BPF_RU_IPCM_PROCSHM_ADDRGET\")")
+		func_man("Core.oal_rcset(\"p1\",\"p2\")","return code set OAL module."			,"p1 is OAL name\n" + "  p2 is return code","true or false","Core.oal_rcset(\"BPF_RU_IPCM_PROCSHM_ADDRGET\")")
+		func_man("Core.oal_rcget(\"p\")"		,"return code set OAL module."			,"p is OAL name","current return code ","puts Core.oal_rcget(\"BPF_RU_IPCM_PROCSHM_ADDRGET\")")
+		func_man("Core.hal_rcinit(\"p\")" 		,"return code init HAL module."			,"p is HAL name","true or false","Core.hal_rcinit(\"BPF_HM_DEVC_RESERVE\")")
+		func_man("Core.hal_rcset(\"p1\",\"p2\")","return code set HAL module."			,"p1 is HAL name\n" + "  p2 is return code","true or false","Core.hal_rcset(\"BPF_HM_DEVC_RESERVE\")")
+		func_man("Core.hal_rcget(\"p\")"		,"return code set HAL module."			,"p is HAL name","current return code ","puts Core.hal_rcget(\"BPF_HM_DEVC_RESERVE\")")
+
+
+		puts "For Example"
+		puts "# ------------------------------------------------------------------------"
+		puts "# I2C access module"
+		puts "# ------------------------------------------------------------------------"
+		puts "puts Core.i2c0read(\"00\",\"01\")                             # -> i2c0 read  "
+		puts "Core.i2c0write(\"00\",\"01\",\"02\")                          # -> i2c0 write  "
+		puts "puts Core.i2c1read(\"00\",\"01\")                             # -> i2c1 read  "
+		puts "Core.i2c1write(\"00\",\"01\",\"02\")                          # -> i2c1 write  "
+		
+		puts "# ------------------------------------------------------------------------"
+		puts "# QSPI access module"
+		puts "# ------------------------------------------------------------------------"
+		puts "Core.qspiinit(\"FF\")                                         # -> QSPI area init by 0xFF"
+		puts "Core.qspiinitfile(\"0\",\"100000\",\"1000\",\"./log.bin\")    # -> QSPI copy \"./log.bin\" to \"face:0 offset:0x100000 size:0x1000byte\""
+		puts "Core.qspiwrite(\"0\",\"100000\",\"12345678\")                 # -> QSPI write face:0 offset:0x100000 0x12345678"
+		puts "puts Core.qspiread(\"0\",\"100000\")                          # -> QSPI read  face:0 offset:0x100000 4byte"
+		
+		puts "# ------------------------------------------------------------------------"
+		puts "# FPGA Register access module "
+		puts "# ------------------------------------------------------------------------"
+		puts "Core.reginit(\"00\")                                          # -> Register area init by 0x00"
+		puts "puts Core.regread(\"80000000\")                               # -> Register read address 0x80000000"
+		puts "Core.regwrite(\"80000000\",\"12345678\")                      # -> Register write address 0x80000000 value 0x12345678"
+		puts "Core.regworker(\"80000000\",\"00000000\")                     # -> Register write address 0x80000000 value 0 period 1msec"
+		puts "Core.regworker(\"80000000\",\"00000000\",\"10\")              # -> Register write address 0x80000000 value 0 period 10msec"
+		puts "Core.regworkerstop()                                          # -> Stop worker"
+		
+		puts "# ------------------------------------------------------------------------"
+		puts "# SPI access module"
+		puts "# ------------------------------------------------------------------------"
+		puts "Core.spiinit(\"00\")                                          # -> SPI area init by 0x00"
+		puts "puts Core.spiread(\"00010000\",\"0\")                         # -> SPI read address 0 "
+		puts "Core.spiwrite(\"00010000\",\"0\",\"1234\")                    # -> SPI write address 0 value 1234"
+		puts "Core.spiworker(\"00010000\",\"00000000\")                     # -> SPI write address 0 value 0 period 1msec"
+		puts "Core.spiworker(\"00010000\",\"00000000\",\"10\")              # -> SPI write address 0 value 0 period 10msec"
+		puts "Core.spiworkerstop()                                          # -> Stop worker"
+		
+		puts "# ------------------------------------------------------------------------"
+		puts "# sleep module"
+		puts "# ------------------------------------------------------------------------"
+		puts "Core.sleep(\"1\")                                             # -> 1sec sleep"
+		puts "Core.sleep(\"1\",\"100000\")                                  # -> 1sec .0x100000nsec sleep"
+		
+		puts "# ------------------------------------------------------------------------"
+		puts "# Shared memory module"
+		puts "# ------------------------------------------------------------------------"
+		puts "Core.shmset(\"0\",\"0\",\"4\",\"12345678\")                   # -> Shared memory write E_RRH_SHMID_APL_RST_REASON_LOG(0) offset 0 0x12345678"
+		puts "puts Core.shmget(\"0\",\"0\",\"4\")                           # -> Shared memory read  E_RRH_SHMID_APL_RST_REASON_LOG(0) offset 0 4byte"
+		puts "puts Core.shmaddr(\"0\")                                      # -> Shared memory adder get E_RRH_SHMID_APL_RST_REASON_LOG(0)"
+		
+		puts "# ------------------------------------------------------------------------"
+		puts "# Symbol module "
+		puts "# ------------------------------------------------------------------------"
+		puts "puts Core.symalloc(\"msg\",\"1000\")                          # -> allocate symbol name:msg size:0x1000 byte"
+		puts "Core.symset(\"msg\",\"0\",\"4\",\"12345678\")                 # -> write symbol name:msg offset:0 size:4byte value:0x12345678"
+		puts "puts Core.symget(\"msg\",\"0\",\"4\")                         # -> read  symbol name:msg offset:0 size:4byte"
+		puts "puts Core.symaddr(\"msg\")                                    # -> get symbol address"
+		puts "Core.symfree(\"msg\")                                         # -> remove symbol"
+		puts "Core.symallfree()                                             # -> remove all symbol"
+		
+		puts "# ------------------------------------------------------------------------"
+		puts "# Value change module"
+		puts "# ------------------------------------------------------------------------"
+		puts "puts Core.v_to_v(\"h\",\"d\",\"0010\")                        # -> 16"
+		puts "puts Core.v_to_v(\"h\",\"b\",\"0010\")                        # -> 000000000010000"
+		puts "puts Core.v_to_v(\"d\",\"h\",\"0010\")                        # -> 0xa"
+		puts "puts Core.v_to_v(\"d\",\"b\",\"0010\")                        # -> 1010"
+		puts "puts Core.v_to_v(\"b\",\"d\",\"0010\")                        # -> 2"
+		puts "puts Core.v_to_v(\"b\",\"h\",\"0010\")                        # -> 0x2"
+		puts "puts Core.calc(\"1001\",\"|\",\"0110\")                       # -> 00001111"
+		puts "puts Core.calc(\"1001\",\"&\",\"0110\")                       # -> 00000000"
+		puts "puts Core.calc(\"1001\",\"+\",\"0110\")                       # -> 00001111"
+		puts "puts Core.calc(\"2\",\"-\",\"1\")                             # -> 1"
+		puts "puts Core.calc(\"2\",\"*\",\"2\")                             # -> 4"
+		puts "puts Core.calc(\"2\",\"/\",\"2\")                             # -> 1"
+		puts "puts Core.calc(\"2\",\"%\",\"2\")                             # -> 0"
+		puts "puts Core.calc(\"2\",\">\",\"1\")                             # -> 1"
+		puts "puts Core.calc(\"1\",\"<\",\"1\")                             # -> 2"
+	end
+	if (ARGV[count].to_s == "INIT" ) or (ARGV[count].to_s.downcase == "all") then
+		puts "# ------------------------------------------------------------------------"
+		puts "# INIT Process module"
+		puts "# ------------------------------------------------------------------------"
+		puts "INIT.module(\"f_init_xxx\",\"0\")                             # -> Function call     f_init_xxx call param is 0 "
+		puts "INIT.cunit(\"test_suites_array_ft_init\",0)                   # -> CUnit test call   test name:test_suites_array_ft_init ,CUnit mode :0"
+		puts "INIT.tblset(\"f_iniw_yyy\",\"0\",\"1\",\"01\")                # -> Table write       f_iniw_yyy offset 0 size 1 value:1"
+		puts "puts INIT.tblget(\"f_iniw_yyy\",\"0\",\"1\")                  # -> Table read        f_iniw_xxx offset 0 size 1"
+		puts "puts INIT.tbladdr(\"f_iniw_yyy\")                             # -> Table get address f_iniw_xxx address  "
+	end
+
+	if (ARGV[count].to_s == "PF" ) or (ARGV[count].to_s.downcase == "all") then
+		puts "# ------------------------------------------------------------------------"
+		puts "# PF Process module"
+		puts "# ------------------------------------------------------------------------"
+		puts "PF.module(\"f_main_xxx\",\"0\")                               # -> Function call     f_main_xxx call param is 0 "
+		puts "PF.cunit(\"test_suites_array_ft_main\",0)                     # -> CUnit test call   test name: test_suites_array_ft_main ,CUnit mode:0"
+		puts "PF.tblset(\"f_mainw_yyy\",\"0\",\"1\",\"01\")                 # -> Table write       f_mainw_yyy offset 0 size 1 value:1"
+		puts "puts PF.tblget.tblget(\"f_mainw_yyy\,\"0\",\"1\")             # -> Table read        f_mainw_yyy offset 0 size 1"
+		puts "puts PF.tbladdr.tbladdr(\"f_mainw_yyy\")                      # -> Table get address f_mainw_yyy address"
+	end
+}
+

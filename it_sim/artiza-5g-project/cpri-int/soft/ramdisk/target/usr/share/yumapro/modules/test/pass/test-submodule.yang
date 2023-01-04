@@ -1,0 +1,28 @@
+module test-submodule {
+
+  yang-version "1";
+  namespace "http://netconfcentral.org/ns/test-submodule";
+  prefix "test-sub";
+
+  include test-submodule1;
+  include test-submodule2;
+
+  revision "2017-08-14";
+
+  grouping bgp-top {
+
+    container bgp {
+
+      container global {
+          uses bgp-global-base;
+      }
+
+      container neighbors {
+        uses bgp-neighbor-list;
+      }
+    }
+  }
+
+  uses bgp-top;
+
+}

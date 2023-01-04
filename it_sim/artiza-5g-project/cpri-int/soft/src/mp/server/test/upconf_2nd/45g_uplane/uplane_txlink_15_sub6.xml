@@ -1,0 +1,15 @@
+<user-plane-configuration xmlns="urn:xran:uplane-conf:1.0">
+	<low-level-tx-links>
+	  <name>TxLinks15</name>
+	  <processing-element>default1</processing-element>
+	  <tx-array-carrier>TxCar15</tx-array-carrier>
+	  <low-level-tx-endpoint>TxEndp15</low-level-tx-endpoint>
+	  <remote-address>
+	    <cu-port-bitmask>49152</cu-port-bitmask>
+		<band-sector-bitmask>16128</band-sector-bitmask>
+		<ccid-bitmask>240</ccid-bitmask>
+		<ru-port-bitmask>15</ru-port-bitmask>
+		<eaxc-id>0</eaxc-id>
+	  </remote-address>
+	</low-level-tx-links>
+</user-plane-configuration>

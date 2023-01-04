@@ -1,0 +1,4 @@
+m_rc_BufLnkData.c:35:6:m_rc_GetBufLnkDataSnd	2176	static
+m_rc_BufLnkData.c:134:6:m_rc_SetBufLnkDataSnd	48	static
+m_rc_BufLnkData.c:216:6:m_rc_GetBufLnkDataRcv	112	dynamic,bounded
+m_rc_BufLnkData.c:370:6:m_rc_SetBufLnkDataRcv	48	static

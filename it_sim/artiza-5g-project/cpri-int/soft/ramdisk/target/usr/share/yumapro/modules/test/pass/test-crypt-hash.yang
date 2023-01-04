@@ -1,0 +1,21 @@
+module test-crypt-hash {
+
+  namespace "http://netconfcentral.org/ns/test-crypt-hash";
+  prefix "test-hash";
+
+  import iana-crypt-hash { prefix "ianach"; }
+
+  revision 2017-11-06 {
+    description
+      "Test module for crypt hash type nodes:
+       - YPW-1129: server crash during edit on leaf of crypt-hash type.";
+  }
+
+  container editcontainer {
+    presence "making this container presence to make sure that
+              Restreg test collections will not be affected";
+     leaf password {
+       type ianach:crypt-hash;
+     }
+  }
+}

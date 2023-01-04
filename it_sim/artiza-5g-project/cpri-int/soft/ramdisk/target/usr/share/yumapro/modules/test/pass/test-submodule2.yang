@@ -1,0 +1,52 @@
+submodule test-submodule2 {
+
+  belongs-to test-submodule {
+    prefix "test-sub";
+  }
+
+  revision "2017-08-14";
+
+  grouping bgp-common-neighbor-group-config {
+
+    leaf peer-as {
+      type uint32;
+    }
+  }
+
+  grouping bgp-neighbor-config {
+
+    leaf neighbor-address {
+        type string;
+    }
+
+    leaf enabled {
+        type boolean;
+        default true;
+    }
+  }
+
+  grouping bgp-neighbor-base {
+
+    container config {
+      uses bgp-common-neighbor-group-config;
+      uses bgp-neighbor-config;
+    }
+  }
+
+  grouping bgp-neighbor-list {
+
+    list neighbor {
+      key "neighbor-address";
+
+      leaf neighbor-address {
+        type string;
+      }
+
+      uses bgp-neighbor-base;
+    }
+  }
+
+}
+
+
+

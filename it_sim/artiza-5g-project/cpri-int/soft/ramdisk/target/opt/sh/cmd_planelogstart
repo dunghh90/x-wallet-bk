@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cmd_planedump -n 2048 -N "mp_dump0" -e fheth0 -c /home/user/Desktop/soft/ramdisk/target/var/log/mplane0.pcap &
+

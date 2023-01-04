@@ -1,0 +1,181 @@
+#!/bin/sh
+
+# ast reg reg_cpri spi i2c qspi rsc_buf rsc_tim rsc_sem trc trc_init trc_pf trc_api trc_l2 trc_l3 trc_mnt trc_cpri trc_rfic
+# currently all 0 , we will fix until IT2 finish. 
+# 
+
+echo 8 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/reg
+echo 4 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/spi
+echo 2 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/i2c
+echo 3 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/qspi
+echo 0 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/rsc_buf
+echo 0 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/rsc_tim
+echo 0 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/rsc_sem
+echo 0 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/trc
+echo 2 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/trc_init
+echo 2 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/trc_pf
+echo 2 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/trc_ptp
+echo 0 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/trc_ptp_h
+echo 0 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/trc_rfic
+echo 0 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/trc_cal
+echo 2 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/ptplog
+echo 2 > /home/user/Desktop/soft/ramdisk/target/opt/proc/rru/ptpinfo
+
+# if_init alive ?
+killall -0 if_init 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -e lo -F "dst 127.0.0" -N "if_init" -c /home/user/Desktop/soft/ramdisk/target/var/log/rtif_init.pcap &
+fi
+
+# if_pf alive ?
+killall -0 if_pf 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+cmd_rrupfdump -n 1024 -e lo -F "dst 127.0.1" -N "if_pf" -c /home/user/Desktop/soft/ramdisk/target/var/log/rtif_pf.pcap &
+fi
+
+# if_ptp alive ?
+killall -0 if_ptp 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+cmd_rrupfdump -n 1024 -e lo -F "dst 127.0.3" -N "if_ptp" -c /home/user/Desktop/soft/ramdisk/target/var/log/rtif_ptp.pcap &
+fi
+
+# plg_reg alive ?
+killall -0 plg_reg 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 2048 -N "plg_reg" -F "dst 127.1.2" -c /home/user/Desktop/soft/ramdisk/target/var/log/reg.pcap &
+fi
+
+# plg_spi alive ?
+killall -0 plg_spi 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 2048 -N "plg_spi" -F "dst 127.1.3" -c /home/user/Desktop/soft/ramdisk/target/var/log/spi.pcap &
+fi
+
+# plg_i2c alive ?
+killall -0 plg_i2c 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -N "plg_i2c" -F "dst 127.1.4" -c /home/user/Desktop/soft/ramdisk/target/var/log/i2c.pcap &
+fi
+
+# plg_qspi alive ?
+killall -0 plg_qspi 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -N "plg_qspi" -F "dst 127.1.5" -c /home/user/Desktop/soft/ramdisk/target/var/log/qspi.pcap &
+fi
+
+# rsc_tim2 alive ?
+killall -0 rsc_tim2 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -N "rsc_tim2" -F "dst 127.1.6" -c /home/user/Desktop/soft/ramdisk/target/var/log/rsc_tim2.pcap &
+fi
+
+# trc_oth alive ?
+killall -0 trc_oth 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -N "trc_oth" -F "dst 127.1.8" -c /home/user/Desktop/soft/ramdisk/target/var/log/trc_oth.pcap &
+fi
+
+# rsc_sem alive ?
+killall -0 rsc_sem 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -N "rsc_sem" -F "dst 127.1.11" -c /home/user/Desktop/soft/ramdisk/target/var/log/rsc_sem.pcap &
+fi
+
+# rsc_tim alive ?
+killall -0 rsc_tim 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -N "rsc_tim" -F "dst 127.1.12" -c /home/user/Desktop/soft/ramdisk/target/var/log/rsc_tim.pcap &
+fi
+
+# rsc_buf alive ?
+killall -0 rsc_buf 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -N "rsc_buf" -F "dst 127.1.13" -c /home/user/Desktop/soft/ramdisk/target/var/log/rsc_buf.pcap &
+fi
+
+# trc_init alive ?
+killall -0 trc_init 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -N "trc_init" -F "dst 127.1.24" -c /home/user/Desktop/soft/ramdisk/target/var/log/trc_init.pcap &
+fi
+
+# trc_pf alive ?
+killall -0 trc_pf 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 2048 -N "trc_pf" -F "dst 127.1.40" -c /home/user/Desktop/soft/ramdisk/target/var/log/trc_pf.pcap &
+fi
+
+# ptplog alive ?
+killall -0 ptplog 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -N "ptplog" -F "dst 127.1.56" -c /home/user/Desktop/soft/ramdisk/target/var/log/ptplog.pcap &
+fi
+
+# trc_ptp alive ?
+killall -0 trc_ptp 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 2048 -N "trc_ptp" -F "dst 127.1.72" -c /home/user/Desktop/soft/ramdisk/target/var/log/trc_ptp.pcap &
+fi
+
+# trc_ptp_h alive ?
+killall -0 trc_ptp_h 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 2048 -N "trc_ptp_h" -F "dst 127.1.88" -c /home/user/Desktop/soft/ramdisk/target/var/log/trc_ptp_h.pcap &
+fi
+
+# trc_ptp alive ?
+killall -0 ptpinfo 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -N "ptpinfo" -F "dst 127.1.9" -c /home/user/Desktop/soft/ramdisk/target/var/log/ptpinfo.pcap &
+fi
+
+
+# trc_cal alive ?
+killall -0 trc_cal 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -N "trc_cal" -F "dst 127.1.120" -c /home/user/Desktop/soft/ramdisk/target/var/log/trc_cal.pcap &
+fi
+
+# trc_rfic alive ?
+killall -0 trc_rfic 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -N "trc_rfic" -F "dst 127.1.136" -c /home/user/Desktop/soft/ramdisk/target/var/log/trc_rfic.pcap &
+fi
+
+
+# ptpapr alive ?
+killall -0 ptpapr 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -N "ptpapr" -F "dst 127.1.1" -c /home/user/Desktop/soft/ramdisk/target/var/log/ptpapr.pcap &
+fi
+
+# mplan_srv alive ?
+killall -0 mplan_srv 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 4096 -N "mplan_srv" -F "dst 127.2.0.5" -c /home/user/Desktop/soft/ramdisk/target/var/log/mplan_srv.pcap &
+fi
+
+# mplan_saa alive ?
+killall -0 mplan_saa 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 4096 -N "mplan_saa" -F "dst 127.2.0.1" -c /home/user/Desktop/soft/ramdisk/target/var/log/mplan_saa.pcap &
+fi
+
+# mplan_spv alive ?
+killall -0 mplan_spv 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 512 -N "mplan_spv" -F "dst 127.2.0.2" -c /home/user/Desktop/soft/ramdisk/target/var/log/mplan_spv.pcap &
+fi
+
+# mplan_pfm alive ?
+killall -0 mplan_pfm 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 512 -N "mplan_pfm" -F "dst 127.2.0.3" -c /home/user/Desktop/soft/ramdisk/target/var/log/mplan_pfm.pcap &
+fi
+
+# mplan_not alive ?
+killall -0 mplan_not 1>/dev/null 2>/dev/null
+if [ $? -ne 0 ]; then
+ cmd_rrupfdump -n 1024 -N "mplan_not" -F "dst 127.2.0.4" -c /home/user/Desktop/soft/ramdisk/target/var/log/mplan_not.pcap &
+fi
+

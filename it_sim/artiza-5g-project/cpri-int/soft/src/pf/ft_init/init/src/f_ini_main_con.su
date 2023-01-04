@@ -1,0 +1,8 @@
+f_ini_main_con.c:77:14:f_ini_main_con_send_mpstart	96	static
+f_ini_main_con.c:140:13:f_ini_main_loglevel	80	static
+f_ini_main_con.c:231:13:f_ini_mp_log_create	320	static
+f_ini_main_con.c:258:13:f_ini_mp_saa_nvm_data_create	176	dynamic,bounded
+f_ini_main_con.c:423:13:f_ini_mp_startup_cfg_edit	128	static
+f_ini_main_con.c:556:13:f_ini_mp_startup_cfg_sed	400	dynamic,bounded
+f_ini_main_con.c:667:13:f_ini_mp_netconfd_cfg_sed	320	static
+f_ini_main_con.c:705:6:f_ini_main_con	5056	dynamic,bounded

@@ -1,0 +1,7 @@
+
+while 1
+	sendln ' supervision-watchdog-reset guard-timer-overhead=10 supervision-notification-interval=60'
+	wait 'f_5g_du@localhost>'
+	mpause 1100
+endwhile
+

@@ -1,0 +1,108 @@
+module yang11-feature {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/yang11-feature";
+  prefix yfeat;
+  revision "2016-04-17" {
+  }
+
+  feature yt1;
+  feature yt2;
+  feature yt3;
+  feature yt4;
+  feature yt5;
+
+  leaf yt-leaf1 {
+    if-feature "yt1 and yt2 or yt3";
+    if-feature "not yt5 and yt1 or not yt3";
+    if-feature "(not yt5) and (yt1) or (not yt3)";
+    if-feature "not(not(yt1 and yt2 or yt3)) and yt4";
+    if-feature "not yt3";
+    if-feature "(((yt5)))";
+    type string;
+  }
+
+  typedef fbits {
+    type bits {
+      bit A {
+        if-feature "yt1 and yt2";
+      }
+      bit B {
+        if-feature "yt3";
+      }
+      bit C {
+        if-feature "yt1 and yt2";
+      }
+    }
+  }
+
+  typedef fenum {
+    type enumeration {
+      enum D {
+        if-feature "yt1 and yt2";
+      }
+      enum E {
+        if-feature "yt3";
+      }
+      enum F {
+        if-feature "yt1 and yt2";
+      }
+    }
+  }
+
+  identity fbase;
+  identity fbase-A;
+  identity fbase-B;
+
+  identity fbase-1 {
+    base fbase;
+    //    base fbase-A;
+    if-feature yt1;
+  }
+
+  identity fbase-2 {
+    base fbase;
+    if-feature yt2;
+  }
+
+  identity fbase-3 {
+    base fbase-2;
+    if-feature yt3;
+  }
+
+  identity fbase-4 {
+    base fbase;
+    //     base fbase-B;
+    if-feature yt4;
+  }
+
+  identity fbase-5 {
+    base fbase-1;
+  }
+
+  identity fbase-6 {
+    base fbase-4;
+  }
+
+  leaf fbase {
+    type identityref {
+      base fbase;
+    }
+  }
+
+  leaf fbase-A {
+    type identityref {
+      base fbase;
+      //      base fbase-A;
+    }
+  }
+
+  leaf fbase-B {
+    type identityref {
+      base fbase;
+      //      base fbase-B;
+    }
+  }
+
+
+}

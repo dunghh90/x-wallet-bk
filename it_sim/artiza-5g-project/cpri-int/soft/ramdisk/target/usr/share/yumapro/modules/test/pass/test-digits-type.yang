@@ -1,0 +1,25 @@
+module test-digits-type {
+
+	namespace "http://netconfcentral.org/ns/test-digits-type";
+
+	prefix "tdigtyp";
+
+    organization
+        "Netconf Central";
+
+    revision "2019-05-22" {
+	  description "draft created";
+    }
+
+    typedef float-1 {
+	type decimal64 {
+  	  fraction-digits 1;
+	}
+    }
+    typedef float-2 {
+	type decimal64 {
+	  fraction-digits 2;
+	}
+    }
+
+} // module

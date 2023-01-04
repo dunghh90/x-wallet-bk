@@ -1,0 +1,48 @@
+;xran-sync get test macro
+
+sendln 'sget /sync'
+wait PROMPT
+pause 3
+
+sendln 'sget /sync/sync-status/supported-reference-types'
+wait PROMPT
+pause 3
+
+sendln 'sget /sync/sync-status'
+wait PROMPT
+pause 3
+
+sendln 'sget /sync/sync-capability'
+wait PROMPT
+pause 3
+
+sendln 'sget /sync/ptp-status/lock-state'
+wait PROMPT
+pause 3
+
+sendln 'sget /sync/ptp-status/clock-class'
+wait PROMPT
+pause 3
+
+sendln 'sget /sync/ptp-status/clock-identity'
+wait PROMPT
+pause 3
+
+sendln 'sget /sync/ptp-status/sources'
+wait PROMPT
+pause 3
+
+sendln 'sget /sync/synce-status/lock-state'
+wait PROMPT
+pause 3
+
+sendln 'sget /sync/synce-status/sources'
+wait PROMPT
+pause 3
+
+sendln 'sget-config /sync'
+wait PROMPT
+pause 1
+sendln '2'
+pause 1
+

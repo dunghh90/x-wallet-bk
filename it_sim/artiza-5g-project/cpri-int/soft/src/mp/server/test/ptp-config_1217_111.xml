@@ -1,0 +1,38 @@
+<sync xmlns="urn:xran:sync:1.0">
+<ptp-config>
+    <domain-number>38</domain-number>
+    <multicast-mac-address>FORWARDABLE</multicast-mac-address>
+    <accepted-clock-classes>
+        <clock-classes>38</clock-classes>
+    </accepted-clock-classes>
+    <accepted-clock-classes>
+        <clock-classes>37</clock-classes>
+    </accepted-clock-classes>
+    <accepted-clock-classes>
+        <clock-classes>36</clock-classes>
+    </accepted-clock-classes>
+    <accepted-clock-classes>
+        <clock-classes>35</clock-classes>
+    </accepted-clock-classes>
+    <accepted-clock-classes>
+        <clock-classes>34</clock-classes>
+    </accepted-clock-classes>
+    <accepted-clock-classes>
+        <clock-classes>33</clock-classes>
+    </accepted-clock-classes>
+    <accepted-clock-classes>
+        <clock-classes>32</clock-classes>
+    </accepted-clock-classes>
+    <accepted-clock-classes>
+        <clock-classes>31</clock-classes>
+    </accepted-clock-classes>
+    <delay-asymmetry>0</delay-asymmetry>
+</ptp-config>
+<ptp-status>
+    <reporting-period>10</reporting-period>
+    <partial-timing-supported>false</partial-timing-supported>
+</ptp-status>
+<synce-status>
+    <reporting-period>10</reporting-period>
+</synce-status>
+</sync>

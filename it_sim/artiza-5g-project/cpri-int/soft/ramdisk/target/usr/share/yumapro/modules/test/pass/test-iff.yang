@@ -1,0 +1,16 @@
+module test-iff {
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/test-iff";
+  prefix tif;
+  revision 2018-01-17;
+  feature match-on-eth {
+  }
+
+  feature match-on-ipv4 {
+  }
+
+  feature mixed-eth-ipv4 {
+    if-feature "match-on-eth and match-on-ipv4";
+  }
+
+}

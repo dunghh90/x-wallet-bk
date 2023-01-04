@@ -1,0 +1,2 @@
+f_cpr_CpriLinkInitProc.c:43:6:f_cpr_CpriLinkInitProc	208	dynamic,bounded
+f_cpr_CpriLinkInitProc.c:383:6:f_cpr_CpriDelayOffset	32	static

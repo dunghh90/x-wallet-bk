@@ -1,0 +1,3 @@
+tm_lb_l2state_sub_ntc.c:40:7:tm_lb_l2state_sub_ntc	112	dynamic,bounded
+tm_lb_l2state_sub_ntc.c:100:6:tm_lb_l2state_log_begin	48	static
+tm_lb_l2state_sub_ntc.c:126:6:tm_lb_l2state_log_end	48	static

@@ -1,0 +1,23 @@
+module mytest {
+  namespace "urn:ciena:params:xml:ns:yang:mytest";
+  prefix "mytest";
+
+  revision 2017-02-03 { }
+
+  typedef addVal-ref {
+     type leafref {
+       path "/mytest:c2/mytest:addVa232323l";
+     }
+  }
+
+  container c1 {
+	leaf name { type string; }
+    leaf address { type addVal-ref; }
+  }
+
+  container c2 {
+     leaf addVal { type string; }
+
+     leaf some_new {type addVal-ref; }
+  }
+}

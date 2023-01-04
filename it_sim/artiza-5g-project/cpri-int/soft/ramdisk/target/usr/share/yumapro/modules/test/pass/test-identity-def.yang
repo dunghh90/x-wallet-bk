@@ -1,0 +1,17 @@
+module test-identity-def {
+
+  namespace "http://netconfcentral.org/ns/test-identity-def";
+  prefix tid-def;
+  import test-identity { prefix tid; }
+  revision "2016-04-17" {
+  }
+
+  leaf tdef {
+    type identityref {
+       base tid:tbase-2;
+    }
+    default "tid:tbase-4";
+  }
+
+
+}

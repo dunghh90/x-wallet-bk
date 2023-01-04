@@ -1,0 +1,34 @@
+module hooks3 {
+  namespace "http://netconfcentral.org/ns/hooks3";
+  prefix "hk3";
+
+  import hooks-test {
+    prefix "hk";
+  }
+
+  revision 2019-02-07 {
+    description
+      "Adding deviation test plus leafref referencing test after deviations";
+  }
+
+  container destinations2 {
+    presence "Hide it from REG TEST";
+
+    list destination2 {
+      key "destination-address-leafref2 destination-port-leafref2";
+
+      leaf destination-address-leafref2 {
+        type leafref {
+          path "/hk:destinations/hk:destination/hk:config/hk:destination-address";
+        }
+      }
+
+      leaf destination-port-leafref2 {
+        type leafref {
+          path "/hk:destinations/hk:destination/hk:config/hk:destination-port";
+        }
+      }
+    }
+  }
+
+}

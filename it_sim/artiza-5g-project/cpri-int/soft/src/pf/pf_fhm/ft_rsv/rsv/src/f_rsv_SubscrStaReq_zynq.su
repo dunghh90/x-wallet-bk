@@ -1,0 +1,2 @@
+f_rsv_SubscrStaReq_zynq.c:33:6:f_rsv_rptCurCardSta	192	static
+f_rsv_SubscrStaReq_zynq.c:154:6:f_rsv_SubscrStaReq	224	dynamic,bounded

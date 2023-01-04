@@ -1,0 +1,2 @@
+mnt_com_endian_util.c:26:8:mnt_com_swap_USHORT	48	static
+mnt_com_endian_util.c:44:6:mnt_com_swap_UINT	48	static

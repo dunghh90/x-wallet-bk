@@ -1,0 +1,19 @@
+<user-plane-configuration xmlns="urn:xran:uplane-conf:1.0">
+  <tx-array-carriers>
+    <name>TxCar6</name>
+    <absolute-frequency-center>4554240</absolute-frequency-center>
+    <center-of-channel-bandwidth>0</center-of-channel-bandwidth>
+    <channel-bandwidth>100000000</channel-bandwidth>
+    <power>0.0</power>
+    <fft-size>0</fft-size>
+    <downlink-radio-frame-offset>0</downlink-radio-frame-offset>
+    <downlink-sfn-offset>-32768</downlink-sfn-offset>
+    <default-scs>KHZ_30</default-scs>
+	  <scs-specific-config>
+	    <scs>KHZ_30</scs>
+		<offset-to-absolute-frequency-center>0</offset-to-absolute-frequency-center>
+		<number-of-prbs>0</number-of-prbs>
+	  </scs-specific-config>
+    <cp-length>0</cp-length>
+  </tx-array-carriers>
+</user-plane-configuration>

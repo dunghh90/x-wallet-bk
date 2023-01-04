@@ -1,0 +1,45 @@
+Rrh.require("./verbose")
+
+deviceName = ""
+serialNumber = ""
+hwversion = ""
+drawingNumber = ""
+dateNumber = ""
+
+	if (val = Rrh.eepread_txt(0,0xc)) != false then
+		deviceName = val
+	end
+
+	for index in 0x24..0x27 
+		if (val = Rrh.eepread(index)) != false then
+			serialNumber = serialNumber + val
+		end
+	end
+
+	if (val = Rrh.eepread(0x2d)) != false then
+		hwversion = hwversion + val
+	end
+	if (val = Rrh.eepread(0x2c)) != false then
+		hwversion = hwversion + val
+	end
+
+	if (val = Rrh.eepread_txt(0x10,0xc)) != false then
+		drawingNumber = val
+	end
+
+	for index in 0x28..0x2B
+		if (val = Rrh.eepread(index)) != false then
+			dateNumber = dateNumber + val
+		end
+	end
+
+	puts ""
+	puts "Inventory information"
+	puts ""
+	puts " Name                         : #{deviceName}"
+	puts " HW version                   : #{hwversion}"
+	puts " Serial number                : #{serialNumber}"
+	puts " Manufacturing drawing number : #{drawingNumber}"
+	puts " Manufacturing date           : #{dateNumber}"
+	puts ""
+

@@ -1,0 +1,165 @@
+#!/bin/sh
+
+# 
+# This script was auto-generated 2021/02/25 20:32:53
+# 
+
+. /opt/sh/setaliases
+
+case $1 in
+ re_stat) shift; re_stat $*;exit 0;;
+ re_stat_ptp) shift; re_stat_ptp $*;exit 0;;
+ re_stat_plog) shift; re_stat_plog $*;exit 0;;
+ re_ifstat) shift; re_ifstat $*;exit 0;;
+ re_clean_stat_ptp) shift; re_clean_stat_ptp $*;exit 0;;
+ re_ver) shift; re_ver $*;exit 0;;
+ re_ps) shift; re_ps $*;exit 0;;
+ re_top) shift; re_top $*;exit 0;;
+ re_irq) shift; re_irq $*;exit 0;;
+ re_if) shift; re_if $*;exit 0;;
+ re_ipc_msg) shift; re_ipc_msg $*;exit 0;;
+ re_ipc_shm) shift; re_ipc_shm $*;exit 0;;
+ re_ipc_sem) shift; re_ipc_sem $*;exit 0;;
+ re_mem) shift; re_mem $*;exit 0;;
+ re_time) shift; re_time $*;exit 0;;
+ re_mw) shift; re_mw $*;exit 0;;
+ re_mwk) shift; re_mwk $*;exit 0;;
+ re_md) shift; re_md $*;exit 0;;
+ re_eep) shift; re_eep $*;exit 0;;
+ re_eepw) shift; re_eepw $*;exit 0;;
+ re_eepd) shift; re_eepd $*;exit 0;;
+ re_eepda) shift; re_eepda $*;exit 0;;
+ re_flshe) shift; re_flshe $*;exit 0;;
+ re_flshd) shift; re_flshd $*;exit 0;;
+ re_flshw) shift; re_flshw $*;exit 0;;
+ re_spiw) shift; re_spiw $*;exit 0;;
+ re_spid) shift; re_spid $*;exit 0;;
+ re_reset) shift; re_reset $*;exit 0;;
+ re_his_bpf) shift; re_his_bpf $*;exit 0;;
+ re_his_ast) shift; re_his_ast $*;exit 0;;
+ re_his_rst) shift; re_his_rst $*;exit 0;;
+ re_his_mac) shift; re_his_mac $*;exit 0;;
+ re_his_svb) shift; re_his_svb $*;exit 0;;
+ re_his_reg) shift; re_his_reg $*;exit 0;;
+ re_his_spi) shift; re_his_spi $*;exit 0;;
+ re_his_alm) shift; re_his_alm $*;exit 0;;
+ re_his_pif) shift; re_his_pif $*;exit 0;;
+ re_his_ucplane) shift; re_his_ucplane $*;exit 0;;
+ re_his_if_init) shift; re_his_if_init $*;exit 0;;
+ re_his_if_pf) shift; re_his_if_pf $*;exit 0;;
+ re_his_if_ptp) shift; re_his_if_ptp $*;exit 0;;
+ re_his_if_sem) shift; re_his_if_sem $*;exit 0;;
+ re_his_if_tim) shift; re_his_if_tim $*;exit 0;;
+ re_his_if_buf) shift; re_his_if_buf $*;exit 0;;
+ re_his_if_spi) shift; re_his_if_spi $*;exit 0;;
+ re_his_if_qspi) shift; re_his_if_qspi $*;exit 0;;
+ re_his_if_i2c) shift; re_his_if_i2c $*;exit 0;;
+ re_his_if_reg) shift; re_his_if_reg $*;exit 0;;
+ re_his_if_pgc) shift; re_his_if_pgc $*;exit 0;;
+ re_his_trc_oth) shift; re_his_trc_oth $*;exit 0;;
+ re_his_trc_init) shift; re_his_trc_init $*;exit 0;;
+ re_his_trc_pf) shift; re_his_trc_pf $*;exit 0;;
+ re_his_trc_ptp_h) shift; re_his_trc_ptp_h $*;exit 0;;
+ re_his_trc_ptp) shift; re_his_trc_ptp $*;exit 0;;
+ re_his_ptplog) shift; re_his_ptplog $*;exit 0;;
+ re_his_trc_rfic) shift; re_his_trc_rfic $*;exit 0;;
+ re_his_trc_cal) shift; re_his_trc_cal $*;exit 0;;
+ re_his_ptpinfo) shift; re_his_ptpinfo $*;exit 0;;
+ re_his_ptpapr) shift; re_his_ptpapr $*;exit 0;;
+ re_his_mplan_srv) shift; re_his_mplan_srv $*;exit 0;;
+ re_his_mplan_saa) shift; re_his_mplan_saa $*;exit 0;;
+ re_his_mplan_spv) shift; re_his_mplan_spv $*;exit 0;;
+ re_his_mplan_pfm) shift; re_his_mplan_pfm $*;exit 0;;
+ re_his_mplan_not) shift; re_his_mplan_not $*;exit 0;;
+ re_his_mplan_all) shift; re_his_mplan_all $*;exit 0;;
+ re_his_mplan_db) shift; re_his_mplan_db $*;exit 0;;
+ re_his_mplan_cfg) shift; re_his_mplan_cfg $*;exit 0;;
+ re_his_rpcs) shift; re_his_rpcs $*;exit 0;;
+ re_his_rpcs_stup) shift; re_his_rpcs_stup $*;exit 0;;
+ re_his_rpcs_all) shift; re_his_rpcs_all $*;exit 0;;
+ re_his_rpcs_switch) shift; re_his_rpcs_switch $*;exit 0;;
+ re_his_eio) shift; re_his_eio $*;exit 0;;
+ re_his_fan) shift; re_his_fan $*;exit 0;;
+ re_his_pfm) shift; re_his_pfm $*;exit 0;;
+ re_his_cca) shift; re_his_cca $*;exit 0;;
+ re_his_fhstat) shift; re_his_fhstat $*;exit 0;;
+ re_his_mtlog) shift; re_his_mtlog $*;exit 0;;
+ re_his_txpow) shift; re_his_txpow $*;exit 0;;
+ re_his_txpowlog) shift; re_his_txpowlog $*;exit 0;;
+ re_his_lutlog) shift; re_his_lutlog $*;exit 0;;
+ re_his_fhl1) shift; re_his_fhl1 $*;exit 0;;
+ re_his_upsig) shift; re_his_upsig $*;exit 0;;
+ re_his_cal) shift; re_his_cal $*;exit 0;;
+ re_his_dlf) shift; re_his_dlf $*;exit 0;;
+ re_mirror_mplan) shift; re_mirror_mplan $*;exit 0;;
+ re_mirror_splan) shift; re_mirror_splan $*;exit 0;;
+ re_mon_mplan) shift; re_mon_mplan $*;exit 0;;
+ re_mon_splan) shift; re_mon_splan $*;exit 0;;
+ re_file_mplan) shift; re_file_mplan $*;exit 0;;
+ re_file_splan) shift; re_file_splan $*;exit 0;;
+ re_mon_if_init) shift; re_mon_if_init $*;exit 0;;
+ re_mon_if_pf) shift; re_mon_if_pf $*;exit 0;;
+ re_mon_if_ptp) shift; re_mon_if_ptp $*;exit 0;;
+ re_mon_if_reg) shift; re_mon_if_reg $*;exit 0;;
+ re_mon_if_spi) shift; re_mon_if_spi $*;exit 0;;
+ re_mon_if_i2c) shift; re_mon_if_i2c $*;exit 0;;
+ re_mon_if_qspi) shift; re_mon_if_qspi $*;exit 0;;
+ re_mon_if_sem) shift; re_mon_if_sem $*;exit 0;;
+ re_mon_if_tim) shift; re_mon_if_tim $*;exit 0;;
+ re_mon_if_buf) shift; re_mon_if_buf $*;exit 0;;
+ re_mon_trc_oth) shift; re_mon_trc_oth $*;exit 0;;
+ re_mon_trc_init) shift; re_mon_trc_init $*;exit 0;;
+ re_mon_trc_pf) shift; re_mon_trc_pf $*;exit 0;;
+ re_mon_ptplog) shift; re_mon_ptplog $*;exit 0;;
+ re_mon_trc_ptp) shift; re_mon_trc_ptp $*;exit 0;;
+ re_mon_trc_ptp_h) shift; re_mon_trc_ptp_h $*;exit 0;;
+ re_mon_ptpinfo) shift; re_mon_ptpinfo $*;exit 0;;
+ re_mon_trc_rfic) shift; re_mon_trc_rfic $*;exit 0;;
+ re_mon_trc_cal) shift; re_mon_trc_cal $*;exit 0;;
+ re_mon_ptpapr) shift; re_mon_ptpapr $*;exit 0;;
+ re_mon_mplan_srv) shift; re_mon_mplan_srv $*;exit 0;;
+ re_mon_mplan_saa) shift; re_mon_mplan_saa $*;exit 0;;
+ re_mon_mplan_spv) shift; re_mon_mplan_spv $*;exit 0;;
+ re_mon_mplan_pfm) shift; re_mon_mplan_pfm $*;exit 0;;
+ re_mon_mplan_not) shift; re_mon_mplan_not $*;exit 0;;
+ re_mon_mplan_all) shift; re_mon_mplan_all $*;exit 0;;
+ re_test_ptp0) shift; re_test_ptp0 $*;exit 0;;
+ re_test_ptp1) shift; re_test_ptp1 $*;exit 0;;
+ re_log) shift; re_log $*;exit 0;;
+ re_self) shift; re_self $*;exit 0;;
+ re_msk_reset) shift; re_msk_reset $*;exit 0;;
+ re_unmsk_reset) shift; re_unmsk_reset $*;exit 0;;
+esac
+echo "
+----------------------------------------------------------------------
+  RE utility commands list (v.1.0.t.t)
+ ----------------------------------------------------------------------
+  COMMANDS NAME      : Description                      :usage
+ ----------------------------------------------------------------------
+  re_ver             : Soft,FPGA,and more program ver   :
+  re_ps              : Threads list                     :
+  re_top             : Threads top                      :
+  re_help            : help command                     :
+  re_irq             : Interrupts statistics            :
+  re_log             : RE logs get                      :
+  re_if              : Network interface info           :
+  re_ipc_msg         : IPC message queue info           :
+  re_ipc_shm         : IPC shared memory info           :
+  re_ipc_sem         : IPC semaphore info               :
+  re_mem             : Memory info                      :
+  re_ftpserver       : FTP servert start                :
+  re_reset           : not save log reset               :
+  re_self            : Who am I                         :
+  re_time            : current time info                :
+  re_mon_xx          : Online log monitor commands      :
+  re_his_xx          : Offline history log commands     :
+  re_stat            : Statistics info commands         :
+  RE device control commands                            :
+    re_mw            :  memory write (32bit)            :re_mw <write addr> <write val>
+    re_md            :  memory dump  (32bit)            :re_md <dump addr> <dump size>
+    re_eepw          :  eeprom write                    :re_eepw <write addr> <write val>
+    re_eepd          :  eeprom dump                     :re_eepd <dump addr> <dump size>
+    re_eepda         :  eeprom dump all                 :re_eepda
+    re_flshd         :  qspi flash current dump         :re_flshd <dump ofs> <dump size>
+ --------------------------------------------------------------------------------------------------------
+"

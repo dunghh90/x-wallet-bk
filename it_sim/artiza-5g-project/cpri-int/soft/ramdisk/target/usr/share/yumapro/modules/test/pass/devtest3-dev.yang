@@ -1,0 +1,14 @@
+module devtest3-dev {
+
+   namespace "http://yumaworks.com/ns/devtest3-dev";
+   prefix "d3dev";
+   import devtest3 { prefix d3; }
+
+   revision 2015-04-17;
+
+   deviation /d3:X/d3:foo {
+     deviate replace {
+       type uint16;
+     }
+   }
+}

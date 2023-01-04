@@ -1,0 +1,2 @@
+m_cr_HcTimeoutNtc.c:35:6:m_cr_HcTimeoutNtc	112	dynamic,bounded
+m_cr_HcTimeoutNtc.c:133:6:m_cr_HcStateChgNtc	48	static

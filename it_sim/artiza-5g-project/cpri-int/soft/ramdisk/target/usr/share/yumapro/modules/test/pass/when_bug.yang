@@ -1,0 +1,60 @@
+module when_bug {
+
+  yang-version 1;
+
+  namespace "http://www.when_bug.com/";
+
+  prefix wbug;
+
+  import iana-if-type {
+    prefix iana;
+  }
+
+  organization "Augment When Bug";
+
+  contact "augment@bug.com";
+
+  description "Example file to find the augment bug.";
+
+  revision "2014-06-16" {
+    description
+      "IANA interface type changed from enum to identityref.";
+  }
+
+  revision "2012-06-14" {
+    description "Initial revision.";
+  }
+
+
+  container when_bug {
+    list interface {
+      key "name";
+      leaf name {
+        type string;
+      }
+
+      leaf type {
+        type identityref { base iana:iana-interface-type; }
+        mandatory true;
+      }
+    } // list interface
+  } // container when_bug
+
+  augment "/when_bug/interface" {
+    when "type = 'iana:ethernetCsmacd'";
+    leaf when_b {
+      type boolean;
+      default 'false';
+    }
+
+    leaf when_i {
+      type int32;
+    }
+
+    container cont {
+      leaf eth {
+        type int32;
+      }
+    } // container cont
+  }
+}

@@ -1,0 +1,36 @@
+module test-update {
+
+    namespace "http://netconfcentral.org/ns/test-update";
+    prefix "tup";
+
+    revision 2020-01-04 {
+        description "Second revision.";
+    }
+
+    revision 2019-12-01 {
+        description "Initial revision.";
+    }
+
+    container top-config {
+      leaf name { type string; }
+      leaf address { type string; }
+      list phone {
+        key id;
+        leaf id { type string; }
+        leaf number { type string; }
+      }
+    }
+
+    container top-state {
+      config false;
+      leaf state-name { type string; }
+      leaf state-address { type string; }
+
+      list phone-state {
+        key id-state;
+        leaf id-state { type string; }
+        leaf number-state { type string; }
+      }
+    }
+
+}

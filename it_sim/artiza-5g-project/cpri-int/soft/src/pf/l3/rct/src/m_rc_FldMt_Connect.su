@@ -1,0 +1,4 @@
+m_rc_FldMt_Connect.c:34:6:m_rc_FldMt_ConnectReq	112	dynamic,bounded
+m_rc_FldMt_Connect.c:161:6:m_rc_FldMt_ConnectResp	96	dynamic,bounded
+m_rc_FldMt_Connect.c:254:6:m_rc_FldMt_ConnectTo	80	dynamic,bounded
+m_rc_FldMt_Connect.c:307:6:m_rc_FldMt_ConnectResSnd	96	static

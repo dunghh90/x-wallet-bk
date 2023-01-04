@@ -1,0 +1,28 @@
+module t620 {
+    namespace "http://netconfcentral.org/ns/t620";
+    prefix "t620";
+
+    import test { prefix t; }
+
+    revision 2018-04-22;
+
+    container top {
+      list list1 {
+        key i;
+        leaf i { type int8; }
+        leaf-list t1 { type int8; }
+        uses t:Leafs.2;
+        container con2 {
+          leaf t2 { type string; }
+        }
+        list list2 {
+          key "x y";
+          leaf x { type uint16; }
+          leaf y { type uint16; }
+          leaf-list t3 { type string; }
+        }
+      }
+    }
+
+
+}

@@ -1,0 +1,9 @@
+rrhApi_L2.c:41:16:rrhApi_L2_Mqr_SetupLink	416	static
+rrhApi_L2.c:126:16:rrhApi_L2_Mqr_ReleaseLink	416	static
+rrhApi_L2.c:208:16:rrhApi_L2_Mnt_DeactLapbLink	112	static
+rrhApi_L2.c:265:16:rrhApi_L2_Mpr_SubscribeCpriMsg	1136	static
+rrhApi_L2.c:324:16:rrhApi_L2_Mnt_UnSubscribeCpriMsg	112	static
+rrhApi_L2.c:380:16:rrhApi_L2_Mpr_SubscribeLinkState	112	static
+rrhApi_L2.c:437:16:rrhApi_L2_Mnt_UnsubscribeLinkState	112	static
+rrhApi_L2.c:492:16:rrhApi_L2_Mnt_CpriMsgStatistic	112	static
+rrhApi_L2.c:544:16:rrhApi_L2_Mnt_SendCpriMsg	64	static

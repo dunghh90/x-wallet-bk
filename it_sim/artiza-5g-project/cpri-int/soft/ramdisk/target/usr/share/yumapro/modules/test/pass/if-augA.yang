@@ -1,0 +1,14 @@
+module if-augA {
+    namespace "ieee:ns:yang:if-augA";
+    prefix "augA";
+    import ietf-interfaces { prefix if; }
+    import iana-if-type { prefix ianaift; }
+    revision 2015-05-12;
+
+    augment "/if:interfaces/if:interface" {
+      when "if:type = 'ianaift:ethernetCsmacd'";
+        container port-config {
+          leaf enabled { type boolean; }
+        }
+    }
+  }

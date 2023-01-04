@@ -1,0 +1,35 @@
+module test-refine {
+
+  namespace "urn:yumaworks:params:xml:ns:yang:test-refine";
+  prefix "tr";
+  revision 2016-10-04;
+
+  rpc test-refine {
+  input {
+    uses G {
+      refine name {
+        mandatory true;
+      }
+    }
+  }
+  }
+
+  grouping G {
+    leaf name { type string; }
+  }
+
+  grouping G1 {
+    uses G {
+      refine name {
+        mandatory false;
+      }
+    }
+  }
+
+  uses G1 {
+    refine name {
+      mandatory true;
+    }
+  }
+
+}

@@ -1,0 +1,83 @@
+module derived-from-test {
+  yang-version 1.1;
+
+  namespace "http://netconfcentral.org/ns/derived-from-test";
+  prefix "derived-test";
+
+  import ietf-interfaces { prefix if; }
+  import iana-if-type { prefix ianaift; }
+
+  revision 2018-10-26 {
+    description
+      "Add augment with mandatory true choice for false when check";
+  }
+
+  revision 2018-09-15 {
+    description
+      "Test for derived-from-or-self via augmentation
+        - YPW-1316";
+  }
+
+  augment "/if:interfaces/if:interface" {
+    when "if:name = 'test1' and "
+         + "derived-from-or-self(if:type,'ianaift:other')";
+
+    leaf id {
+      type string;
+    }
+
+    leaf mode {
+      type string;
+      mandatory true;
+    }
+
+    leaf-list terminations {
+      type if:interface-ref;
+      must "derived-from-or-self(/if:interfaces/if:interface"
+         + "[if:name = current()]"
+         + "/if:type, 'ianaift:l2vlan')";
+      min-elements 1;
+    }
+  }
+
+  augment "/if:interfaces/if:interface" {
+    when "if:name = 'test2' and "
+         + "derived-from(if:type,'ianaift:l2vlan')";
+
+    leaf id2 {
+      type string;
+    }
+
+    leaf mode2 {
+      type string;
+      mandatory true;
+    }
+  }
+
+  augment "/if:interfaces/if:interface" {
+    when "if:name = 'test3' and "
+         + "derived-from-or-self(if:type,'ianaift:iana-interface-type')";
+
+    leaf id3 {
+      type string;
+    }
+
+    leaf mode3 {
+      type string;
+      mandatory true;
+    }
+  }
+
+  augment "/if:interfaces/if:interface" {
+    when "if:name = 'test4' and "
+         + "derived-from-or-self(if:type,'ianaift:l2vlan')";
+
+    choice distance {
+      leaf distance {
+        type int32;
+      }
+      mandatory true;
+    }
+  }
+
+}

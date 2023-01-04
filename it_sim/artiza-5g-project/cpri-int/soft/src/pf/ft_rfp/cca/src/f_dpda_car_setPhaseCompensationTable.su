@@ -1,0 +1,2 @@
+f_dpda_car_setPhaseCompensationTable.c:18:5:f_dpda_car_setTxPhaseCompensationTable	128	dynamic,bounded
+f_dpda_car_setPhaseCompensationTable.c:238:5:f_dpda_car_setRxPhaseCompensationTable	128	dynamic,bounded

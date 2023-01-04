@@ -1,0 +1,12 @@
+m_rc_TraStaChgNtc.c:116:6:m_rc_cm_CardCntTblUpd	48	static
+m_rc_TraStaChgNtc.c:273:6:m_rc_sub_actOnProc	32	static
+m_rc_TraStaChgNtc.c:289:6:m_rc_sub_actOffProc	32	static
+m_rc_TraStaChgNtc.c:300:6:m_rc_sub_useOnProc	32	static
+m_rc_TraStaChgNtc.c:320:6:m_rc_sub_useOffProc	32	static
+m_rc_TraStaChgNtc.c:342:6:m_rc_sub_errOnProc	80	static
+m_rc_TraStaChgNtc.c:438:6:m_rc_sub_errOffProc	32	static
+m_rc_TraStaChgNtc.c:462:6:m_rc_sub_singleAlmProc	32	static
+m_rc_TraStaChgNtc.c:517:6:m_rc_sub_multiAlmProc	32	static
+m_rc_TraStaChgNtc.c:652:6:m_rc_TraStaChgNtc	3280	dynamic,bounded
+m_rc_TraStaChgNtc.c:822:8:m_rc_HaveHardErrChk	32	static
+m_rc_TraStaChgNtc.c:869:8:m_rc_HaveSoftErrChk	32	static

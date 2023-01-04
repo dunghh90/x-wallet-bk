@@ -1,0 +1,33 @@
+module yang11-bad-bits {
+
+  yang-version 1.1;
+  namespace "http://netconfcentral.org/ns/yang11-bad-bits";
+  prefix ybbits;
+  revision "2016-11-27";
+
+  typedef my-base-bits-type {
+     type bits {
+       bit A {
+         position 1;
+       }
+       bit B {
+         position 3;
+       }
+       bit C {
+         position 4;
+       }
+     }
+   }
+
+
+   leaf BB1 {
+     type my-base-bits-type {
+       // illegal bit refinement
+       bit B {
+         position 4; // illegal position change
+       }
+       bit D; // illegal addition of new name
+     }
+   }
+
+}

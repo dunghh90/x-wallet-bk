@@ -1,0 +1,34 @@
+module test-bad-compare {
+
+  namespace "http://netconfcentral.org/ns/test-bad-compare";
+
+  prefix test-bad-compare;
+
+  revision 2016-05-27;
+
+  identity foo;
+  identity foo1 { base foo; }
+  identity bar;
+
+  container X {
+    leaf X1 { type int32; }
+    leaf X2 { type boolean; }
+    leaf X3 { type identityref { base bar; } }
+  }
+
+  augment /X {
+    when "X1 = 'fred'";
+    leaf X4 { type int32; }
+  }
+
+  augment /X {
+    when "X2 = 42";
+    leaf X5 { type int32; }
+  }
+
+  augment /X {
+    when "X3 = 'test-bad-compare:foo1'";
+    leaf X6 { type int32; }
+  }
+
+}

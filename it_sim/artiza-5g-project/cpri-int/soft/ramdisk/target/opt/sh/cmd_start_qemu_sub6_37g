@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export PATH=/home/user/Desktop/soft/ramdisk/target/opt/proc:/home/user/Desktop/soft/ramdisk/target/opt/sh:/home/user/Desktop/soft/ramdisk/target/opt/debug:/home/user/Desktop/soft/ramdisk/target/opt/tp:/home/user/Desktop/soft/ramdisk/target/opt/lnk:/home/user/Desktop/soft/ramdisk/target/opt/agent/bin:$PATH
+re_eepw 40 13 1>/dev/null 2>/dev/null
+re_eepw 41 11 1>/dev/null 2>/dev/null
+. /home/user/Desktop/soft/ramdisk/target/opt/sh/cmd_start_qemu_2nd 37g

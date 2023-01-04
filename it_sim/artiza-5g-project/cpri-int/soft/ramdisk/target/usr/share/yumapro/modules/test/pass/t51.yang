@@ -1,0 +1,9 @@
+
+module t51 {
+    namespace "http://netconfcentral.org/ns/t51";
+    prefix "t51";
+    revision 2013-12-22;
+    container top {
+      leaf-list A { type string; }
+    }
+}

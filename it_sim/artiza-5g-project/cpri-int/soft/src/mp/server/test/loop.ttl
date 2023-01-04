@@ -1,0 +1,51 @@
+;all night test macro
+PROMPT = 'f_5g_du@5G_DU>'
+
+sendln ''
+wait PROMPT
+
+while 1
+
+;ietf-hardware get macro
+include 'ietf-hardware_get.ttl'
+pause 1
+
+;ietf-interface get macro
+;include 'ietf-interface_get.ttl'
+sendln "sget /interfaces"
+sendln "sget /interfaces/interface"
+pause 1
+
+;ietf-ip get macro
+;editŒãget‚Ì‚Ý‚Ì‚½‚ß—}Ž~
+;include 'ietf-ip_get.ttl'
+;pause 1
+
+;xran-hardware get macro
+include 'xran-hardware_get.ttl'
+pause 1
+
+;xran-beamforming get macro
+include 'xran-beamforming_get.ttl'
+pause 1
+
+;xran-interfaces get macro
+;ietf-interface‚É•ïŠÜ
+;include 'xran-interfaces_get.ttl'
+;pause 1
+
+;xran-module-cap get macro
+include 'xran-module-cap_get.ttl'
+pause 1
+
+;xran-processing-element get macro
+;editŒãget‚Ì‚Ý‚Ì‚½‚ß—}Ž~
+;include 'xran-processing-element_get.ttl'
+;pause 1
+
+;xran-sync get macro
+include 'xran-sync_get.ttl'
+
+pause 10
+
+endwhile

@@ -1,0 +1,79 @@
+module test-nestcont {
+
+    namespace "http://netconfcentral.org/ns/test-nestcont";
+    prefix "tnc";
+
+    revision 2016-10-03 {
+        description
+            "Test nested containers edit2 callbacks
+             - FD#947";
+    }
+
+
+  grouping grouping1 {
+    uses grouping2;
+
+    leaf default-metric {
+      type uint32;
+      default "0";
+    }
+
+    container test-container {
+      leaf default-leaf {
+        type uint32;
+        default "8";
+      }
+    }
+
+    leaf test-leaf {
+      type uint32;
+    }
+  }
+
+
+
+  container bgp-router {              // edit2 callback
+
+    list vrf {                        // edit2 callback
+      key "vrf-name";
+
+      leaf vrf-name {
+        type string;
+      }
+
+      container ipv4-unicast {        // edit2 callback
+        uses grouping1;
+      }
+
+    }
+  }
+
+  grouping grouping2 {
+
+    container redistribute-ospf {     // edit2 callback
+
+      leaf id {
+        type uint16;
+      }
+
+      leaf external-type {
+        type enumeration {
+          enum "type1" {
+            value 1;
+          }
+          enum "type2" {
+            value 2;
+          }
+        }
+      }
+
+      leaf internal-type {
+        type boolean;
+        default "false";
+      }
+
+    }
+  }
+
+
+}

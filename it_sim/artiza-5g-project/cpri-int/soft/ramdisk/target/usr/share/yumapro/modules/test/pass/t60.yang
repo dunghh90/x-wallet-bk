@@ -1,0 +1,26 @@
+module t60 {
+    namespace "http://netconfcentral.org/ns/t60";
+    prefix "t60";
+    import ietf-inet-types { prefix inet; }
+
+    revision 2013-10-01;
+
+    rpc rpc1 {
+      input {
+        leaf src-addr { type inet:ip-address; }
+      }
+
+      output {
+        leaf dst-addr { type inet:ip-address; }
+      }
+    }
+
+    container npcon1 { 
+      leaf x { type string; }
+    }
+
+    notification notif1 {
+      leaf a { type int32; }
+    }
+
+}

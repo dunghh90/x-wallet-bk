@@ -1,0 +1,6 @@
+<user-plane-configuration xmlns="urn:xran:uplane-conf:1.0">
+  <tx-array-carriers>
+    <name>TxCar8</name>
+    <active>INACTIVE</active>
+  </tx-array-carriers>
+</user-plane-configuration>
