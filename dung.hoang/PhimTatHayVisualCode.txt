@@ -1,0 +1,147 @@
+
+home/user/develop/nr_develop/cpri-int/cpri-int/soft/src/pf/sys/f_sys_def.h (d10001f)
+home/user/develop/nr_develop/cpri-int/cpri-int/soft/src/pf/sys/f_sys_def.h
+
+
+my PC id: C064
+
+
+fix bug (02082021):
+
+- fix line 1123, function m_cr_CpriMsgRcvProc
+case CMD_CPRID_LINKSTSRES:
+- fix message 0x5711
+
+
+=========================
+Phim tat hay:
+
+	F2: thay đổi tên toàn bộ
+	Ctrl + F2: thay đổi tên trong file
+	
+	ctrl + shift + F: tìm kiến trên tất cả các file của dự án
+	
+	alt + click chuột: đa con trỏ
+	
+	ctrl + shift + L:  replace all
+	
+	ctrl + shift + K: xóa dòng
+	
+	shift + alt + mũi trên lên/xuống: copy dòng
+	
+	alt + mũi tên lên/xuống: di chuyển dòng
+	
+	ctrl + shift + o: xem tất cả function trong file
+	
+	ctrl + L: select 1 line
+	
+	
+tạo folder:  mkdir
+	
+mkdir
+
+
+NHẮC LẠI VV ĐĂNG KÝ NGHỈ PHÉP
+1.Link đăng ký nghỉ phép: https://tom.napaglobal.com/login/
+2.Quy trình nghỉ phép:
+B1: Xin phép người quản trực tiếp/PM (qua điện thoại/email…)
+B2:
+-Soạn email với tiêu đề sau: [Leave Request] account xin nghỉ phép dd/mm/yy
+-Gửi email đến quản lý trực tiếp đồng thời CC: long@napaglobal.com, nam@napaglobal.com, dieu.tran@napaglobal.com
+B3: Đăng ký ngày nghỉ trên tool TOM
+Note:
+- Chú ý thực hiện đầy đủ các bước , email đúng tiêu đề.
+-Kể từ ngày 01/07/2021 các trường hợp ko gửi email xem như là nghỉ không lương.
+all E/m nhắc lại quy trình nghỉ phép để mọi người nắm rõ, từ tháng 7 này mn chú ý thực hiện cho đúng nhé! Thanks mn!
+
+
+
+
+=====================================================
+
+1/ 18h30 meeting isssue
+--> ko request OT nên meeting đầu giờ sáng trong giờ làm việc để giải quyết issue
+
+2/ Leader hoặc team tech phân tích clear task
+--> assign cho member
+
+Phim tat notepad++
+https://thuthuat.taimienphi.vn/phim-tat-huu-ich-trong-notepad-tren-windows-7-8-81-10-7866n.aspx
+
+Hoàn tác
+
+Ctrl + Z
+
+Thay đổi hoàn tác trước đó
+
+Ctrl + Y
+
+Cắt
+
+Ctrl + X
+
+Sao chép
+
+Ctrl + C
+
+Dán
+
+Ctrl + V
+
+Xóa
+
+Del
+
+Chọn tất cả
+
+Ctrl + A
+
+Tăng khoảng cách dòng
+
+Tab
+
+Giảm khoảng cách dòng
+
+Shift + Tab
+
+Chuyển từ chữ thường sang chữ hoa
+
+Ctrl + Shift + U
+
+Chuyển từ chữ hoa sang chữ thường
+
+Ctrl + U
+
+Gấp đôi dòng hiện tại
+
+Ctrl + D
+
+Chia dòng
+
+Ctrl + I
+
+Kết hợp dòng
+
+Ctrl + J
+
+Chuyển dòng hiện tại lên trên
+
+Ctrl + Shift + Up
+
+Chuyển dòng hiện tại xuống dưới
+
+Ctrl + Shift + Down
+
+Chèn dòng trắng hiện tại lên trên
+
+Ctrl + Alt + Enter
+
+Chèn dòng trắng hiện tại xuống dưới
+
+Ctrl + Alt + Shift + Enter
+
+Chỉnh sửa cột
+
+Alt + C
+
+

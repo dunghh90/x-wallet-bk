@@ -1,0 +1,49 @@
+set port run reactjs
+"set port=4200 && react-scripts start"
+%PUBLIC_URL%
+
+1/ Lodash: Thư viên giúp xử lý array, object,...
+2/ node cache: Cache memory
+3/ node cron: cron job
+4/ moment: xử lý 
+5/ multer : Thư viện upload
+6/ Bull Queue: xử lý job queue
+
+
+
+1/ Lodash: Thư viên giúp xử lý array, object,...
+
+_.join 	=> chuyển mảng sang string
+_.last	=> lấy phần tử cuối mảng
+_.chunk	=> chia mảng con
+	_.chunk(['a', 'b', 'c', 'd'], 3);	// => [['a', 'b', 'c'], ['d']]
+_.fill(array, value, [start=0], [end=array.length])
+	ghi đè phần tử từ vị trí start đến trước end, ko điền thì fill all
+
+_.drop(array, [n=1])
+	tạo mảng mới xóa đi n phần tử tính từ vị trí bắt đầu
+	
+_.findIndex(array, [predicate=_.identity], [fromIndex=0])
+	tìm index của phần tử thỏa điều kiện
+
+_.filter(collection, [predicate=_.identity]) 
+	search phần tử trong collection
+	
+_.sortBy(collection, [iteratees=[_.identity]])
+	sắp xếp collecttion theo điều kiện xác định
+_.includes(collection, value, [fromIndex=0])
+
+_.has(object, path)
+	kiểm tra xem key có tồn tại trong object hay ko
+	
+_.findKey(object, [predicate=_.identity])
+	trả về key của phần tử thỏa điều kiện
+	
+_.pick(object, [paths])
+	tạo mảng từ mảng đã có
+	
+_.compact([0, 1, false, 2, '', 3]);
+	tạo mảng mới loại bỏ false, null, '', 0
+	
+	
+2/ node cache: Cache memory

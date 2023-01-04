@@ -1,0 +1,45 @@
+async testLookup() {
+return this.couponGlobalOfStoreModel.aggregate([
+{
+$project: {
+couponGlobalId: { $toObjectId: '$couponGlobalId' },
+storeId: { $toObjectId: '$storeId' },
+updated_datetime: '$updated_datetime',
+},
+},
+{
+$lookup: {
+from: 'coupon-globals',
+localField: 'couponGlobalId',
+foreignField: '_id',
+pipeline: [
+{
+$project: {
+code: '$code',
+name: '$name',
+description: '$description',
+expiration_datetime: '$expiration_datetime',
+updated_datetime: '$updated_datetime',
+},
+},
+],
+as: 'coupon-global',
+},
+},
+{
+$lookup: {
+from: 'stores',
+localField: 'storeId',
+foreignField: '_id',
+pipeline: [
+{
+$project: {
+name: '$name',
+},
+},
+],
+as: 'store',
+},
+},
+]);
+}

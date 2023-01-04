@@ -1,0 +1,981 @@
+
+chuyen root:
+	sudo su -
+mysql version:
+	mysql -V
+cd ubuntu:
+	cd /mnt/d/
+chuyen thu muc goc:
+	cd ~
+xem file:
+	cat id_rsa.pub
+	cd .ssh/
+list file:
+	ls -la
+remove folder:
+	rm -Rf node_modules/
+	
+	git submodule update --init --recursive
+	
+connect mysql:
+	mysql -u root -p"123456"
+
+npm run start:dev
+
+
+=================================
+new Date(date).getTime()
+10h30: create schema và làm create store
+
+=================================
+
+
+
+
+
+const delay = (time) => new Promise((resolve, reject) => setTimeout(resolve, time));
+
+
+===========================
+loai bo console.log trong moi truong product
+if (process.env.ENV_VARIABLE == 'production'){
+  console.log= function() {};
+}
+
+===========================
+
+[IT][ISMS] v.v Xin truy cap YOUTUBE
+
+============================
+
+run: docker-compose up --build -d
+logs: docker-compose logs -f web
+swagger: localhost:9000/doc
+
+http://gitlab.napaglobal.com:8888/nat/couponapp
+
+
+Chức năng thêm nhân viên quản lý. 
+Nghĩa là 1 store có thể có nhiều người quản lý phải ko?
+Khi chỉnh sửa store thì có thể chỉnh sửa lại list người quản lý store
+
+số điện thoại
+thời gian hoạt động
+description
+
+
+ở mục 43, 44, 45. this shop, all shop ở đây là store phải ko?
+Nếu nó là store.
+
+
+
+
+============== Team 5G ====================================
+
+
+ipcs -m | grep `whoami` | awk '{ print $2 }' | xargs -n1 ipcrm -m
+ipcs -s | grep `whoami` | awk '{ print $2 }' | xargs -n1 ipcrm -s
+ipcs -q | grep `whoami` | awk '{ print $2 }' | xargs -n1 ipcrm -q
+
+
+PC9:
+939056425
+
+-----------------------
+
+all về report daily thì mọi người thực hiện theo hình thức sau nhé
+1. Log time vào task sau
+http://redmine2.napaglobal.com:3000/issues/15
+2. Báo cáo vào discussion DailyReport theo Template
+
+1> Overall status:
+　　+ task-15: in-progress (late)
+2> Today tasks:
+　　+ task-15: review UT (màn hình ranking)
+　　+ task-15: creat IT
+  Issue:  hôm nay, máy bị lỗi source chư fix được, confirm đối ứng task-734
+3> Next tasks:
+　　+ task-15
+
+--------------
+
+BPF_COM_LOG_DMESG("I2C Busy detail(%d) kind %d addr %x offset %d count %d file_descriptor = %d\n",try_recov_count ,kind, setpage, offset, count, file_descriptor);
+
+
+
+CPRI_INT-788 [210827][10%][Re-Open]
+		1. Desciption about issue.
+			Version FHIC: ?			
+		2. Rootcause. 		  
+			- Identify: before sending request to RE, l3 will check RE state which is currently hardcore which cause that even when no RE connect, the check pass as if RE is connected
+		3. How to fix?
+			- Disable the hard code so RE state can change
+		4. Limitation(if any)
+			- Nnot get all the flow (function) that affect RE state
+		5. Todo
+			Investigate code and compare RE state when connect vs disconnect
+		6. Other issue
+			For example:
+			- remote pc lag
+			- hw limited and planed for higher priority bug
+
+
+
+--------------------------------
+branch 575:
+	- nr/feature/CPRI_INT-575
+source:
+	- cpri-int/cpri-int/soft/src/pf/ia/lib/shared_data
+branch download:
+	nr/feature/CPRI_INT-576_re_fhm_dl
+source
+	- cpri-int/cpri-int/soft/src/pf/l3/re_dlm
+
+
+
+----------------------------
+
+https://csvn.cloud9-solutions.com/svn/s107.02/mics/docs/【Artiza 5G】Folder_Structure.xlsx
+https://csvn.cloud9-solutions.com/svn/s107.02/mics/docs/【Artiza 5G】Folder_Structure.xlsx
+https://csvn.cloud9-solutions.com/svn/s107.02/mics/FromArtiza/20200929_アルチザ向け設計資産/FHM設計書/ソフト設計書/00_BI/シーケンス/01_立ち上げ_t.xlsm
+https://csvn.cloud9-solutions.com/svn/s107.02/mics/FromArtiza/20200929_アルチザ向け設計資産/FHM設計書/ソフト設計書/01_BD/プロセス・スレッド間インタフェース/プロセススレッド間IF一覧_t.xlsx
+https://csvn.cloud9-solutions.com/svn/s107.02/mics/FromArtiza/20200929_アルチザ向け設計資産/FHM設計書/ソフト設計書/02_FD/状態遷移表/StateTransitionTable(L3-DLM).xls
+https://csvn.cloud9-solutions.com/svn/s107.02/mics/FromArtiza/20200929_アルチザ向け設計資産/FHM設計書/ソフト設計書/02_FD/状態遷移表/StateTransitionTable(L3-CPR)_new.xls
+
+
+
+BPF_COM_LOG_DMESG("[CPRI_INT_789] rec_proxy SrcQid = %d, SrcTid = %d, DstQid = %d, DstTid = %d, eventno = 0x%x, signal = 0x%x\n",
+                         SrcQid, SrcTid, DstQid, DstTid, eventno, ((CMT_TSKIF_HEAD*)byte)->uiSignalkind);
+
+
+
+
+Tam, 10:08
+Plan cho việc update realtime lên trello Board VN
+Tâm 
+lần 1: 20h ~ 8h hôm sau:
+Lần 2: 9h  12h. (Internal meeting 30p)
+Lần 3: 12h ~ 16h. Nghỉ trưa: 1.5h và internal meeting 0.5h	
+Lần 4: 16h ~ 18h
+
+Theo template sau:
+Với các bug không có progress và status đang là chưa biết nguyên nhân thì nhờ ae report chi tiết như sau:	
+1 Các bước đã làm:	
+	Tại commit id:
+	Tại unit:
+	step 1 
+	... 
+	step n
+2. Up log thu được lên ticket, hight ligh phần nghi ngờ lỗi	
+3. Phán đoán hoặc QnA	
+4. Issue hiện tại
+
+-----------------------------
+
+
+https://csvn.cloud9-solutions.com/svn/s107.02/mics/NR_VN/NR0/NR_Coding_Rule/Artiza_Source_Code_NR_Checklist.xls
+
+này là check list từ phase NR a có phổ biến
+
+
+ae update checklist cho các task MK bên mình giúp a
+
+NR2 làm cho 581 và 577 (rct và cpr)
+
+NR làm cho 577 (dlm)
+
+phần 21B thì update theo BD có update
+
+https://csvn.cloud9-solutions.com/svn/s107.02/mics/NR_VN/docFromVN/BD
+
+https://csvn.cloud9-solutions.com/svn/s107.02/deliverables/release/CPRI中間装置_Release20210627
+
+nếu trong đợt release trước mà ko có template thì báo a
+
+
+
+=================================================
+
+/* 応答データに可変長データを設定 */
+    // cm_MemCpy((USHORT*)((UCHAR*)&(atInitTable->card_extcntitem) + sizeof(USHORT)),
+    //           setdata,
+    //           sizeof(USHORT) * (set_data_cnt));
+
+    cm_MemCpy(&(atInitTable->card_extcntitem) + CMD_NUM1,
+													  setdata,
+													  sizeof(USHORT) * (set_data_cnt));
+
+0x0211-REC-MT-log_20210804_OK.log
+
+bug:
+	thiếu return function m_cr_ComLinkSettingL3Res_REC line 772
+
+
+
+
+
+minh.hq@cloud9-solutions.com
+c9_artiza
+
+nr/feature/CPRI_INT-577
+
+
+git reset --hard origin/nr/feature/CPRI_INT-581
+
+
+rrh_ia:
+	cd $(IA_PATH) ; make clean ; make test
+	mv $(IA_PATH)/obj/ia $(INSTALL_PATH)/opt/proc/
+	$(FINISH_MSG)
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=======================================================================
+
+1 Remote PC1: 172.16.12.45 anydesk id 319760766
+3 Remote PC3: 172.16.15.110/172.16.30.78 anydesk id: 424861923
+
+
+ae remote và máy này
+
+ssh vn@172.17.1.100
+
+pass: vn
+
+để tiến hành cross compile thay cho server .75 nhé
+
+========================================================================
+
+
+Branch CT
+
+develop_it_nr_l3_adapter_199a460_UTest
+D:\Artiza\deliverables\branches\04_CT\Cpputest
+
+-------------------------------------
+
+anh có up phần thêm mới liên quan convert ALD(REカード制御) lên đây rồi Tâm nhé:
+.../NR_VN/docFromVN/MessageMapping/MessageMapping.xlsx
+sheet: (項番5)_No.55~57
+(Phần này khá giống cái convert ALD của No.9)
+
+
+------------------------------------
+Cái này viết hơi khó hiểu. E viết lại ý chính là ntn xem hiểu đúng k nha: 
+
+1. Trước khi merge nhánh ticket vào nhánh chính, phải merge ngược nhánh chính vào nhánh ticket trước, đảm bảo resolve hết conflict và nhánh ticket build oke hết. 
+2. Bây giờ merge nhánh ticket vào nhánh chính. Lúc này thì nhánh ticket gần giống nhánh chính, nên gần như k có conflict xảy ra trên nhánh chính --> Đây là ý đồ của họ để đảm bảo nhánh chính không bị lỗi
+
+------------------------------------
+[artiza]suzuki_hideto
+
+Thông tin chia sẻ về IT
+
+■Máy có thể sử dụng
+Máy 6 và 7. Địa chỉ IP ở bên dưới
+https://artiza.backlog.jp/alias/wiki/842882
+
+■Build & farm rewrite
+src đặt tại
+make -j8 && cd ../lm && ./build.sh
+
+Fj5gDuCm_Soft_v.bin
+Is generated. Transfer this with scp
+
+oranuser / o-ran-password
+
+00 rewrite
+rrh -fc Fj5gDuCm_Soft_v.bin 10
+
+01 side rewrite
+rrh -fc Fj5gDuCm_Soft_v.bin 11
+
+Faces can be switched with the following command
+rrh -psew 50 0
+rrh -psew 50 1
+
+■ May be used for drilling
+rrh -psew 67 4
+
+Do not run the DU_init process at next boot.
+After logging in, become the root user
+You can start the process manually by executing the following command → printf debug is also output.
+
+/ opt / sh / cmd_start_init
+
+
+
+------------------------------------------
+
+CMT_CPRIF_FIRMFILEREQ_S3G
+
+
+
+Get-ChildItem
+
+mấy cái message dưới thì mình xài source ở commit sau:
+https://artiza.backlog.jp/git/CPRI_INT/cpri-int/commit/343f0e762e87093495ab71327af7f462931a9654
+MSI_O_RAN_EXTERNALIO_EDIT_REQ
+MSI_O_RAN_EXTERNALIO_EDIT_CFM
+MSI_O_RAN_EXTERNALIO_EDIT_REJ
+
+
+Task:
+- fix issue
+- Tìm cách run
+- Đo tiến độ
+
+
+
+issue:
+	- Chưa merge được xử lý l3_common với rct
+	- Chưa include file f_com_SVCtl từ ft com
+
+
+
+1. log/ màn hình lỗi (nhớ highlight đoạn lỗi)
+2. đã biết nguyên nhân chưa? có phán đoán gì ko?
+  a. đã biết nguyên nhân / đã có phán đoán
+     → trình bày cụ thể
+ b. chưa biết
+3. đã biết cách điều tra chưa?
+  a. đã biết
+     → trình bày cụ thể
+  b. chưa biết
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+Cách dùng devTool
+$_: hien gia tri bien hien tai
+$0: vung select tren web
+$1: vung ke tiep
+$('h1').style.color = 'blue'
+console.dir(document);
+console.dir(document.URL);
+
+
+
+
+========================================
+
+#ifdef __cplusplus
+}
+#endif
+
+update lại source code convert message
+cpri_msg_ctr->infbit = (uint16_t)msi_msg->array_portout_state[0].port_num;
+
+
+========================================
+========================================
+git stash list
+git stash apply 
+
+xoa commit
+ git reset --soft HEAD
+ git reset --hard origin/develop_it_NR
+ 
+export GIT_SSL_NO_VERIFY=1
+git clone -b nr/feature/CPRI_INT-577_CT https://artiza.backlog.jp/git/CPRI_INT/cpri-int.git
+git clone -b nr/feature/CPRI_INT-581_CT https://artiza.backlog.jp/git/CPRI_INT/cpri-int.git
+git clone -b nr/develop https://artiza.backlog.jp/git/CPRI_INT/cpri-int.git
+
+
+========================================
+========================================
+
+8h59: start
+
+
+-----------------
+cái này làm sao
+cái này là cái gì
+làm sao làm được
+
+
+
+----------------------------
+Tạo tool count task
+
+
+===========================================
+git clone -b develop_it_NR_MergeSouce_L3rct_to_IA https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+
+git clone -b nr/feature/CPRI_INT-581 https://artiza.backlog.jp/git/CPRI_INT/cpri-int.git
+
+issue:
+- Function m_cm_WriteLEDReg sử dụng biến dùng chung với rct, dlm nên đợi merge code
+- cmw_validsysinfo khai báo ở l3 com bị lỗi nên đang khai báo lại thành biến global cần confirm lại
+- l3_com_sendMsg đang stub
+
+cherry pickup
+
+==================================
+
+issue:
+- Chưa trình bày folow quy trình vài trò của người thực hiện công việc cho member
+Dẫn đến có thể bị rework do không đúng trình tự thực hiện.
+- Chưa có người review kết quả coce/test.
+- Thiếu triển khai file checklist khi code, test
+
+Keep:
+- Đặt câu hỏi để xác nhận độ hiểu của thành viên.
+- Đã chia team và teamlead quản lý review sản phẩm của member.
+
+
+Action:
+- communication chưa hiểu hết vấn đề
+- issue ko thấy người trả lời
+
+-----------------------------
+
+cmd_alllog
+re_his_ast
+dmesg
+
+===============================
+Problems: liệt kê hết những gì là problems hay điểm tốt mà bọn em thấy, mỗi người 5 issues
+Keep: có gì ổn thì giữ và phát huy 
+Try: trong mớ problém đó thì làm sao để tốt hơn, mỗi người 5 actions
+
+
+git clone -b develop_it_NR_No11_RE_AISG_TILT_Monitoring_Control https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+
+chmod +x ./tools/socat/make.sh
+chmod +x ./tools/linuxptp/make.sh
+chmod +x ./gen_re_help.sh
+chmod +x ./make_cross.sh
+chmod +x ./make_gcc.sh
+chmod +x ./run.sh
+
+export GIT_SSL_NO_VERIFY=1
+-----------------------------
+
+INCLUDE      += -I../l3/cpr/inc
+INCLUDE      += -I../l3/inc
+INCLUDE      += -I../../sys/inc_arch
+INCLUDE      += -I../../api/inc
+INCLUDE      += -I../ft_com/com/inc
+
+
+-----------------------------
+
+git reset --hard origin/develop_it_NR
+
+Thư mục NR compile và No11, 14:
+NR_old
+
+export GIT_SSL_NO_VERIFY=1
+git clone -b develop_it_nr_l3_adapter https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+
+git clone -b it_sim_NR https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+
+
+====Rule git cho NR === すべて Tam 
+
+●ko được đụng đến branch <nr/develop>
+
+●giai đoạn「coding」：VN main branch = <nr/feature>
+   ・khi có vấn đề con thì tạo 
+            ・branch con
+             ・ticket con (backlog)
+              →　vấn đề tại branch con confirm thấy OK thì merge vào branch chính
+             →　câu hỏi: ai sẽ tham gia confirm trước khi merge vào branch chính của VN? (thảo luận sau)
+●giai đoạn「test」：tạo thêm nhánh chính của giai đoạn test <nr/feature/Fix>
+              →　cách quản lý tương tự giai đoạn code
+
+
+* Print log:
+printf("\nline %d, func %s,file %s", __LINE__, __func__, __FILE__); //C9 1-3-2-1
+* Settting Debug
+Debug he thong
+1.Copy 2 file json vaf file make
+3.echo 0| sudo tee /proc/sys/kernel/yama/ptrace_scope
+./run.sh
+4.dat break point
+5. click run debug
+(record 15.4) Artiza_5G_DEVs
+
+-----------------------------
+Tìm hiểu debug
+Tìm hiểu console.log
+Tìm hiểu lại follow khái niệm trong dự án
+
+(( num & 0xF0) >> 4 ) * 10  = B0
++
+(num & 0x0F) 
+
+
+(num & 0x0F) = 1
+(( num & 0xF0) >> 4 ) * 10  = B0
+
+
+
+-----------------------------
+
+Xuất log cm_MAbort:
+re_hisroot@5G_DU:/var/volatile/tmp# re_his_arsroot@5G_DU:/var/volatile/tmp# re_his_ast 
+
+---------------------------------
+
+get set share memory
+
+/home/user/develop/build_develop_it_NR_fix/artiza-5g-project/cpri-int/soft/src/pf/ft_com/api/rrhApi_Inv.c
+
+
+
+------------------------------
+l3_com_sendMsg
+/* RE Forwarding Notice(ファイル情報報告通知) */
+l3_com_sendMsg( CMD_TSKID_DLM, D_RRH_PROCQUE_RE, 0,  &ltCpriFileInfReq, sizeof(CMT_TSKIF_CPRISND_FILEINFREQ));
+
+
+----------------------------------------
+2 ngay nữa: thư 3 sẽ xong
+----------------------------------------
+
+ ps -aux | grep 'tên process'
+
+----------------------------------------------
+
+1. Build
+2. Reset trước khi flash
+3. Flash
+4. Reset sau khi flash 
+5. rrh -pser 66 (xem mode hiện tại của unit, nếu khác 4 thì thực hiện step 6, nếu =4 thì thực hiện step 7)
+6. rrh -psew 66 4
+  6.1. reset unit
+7. ps -ef (xem các process đang chạy, nếu có L2, L3 thì nó đang chạy rồi)
+
+
+
+khi connect tool MT tới unit không được thì có 2 trường hợp:
+1. CPU đang bị full => check bằng cách gõ "top" vào tab
+   => reset lại unit
+2. có 1 máy khác cũng đang dùng tool connect đến unit này
+ => check bằng cách gõ "netstat -a" => hiện các IP đang connect tới unit => chửi
+
+----------------------------------------------
+Report đơn giản:
+Task đang làm: tiến độ
+Có issue gì hay ko
+
+
+Task đang làm: 
+	- 
+Issue:
+	-
+
+
+----------------------------------------------
+develop_it_no_alm commit rule
+Local branch test finish
+↓
+merge to develop_it_no_alm branch
+↓
+Machine confirm（3unit）
+・start up : OK
+・All　scenario : OK
+↓
+Ticket update + Report
+
+----------------------------------------------
+bên mình sẽ theo rule sau để commit lên develop_it_no_alm nhé
+
+test finish at local branch
+↓
+merge to develop_it_no_alm branch
+↓
+Machine confirm
+・start up : OK
+・All　scenario : OK
+↓
+Ticket update + Report
+
+
+******************************
+
+l3_check_station_data_available line 414, đang fix cứng là 1 nên ko thể chạy 5G
+
+******************************
+
+
+BPF_COM_LOG_DMESG("[Huy] autonego_start_ind.bit_rate = %d\n",autonego_start_ind.bit_rate);
+gõ dmesg để show log
+
+No.35 SFP管理
+
+------------------------------
+Sau khi tìm được hướng thì xác nhận lại:
+1/ Input là gì?
+2/ Cách làm như thế nào? 
+3/ Output để close task là gì nhé
+-----------------------------
+
+gõ commmand: git diff > file_name.patch
+
+xong file đó sinh ra tại thư mục hiện tại
+
+gõ ls để kiểm tra
+
+
+
+-------------------------------
+ae lưu ý khi commit nhé
+
+đừng ghi chung
+
+
+********************************
+
+1. Status(% progress):
+10%: Start
+20%: Tái hiện đc bug
+50%: Xác định đc nguyên nhân
+70%: Xác định đc cách fix
+90% Fix xong
+100%: Re-test xong
+
+********************************
+
+[CPRI_INT-xxx]
+
+phải bắt đầu với tiền tố này
+--------------------------
+
+Script /mnt/hgfs/ShareFolder/out.txt
+exit
+
+./run.sh > /mnt/hgfs/ShareFolder/out.txt
+
+tm_lb_1_m1e2s8p
+
+reset origin
+git reset --hard origin/develop_it_NR
+-------
+----------------
+export GIT_SSL_NO_VERIFY=1
+git clone -b nr/develop https://artiza.backlog.jp/git/CPRI_INT/cpri-int.git
+git clone -b develop_it_NR https://artiza.backlog.jp/git/CPRI_INT/cpri-int.git
+
+git clone -b develop_it_C9 https://artiza.backlog.jp/git/CPRI_INT/cpri-int.git
+"minh.hq@cloud9-solutions.com c9_artiza"
+
+Tool MT:
+D:\Artiza\mics\FromArtiza\20201102_アルチザ向け設計資産\CPRI-MT\03_source
+
+	+ D:\Artiza\mics\FromArtiza\20201102_アルチザ向け設計資産\CPRI-MT\03_source\Log\src\SmltLog.cpp
+
+- URL: dlb-ftp.cloud9-solutions.com
+- Account :           artiza-5g
+- Password: iwnB7skT6S7aLHCK
+
+export GIT_SSL_NO_VERIFY=1
+git clone -b develop_it_NR https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+
+git clone -b feature_No05_RECardStatusMonitoringControl https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+export GIT_SSL_NO_VERIFY=1
+git clone -b it_sim_NR_No.14_ConditionMonitoringOfTheIntermediateDeviceItself_NR https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+
+
+export GIT_SSL_NO_VERIFY=1
+git clone -b it_sim_feature_No.67_CPRI_INT-104_Dung https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+export GIT_SSL_NO_VERIFY=1
+git clone -b it_sim https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+
+export GIT_SSL_NO_VERIFY=1
+git clone -b it_sim_feature_No.23_CPRI_INT-97 https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+
+export GIT_SSL_NO_VERIFY=1
+git clone -b it_sim_feature_No.24_CPRI_1-8-5_9 https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+
+git clone -b it_sim_No.19_CPRI_1-3-30-1 https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+
+
+export GIT_SSL_NO_VERIFY=1
+git clone -b feature_No35_SFPManagement https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+ 
+
+export GIT_SSL_NO_VERIFY=1
+git clone -b it_sim_feature_No.66_CPRI_1-19-1_11-1 https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+
+
+export GIT_SSL_NO_VERIFY=1
+git clone -b develop_it https://git.cloud9-solutions.com/s107-02/artiza-5g-project
+
+
+
+======================
+Script /mnt/hgfs/ShareFolder/out.txt
+exit
+
+./run.sh > /mnt/hgfs/ShareFolder/out.txtH
+
+
+
+tm_lb_1_m1e2s8p
+======================
+
+Git:
+
+運用ログ出力完了通知
+
+
+Sau khi kiểm tra sự khác biệt của nhánh giữa remote và local, bản có thể thay đổi cập nhật vào local repo dữ liệu tải về bằng lệnh git pull hoặc git merge, ví dụ gộp thay đổi của remote/master và master bằng merge thì thi hành
+git merge origin/master
+
+
+Lệnh git pull lấy về thông tin từ remote và cập nhật vào các nhánh của local repo.
+Thi hành lệnh:
+git pull
+
+switch branch
+git checkout develop
+
+Sau đó, pull code mới nhất từ develop về
+git pull company develop
+
+
+
+List lenh git
+git checkout develop
+git pull company develop
+git checkout -b branch_a
+git commit -am "message"
+git checkout develop
+git pull company develop
+git checkout branch_a
+git rebase -i develop
+git push origin branch_a / git push origin branch_a -f
+
+=====================================
+
+xem toan bo branch tren may local
+git branch -a
+get toan bo branch update tren sever va cap nhat vao list branch local
+git fetch
+dung cau lenh do remote tu may ao
+export GIT_SSL_NO_VERIFY=1
+de switch sang nhanh khac tren local
+git checkout it_sim_feature_No62_UnmodulatedCarrier
+get data ve
+git pull
+
+============================
+SHARE FOLDER MAY AO
+sudo apt-get autoremove opent-vm-tools
+sudo apt-get install open-vm-tools-desktop
+
+sudo reboot
+
+
+sudo apt-get update
+sudo git clone https://github.com/rasa/vmware-tools-patches.git
+cd vmware-tools-patches/
+sudo ./download-tools.sh 
+sudo ./untar-and-patch.sh
+sudo ./compile.sh
+
+
+rasa/vmware-tools-patches
+https://github.com
+lam tung lenh 1
+
+sau do tat may vmware, share folder voi window
+
+
+
+
+==============================
+
+
+
+format log
+1-3-2-1-REC-MT-log_20210317_NG.txt
+===============================
+8-2: TBTG (ở l2/lpb) nhận message từ MT_REC/RE rồi và dùng tm_lb_1_m1e2s8p() để gởi tới l3 ...
+Sau khi xử lý yêu cầu message
+8-1: TBTG (ở l2/lpb) gởi message đến MT_REC/RE
+
+===================================
+scenario
+
+D:\SVN\deliverables\branches\06_IT\結合試験項目書\CPRI中間装置_結合試験項目書_CPRI_INT-006-001_CPRI管理
+===================================
+
+file protocol
+D:\Artiza\mics\FromArtiza\20200929_アルチザ向け設計資産\FHM設計書\ソフト設計書\00_BI\インタフェース\CPRI
+
+List Test IT
+
+D:\Artiza\deliverables\branches\06_IT\結合試験項目書
+
+
+===================================
+echo 0| sudo tee /proc/sys/kernel/yama/ptrace_scope
+
+
+===================================
+
+************ BẮT BUỘC *************
+Mỗi ngày
+trước 10h sáng
+trước 4h chiều
+anh em update progress, tình hình fix bug lên Redmine giúp nhé
+
+Mình cần thông tin để update cho phía Nhật.
+
+===================================
+Description
+
+Ticket để quản lí trao đổi liên lạc về bug IT.
+Khi ae phân tích bug
+AE tóm lại trên redmine tương ứng với nội dung dưới nhé:
+BD: noxxx
+Cause: mô tả phân tích nguyên nhân bug
+How to fix: Mô tả nếu có
+
+Về % complete quy ước như sau:
+
+1. 10%: Start
+2. 20%: Tái hiện đc bug
+3. 50%: Xác định đc nguyên nhân
+4. 70%: Xác định đc cách fix
+5. 90% Fix xong
+6. 100%: Re-test xong
+
+Ngoài ra ae có idea / comment gì nói đây luôn nhé
+
+Về quản lý source thì như sau:
+Để tránh các bug ảnh hưởng lẫn nhau thì
+1. Tạo branch cho bug đó từ nhánh it_sim: ví dự: it_sim_feature_No62_UnmodulatedCarrier
+2. Fix bug trên nhánh đó -> tới khi xong
+3. Thông báo để cross check trên nhánh đó sau khi fix xong
+4. Merge lại vào nhánh it_sim sau khi cross check okie
+
+Phía onsite nhờ như sau:
+・Khi commit lên git phần sửa bug thì comment thêm CPRI_INT-xxx
+
+update progress cho task thì e update vào phần description latest status giúp a
+
+để tên branch git để người khác test lại nữa nhé
+
+
+
+===================================
+Mô tả nội dung test scenario
+**************
+
+D:\Embedded\Artiza\mics\FromArtiza\20200929_アルチザ向け設計資産\FHM設計書\ソフト設計書\00_BI\インタフェース\CPRI\
+
+BI_04_03_02_SWSpec_CPRI_protocol_control_4.1.3_t.doc
+
+===========================================
+AE tóm lại ở description theo format sau:
+1. BD: noxxx
+2. Status: Xác định đc nguyên nhân
+3. Cause: mô tả phân tích nguyên nhân bug
+	Hàm nào ở file nào, line bao nhiêu bị lỗi gì
+4. How to fix: Mô tả nếu có
+	Hàm nào ở file nào, line bao nhiêu bị lỗi gì -> nên sửa như thế nào
+
+
+===================================
+
+
+
+- Tai lieu requirement, function code.
+	/to_VN/design/CPRI中間装置機能一覧.xlsx
+	
+- Coding covention
+	https://csvn.cloud9-solutions.com/svn/s107.02/mics/FromArtiza/20201005_アルチザ向け設計資産/ソフト品質関連/開発規約/BTS-MAN-003(07)_コーディング・マニュアル_5G-BDE-SW_EN.docx
+	
+- List function chứa nội dung TBD
+	https://csvn.cloud9-solutions.com/svn/s107.02/to_VN/design/残課題、TBD項目の一覧.xlsx
+	
+	
+
+export GIT_SSL_NO_VERIFY=1
+git clone https://git.cloud9-solutions.com/s107-02/artiza-5g-project 
+git clone https://git.cloud9-solutions.com/s107-02/artiza-5g-project 
+git clone https://git.cloud9-solutions.com/s107-02/artiza-5g-project.git
+
+
+
+
+1. create add thu muc vao may ao
+2. Dung lenh Build source
+	gọi file MakeFile để build
+	./make_gcc.sh
+	
+	
+	
+Trong file list TBD, anh thấy added thêm item 27, 28 cho function No.6 (bạn toan.nguyen commit)
+--> 2 nội dung TBD này đã clear(xóa) từ input ★15, ★16 trước đây rồi nên không cần list vào nhé.
+
+ae check thêm nội dung ở file TBD nhé
+
+https://csvn.cloud9-solutions.com/svn/s107.02/to_VN/design/残課題、TBD項目の一覧.xlsx
+
+
+=========================================================
+thấy lỗi này khá nhiều
+comment báo send tới RE
+mà src thì gọi send tới REC
+
+RE装置構成情報報告応答送信
+
+https://redmine.cloud9-solutions.com/issues/36940
+
+==========================================================
+Phân tích bug
+
+BD: noxxx
+Cause: mô tả phân tích nguyên nhân bug
+How to fix: Mô tả nếu có
+
+% complete quy ước như sau:
+50%: đã phân tích bug xong
+90%: đã fix bug, nhưng chưa IT test lại
+100% đã được IT test lại bởi tester
+
+
+========================================================
+quy ước đặt tên file log
+<tên test case>_<Tri / Duong>.log
+
+========================================================
+
+make_gcc.sh --> old
+BUILD_MODE=1
+export BUILD_MODE
+echo $BUILD_MODE
+echo $PATH
+make;
+
+

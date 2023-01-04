@@ -1,0 +1,5011 @@
+còn các design pattern ngoài mấy cái này cần tìm hiểu kỹ thêm cái nào nữa ko vậy
+singletone, factory, decorator, adapter
+Với trong bài tập 11 có nói pattern Repository mà tìm trên mạng ko thây nó
+throw new NotFoundException('user don't exist')
+
+import quan he lan nhau:
+
+forwardRef(() => UserModule),
+
+1/ delete manager
+2/ update user check role (add role vao jwt)
+
+
+
+
+- create timestamps
+- try catch
+- deleteUserManager
+- react_js
+
+===========================
+
+20211015_DailyReport:
+1> Overall status:
++ task-41: in-progress
+2> Today tasks:
++ task-15: Tìm hiểu cron job
++ task-15: Tìm hiểu job queue
++ task-15: Làm bài tập lập lịch gửi mail
+3> Next tasks:
++ task-15: Tìm hiểu job queue
+
+===========================
+
+20211013_DailyReport:
+1> Overall status:
++ task-41: in-progress
+2> Today tasks:
++ task-15: HTML Tags, How to add CSS
++ task-15: Phân biệt class component và function component trong reactjs
++ task-15: node cache: Cache memory
+3> Next tasks:
++ task-15: CSS Selectors
++ node cron: cron job
++ moment: xử lý 
+
+===========================
+20211011_DailyReport:
+1> Overall status:
++ task-41: in-progress
+2> Today tasks:
++ task-15: Tạo component trong reactjs
++ task-15: HTML Tags, How to add CSS
++ task-15: Tìm hiểu thư viện Lodash
+3> Next tasks:
++ Tìm hiểu html/css
++ Tạo demo reactjs
++ Node cron: cron job
+
+===============================
+
+20211011_DailyReport:
+1> Overall status:
++ task-41: in-progress
+2> Today tasks:
++ task-43: Module Store - Chỉnh sửa store
+	- Add thêm chức năng xóa user quản lý store khi user bị xóa ở bảng user
+	- Sử dụng timestamps trong mongodb
++ Tìm hiểu html/css
+3> Next tasks:
++ Tìm hiểu html/css
++ Tạo demo reactjs
+
+==============================
+20211007_DailyReport:
+1> Overall status:
++ task-41: in-progress
+2> Today tasks:
++ task-43: Module Store - Chỉnh sửa store
+	- Update chức năng chỉnh sửa store có thể chỉnh sửa người quản lý
++ task-41: Module Store - Thêm nhân viên quản lý
+	- Update quyền truy cập là role admin.
++ Tìm hiểu câu lệnh lookup trong mongoDB
+3> Next tasks:
++ task-43: Module Store - Chỉnh sửa store
+	- update người quản lý
++ Tìm hiểu PostgreSQL
+
+
+==============================
+
+20211006_DailyReport:
+1> Overall status:
++ task-41: in-progress
+2> Today tasks:
++ task-43: Module Store - Chỉnh sửa store
+		- Check tên store bị trùng khi update
++ task-41: Module Store - Thêm nhân viên quản lý
+		- check user được thêm là active, role của user là admin hoặc shop
++ Fix bug tạo file dto xử lý cho update manager, đặt try catch bắt lỗi
++ Tìm hiểu các lệnh truy vấn dữ liệu của mongoDB
+3> Next tasks:
++ task-43: Module Store - Chỉnh sửa store
+	- Update chức năng chỉnh sửa store có thể chỉnh sửa người quản lý
++ task-41: Module Store - Thêm nhân viên quản lý
+	- Update quyền truy cập là role admin.
++ Tìm hiểu PostgreSQL
+
+
+==============================
+
+20211005_DailyReport:
+1> Overall status:
++ task-41: in-progress
+2> Today tasks:
++ Tạo Check roles ở module user để check role admin, shop
+cho các chức năng của module shop
+3> Next tasks:
++ Fix bug tạo file dto xử lý cho update manager, đặt try catch bắt lỗi
++ Tìm hiểu các lệnh truy vấn dữ liệu của mongoDB
+
+
+=============================
+
+20211001_DailyReport:
+1> Overall status:
+	+ task-36: in-progress
+2> Today tasks:
+	+ task-41: Module Store - Thêm nhân viên quản lý
+			Tạo field userCreate, userUpdate, createDate, updateDate
+			Tìm hiểu phương thức xác thực admin
+3> Next tasks:
+	+ Tạo phương thức xác thực admin
+
+=============================
+
+20210930_DailyReport:
+1> Overall status:
+　　+ task-36: in-progress
+2> Today tasks:
+　　+ task-41: Module Store - Chỉnh sửa store
+  + task-43: Module Store - Disable store
+  + Tìm hiểu phương thức xác thực role admin
+3> Next tasks:
+  + task-41: Module Store - Thêm nhân viên quản lý
+
+
+=============================
+
+20210929_DailyReport:
+1> Overall status:
+　　+ task-36: in-progress
+2> Today tasks:
+　　+ task-33: Module Store - Danh sách store
+  + task-39: Module Store - View store detail
+3> Next tasks:
+  + task-41: Module Store - Chỉnh sửa store
+  + task-43: Module Store - Disable store
+
+============================
+
+20210928_DailyReport:
+1> Overall status:
+　　+ task-36: in-progress
+2> Today tasks:
+　　+ task-73: Module Store - setup môi trường
+  + task-75: Module Store - thiết kế schema
+  + task-36: Module Store - Tạo store
+3> Next tasks:
+  + task-33: Module Store - Danh sách store
+  + task-39: Module Store - View store detail
+===============================
+
+
+20210927_DailyReport:
+1> Overall status:
+　　+ task-15: in-progress
+2> Today tasks:
+　　+ task-15: Tìm hiểu source code couponapp
+Xem requirement app coupon
+Tìm hiểu cách dùng draw.io
+3> Next tasks:
++ task-73: Module Store - setup môi trường
++ task-75: Module Store - thiết kế schema
+
+===============================
+20210925_DailyReport:
+1> Overall status:
+　　+ task-15: in-progress
+2> Today tasks:
+　　+ task-15: Tìm hiểu source code couponapp
+			 Xem requirement app coupon
+			 Tìm hiểu cách dùng draw.io
+3> Next tasks:
+  + task-15: Module Store - setup môi trường, thiết kế schema 
+
+================================
+20210924_DailyReport:
+1> Overall status:
+　　+ task-15: in-progress
+2> Today tasks:
+　　+ task-15: Xem lại kiến thức về JS, Tìm hiểu framework NestJS về module (Guards, Interceptor)
+			 Interview nội bộ
+			 Tranfer cách run DB và sử dụng postman
+3> Next tasks:
+  + task-15: Tìm hiểu source code couponapp
+
+--------------------------------------
+
+20210923_DailyReport:
+1> Overall status:
+　　+ task-15: in-progress
+2> Today tasks:
+　　+ task-15: Tim hiểu framework NestJS về module (Middleware, Exception filter, Pipes), Xem lại kiến thức về JS
+3> Next tasks:
+  + task-15: Xem lại kiến thức về JS, Tìm hiểu framework NestJS về module (Guards, Interceptor)
+
+============================
+
+20210922_DailyReport:
+1> Overall status:
+　　+ task-15: in-progress
+2> Today tasks:
+　　+ task-15: Xem lại kiến thức về lập trình bất đồng bộ,  Tìm hiểu framework NestJS
+
+3> Next tasks:
+  + task-15: Xem lại kiến thức về JS, Tìm hiểu framework NestJS về module (Pipes, Guards)
+
+=================================
+20210921_DailyReport:
+1> Overall status:
+　　+ task-15: in-progress
+2> Today tasks:
+　　+ task-15: Tìm hiểu framework NestJS và code API CRUD User
+
+3> Next tasks:
+  + task-15: Tìm hiểu NestJS (Validate- Error),
+                    Xem lại các kiến thức về promise, sync/await
+====================================
+
+20210920_DailyReport:
+1> Overall status:
+　　+ task-15: in-progress (Behind)
+2> Today tasks:
+　　+ task-15: Tìm hiểu NestJS và code API CRUD User
+
+3> Next tasks:
+  + task-15: Tìm hiểu NestJS và code API CRUD User
+
+===============================
+
+20210917_DailyReport:
+1> Overall status:
+　　+ task-III: in-progress (On schedule)
+2> Today tasks:
+　　+ task-II: Nodejs - ExpressJs
+				 - Tìm hiểu cách sử dung method PUT, DELETE và trên ExpressJS
+				 - Tìm hiểu cách sử dung router trên ExpressJS
+  + task-III: MongoDb
+3> Next tasks:
+  + task-III: MongoDb
+
+================================
+
+20210909_DailyReport:
+1> Overall status:
+　　+ task-I.14: in-progress (On schedule)
+2> Today tasks:
+　　+ task-I.14: Tìm hiểu chuyên sâu các khái niệm sau
+				 - bind, call, apply
+				 - Promise, Async, await
+
+3> Next tasks:
+  + task-I.15: Tìm hiểu clean code
+  + task-I.16: Tìm hiểu design pattern
+
+=================================
+
+
+20210908_DailyReport:
+1> Overall status:
+　　+ task-I.14: in-progress (On schedule)
+2> Today tasks:
+　　+ task-I.14: Tìm hiểu chuyên sâu các khái niệm sau
+				 - IIFE, Closures
+				 - Tìm hiểu chuyên sâu về cách sử dụng Promise, Async/Await
+	Issue: Mất thời gian tìm hiểu kỹ cách dùng Promise.all để tăng performent như lúc gọi API,...
+	Và cách thực hiện tuần tự và song song trong javascript
+3> Next tasks:
+  + task-I.14: Tìm hiểu chuyên sâu các khái niệm sau
+	 - Tìm hiểu chuyên sâu về cách sử dụng Promise, Async/Await
+
+========================
+20210907_DailyReport:
+1> Overall status:
+　　+ task-I.8: in-progress (On schedule)
+2> Today tasks:
+　　+ task-I.9: Lập trình hướng đối tượng
+　　+ task-I.10: Lập trình bất đồng bộ
+3> Next tasks:
+　　+ task-I.11: Exception handling
+　　+ task-I.12: Validations
+　　+ task-I.13: Modules
+　　+ task-I.14: Tìm hiểu chuyên sâu các khái niệm sau
+
+
+
+=========================
+20210906_DailyReport:
+1> Overall status:
+　　+ task-I.8: in-progress (On schedule)
+2> Today tasks:
+　　+ task-I.7: Làm việc với con trỏ this
+　　+ task-I.8: Cấu trúc dữ liệu và giải thuật javascript
+3> Next tasks:
+　　+ task-I.9:
+　　+ task-I.10:
+
+
+
+
+
+
+==============================
+
+cpri-int/cpri-int/soft/src/pf/ia/rec_proxy/rel_trx_resp_msg_handler.hpp
+RelTrxRespMsgHandler
+
+cpri-int/cpri-int/soft/src/pf/ia/rec_proxy/set_trx_resp_msg_handler.hpp
+SetTrxRespMsgHandler
+
+193-194-195
+
+BPF_COM_LOG_DMESG("rec_proxy: CMD_CPRID_EXTDATSNDREQ cpri_idx=%#X extdev_id=%#X\n", cpri_idx, ext_dat_snd_req->extdev_no - 1);
+=========================================================
+
+Daily report (30/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- CPRI_INT-822:										[10%][210830]
+	+ Xem lại BD của TRX setting
+	+ Check truyền message một theo chiều:
+	 - Send msg Mplane -> RE
+	 - Response msg RE -> Mplane
+
+	
+	
+3> Issue:
+- Board bị lỗi, nên chưa chạy được các xml.
+- Đã tìm trong code nhưng chưa clear được lúc nào gọi msg convert TRX-Setting, 
+nên phải đọc lại luồng xử lý của BD TRX-Setting
+
+
+[CPRI_INT-822][210830][20%]
+    1. Desciption about issue.
+    [CPRI_INT-822][TBTG liên quan đến MON Tool][MON Tool] Gửi message M-Plane từ NR simulator nhưng không thấy MON tool hiển thị chiều message từ FHIC sang RE is not displayed 0x4121
+    
+    2. Rootcause.
+    Đang nghi ngờ bị lỗi một trong 2 chiều truyền message
+	- Send msg Mplane -> RE
+	- Response msg RE -> Mplane
+	
+	Step check bug of flow transion msg MPlane -> RE and RE -> Mplane:
+		1/ Đặt log trong code theo flow:
+			+ function call msg msi
+			+ function call msg convert
+		2/ Select file xml and run.
+		3/ Check log flow run BD
+	
+    
+    3. How to fix?
+    - Update source code cho thiết bị để map lại data gửi về cho tool đúng.
+    
+    4. Limitation(if any)
+    - N/A
+    
+    5. Action
+    - Nhờ bên JP demo cách run cho TRX-setting 
+    
+    6. Other issue
+	- Đã setting mac_address của unit và run xml nhưng chưa run được
+    - Đã tìm trong code nhưng chưa thấy function gọi msg convert TRX-Setting, 
+    nên phải đọc lại luồng xử lý của BD TRX-Setting
+
+---------------
+
+Cách điều tra:
+- Điều tra chiều gửi msg Mplane -> RE
+- Điều tra chiều gửi response RE -> Mplane
+
+Các bước điều tra MPlane -> RE và RE -> Mplane:
+1/ Đặt log trong code theo flow:
+	+ hàm gọi msg msi
+	+ hàm gọi msg convert
+2/ Chọn file xml và run. (gửi list msg nhưng chưa clear chạy hết hay sao)
+3/ Kiểm tra log xác nhận luồng chạy
+
+
+PC9:
+939056425
+
+--------------
+
+BPF_COM_LOG_DMESG("[CPRI_INT-822] convertUplaneConfEditTxRsp cpri_msg 0x%x buffer_len = %d\n", cpri_msg , buffer_len);
+
+=====================================
+
+Daily report (27/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Create tài liệu release:		 					
+	+ MK của CPRI_INT-575							[80%][210827]
+	+ MK của download								[80%][210827]
+- CPRI_INT-822:										[10%][210830]
+	+ Xem guideline cách chạy mplane
+	+ Xem nội dung bug trên ticket
+3> Issue:
+- 
+
+
+===========================
+Trong MK thì không biết thông tin bên dưới điền thế nào cho chính xác:
+Tên file
+Project code:	
+module name: 	
+Revision: 
+
+Người review
+
+
+
+=============================
+
+CPRI_INT-690 [210827][50%]
+		1. Desciption about issue. 
+			Version FHIC: -
+		2. Rootcause. 		  
+			- N/A
+		3. How to fix?
+			- Run test timeout l3_dlm CMD_TSKIF_TIMOUTNTC
+		4. Limitation(if any)
+			- N/A 
+		5. Todo
+			- N/A
+		6. Other issue
+			- N/A
+
+-------------------------------------------
+Daily report (27/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Create tài liệu release:		 					
+	+ MK của CPRI_INT-575							[80%][210827]
+	+ MK của download								[10%][210827]
+3> Issue:
+- 
+
+
+
+Daily report (26/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- CPRI-INT_690: 					[10%][210827]
+	+ Tìm hiểu tài liệu liên quan porting timeout
+3> Issue:
+- Chưa tìm được tài liệu liên quan đến phần timeout và hướng điều tra
+
+
+===============================
+
+Daily report (26/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- CPRI-INT_690: 					[10%][210827]
+	+ Tìm hiểu tài liệu liên quan porting timeout
+3> Issue:
+- Chưa hiểu cấu trúc các IF thread/process
+
+Đọc file 
+https://csvn.cloud9-solutions.com/svn/s107.02/mics/FromArtiza/20200929_アルチザ向け設計資産/FHM設計書/ソフト設計書/01_BD/プロセス・スレッド構成/プロセススレッド構成.xlsx
+https://csvn.cloud9-solutions.com/svn/s107.02/mics/FromArtiza/20200929_アルチザ向け設計資産/FHM設計書/ソフト設計書/01_BD/プロセス・スレッド構成/プロセススレッド構成2.xlsx
+
+========================================
+
+Daily report (25/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- CPRI-INT_793: Tìm hiểu điều tra support bug					[10%][210824]
+3> Issue:
+- 
+
+
+======================================
+Daily report (24/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- CPRI-INT_690: Điều tra trường hợp nào thì timeout đc trigger	[80%][210824]
+	+ l3_cpr	[80%][210823]
+	+ l3_dlm	[80%][210824]
+- CPRI-INT_808: Tìm hiểu điều tra support bug					[80%][210824]
+3> Issue:
+- 
+
+--------------------------
+Daily report (24/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- CPRI-INT_690: Điều tra trường hợp nào thì timeout đc trigger	[75%][210824]
+	+ l3_cpr:	[80%][210823]
+	+ l3_dlm:	[75%][210824]
+3> Issue:
+- 
+
+===========================================
+
+0x4320
+
+---------------------------------------
+Daily report (23/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- CPRI-INT_690: Điều tra trường hợp nào thì timeout đc trigger	[60%][210824]
+	+ l3_cpr:	[80%][210823]
+	+ l3_dlm:	[10%][210824]
+3> Issue:
+- Chưa hiểu rõ luồng xử lý của l3_dlm
+- l3_dlm có nhiều hàm trigger event timeout
+
+
+=============================================================
+
+Daily report (20/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Create tài liệu CT								[80%][210820]
+	+ Tìm hiểu nội dung tài liệu CT.
+	+ create tài liệu CT message convert: 	93/93 	(testcase)	[80%][210819]
+	+ create tài liệu CT CPRI_INT-577: 		112/112 (testcase)	[80%][210819]
+	+ fix tài liệu CT sau khi review							[80%][210820]
+- Create tài liệu MK
+	+ update checklist cho CPRI_INT-581				[80%][210820]
+- Điều tra trường hợp nào thì timeout đc trigger	[10%][210825]
+
+3> Issue:
+-
+
+
+===============================================
+
+cmn_test	2
+cpr_test	9
+rct_test	65
+rct_test2	5
+lg_mode_21b_test	31
+
+Total: 112
+
+
+Daily report (19/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Create tài liệu CT								[75%][210820]
+	+ Tìm hiểu nội dung tài liệu CT.
+	+ create tài liệu CT message convert: 	93/93 	(testcase)	[80%][210819]
+	+ create tài liệu CT CPRI_INT-577: 		97/112  (testcase)	[70%][210819]
+3> Issue:
+-
+
+
+------------------------------------
+Daily report (19/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Create tài liệu CT								[65%][210820]
+	+ Tìm hiểu nội dung tài liệu CT.
+	+ create tài liệu CT message convert: 	93/93 	(testcase)	[80%][210819]
+	+ create tài liệu CT CPRI_INT-577: 		74/112 	(testcase)	[51%][210819]
+3> Issue:
+-
+
+
+
+============================================================
+
+Daily report (18/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- [check memory CPRI_INT-747] 						[80%][210818]
+	+ Run check all scenario sau khi fix
+- Create tài liệu CT								[50%][210820]
+	+ Tìm hiểu nội dung tài liệu CT.
+	+ create tài liệu CT message convert: 	73/93 (testcase)
+3> Issue:
+-
+
+
+------------------
+
+Daily report (18/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- [check memory CPRI_INT-747] 						[80%][210818]
+	+ Run check all scenario sau khi fix
+- Create tài liệu CT								[10%][210820]
+	+ Tìm hiểu nội dung tài liệu CT.
+	+ create tài liệu CT message convert: 	10/93 (testcase)
+3> Issue:
+-
+
+============================================
+
+Daily report (17/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- [Code for CPRI_INT-577]
+	+ Update code theo điều kiện 21B mode LTE+NR, NR only	[80%][210817]
+- [check memory CPRI_INT-747] 								[80%][210817]
+	+ setting môi trường run máy ảo
+	+ Check msg memory leak:
+		Message run: 9 message
+		Message error: 1 message1
+			・ 0x5211
+3> Issue:
+-
+
+==============================================
+- Không có base station data
+	+ Chạy theo mode 21A(transparent)
+- Nếu có base station data
+	+ Nếu LTE+NR mode OR NR only mode, chạy theo mode 21B
+	+ Ngược lại, chạy theo mode 21A(transparent)
+
+=====================================
+
+Daily report (16/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- [fix bug CPRI_INT-747] 							[35%][210816]
+	+ run test msg 9~21:
+		msg 9, 15: run OK
+		msg 16 ~ 20: có msg NG
+		msg 21: chưa run
+3> Issue:
+-
+
+-----------------------------------
+
+Daily report (16/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- [fix bug CPRI_INT-476]							[10%][210816]
+	+ settup run trên 3 unit
+3> Issue:
+- máy remote chậm bị lag
+
+
+
+9. RE AISG/TILT 監視制御(LTE)
+
+
+
+----------------------------------------Daily report (13/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- [CT for CPRI_INT-577]							[80%][210812]
+	+ Tìm hiểu cách implement nội dung meeting về common link (0x1111)
+- Fix bug coverity
+	+ CID-29217									[80%][210813]
+	+ CID-28803									[50%][210813]
+- Metting daily và vấn đề liên quan common link
+3> Issue:
+- Về common link (0x1111): đang confirm với anh Tuân.
+Khi khởi động thiết bị mình có set status common link là Negative, thì nghĩa là các unit đã set Negative.
+ở unit nào gửi msg request commlink thì sẽ set status common link là active cho unit đó.
+unit khác thì vẫn là negative.
+Daily report (13/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- [CT for CPRI_INT-577]							[80%][210812]
+	+ setup environment of CT test
+	+ Finish/Total: 39/39
+- Fix bug coverity
+	+ CID-29217									[80%][210813]
+	+ CID-28803									[50%][210813]
+- Metting daily và vấn đề liên quan common link
+3> Issue:
+-
+
+
+
+
+
+=========================================================================
+if ((50 < slot_no_wk) && (57 > slot_no_wk)) 
+
+-------------------------------------
+
+Daily report (13/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+
+- [CT for CPRI_INT-577]							[80%][210812]
+	+ setup environment of CT test
+	+ Finish/Total: 39/39
+- Fix bug coverity
+	+ CID-29217									[50%][210812]
+- Metting daily và vấn đề liên quan common link
+3> Issue:
+- CID-29217 có xử lý memcpy giống với m_rc_ReCardStaRep_NR nhưng hàm m_rc_ReCardStaRep_NR không bị lỗi.
+Nên vẫn chưa biết nguyên nhân vì sao.
+
+
+
+
+
+Bug CT 581:
+- function convertExternalioEditRsp, line 857 khai bao nham msi_msg_cfm->msgHead.request_id = linkage_info->getRequestId();
+- function convertExternalioEditRsp, thiếu return khi check msi_len
+- function convertExternalioEditRsp, is out of range thiếu return exit hàm và chuyển msi_msg_rej->data.msgErr.errorCode sau if
+- Xử lý tăng địa chỉ trong vòng lặp for bị lỗi (cpri_msg_ctr = cpri_msg_ctr + sizeof(CMT_CPRIF_RECARDCNTREQ_S3G);)
+
+========================================
+
+
+
+
+
+
+
+
+
+========================================
+8811
+
+cm_MemCpy(&(rsp_p->cpridat_reverres.rests_inf.inf_num) + CMD_NUM1,
+													  rever_inf,
+													  r_length);
+6306												  
+cm_MemCpy(&(atInitTable->card_extcntitem) + CMD_NUM1,
+													  setdata,
+													  sizeof(USHORT) * (set_data_cnt));
+
+
+---------------------------------
+Daily report (12/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- [CT for CPRI_INT-577]							[80%][210812]
+	+ setup environment of CT test
+	+ Finish/Total: 35/39
+	+ Fix bug CT function m_rc_ReCardInfoRepReq_LTE
+- Fix bug coverity
+	+ CID-29217									[50%][210812]
+3> Issue:
+- CID-29217 có xử lý memcpy giống với m_rc_ReCardStaRep_NR nhưng hàm m_rc_ReCardStaRep_NR không bị lỗi.
+Nên vẫn chưa biết nguyên nhân vì sao.
+
+---------------------------------
+CID 29217 (#1 of 1): Out-of-bounds read (OVERRUN)
+10. overrun-local: Overrunning array of 2 bytes at byte offset 2 by dereferencing pointer &atInitTable->card_extcntitem + 1. [Note: The source code implementation of the function has been overridden by a builtin model.]
+
+
+======================================================================
+
+bug:
+	- m_rc_ReCardInfoRepReq_LTE: parm_p->cpridat_cardinfreq.slot_no bị null
+	
+
+Daily report (11/08/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- [CT for CPRI_INT-577]							[58%][210813]
+	+ Finish/Total: 23/39
+3> Issue:
+- Chưa mock được các hàm trouble log ở L3. Do định nghĩa hàm mock ở file .cpp và được gọi ở file .c (Còn lại 15 function trouble log)
+
+
+
+
+==================================================================
+----------------------------------------------
+Daily report (10/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- [CT for CPRI_INT-577]							[38%][210813]
+	+ Finish/Total: 15/39
+3> Issue:
+- Một sô hàm có nhiều hàm nội bộ nên mất thời gian tạo Mock function
+
+
+
+
+m_rc_RePortStaRep_S3G:
+	loi corddum
+	
+
+
+
+- chưa mock được function share data trả về con trỏ class
+- Chưa rõ cách mock function khi hàm nội bộ gọi 2 lần
+
+
+==================================================
+
+Daily report (09/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- [CPRI_INT-577] create CT flow message
+	+ Update source 0x5A11 cho BD update		[80%][210809]
+- [CPRI_INT-690]] review code and update ticket	[80%][210809]
+- CT for CPRI_INT-577							[10%][210813]
+	+ setup môi trường CT test
+	+ Finish/Total: 2/39
+3> Issue:
+- Tạo môi trường build bị lỗi -> đã fix lại make file ia để build test CT được
+
+
+===================================
+void_check1|=0x1;
+
+Daily report (09/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- [CPRI_INT-577] create CT flow message
+	+ Update source 0x5A11 cho BD update		[80%][210809]
+- [CPRI_INT-690]] review code and update ticket	[80%][210809]
+- CT for CPRI_INT-577							[10%][210813]
+	+ setup môi trường CT test
+3> Issue:
+- 
+
+
+=====================================================
+/mics/NR_VN/docFromVN/BD/プロセススレッド間シーケンス(3 L3信号)3-29(RE PORT状態報告).xlsm
+PORT status report: A TUÂN + ĐÔNG.
+
+-> Cái này Dũng check nhé
+
+
+--------------------------------------------
+
+/mics/NR_VN/docFromVN/BD/CPRI中間装置_プロセススレッド間シーケンス_RE共通部リンク確立(LTE).xlsx
+COMMON LINK	-> DŨNG + A HÙNG
+
+phần này có thay đổi gì nhiều ko @Hoàng?
+
+/mics/NR_VN/docFromVN/BD/プロセススレッド間シーケンス(3 L3信号)3-21(RE状態報告).xlsm
+RE STATUS A HÙNG + NR1: DƯƠNG
+
+/mics/NR_VN/docFromVN/BD/プロセススレッド間シーケンス(3 L3信号)3-26(REカード状態報告).xlsm
+RE CARD STATUS REPORT: A HÙNG +  DƯƠNG
+
+
+@Mai 
+
+/mics/NR_VN/docFromVN/BD/プロセススレッド間シーケンス(3 L3信号)3-19(RE装置構成情報報告).xlsm
+RE DEVICE configuration information report  A LINH + DƯƠNG
+
+/mics/NR_VN/docFromVN/BD/プロセススレッド間シーケンス(3 L3信号)3-17(Toffset).xlsm
+TOFFSET + ĐÔNG
+/mics/NR_VN/docFromVN/BD/プロセススレッド間シーケンス(3 L3信号)3-29(RE PORT状態報告).xlsm
+PORT status report: A TUÂN + ĐÔNG.
+
+@ĐôngTC 
+
+/mics/NR_VN/docFromVN/BD/CPRI中間装置_プロセススレッド間シーケンス_ヘルスチェック監視制御.xlsm
+HEALTHCHECK: A TUÂN + HIỆP
+
+@Phan
+
+
+
+
+
+=======================================================
+
+m_cr_main
+
+NR2
+Daily report (05/08/2021):
+1> Overall status : 
+ - On schedule
+2> Today tasks:
+- [CPRI_INT-577] create CT of updated messages refer to  21B信号処理整理_20210707.xlsx 	[20%][210804]
+	+  message (0x5C11)							[80%][210802]
+	+  message (0x4311 và 0x5811)				[50%][210802]
+	+  Create document CT cho message (0x2111)	[10%][210803]
+	+ Create document CT cho message (0x2211, 0x2301, 0x2411)	(đã tranfer Ngoc test function CT)
+	+ Create document CT cho message (0x5A10)	[80%][210805]
+	+ Create document CT cho message (0x5211)	[80%][210805]
+	+ Create document CT cho message (0x5311)	[80%][210805]
+	+ Update file CT fucntion list for functions in 577 [80%][210805]
+		* CPRI-INT_581: 12/12 (function)
+		* CPRI-INT_577: 12/12 (message)	
+	+ Fix bug check NEGATIVE cho msg 0x1111		[80%][210806]
+	+ Update source 0x1111 cho BD update		[80%][210806]
+
+- troulblelog 	[50%][210804]
+    + Mode 21A: test with new source code ,updated path root as ticket CPRI_INT-660, (done)
+	+ Mode 21B: check api for RuProxy, call function from RuProxy (todo)
+	+ Call 2 api start and stop log in thread factory	[50%][210806]
+- support fix bug for dlm
+    + Check message 0x2111 		[50%][21080]
+3> Next tasks:
+- [troulblelog] tạm thời pass qua đoạn code xử lý BDE-EX thì tín hiệu đã có thể gửi đến L3-log
+4> Issue:
+- [troulblelog]khi run thì khi gọi đến api xử lý cho start log (function ru_lgc_MSI_rcv_ind_start) đang bị đứng.
+=> dự đoán là do các xử lý khác phần BDE-EX gây ra ảnh hưởng
+6> Risk:
+-
+=======================================================
+
+===========================================
+
+Daily report (06/08/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Meeting về issue dự án
+- [CPRI_INT-577] create CT flow message
+	+ Create document CT cho message (0x5311)	[80%][210805]
+    + Fix bug check NEGATIVE cho msg 0x1111		[80%][210806]
+	+ Update source 0x1111 cho BD update		[80%][210806]
+3> Issue:
+- 
+
+
+================================================================
+
+3 uinit chay tất cả message
+
+
+---------------------------------------------------
+Daily report (05/08/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (05/08/2021)
+- [CPRI_INT-577] create CT flow message											(70%)  (06/08/2021)
+	+ Create document CT cho message (0x5A11)									(80%)  (05/08/2021)
+	+ Create document CT cho message (0x5211)									(80%)  (05/08/2021)
+	+ Create document CT cho message (0x5311)									(50%)  (06/08/2021)
+- List function CT 																(90%)  (05/08/2021)
+	+ CPRI-INT_581: 12/12 (function)
+	+ CPRI-INT_577: 12/12 (message)											
+3> Issue:
+- 
+
+
+=================================================================
+
+0x5211, 0x5311, 0x5A11
+
+
+dsach ham
+ tạo mới update
+
+
+Daily report (04/08/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (04/08/2021)
+- [CPRI_INT-577] create CT flow message											(20%)  (06/08/2021)
+	+ Create document CT cho message (0x2211, 0x2301, 0x2411)					(đã tranfer Ngoc test function CT)
+	+ Create document CT cho message (0x5A10)									(10%)  (05/08/2021)
+- Run test IT của bug 660 trên máy thật											(80%)  (04/08/2021)
+	+ Run/pass/total: 33/33/33
+- 
+3> Next tasks:
+- 
+4> Issue:
+-
+5> Next Actions
+- 
+6> Risk:
+-
+
+=====================
+Daily report (03/08/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (02/08/2021)
+- [CPRI_INT-577] create CT flow message											(20%)  (04/08/2021)
+	+ Create document CT cho message (0x2111)									(80%)  (03/08/2021)
+	+ Create document CT cho message (0x2211, 0x2301, 0x2411)					(10%)  (05/08/2021)
+3> Next tasks:
+- 
+4> Issue:
+- Trong source dlm chưa sử dụng share data lưu thông tin của message 0x2121.
+Nên đang đọc thêm BD để xem message nào sử dụng share data lưu thông tin của message 0x2121
+
+5> Next Actions
+- 
+6> Risk:
+-
+
+===============================================
+
+bữa update source 21B cho msg 0x2111(ファームウェアファイル報告)
+source a để ở branch nào vậy anh
+em tìm commit trên nr/develop mà ko thấy
+
+
+Daily report (02/08/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (02/08/2021)
+- [CPRI_INT-577] create CT flow message											(20%)  (04/08/2021)
+	+ Create document CT cho message (0x5C11)									(80%)  (02/08/2021)
+3> Next tasks:
+- 
+4> Issue:
+-
+
+5> Next Actions
+- 
+6> Risk:
+-
+
+
+
+--------------------------------------------
+
+- Tạo file chia task CT
+- Tạo folder chưa file testcase
+- meeting
+
+
+Nguyên nhân đã biết hoặc chưa biết
+Hướng điều tra biết chưa, step by step
+Tôi đang xem xét hướng điều tra
+
+Tôi nghĩ đang bị lỗi. chụp hình
+
+Tôi đang điều tra theo theo hướng đã mô tả lúc 10h nhưng chưa có kết quả gì thêm
+
+
+
+
+
+
+=========================================
+- fix line 1123, function m_cr_CpriMsgRcvProc
+case CMD_CPRID_LINKSTSRES:
+
+----------------------------------------
+Daily report (30/07/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (30/07/2021)
+- [CPRI_INT-577] create CT flow message											(20%)  (04/08/2021)
+	+ Tìm hiểu tạo test case CT theo message
+	+ Tạo test case CT cho message CMD_CPRID_LINKSTSREQ(0x1111)					(80%)  (30/07/2021)
+3> Next tasks:
+- 
+4> Issue:
+-
+
+5> Next Actions
+- 
+6> Risk:
+-
+
+
+=======================================
+Daily report (29/07/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (29/07/2021)
+- [CPRI_INT-581] CT function	12/12											(80%)  (29/07/2021)
+
+3> Next tasks:
+- 
+4> Issue:
+-
+
+5> Next Actions
+- 
+6> Risk:
+-
+
+
+========================================
+
+Daily report (28/07/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (28/07/2021)
+- [CPRI_INT-581] CT function	10/12											(76%)  (28/07/2021)
+
+3> Next tasks:
+- 
+4> Issue:
+- Ở hàm test CT set giá trị linkage vào biến linkage_info của share data nhưng ở hàm convCpri2Msi vẫn không nhận được giá trị đã set.
+
+5> Next Actions
+- 
+6> Risk:
+-
+
+convertALDMessageRsp
+convertALDMessageReq_mock
+convCpri2Msi
+
+
+---------------------------------------
+
+
+- không stub được function có param SharedLinkageInfo.
+- Chưa set được data cho biến stationData
+- mock function có return 2 function
+
+
+issue bug:
+
+	- CT lỗi strcpy tiếng Nhật
+	- function convertExternalioEditRsp, line 857 khai bao nham msi_msg_cfm->msgHead.request_id = linkage_info->getRequestId();
+	
+	- function convertExternalioEditRsp, thiếu return khi check msi_len
+	- function convertExternalioEditRsp, is out of range thiếu return exit hàm và chuyển msi_msg_rej->data.msgErr.errorCode sau if
+	- Xử lý tăng địa chỉ trong vòng lặp for bị lỗi (cpri_msg_ctr = cpri_msg_ctr + sizeof(CMT_CPRIF_RECARDCNTREQ_S3G);)
+	- function convertPowerState thừa code line 356~390 send_system_number.
+	
+	
+	
+	- Tương tự function convertUplaneConfEditTxRsp
+	- function convertALDMessageRsp thiếu return khi lỗi
+	
+	
+		
+	- fix TODO
+	
+	-> 6 bug
+
+
+=========================================================
+Daily report (27/07/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (28/07/2021)
+- [CPRI_INT-581] CT function	6/12											(50%)  (28/07/2021)
+
+3> Next tasks:
+- 
+4> Issue:
+- Chưa control setting các giá trị các trường được get lên từ station data và share data
+- Chưa mock được function có param linkage_info.
+- Chưa mock được function ở return của function có 2 giá trị trả về
+
+5> Next Actions
+- 
+6> Risk:
+-
+
+
+
+
+---------------------------------------------
+
+Daily report (27/07/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (26/07/2021)
+- [CPRI_INT-581] CT function	6/12											(16%) (28/07/2021)
+
+3> Next tasks:
+- 
+4> Issue:
+- sử dụng strcpy, memcpy khi dùng chuỗi là ký tự tiếng nhật bị lỗi không run CT được.
+	Ví dụ cho trường hợp settting cho field errorDescription là "メーカ固有(RE)"
+
+5> Next Actions
+- 
+6> Risk:
+-
+
+
+---------------------------------------------
+
+
+issue:
+	- Cũng phải check loại RE
+	- 124~140: có re_proxy response về REC báo đã khôi phục ngắt link
+	- chưa hiểu cục dưới 176~196, có phải nói 16 message
+
+
+/* No intermediate device station data or LTE independent mode */
+if (cmw_connectoperatemode < CMD_OP_NR) {
+
+
+
+
+
+========================================
+ia::shared_data::SharedData& shd_data = Singleton::getInstance<ia::shared_data::SharedData>();
+
+if (shd_data.common_link_state_data.getComLinkStaBDE() == LS_NEGATIVE)
+{
+	/* CPRI信号応答結果にNGを設定 */
+	/* Negative設定(for LTE) */
+	rsp_p->cpridat_restsres.result = CMD_SET_NEGATIVE_S3G;
+	/* CPRI信号種別設定 */
+	rsp_p->cpridat_restsres.signal_kind = CMD_CPRID_RESTSRES + CMD_SYS_S3G;
+	reProxySendL3(rsp_p);
+	
+	return;
+}
+
+
+CMT_TSKIF_CPRIRCV_SIGNALGET* ltRsp_p;
+
+CMT_TSKIF_CPRISND_RESTSRES* rsp_p;                         /* タスク間フレームポインタ		*/
+
+
+	rslt = cm_L2BfGet(CMD_BUFCA_LAPSND,
+                      sizeof(CMT_TSKIF_CPRIRCV_SIGNALGET),
+                      CMD_NUM1,
+                      (VOID**)&ltRsp_p);
+
+	/*temp save key*/
+    keyID = ((T_SYS_COMMON_THDIF*)ltRsp_p)->uiKeyID;
+    if (rslt != CMD_RES_OK) {
+        /* ASSERT */
+        cm_Assert(CMD_ASL_USELOW,
+                  rslt,
+                  "m_rc_ReCardStaRep_LTE cm_L2BfGet NG");
+
+#ifdef FHM_RCT_DEBUG_FOR_IT1
+        printf("[%d]%s end \n", __LINE__, __FUNCTION__);
+#endif
+        return;
+    }
+	
+	(CMT_TSKIF_CPRIRCV_SIGNALGET*)parm_p)->signal_kind = CMD_CPRID_CARDINFRES + 1U;
+
+
+======================================================
+
+Daily report (22/07/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (21/07/2021)
+- [21B] CPRI msg request : 0x1111												(10%)  (22/07/2021)
+
+3> Next tasks:
+- [21B] CPRI msg request : 0x1111												(10%)  (22/07/2021)
+4> Issue:
+- Chưa biết cách xác định điều kiện kiểm tra trạng thái ngắt link của TBTG và RE
+- QnA 57: confirm điều kiện respose message NG (51:Negative) đối với 16 message mô tả ở requirement.
+- QnA 58: Trong 16 message mô tả ở requirement, chưa hiểu điều kiện check cho trường hợp message có note （RE 共通部スロット指定）
+5> Next Actions
+- 
+6> Risk:
+-
+
+
+issue:
+	- Tại xử lý trong BD, line 100~115. có check điều kiện 【BDE-DEVICE request is Active, and BRE/M-LRE, and DEVICE-RE config is Negative】 nhưng đang vẽ message xuất phát từ Rec_proxy.
+	Vậy xử lý này ở phía VN không xử lý phải không?
+
+ 
+
+=================================================
+minh.hq@cloud9-solutions.com
+c9_artiza
+
+-------------------------
+
+Daily report (21/07/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (20/07/2021)
+- [CPRI_INT-581] Run test all scenario
+	+ Seft check by checklist													(100%) (20/07/2021)
+	+ Tìm hiểu CT, làm thử sample												(60%)  (20/07/2021)
+
+3> Next tasks:
+- 
+4> Issue:
+- 
+5> Next Actions
+- 
+6> Risk:
+-
+
+-------------------------------
+ssue:
+
+- Hiện tại xử lý của rct trong RE proxy send message sang REC proxy.
+Vậy ở REC proxy có forward message cho RE không?
+
+
+
+-------------------------
+
+Daily report (20/07/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (20/07/2021)
+- [CPRI_INT-581] Run test all scenario
+	+ Seft check by checklist													(100%) (20/07/2021)
+	+ Tìm hiểu CT, làm thử sample												(60%)  (20/07/2021)
+	+ Tạo testcase CT cho message convert										
+3> Next tasks:
+- 
+4> Issue:
+- Source branch 581 trên git Cloud9 chưa đồng bộ với 581 trên git backlog nên chưa run CT được.
+5> Next Actions
+- 
+6> Risk:
+-
+
+--------------------------------------
+
+Daily report (20/07/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (20/07/2021)
+- [CPRI_INT-581] Run test all scenario
+	+ Seft check by checklist													(100%) (20/07/2021)
+	+ Tìm hiểu CT, làm thử sample												(60%)  (20/07/2021)
+3> Next tasks:
+- 
+4> Issue:
+- 
+5> Next Actions
+- 
+6> Risk:
+- 
+===================================
+sửa hàm cần test:
+	+ stub các hàm nội bộ
+	+ thêm biến toàn cục void_check và or với các giá trị 0x01, 0x02, 0x04, 0x08,....
+	
+function test
+	+ teardown() -> gọi hàm để clear hoặc khởi tạo giá trị ban đầu
+	+
+
+------------------------
+
+Daily report (19/07/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (15/07/2021)
+- [CPRI_INT-581] Convert message										 		(80%)	(19/07/2021)									 
+	+ Đối ứng trả lời QnA 156 từ confirm KH										(100%)	(19/07/2021)
+	+ Fix comment từ KH															(100%)	(19/07/2021)
+3> Next tasks:
+- 
+4> Issue:
+- 
+5> Next Actions
+- 
+6> Risk:
+- 
+------------------------------------
+
+issue:
+	- Source branch develop_it_nr_CPRI_INT-581 đang khác với nr/feature/CPRI_INT-581 trên backlog nên compile bị lỗi.
+	Nên đang fix lại branch develop_it_nr_CPRI_INT trên C9 thêm phần xử lý liên kết ru-rec proxy để compile
+
+
+------------------------------------------------
+
+Daily report (16/07/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (16/07/2021)
+- [CPRI_INT-581] Run test all scenario
+	errorTC/totalTC: 	25/134													(100%)	(16/07/2021)
+	--> 25 bug do chưa porting phần l3 dlm
+3> Next tasks:
+- 
+4> Issue:
+- 
+5> Next Actions
+- 
+6> Risk:
+- 
+
+================================================
+develop_it_nr_l3_adapter_199a460_UTest
+
+
+
+
+-----------------------------------------
+
+Daily report (15/07/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (15/07/2021)
+- [CPRI_INT-581] Convert message										 		(60%)	(15/07/2021)									 
+	+ Convert message msi to cpri:  1TC (message)								(90%)	(15/07/2021)
+- [CPRI_INT-581] Run test all scenario
+	errorTC/totalTC: 	59/134													(90%)	(16/07/2021)
+
+3> Next tasks:
+ - 
+4> Issue:
+- QnA 156: function conver CPRI to MSI, 1 mesage CPRI convert thành 2 loại message MSI, thì không thể xử lý switch case theo điều kiện cpri_msg_id.
+
+5> Next Actions
+- 
+6> Risk:
+- 
+
+
+-------------------------------------------------------
+- Xoa save_msg_req
+- update function convertExternalio
+
+
+Daily report (14/07/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (13/07/2021)
+- [CPRI_INT-581] Convert message										 		(60%)	(13/07/2021)									 
+	+ Convert message msi to cpri:  2 message 									(65%)	(13/07/2021)
+
+3> Next tasks:
+ - 
+4> Issue:
+- Khi convert messate T_MPSW_MSI_O_RAN_EXTERNALIO_EDIT_REQ, từ 1 mesage MSI thành nhiều message CPRI.
+	Không thể truyền vào param CPRI của function là contrỏ ** vì ảnh hưởng message khác.
+    Vì vậy khi sử dụng hàm convert đối với message từ 1 MSI thành nhiều CPRI, để lấy đúng message cpri thì cần xác định
+		+ Số lượng message trả về
+		+ Cấu trúc của struct của message
+	-> warning khi sử dụng chứ không đối ứng issue này
+- QnA 156: function conver CPRI to MSI, 1 mesage CPRI convert thành 2 loại message MSI, thì không thể xử lý switch case theo điều kiện cpri_msg_id.
+	-> Tìm hiểu cách fix dựa vào
+
+5> Next Actions
+- 
+6> Risk:
+- 
+
+
+
+
+
+
+------------------------------------------------------------------------------------------
+    USHORT              signal_kind;            /**< 信号種別                    */
+    USHORT              carno;                  /**< キャリア番号              */
+    USHORT              bandwidth;                  /**< システム帯域幅                 */
+    USHORT              dl_freq;                /**< 下り周波数番号  */
+    USHORT              snd_br;                 /**< 送信系 */
+    USHORT              tdd_up_dwn_config;      /**< 下り周波数番号が3.5GHz帯の場合のみ有効とする．     それ以外の下り周波数番号の場合は、Don’t careとする． */
+    USHORT              tdd_spe_sf_config;      /**< 下り周波数番号が3.5GHz帯の場合のみ有効とする．  それ以外の下り周波数番号の場合は、Don’t careとする． */
+    USHORT              tdd_dwnlk_cp_len;
+
+
+No.1 MSI_IETF_HARDWARE_STATE_EDIT_REQ
+	- Arg là array message 
+	- kiểm tra điều kiện 21A hay 21B
+	- get slot no từ share memory
+
+--> OK
+
+No.10 MSI_O_RAN_HARDWARE_EDIT_REQ
+	- Arg là array message
+	- Get send_system_number từ base station
+	- send message đi đâu ?
+	- kiểm tra điều kiện 21A hay 21B
+	- get slot no từ share memory
+
+
+
+
+No.5
+	1 CPRI -> 2 MSI
+
+No.12 MSI_O_RAN_UPLANE_CONF_EDIT_TX_REQ
+	- Lấy thông tin từ share data (singletone)
+-> OK
+
+	
+
+-------------------------------------------
+
+Daily report (13/07/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 		(100%) (13/07/2021)
+- [CPRI_INT-581] Convert message										 		(60%)	(13/07/2021)									 
+	+ Convert message cpri to msi:  8/12 message (message RX không cần convert)	(65%)	(13/07/2021)
+		
+    + Convert message msi to cpri:  0/5 										(10%)	(14/07/2021)
+		Đang check convert message MSI_O_RAN_UPLANE_CONF_EDIT_TX_REQ
+3> Next tasks:
+ - 
+4> Issue:
+ - QnA 156: function conver CPRI to MSI, switch case đang dùng điều kiện cpri_msg_id. Không thể thực hiện do convert thành 4 message nên 
+T_MSG_MSI_IETF_HARDWARE_STATE_EDIT_CFM
+T_MSG_MSI_IETF_HARDWARE_STATE_EDIT_REJ
+T_MSG_MSI_O_RAN_HARDWARE_EDIT_CFM
+T_MSG_MSI_O_RAN_HARDWARE_EDIT_REJ
+ - Khi convert MSI_O_RAN_UPLANE_CONF_EDIT_TX_REQ chưa tìm được cách lấy từ share data
+
+5> Next Actions
+- 
+6> Risk:
+- 
+
+
+
+
+
+1. Cách convert No.12 vẫn chưa hiểu rõ
+	+ REQ: data lấy từ share data chẳng hạn như BandWidth, dl_freq, snd_br hiện tại
+
+
+2. Cách làm phần header
+
+3. 1 message cpri sang 2 message msi. Cần QnA về sử dụng biến trong source
+	-> Viết QnA No.156
+
+4. Build source trên backlog
+-----------------------------------
+
+
+
+
+----------------------------------
+
+Daily report (09/07/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 (100%) (12/07/2021)
+- [CPRI_INT-581] Convert message										 (60%)	(13/07/2021)									 
+	+ Convert message cpri to mis:  6/14 message		 				 (45%)	(13/07/2021)
+	
+3> Next tasks:
+ - 
+4> Issue:
+ - Khi convent CPRI -> MSI theo file MessageMapping.xlsx, sheet (項番5)_No.10~12, có message CPRI bị trùng với message CPRI (項番5)_No.1~3 -> đã QnA nhờ confirm
+ - Phần Header của message convert MSI dùng source củ hay tạo mới. -> đã QnA nhờ confirm
+ - Chưa có tài liệu API của 4 message (BD No12) dưới
+	MSI_O_RAN_UPLANE_CONF_EDIT_TX_CFM
+	MSI_O_RAN_UPLANE_CONF_EDIT_TX_REJ
+	MSI_O_RAN_UPLANE_CONF_EDIT_RX_CFM
+	MSI_O_RAN_UPLANE_CONF_EDIT_RX_REJ
+
+5> Next Actions
+- 
+6> Risk:
+- 
+
+-------------------------------------
+- 10h: Tìm hiểu xong cách convert
+	+ Đọc tài liệu
+	+ Đọc file convert
+	+ condding convention
+	+ Đọc code
+
+
+issue:
+
+ - convert MSI_O_RAN_EXTERNALIO_EDIT_CFM, cần mô tả rõ thêm về cách convert data struct của 2 trường port_count, port_num[]
+
+---------------------------------------
+
+Daily report (09/07/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Meeting về issue dự án 												 (100%) (06/07/2021)
+- [CPRI_INT-577] [21B_NR] L3 + ReProxy									 
+	2.3 Test lại OK cho all scenario									 (30%) 	(09/07/2021)
+	Test cho rct (cpr ko test đc trên virtual machine)
+	+ Chạy test các event trong IA/cpr					 				 (60%)	(09/07/2021)
+3> Next tasks:
+- Trong hàm l3_main_Init, xử lý EEPROM bị lỗi nên không init được L3
+	-> Do cách send message không đúng, đã fix
+4> Issue:
+- 
+5> Next Actions
+- 
+6> Risk:
+- 
+
+-------------------------------
+
+Daily report (09/07/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Meeting về issue dự án 												 (100%) (06/07/2021)
+- [CPRI_INT-577] [21B_NR] L3 + ReProxy									 
+	2.3 Test lại OK cho all scenario									 (30%) 	(09/07/2021)
+	Test cho rct (cpr ko test đc trên virtual machine)
+	+ Chạy test các event trong IA/cpr					 				 (60%)	(09/07/2021)
+3> Next tasks:
+- Khi l3 cpr send msg no cho re_proxy thì IA cpr nhận event không đúng.
+
+Trong hàm l3_main_Init, xử lý EEPROM bị lỗi nên không init được L3
+4> Issue:
+- 
+5> Next Actions
+- 
+6> Risk:
+- 
+
+-------------------------------
+- Khi l3 cpr send msg no cho re_proxy thì IA cpr nhận event không đúng.
+
+
+
+
+git stash
+
+
+----------------------------------------
+
+Daily report (08/07/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Meeting về issue dự án 												 (100%) (06/07/2021)
+- [CPRI_INT-577] [21B_NR] L3 + ReProxy									 
+	2.3 Test lại OK cho all scenario									 (30%) 	(09/07/2021)
+	Test cho rct (cpr ko test đc trên virtual machine)
+	+ Tìm hiểu xử lý của các state và event trong cpr					 (100%)	(09/07/2021)
+	+ Tìm hiểu cách chạy test các event trong IA/cpr					 (60%)	(09/07/2021)
+3> Next tasks:
+- Khi tạo được function send message có event no để bên IA cpr bắt message đó thì đặt ở l3_main_main.c không chạy được.
+  Nên đã chuyển sang tạo ở l3_cpr_main để tạo hàm test.
+4> Issue:
+- 
+5> Next Actions
+- 
+6> Risk:
+- 
+
+-------------------------------------------------------------------
+
+issue:
+	- Khi tạo được function send message có event no để bên IA cpr bắt message đó thì đặt ở l3_main_main.c không chạy được.
+	Nên đã chuyển sang tạo ở l3_cpr_main để test.
+	
+
+
+
+Daily report (08/07/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Meeting về issue dự án 												 (100%) (06/07/2021)
+- [CPRI_INT-577] [21B_NR] L3 + ReProxy									 
+	2.3 Test lại OK cho all scenario									 (30%) 	(09/07/2021)
+	Test cho rct (cpr ko test đc trên virtual machine)
+	+ Tìm hiểu xử lý của các state và event trong cpr					 (50%)	(09/07/2021)
+	+ Tìm hiểu cách chạy test các event trong IA/cpr					 (10%)	(09/07/2021)
+3> Next tasks:
+-
+4> Issue:
+- 
+5> Next Actions
+- 
+6> Risk:
+- 
+
+
+-----------------------------------
+diff:
+ pf/ia/Makefile
+ pf/ia/re_proxy/l3_common.hpp
+ pf/ia/re_proxy/l3_cpr.cpp
+ pf/ia/re_proxy/l3_rct.cpp
+ pf/ia/re_proxy/l3_rct.hpp
+
+
+--------------------
+Daily report (07/07/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Meeting về issue dự án 												 (100%) (06/07/2021)
+- [CPRI_INT-577] [21B_NR] L3 + ReProxy									 
+	2.3 Test lại OK cho all scenario									 (30%) 	(09/07/2021)
+	Test cho rct (cpr ko test đc trên virtual machine)
+	+ Fix issue liên quan đến m_cm_WriteLEDReg							 (80%)	(09/07/2021)
+	+ Fix issue liên quan đến l3_com_sendMsg							 (80%)	(09/07/2021)
+3> Next tasks:
+-
+4> Issue:
+	- Vì trong hàm m_cm_WriteLEDReg define ở môi trường C nhưng sử dụng biến define ở môi trường C++ nên bị lỗi.
+	Vì vậy đã implement lại ở l3 IA.
+	Khi implement lại hàm m_cm_WriteLEDReg trong l3 IA thì trong hàm m_cm_WriteLEDReg gọi đến rất nhiều function, nên phải define lại toàn bộ function được gọi.
+	- Đã define lại hàm l3_com_sendMsg ở re_proxy nhưng còn chờ confirm lại message để truyền sang RE/REC
+5> Next Actions
+- 
+6> Risk:
+- 
+
+--------------------------------------
+Daily report (07/07/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 (100%) (06/07/2021)
+- [CPRI_INT-577] [21B_NR] L3 + ReProxy									 
+	2.3 Test lại OK cho all scenario									 (30%) 	(09/07/2021)
+	Test cho rct (cpr ko test đc trên virtual machine)
+	+ Fix issue liên quan đến m_cm_WriteLEDReg							 (50%)	(09/07/2021)
+3> Next tasks:
+-
+4> Issue:
+	- Vì trong hàm m_cm_WriteLEDReg define ở môi trường C nhưng sử dụng biến define ở môi trường C++ nên bị lỗi.
+	Vì vậy đã implement lại ở l3 IA.
+	Khi implement lại hàm m_cm_WriteLEDReg trong l3 IA thì trong hàm m_cm_WriteLEDReg gọi đến rất nhiều function, nên phải define lại toàn bộ function được gọi.
+	- Chưa include được hàm l3_com_sendMsg
+5> Next Actions
+- 
+6> Risk:
+- 
+
+-------------------------------
+Task:
+	Fix issue liên quan đến implement function m_cm_WriteLEDReg
+Issue:
+	+ Vì trong hàm m_cm_WriteLEDReg define ở môi trường C nhưng sử dụng biến define ở môi trường C++ nên bị lỗi.
+	Vì vậy đã implement lại ở l3 IA.
+	Khi implement lại hàm m_cm_WriteLEDReg trong l3 IA thì trong hàm m_cm_WriteLEDReg gọi đến rất nhiều function, nên phải define lại toàn bộ function được gọi.
+
+	+ bỏ hàm m_cm_WriteLEDReg đã dùng ở rct, cpr
+
+
+
+
+tam thoi include struct dlm
+m_dl_typ.h
+
+----------------------------
+- merge code mới nhất
+- fix m_cm_WriteLEDReg
+- tìm message event
+
+
+
+---------------------------------------------------------
+
+Daily report (06/07/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 (100%) (06/07/2021)
+- [CPRI_INT-577] [21B_NR] L3 + ReProxy									 
+	2.3 Test lại OK cho all scenario									 (30%) 	(09/07/2021)
+	Test cho rct (cpr ko test đc trên virtual machine)
+	+ Merge được xử lý l3_common với rct	 							 (80%)	(09/07/2021)
+	+ Fix issue về implement hàm f_com_SVCtl_real						 (80%)	(09/07/2021)
+	+ Fix issue liên quan đến m_cm_WriteLEDReg							 (10%)	(09/07/2021)
+3> Next tasks:
+-
+4> Issue:
+	- Hàm f_com_SVCtl_real được define trong file f_com_ftyp.h, nhưng trong file fldc4.h có define lại kiểu bool nên include bị lỗi.
+		-> đã tạo ra file fldc4_cpr.h comment define bool và include vào f_com_ftyp.h
+	- Chưa include được hàm l3_com_sendMsg
+	- m_cm_WriteLEDReg vì có biến khai báo ở L3 rct và L3 dlm nên đợi merge code sẽ fix hàm này 
+5> Next Actions
+- 
+6> Risk:
+- 
+
+
+
+
+---------------------------------------------------------------
+Daily report (06/07/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 (100%) (06/07/2021)
+- [CPRI_INT-577] [21B_NR] L3 + ReProxy									 (25%) 	(07/07/2021)
+	+ Merge được xử lý l3_common với rct	 							 (100%) (06/07/2021)
+	+ Fix issue về implement hàm f_com_SVCtl_real						 (100%)	(06/07/2021)
+	+ Fix issue về function m_cm_WriteLEDReg							 (100%)	(07/07/2021)
+3> Next tasks:
+	- 
+4> Issue:
+- Hàm f_com_SVCtl_real được define trong file f_com_ftyp.h, nhưng trong file có define lại kiểu bool nên include bị lỗi
+	Vì thế phải define lại trong IA nên cần confirm
+- Chưa include được hàm l3_com_sendMsg
+- m_cm_WriteLEDReg vì có biến khai báo ở L3 rct và L3 dlm nên đợi merge code sẽ fix hàm này
+5> Next Actions
+- 
+6> Risk:
+- 
+
+-----------------------------------------------------------
+
+Issue:
+	- Trong file fldc4.h, vì define kiểu unsigned char bool nên bị lỗi
+	/home/user/develop/artiza-5g-project/cpri-int/soft/src/pf/ft_com/com/inc/fldc4.h
+	// typedef unsigned char bool;
+	
+	- Lỗi file c extern biên file .hpp
+
+
+------------------------------------------------------------
+
+Daily report (06/07/2021):
+1> Overall status : 
+- Behind schedule
+2> Today tasks:
+- Meeting về issue dự án 												 (100%) (06/07/2021)
+- [CPRI_INT-577] [21B_NR] L3 + ReProxy									 (25%) 	(07/07/2021)
+	+ Merge được xử lý l3_common với rct	 							 (50%) 	(06/07/2021)
+	+ Fix issue về implement hàm f_com_SVCtl_real						 (20%) 	(06/07/2021)
+3> Next tasks:
+	- 
+4> Issue:
+- Merge được xử lý l3_common với rct bị lỗi multi define
+- hàm f_com_SVCtl_real được define trong file f_com_ftyp.h, nhưng trong file có define lại kiểu bool nên include bị lỗi
+	Vì thế phải define lại trong IA nên cần confirm
+- Chưa include được hàm l3_com_sendMsg
+- m_cm_WriteLEDReg vì có biến khai báo ở L3 rct và L3 dlm nên đợi merge code sẽ fix hàm này
+5> Next Actions
+- 
+6> Risk:
+- 
+
+
+
+
+
+581
+===========================
+Daily report (05/07/2021):
+1> Overall status : 
+- On schedule
+2> Today tasks:
+- Meeting về issue dự án 												 (100%) (05/07/2021)
+- [CPRI_INT-577] [21B_NR] L3 + ReProxy									 (25%) 	(02/07/2021)
+	+ Review code, chỉnh sửa cấu trúc để chuẩn bị merge sang backlog	 (100%) (05/07/2021)
+	+ Fix issue về implement hàm f_com_SVCtl_real						 (10%) 	(06/07/2021)
+3> Next tasks:
+	- 
+4> Issue:
+- hàm f_com_SVCtl_real được define trong file f_com_ftyp.h, nhưng trong file có define lại kiểu bool nên include bị lỗi
+	Vì thế phải define lại trong IA nên cần confirm
+- Chưa include được hàm l3_com_sendMsg
+- m_cm_WriteLEDReg vì có biến khai báo ở L3 rct và L3 dlm nên đợi merge code sẽ fix hàm này
+5> Next Actions
+- 
+6> Risk:
+- 
+
+
+--------------------------------------------
+
+
+Report 12h(01/07/2021):
+1> Tasks:
+	- Review code, chỉnh sửa cấu trúc để chuẩn bị merge sang backlog
+2> Issue:
+	- m_cm_WriteLEDReg vì có biến khai báo ở L3 rct và L3 dlm nên đợi merge code sẽ fix hàm này
+	- hàm f_com_SVCtl_real được define trong file f_com_ftyp.h, nhưng trong file có define lại kiểu bool nên include bị lỗi
+	Vì thế phải define lại trong IA nên cần confirm
+	- Chưa include được hàm l3_com_sendMsg
+	
+	
+	- Biến cmw_device_kind đang được khai báo ở com_mt nên phải khai báo lại
+
+========================
+
+
+Daily report (02/07/2021):
+1> Overall status : 
+	- On schedule
+2> Today tasks:
+	- Tìm hiểu source IA để move các thread l3/rct, l3/cpr [2021/07/02]
+		+ Implement file của l3/cpr vào source IA 
+		ToDayFinish/TotalFileFinished/TotalFile: 21/53/53
+	- Meeting về IA
+
+3> Next tasks:
+	- Tìm hiểu source IA để move các threa l3/rct, l3/cpr [2021/07/02]
+		+ Implement file của l3/cpr vào source IA 
+4> Issue:
+	+ Cần define lại một số hàm trong l3_com như l3_com_sendMsg, m_cm_L3MsgSend_REC, m_cm_L3MsgSend_RE...
+	+ L3 đang sử dụng hàm của pf/ft_com bằng cách include ở makeFile nên cần define lại các hàm ở IA:
+		・rrhApi_L2_Mpr_SubscribeLinkState
+		・rrhApi_Cpri_Mpr_SubscribeLinkState
+		・rrhApi_Cpri_Mnt_StartupLink
+		・rrhApi_Cpri_Mnt_StopLink
+		・rrhApi_L2_Mqr_SetupLink
+		・rrhApi_L2_Mqr_ReleaseLink
+		・rrhApi_L2_Mnt_CpriMsgStatistic
+		・rrhApi_L2_Mnt_DeactLapbLink
+		・f_com_SVCtl_real
+		・m_cm_chksig
+		・cmw_validsysinfo
+5> Next Actions
+	- Tự OT thêm để cuối tuần xong
+6> Risk:
+	- Chỉ comple được chưa run nên có khả năng bug
+
+
+
+===============================
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+
+#ifdef __cplusplus
+}
+#endif
+
+fix trên function BPF_RU_HRTM.h
+
+///////////////////////////////// chưa biết cách
+cmw_re_dev_tbl
+cmw_connectoperatemode
+
+
+stub m_cm_chksig
+
+
+- issue: 
+	+ cmw_validsysinfo đang define ở l3_com_ext.h nên khi không define lại thì bị lỗi
+	
+	
+	
+	+ Cần define lại một số hàm trong l3_com như l3_com_sendMsg, m_cm_L3MsgSend_REC, m_cm_L3MsgSend_RE...
+	+ L3 đang sử dụng hàm của pf/ft_com bằng cách include ở makeFile nên cần define lại các hàm ở IA:
+		・rrhApi_L2_Mpr_SubscribeLinkState
+		・rrhApi_Cpri_Mpr_SubscribeLinkState
+		・rrhApi_Cpri_Mnt_StartupLink
+		・rrhApi_Cpri_Mnt_StopLink
+		・rrhApi_L2_Mqr_SetupLink
+		・rrhApi_L2_Mqr_ReleaseLink
+		・rrhApi_L2_Mnt_CpriMsgStatistic
+		・rrhApi_L2_Mnt_DeactLapbLink
+		・f_com_SVCtl_real
+		・m_cm_chksig
+		・cmw_validsysinfo
+	+ chưa có scenario để test CT
+
+==========================
+
+Daily report (01/07/2021):
+1> Overall status : 
+	- On schedule
+2> Today tasks:
+	- Tìm hiểu source IA để move các thread l3/rct, l3/cpr [2021/07/02]
+		+ Implement file của l3/cpr vào source IA 
+		ToDayFinish/TotalFileFinished/TotalFile: 13/19/39
+	- Meeting về daily IA
+
+3> Next tasks:
+	- Tìm hiểu source IA để move các threa l3/rct, l3/cpr [2021/07/02]
+		+ Implement file của l3/cpr vào source IA 
+4> Issue:
+	- Cách tạo khởi tạo function m_cm_chksig và biến cmw_re_dev_tbl ở lib không hợp lý
+	- Implement file m_cr_CpriStateChgProc.c, m_cr_CpriStateChgProcRE.c lỗi linker của BPF_RU_HRTM_CANCEL
+5> Next Actions
+	- Tự OT thêm để tránh risk
+6> Risk:
+	- Còn 20 file chưa làm, vì mất thời gian meeting daily nên có khả năng trễ
+
+------------------------------------------------------------
+Report 12h(01/07/2021):
+1. Task:
+- Tìm hiểu source IA để move các thread l3/rct, l3/cpr [2021/07/02]
+		+ Implement file của l3/cpr vào source IA 
+		ToDayFinish/TotalFileFinished/TotalFile: 13/19/39
+- Meeting về daily IA
+2. Issue:
+- Cách tạo khởi tạo function m_cm_chksig và biến cmw_re_dev_tbl ở lib không hợp lý
+- Implement file m_cr_CpriStateChgProc.c, m_cr_CpriStateChgProcRE.c lỗi linker của BPF_RU_HRTM_CANCEL
+
+
+
+
+
+------------------------------------------
+
+
+m_cmR_ActiveChk phải ép kiểu (VOID *)
+m_cmR_ActiveChk( sysType,S_FILE, __LINE__ ) -> m_cmR_ActiveChk( sysType,(VOID *)S_FILE, __LINE__ )
+
+Nhap khac kieu phai cast
+m_cr_ComLinkSettingL3Res_RE((UINT *)a_reclsntc_p);
+
+
+develop_IT_NR_L3_CPR
+
+=================================================
+
+Daily report (30/06/2021):
+1> Overall status : 
+	- On schedule
+2> Today tasks:
+	- Tìm hiểu source IA để move các threa l3/rct, l3/cpr [2021/07/02]
+		+ Implement file của l3/cpr vào source IA 
+		ToDate/Finish/Total: 5/6/39
+	- Meeting về cấu trúc IA
+
+3> Next tasks:
+	- Tìm hiểu source IA để move các threa l3/rct, l3/cpr [2021/07/02]
+		+ Implement file của l3/cpr vào source IA 
+4> Issue:
+	- 
+5> Next Actions
+	- 
+6> Risk:
+	- 
+
+==================================================
+
+
+std::cout << "[Dung] start m_cr_main" << std::endl;
+
+==================================================
+
+Daily report (29/06/2021):
+1> Overall status : 
+	- On schedule
+2> Today tasks:
+	- Tìm hiểu source IA để move các threa l3/rct, l3/cpr [2021/07/02]
+	- Implement source IA để move các threa l3/rct, l3/cpr [2021/07/02]
+		+ Implement function m_cr_Init của l3/cpr vào source IA 
+
+3> Next tasks:
+	- Implement source IA để move các threa l3/rct, l3/cpr [2021/07/02]
+4> Issue:
+	- Khi parameter của hàm hoặc biến không được sử dụng thì sẽ bị lỗi
+		-> Đang fix theo kiểu define function UNUSED(expr) 
+	- Lỗi linker không define được function BPF_RU_IPCM_MSGQ_SEND,...
+	- Lỗi function cm_MAbort, cm_Assert
+5> Next Actions
+	- 
+6> Risk:
+	- 
+
+
+issue:
+	- parameter của hàm hoặc biến không được sử dụng thì bị lỗi
+		-> Đang fix theo kiểu define function UNUSED(expr) 
+	- Lỗi linker không define được function BPF_RU_IPCM_MSGQ_SEND,...
+	- Lỗi function cm_MAbort, cm_Assert
+
+=====================================================
+
+Daily report (28/06/2021):
+1> Overall status : 
+	- On schedule
+2> Today tasks:
+	- Add function lib cc_cnv của message convert No4, No11, No14 (Done)[2021/06/28]
+	- Tìm hiểu code IA khởi tạo thread l3/rct, l3/cpr [2021/07/02]
+	- Meeting về công việc NR
+
+3> Next tasks:
+	- Tìm hiểu source IA để move các threa l3/rct, l3/cpr [2021/07/02]
+4> Issue:
+	- No14 chưa mô tả chi tiết phương pháp convert message (Đã QA153)
+	- No12 chưa có BD
+5> Next Actions
+	- 
+6> Risk:
+	- 
+
+==================================================
+
+Daily report (25/06/2021):
+1> Overall status : 
+	- Behind schedule
+2> Today tasks:
+	- Update phần share memory id message sử dụng (set, get share memory, name jp) (Done) [2021/06/25]
+	- Fix bug không truyền được message khi dùng scenario all trên develop_it_NR (30%) [2021/06/25] đã assign lại cho team anh Kiên
+	- Tìm hiểu source IA khách hàng commit để porting code ReProxy (10%)[2021/06/28]
+	- Meeting về công việc NR
+
+3> Next tasks:
+	- Tìm hiểu source IA khách hàng commit để porting code ReProxy (10%)[2021/06/28]
+4> Issue:
+	- Develop_it_NR đang lỗi L2 nên không truyền được message chưa tìm được cách fix. Đã assign lại cho tem anh Kiên
+5> Next Actions
+	- 
+6> Risk:
+	- 
+
+
+
+==================================================
+
+Daily report (24/06/2021):
+1> Overall status : 
+	- Behind schedule
+2> Today tasks:
+	- Update phần share memory id message (Done) [2021/06/24]
+	- Tìm hiểu code singleton pattern trong IA
+	- Meeting về NR
+	- [MK] Create MK for (No 13)ファイル更新(NR) (50%) [2021/06/28]
+		+ Update MK theo version 1.1 của BD
+3> Next tasks:
+	- Run message scenario all trên branch develop_it_NR
+	- [MK] Create MK for (No 13)ファイル更新(NR)
+4> Issue:
+	- Chưa tìm được xử lý reset unit trong source
+5> Next Actions
+	- 
+6> Risk:
+	- 
+
+
+====================================================
+
+Daily report (23/06/2021):
+1> Overall status : 
+	- Behind schedule
+2> Today tasks:
+	- [MK] Create MK for (No 13)ファイル更新(NR)  [2021/06/28]
+		+ Tìm hiểu source code mapping với BD sheet 中間装置FW更新, RE FHM FW更新
+		+ Update MK theo version 1.1 của BD
+3> Next tasks:
+	- [MK] Create MK for (No 13)ファイル更新(NR)
+		+ implement xử lý còn thiếu
+4> Issue:
+	- Chưa hiểu trạng thái hoạt động khi gửi message active D_MSG_MSI_O_RAN_SOFTWARE_MANAGEMENT_ACTIVATE_REQ.
+	- Chưa tìm được đoạn code xử lý reset unit ở eqs
+	- Chưa mapping được mô tả xử lý line 266~372 ở BD với source code
+5> Next Actions
+	- 
+6> Risk:
+	- 
+
+
+====================================================
+
+Daily report (22/06/2021):
+1> Overall status : 
+	- Behind schedule
+2> Today tasks:
+	- [MK] Create MK for No.4 NR キャリア監視制御(70%)  [2021/06/22]
+		+ Update MK theo BD theo version 004
+		+ Source: feature_No.4_CarrierMonitoringControl
+	- [MK] Create MK for (No 13)ファイル更新(NR)  [2021/06/28]
+		+ Tìm hiểu source code mapping với BD
+3> Next tasks:
+	- [MK] Create MK for (No 13)ファイル更新(NR)
+4> Issue:
+	- [No.4 NR] Trong BD mô tả điều kiện setting dừng sóng mang là kiểm tra mode FHIC動作. 
+	Nhưng chưa biết giá trị mode 「両RAT停波」 và 「NR運用継続」 tương ứng với giá trị nào.
+	- [No.13 NR] Chưa hiểu ý nghĩa 3 sheet 局データ更新, 中間装置FW更新, RE FHM FW更新 trong BD
+5> Next Actions
+	- 
+6> Risk:
+	- 
+
+
+
+Kihon
+Kata
+Thể lực
+
+----------------------------------------------
+
+
+
+1. Giám sát việt nhận I/Q signal từ BDE/BDE-EX. Nếu sau 1 thời gian mà ko nhận được IQ signal.
+Tiến hành dừng sóng mang và sẽ hủy dừng sóng mang khi nhận được IQ signal.
+2. Việc bật tắt dừng sóng mang được thực hiện bởi mode 局データFHIC
+3. Việc giám sát nhận IQ signal và dừng hủy sóng mang. được thực hiện tự động ở phần cứng và được thiết lập ON/OFF bởi phần mềm
+4. Khi khởi động thiết bị:
+Mode FHIC là 「両RAT停波」, settting ON dừng sóng mang (khi không nhận được IQ signal)
+Mode FHIC là 「NR運用継続」, settting OFF dừng sóng mang
+
+
+========================================================
+
+Daily report (18/06/2021):
+1> Overall status : 
+	- Behind schedule
+2> Today tasks:
+	- [MK] Create MK for No.4 NR キャリア監視制御  [2021/06/22]
+		+ implement function convert API cc_cnv
+3> Next tasks:
+	- [MK] Create MK for No.4 NR キャリア監視制御 
+4> Issue:
+	- 
+5> Next Actions
+	- 
+6> Risk:
+	-
+
+Daily report (17/06/2021):
+1> Overall status : 
+	- Behind schedule
+2> Today tasks:
+	- [MK] Create MK for No.4 NR キャリア監視制御  [2021/06/22]
+		+ Tìm hiểu xử lý setting carrier của LTE và tìm vị trí add function convert API
+3> Next tasks:
+	- [MK] Create MK for No.4 NR キャリア監視制御 
+4> Issue:
+	- Chưa rõ mô tả về xử lý của LTE trong BD. (Đã QA no146)
+5> Next Actions
+	- 
+6> Risk:
+	-
+
+
+----------------
+- 7h run 4 km
+- 8h trượt patin
+- 9h code page admin
+	+ Tính tour bán chạy theo số lượng booking
+	+ Chỉnh format page booking của form
+	+ 
+
+
+
+
+
+==============================================
+
+
+Daily report (16/06/2021):
+1> Overall status : 
+ - Behind schedule
+2> Today tasks:
+	- [MK] Create MK for No.4 NR キャリア監視制御  [2021/06/22]
+		+ Đọc hiểu xử lý và mapping source NR (100%)
+		+ Tìm hiểu xử lý setting carrier của LTE và tìm vị trí add function convert API
+3> Next tasks:
+	- [MK] Create MK for No.4 NR キャリア監視制御 
+4> Issue:
+	- Chưa rõ về phương pháp convert mô tả trong thư mục API.(Đã add QA No.140)
+	- Chưa biết điều kiện để thực hiện kiểm tra dừng carrier. (Đã add QA No.141)
+5> Next Actions
+	- 
+6> Risk:
+	-
+
+
+Trong BD có mô tả  LTE I/Q信号停止時のNRキャリア休止制御. 
+Vậy điều kiện để tiến hành kiểm tra xử lý dừng carrier là gì?
+Khi xử lý dừng carier thì sử dụng địa chỉ thanh ghi nào?
+
+--------------------------------------------
+
+
+1. No 4 thực hiện cho việc gì?
++ Thực hiện setting control carrier ở NR và LTE
+
+2. Quy trình convert như thế nào?
++ Tại process re/rec sẽ gọi > API Convert -> process PF (pf_mpxy_send)
+
+3. Trong API convert function sẽ thực hiện những gì?
+Trường hợp message 0x5821 trả về kết quả 0 sẽ thực hiện convert setting giá trị state của message 0x81240715.
+3.1 Với từng giá trị trả về 応答結果, thì giá trị setting cho state của message 0x81240715 tương ứng là bao nhiêu?
+Đang nghĩ là:
+* 応答結果 = 0 -> state = 2:READY
+* 応答結果 != 0 -> state = 0:DISABLED
+Nhưng không biết state = 1:BUSY -> 応答結果 = ?
+Làm ơn confirm giúp?
+
+4. Message bên phía NR, LTE là gì?
++ NR: 
+MSI_O_RAN_UPLANE_CONF_EDIT_TX_REQ(0x81240211)
+MSI_O_RAN_UPLANE_CONF_EDIT_TX_CFM(0x81240212)
+MSI_O_RAN_UPLANE_CONF_TX_STATE_CHANGE_NTF_IND(0x81240715)
++ LTE:
+CMD_CPRID_CARLSTSRES(0x5821)
+
+5. Xử lý LTE liên quan đến No bảo nhiêu?
+No.18 LTE キャリア監視制御
+
+6. API convert function sẽ được gọi ở đâu?
+
+
+f_trp_rec_Fc02_r_evt_cnv
+f_trp_rec_Fc02_r_evt_cnv_3g
+f_trp_rec_Fc02_t_cprpar_chk_3g
+f_trp_rec_Fc02_t_cprpar_chk
+f_trp_rec_Fc03_r_evt_cnv_3g
+f_trp_rec_Fc03_r_evt_cnv
+f_trp_rec_Fcom_t_runhis_add
+
+
+
+
+
+4. Message lên quan đến việc thực hiện RE device configuration information bên phía RE là gì?
+- message 0x5111(req) và 0x5121(Res)
+5. APi convert function được gọi ở đau?
+- trong function m_rc_ReStrRes() sau khi message được gửi tới REC
+
+
+===================================================================
+
+Daily report (15/06/2021):
+1> Overall status : 
+ - On schedule
+2> Today tasks:
+	- [MK] Create MK for No.4 NR キャリア監視制御 
+		+ Đọc hiểu xử lý và Mapping source code, BD [2021/06/16]
+3> Next tasks:
+	- [MK] Create MK for No.4 NR キャリア監視制御 
+4> Issue:
+	- None
+5> Next Actions
+	- 
+6> Risk:
+	-
+
+
+====================================================================
+
+Daily report (14/06/2021):
+1> Overall status : 
+ - On schedule
+2> Today tasks:
+	- Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+		+ Tìm hiểu convert BCD to Decimal
+		+ Run test, debug check flow xử lý 4G
+	- Task #40728(CPRI_INT-481): Điều tra Fix bug [50%] (đang nhờ Hiệp support điều tra)
+3> Next tasks:
+	- Task #40728(CPRI_INT-481): Điều tra Fix bug
+4> Issue:
+	- Task #40728(CPRI_INT-481): Chưa tìm ra được rootcase(Đang nhờ Hiệp support điều tra)
+5> Next Actions
+	- 
+6> Risk:
+	-
+
+
+
+====================================================================
+Daily report (10/06/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Task #40728(CPRI_INT-481): Điều tra Fix bug [50%]
+3> Next tasks:
+- None
+4> Issue:
+- Cách tái hiện bug chưa đúng phải sử dụng tool MT mới.
+- Chưa tìm được rootcase.(Nghĩa đang support fixbug)
+5> Next Actions
+- Ngày mai em xin nghỉ. Nên bug CPRI_INT-481 nhờ Nghĩa support fix tiếp với ạ.
+6> Risk:
+- None
+
+
+
+
+=====================================================================
+
+Daily report (09/06/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Task #36993(MK cho No11): Codding, tìm hiểu đọc ghi share memory [50%] [Pendding]
+- Task #40728(CPRI_INT-481): Tái hiện bug [50%] [10/06/2021]
+3> Next tasks:
+- Task #40728(CPRI_INT-481): Tái hiện bug [10/06/2021]
+- Task #40728(CPRI_INT-481): Hiểu yêu cầu chức năng để fix [10/06/2021]
+4> Issue:
+- Task #36993(MK cho No11): đang chờ trả lời QA nên pendding
+- Task #40728(CPRI_INT-481): Chưa hiểu rõ nội dung bug (đã update nội dung issue vào ticket)
+5> Next Actions
+- None
+6> Risk:
+- Vì chưa rõ nội dung, công việc cần thực hiện để fix bug, có thể trễ plan: cần nhờ team leader hỗ trợ
+
+
+
+1/ Tìm hiểu trong file log chổ nào có lỗi abort
+2/ Khoanh vùng lỗi ở những chức năng nào
+3/ Tìm hiểu hàm f_mti_event_DUSTATUS_GET liên quan đến tool MT. Để hiểu chức năng tool MT liên quan đến 光入出ポート
+4/ Tìm tài liệu liên quan đến quản lý thiết bị, truyền nhận thông tin qua BDE, RE, BDE-EX
+---------------------------
+Những việc e cần làm đây anh.
+Vì em chưa biết file log chổ nào có lỗi abort, nên đang tìm hiểu mục 3, 4 trước
+
+
+Đang tìm hiểu nội dung 2 ticket bên dưới
+https://redmine.cloud9-solutions.com/issues/33389
+https://redmine.cloud9-solutions.com/issues/35441
+
+
+
+
+----------------------------------------
+
+Việc cần làm:
++ daily report 4h30
++ Liệt kê câu hỏi
++ Liệt kê việc cần làm trong task
+
+
+
+------------------------------------------------
+
+1/ Ham lien quan tool MT
+f_mti_event_DUSTATUS_GET
+
+2/ ko liên quan tới Artiza
+thì cũng chung khái niệm
+truyền nhận thông tin quan qua BDE/RE
+
+3/ Tài liệu liên quan quản lý thiết bị
+https://redmine.cloud9-solutions.com/issues/33389
+https://redmine.cloud9-solutions.com/issues/35441
+
+4/ Em cũng nghĩ vậy, nó là 3 cái cổng BDE, RE, BDE-EX
+như cổng mạng mình thôi, nhưng họ dùng sợi quang để truyền nhanh hơn
+bấm nút [光入出ポート])  cái button này là ở trên tool MT, chắc người viết tool hiểu hơn nhỉ
+
+5/ Trước mắt có phải là tìm hiểu trong file log xem chỗ nào là có lỗi abort à @Hoàng 
+sau khi tìm được vị trí thì khoanh vùng xem có ảnh hưởng tới chức năng nào
+chỗ 光入出ポート này thì anh nghĩ phải lội ngược dòng lại từ BI
+để xem cái gì đang control nó
+光入出ポート = button bật tắt đầu vào thiết bị thì phải, cái cổng optica
+
+
+--------------------------------------------
+
+1/ Nội dung bug:
+	Không điều khiển được I/O port quang
+
+2/Hiện tượng bug:
+	Khi điều khiển I/O port quang (bấm nút [光入出ポート]) thì phát sinh log abord ở TBTG
+	Trong nội dung file log, cái gì đang bị lỗi?
+3/Nội dung cần điều tra:
+	?
+4/Input:
+File log:
+	teraterm_cmd_alllog.log
+	mtlog_abort_2000010100181339.log
+5/Output:
+	?
+
+
+
+
+
+------------------------------
+
+Report 12h(09/06/2021):
+1. Task:
+- Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+	+ Tìm hiểu đọc ghi share memory.
+	+ Tìm vị trí đọc ghi memory theo BD No11
+- CPRI_INT-481 [MT Tool] [光入出ポート]　button not work correctly.
+	+ Tìm hiểu yêu cầu fix bug
+2. Issue:
+- None
+
+===========================================
+
+Daily report (08/06/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Config source base develop_it_NR run trên môi trường ảo
+	+ xử lý make rrh_tp
+	Chưa make được nhưng đã confirm với Huy, ý nghĩa của make rrh_tp, chủ yếu để dùng khi build trên máy thật.
+	Nên đã config makefile chỉ make rrh_tp trên máy thật. (sẽ note thêm vào ticket)
+	+ Nghiên cứu cách add .gitignore để loại bỏ commit những file không cần thiết và check thư mục còn thiếu khi push do sử dụng gitignore.
+- Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+	+ Tìm hiểu đọc ghi share memory
+3> Next tasks:
+- Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+
+4> Issue:
+- Khi compile ở local thì ok, nhưng push lên git thì bị thiếu file do sử dụng gitignore. 
+	Nên phải check lại file nào phải push lên git trước lúc sử dụng gitignore.
+- No11: có hỏi về định nghĩa message gửi đi trong BD. Đã log ticket và push anh Tuân nhưng chưa thấy trả lời
+
+5> Next Actions
+- None
+6> Risk:
+- None
+
+-----------------------------------
+
+Report 17h(08/06/2021):
+1. Task:
+- Config source base develop_it_NR run trên môi trường ảo
+	+ check thư mục còn thiếu khi push do sử dụng gitignore.
+- Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+	+ Tìm hiểu đọc ghi share memory
+2. Issue:
+- Khi compile ở local thì ok, nhưng push lên git thì bị thiếu file do sử dụng gitignore. 
+	Nên phải check lại file nào phải push lên git trước lúc sử dụng gitignore.
+- No11: có hỏi về định nghĩa message gửi đi trong BD. Đã log ticket và push anh Tuân nhưng chưa thấy trả lời
+
+-------
+rrhlib_bpfshm_read
+rrhlib_bpfshm_write
+rrhlib_ptpconf_set
+rrhlib_device_pgc_write
+rrhlib_device_pgc_read
+rrhlib_device_pgc_write_reg
+rrhlib_device_pgc_read_reg
+rrhlib_shm_dpda_flg_write
+rrhlib_device_calphase
+rrhlib_device_getrtc
+rrhlib_device_setrtc
+rrhlib_device_mutexfree
+
+-------------------------------------
+
+
+Report 12h(08/06/2021):
+1. Task:
+- Config source base develop_it_NR run trên môi trường ảo
+	+ xử lý make rrh_tp
+	Chưa make được nhưng đã confirm với Huy, ý nghĩa của make rrh_tp, chủ yếu để dùng khi build trên máy thật.
+	Nên đã config makefile chỉ make rrh_tp trên máy thật. (sẽ note thêm vào ticket)
+	+ Nghiên cứu cách add .gitignore để loại bỏ commit những file không cần thiết.
+2. Issue:
+- None
+
+-------------------------------------
+
+Daily report (07/06/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Config source base develop_it_NR run trên môi trường ảo.
+ + make trên máy thật
+ + fix make file để hết lỗi list hàm ‘rrhlib_bpfshm_read’, ‘rrhlib_bpfshm_write’,... không bị lỗi trong file rrhlib_device_access.c
+    
+3> Next tasks:
+- Config source base develop_it_NR run trên môi trường ảo.
+- Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+
+4> Issue:
+- Vì máy thật có sử dụng file .gitignore. 
+nên phải dựa vào file gitignore để xóa đi những file đã commit.
+(Số lượng file nhiều nên đã revet commit củ và add thêm lại những file đã thay đổi)
+- lỗi list hàm ‘rrhlib_bpfshm_read’, ‘rrhlib_bpfshm_write’,... trong file rrhlib_device_access.c chưa được khai báo
+
+5> Next Actions
+- None
+6> Risk:
+- None
+
+--------------------------------
+Report 17h(07/06/2021):
+1. Task:
+- Config source base develop_it_NR run trên môi trường ảo
+	+ make trên máy thật.
+	(bỏ thử mục .gitignore thì đã compile ok. Nên đang add .gitignore và check lại 1 lần nữa)
+2. Issue:
+- Vì máy thật có sử dụng file .gitignore. 
+nên phải dựa vào file gitignore để xóa đi những file đã commit.
+(Số lượng file nhiều nên đã revet commit củ và add thêm lại những file đã thay đổi)
+
+
+----------------------
+Report 12h(07/06/2021):
+1. Task:
+- Config source base develop_it_NR run trên môi trường ảo
+	+ make trên máy thật
+2. Issue:
+- Vì máy thật có sử dụng file .gitignore. 
+ên phải dựa vào file gitignore để xóa đi những file đã commit
+- Build máy thật bị lỗi thư viện lmpsw_srv nên đang điều tra
+
+
+
+--------------------------
+
+ramdisk/target
+mruby.tar.gz
+
+=============================
+Daily report (04/06/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Config source base develop_it_NR run trên môi trường ảo
+	+ Check và sửa lại các make file:
+	make socat -> finish
+	make coredum (đang bị lỗi nhưng vì make_gcc và run tool MT nên note vào ticket ko cần fix)
+	+ make trên máy thật.
+    
+3> Next tasks:
+- Config source base develop_it_NR run trên môi trường ảo
+
+4> Issue:
+- None
+
+5> Next Actions
+- None
+6> Risk:
+- None
+
+
+
+------------------------------
+Report 17h(04/06/2021):
+1. Task:
+- Config source base develop_it_NR run trên môi trường ảo
+	+ fix make coredump
+	+ make trên máy thật
+2. Issue:
+- None	
+
+----------------------------
+Report 12h(04/06/2021):
+1. Task:
+	- Config source base develop_it_NR run trên môi trường ảo
+	Check và sửa lại các make file
+	Trong make file tổng: TOTAL/OK/Inprogress: 16/15/1
+		make rruplog ; 		-> OK
+		make lib_bpf ; 		-> OK
+		make mpsw_srv ; 	-> OK
+		make rrh_dbg ; 		-> In-process
+		make lib_cmn ; 		-> OK
+		make lib_api ; 		-> OK
+		make rrh_pf ; 		-> OK
+		make rrh_tp ; 		-> OK
+		make du_cmd ; 		-> OK
+		make rrh_pf_fhm ; 	-> OK
+		make rrh_l2 ; 		-> OK
+		make rrh_l3 ; 		-> OK
+		make rrh_mnt ; 		-> OK
+		make rrh_mon ; 		-> OK
+		make rrh_mt ; 		-> OK
+		make rrh_re ; 		-> OK
+	Trong make file rrh_dbg: TOTAL/OK/Inprogress: 13/12/1
+		cd $(DBG_PATH) ; make clean ; make all ; make install	-> OK
+		cd $(PDUMP_PATH) ; make clean ; make					-> OK
+		cd $(PLNPDUMP_PATH) ; make clean ; make					-> OK
+		cd $(DEVCTL_PATH) ; make clean ; make					-> OK
+		cd $(MSIDBG_PATH) ; make clean ; make					-> OK
+		cd $(SRAMCTL_PATH) ; make clean ; make					-> OK
+		cd $(SRCVER_PATH) ; make clean ; make					-> OK
+		cd $(DOCMD_PATH) ; make clean ; make					-> OK
+		cd $(PTPTOOL_PATH) ; ./make.sh							-> OK
+		cd $(SOCAT_PATH) ; ./make.sh							-> OK
+		cd $(RPCSDEC_PATH) ; make clean ; make					-> OK
+		cd $(JTAGETHER_PATH) ; make clean ; make				-> OK
+		cd $(COREDUMP_PATH) ; make clean ; make					-> In-process
+		
+2. Issue:
+- Khi thực hiện make coredump thì ở lbpf_svrm ko link được hàm nên xảy ra lỗi "undefined reference".
+  Kiểm tra file libbpf_svrm.so thì các function đó đang bị "NOTYPE".
+  Vẫn đang điều tra.
+	
+-----------------------------------------------------------
+	
+	cd $(DBG_PATH) ; make clean ; make all ; make install
+	cd $(PDUMP_PATH) ; make clean ; make
+	cd $(PLNPDUMP_PATH) ; make clean ; make
+	cd $(DEVCTL_PATH) ; make clean ; make
+	cd $(MSIDBG_PATH) ; make clean ; make
+	cd $(SRAMCTL_PATH) ; make clean ; make
+	cd $(SRCVER_PATH) ; make clean ; make
+	cd $(DOCMD_PATH) ; make clean ; make
+	cd $(PTPTOOL_PATH) ; ./make.sh
+	# cd $(SOCAT_PATH) ; ./make.sh
+	cd $(RPCSDEC_PATH) ; make clean ; make
+	cd $(JTAGETHER_PATH) ; make clean ; make
+	cd $(COREDUMP_PATH) ; make clean ; make
+
+-----------------------------------------------------------
+
+Daily report (03/06/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Config source base develop_it_NR run trên môi trường ảo
+	+ Check và sửa lại các make file:
+	make rruplog ; 		-> OK
+	make lib_bpf ; 		-> OK
+	make mpsw_srv ; 	-> OK
+	make rrh_dbg ; 		-> In-process
+	make lib_cmn ; 		-> OK
+	make lib_api ; 		-> OK
+	make rrh_pf ; 		-> OK
+	make rrh_tp ; 		-> OK
+	make du_cmd ; 		-> OK
+	make rrh_pf_fhm ; 	-> OK
+	make rrh_l2 ; 		-> OK
+	make rrh_l3 ; 		-> OK
+	make rrh_mnt ; 		-> OK
+	make rrh_mon ; 		-> OK
+	make rrh_mt ; 		-> OK
+	make rrh_re ; 		-> OK
+    => TOTAL/OK/Inprogress:  16/15/1
+3> Next tasks:
+- Config source base develop_it_NR run trên môi trường ảo
+
+4> Issue:
++ Khi thực hiện make coredump thì ở lbpf_svrm ko link được hàm nên xảy ra lỗi "undefined reference".
+  Kiểm tra file libbpf_svrm.so, các function đó đang bị "NOTYPE".
+
+5> Next Actions
+- Tự điều tra và nhờ Hiệp support thêm.
+6> Risk:
+- None
+
+
+------------------------------------------
+Report 17h(03/06/2021):
+1. Task:
+	- Config source base develop_it_NR run trên môi trường ảo
+	Check và sửa lại các make file
+		make rrh_dbg ; 		-> In-process
+		
+2. Issue:
+	-	Khi thực hiện make coredump thì ở lbpf_svrm ko link được hàm nên xảy ra lỗi "undefined reference".
+	Kiểm tra file libbpf_svrm.so, các function đó đang bị "NOTYPE".
+	(Hiệp đang support điều tra)
+
+
+----------------------------------------------
+
+Report 12h(03/06/2021):
+1. Task:
+	- Config source base develop_it_NR run trên môi trường ảo
+	Check và sửa lại các make file
+		make rruplog ; 		-> OK
+		make lib_bpf ; 		-> OK
+		make mpsw_srv ; 	-> OK
+		make rrh_dbg ; 		-> In-process
+		make lib_cmn ; 		-> OK
+		make lib_api ; 		-> OK
+		make rrh_pf ; 		-> OK
+		make rrh_tp ; 		-> OK
+		make du_cmd ; 		-> OK
+		make rrh_pf_fhm ; 	-> OK
+		make rrh_l2 ; 		-> OK
+		make rrh_l3 ; 		-> OK
+		make rrh_mnt ; 		-> OK
+		make rrh_mon ; 		-> OK
+		make rrh_mt ; 		-> OK
+		make rrh_re ; 		-> OK
+		
+2. Issue:
+- None
+
+-------------------------------------------
+
++ rrh_dbg	-> lỗi
+
++ f_mpsw_msg_enum.h -> thiếu define
+=> copy lại thư mục mp
+
+1---- Note tam
+tools/tp/rrh/rrhlib/rrhlib_device_access.c
+-> khai bao them rrhlib_bpfshm_write
+comment phần ko dùng như source C9
+----
+
+2---- sua make file tp
+src/tools/tp/Makefile line 18
+ifndef CROSS_COMPILE -> ifdef CROSS_COMPILE
+
+3---- sua make file tp/rrh
+src\tools\tp\rrh\Makefile
+
+4-----sua make file tools\du\cmd\Makefile
+
+
+5---- sua make file src/pf/l2/dbg/makefile
+sửa lại đường dân make file in
+
+
+
+6 ----Check loi ssh_dbg --------------------------
+	cd $(DBG_PATH) ; make clean ; make all ; make install
+	-> OK (src/tools/debug/Makefile)
+	cd $(PDUMP_PATH) ; make clean ; make
+	-> OK (src\tools\rrupfdump_v3\Makefile)
+	cd $(PLNPDUMP_PATH) ; make clean ; make
+	-> Ok (src/tools/planedump/Makefile)
+	cd $(COREDUMP_PATH) ; make clean ; make
+	-> OK ko sua (nên them mode 0/1)
+	cd $(DEVCTL_PATH) ; make clean ; make
+	-> OK ko sua (nên them mode 0/1)
+	cd $(MSIDBG_PATH) ; make clean ; make
+	-> OK ko sua (nên them mode 0/1)
+	cd $(SRAMCTL_PATH) ; make clean ; make
+	-> OK ko sua (nên them mode 0/1)
+	cd $(SRCVER_PATH) ; make clean ; make
+	-> OK ko sua (nên them mode 0/1)
+	cd $(DOCMD_PATH) ; make clean ; make
+	-> OK ko sua (nên them mode 0/1)
+	cd $(PTPTOOL_PATH) ; ./make.sh
+	-> OK ko sua (nên them mode 0/1)
+	cd $(SOCAT_PATH) ; ./make.sh
+	-> OK ko sua (nên them mode 0/1)
+	cd $(RPCSDEC_PATH) ; make clean ; make
+	-> OK ko sua (nên them mode 0/1)
+	cd $(JTAGETHER_PATH) ; make clean ; make
+	-> OK ko sua (nên them mode 0/1)
+
+
+
+
+===============================================================
+
+Daily report (02/06/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR) (Pendding)
+	+ Call với anh Tuân, anh Hùng meeting confirm về xử lý BD No.11 và No.25
+- Config source base develop_it_NR run trên môi trường ảo
+	=> Đã điều tra xảy ra lỗi do config nằm trong đường dẫn thư mục \cpri-int\soft\src.
+	Đang check xem make giai đoạn nào thì lỗi.
+3> Next tasks:
+- Config source base develop_it_NR run trên môi trường ảo
+
+4> Issue:
++ Theo như meeting thì phần No.25 đã bỏ xử lý 4-2 外部装置データ受信要求受信 nên cần confirm lại.
++ Chưa hiểu ý đồ sử dụng hàm ScanDevice khi gửi message REQ ở 5G. (đang nhờ anh Tuân điều tra)
++ Chưa xác định được nội dung lưu xuống share memory, cách lưu và đọc share memory.
+
+5> Next Actions
+- None
+6> Risk:
+- None
+
+------------------------------------------
+Report 17h(02/06/2021):
+1. Task:
+	1/ Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR) (Pendding)
+	2/ Config source base develop_it_NR run trên môi trường ảo
+	Step thực hiện:
+		+ Check điểm config khác nhau giữa git.cloud9 và Backlog
+		+ Chỉnh sửa những file config của source Backlog để chạy được trên môi trường ảo
+	=> Đã điều tra xảy ra lỗi do config nằm trong đường dẫn thư mục \cpri-int\soft\src.
+	Đang check xem make giai đoạn nào thì lỗi.
+		
+2. Issue:
+- None
+
+-------------------------------------------
+
+Report 12h(02/06/2021):
+1. Task:
+	+ Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+		- Call với anh Tuân, anh Hùng meeting confirm về xử lý BD No.11 và No.25
+2. Issue:
+	+ Theo như meeting thì phần No.25 đã bỏ xử lý 4-2 外部装置データ受信要求受信 nên cần confirm lại với bên Nhật.
+	+ Chưa hiểu ý đồ sử dụng hàm ScanDevice khi gửi message REQ ở 5G. (đang nhờ anh Tuân điều tra)
+	+ Chưa xác định được nội dung lưu xuống share memory, cách lưu và đọc share memory
+
+
+
+
+-------------------------------------------------------
+* Problem:
+Confirm về việc phân biệt 2 message 監視制御種別 RE ALD メッセージ送信(0x09) và 監視制御種別 RE ALD メッセージ送信(0x0A) ở BD
+
+* Description:
+- Trong file CPRI中間装置機能一覧.xlsx, sheet (項番11)RE AISGTILTOA-RA監視制御(NR), (hình BD_ScanDevice_No11.PNG) có mô tả
+"・DU-PFではALD Communication Req(監視制御種別 RE ALD メッセージ送信(0x09))で自装置のハードに設定を実施しているが
+中間装置は、CPRI 外部データ送信要求を作成してREへ送信する。
+・DU-PFではALD Communication Req(監視制御種別 RE ALD メッセージ受信(0x0A))で自装置のハードに設定を実施しているが
+中間装置は、共有テーブルから受信データを取得して応答を作成しBDE-EXに送信する。
+"
+
+- Trong f_aih_aldRcv.c, function f_aih_aldRcv() có sử dụng f_aih_aldCtrlLogp->scan.deviceScan như hình Source_ScanDevice_No11.PNG
+
+Vậy cho em confirm 2 vấn đề:
+1/ Em đang hiểu sẽ sử dụng f_aih_aldCtrlLogp->scan.deviceScan check loại message 監視制御種別 RE ALD メッセージ送信(0x09) hay 監視制御種別 RE ALD メッセージ送信(0x0A)
+Hiểu như vậy đúng không ạ?
+2/ Nếu em hiểu đúng. Vậy điều kiện phân biệt message  監視制御種別 RE ALD メッセージ送信(0x09) hay  監視制御種別 RE ALD メッセージ送信(0x0A) với f_aih_aldCtrlLogp->scan.deviceScan tương ứng sẽ có giá trị bao nhiêu.
+
+Nhờ anh confirm giúp.
+
+Thanks,
+Dũng
+
+
+
+
+
+- Trong f_aih_aldRcv.c, function f_aih_aldRcv() thì đang sử dụng kết quả giá trị f_aih_aldCtrlLogp->scan.deviceScan check loại message 監視制御種別 RE ALD メッセージ送信(0x09) hay 監視制御種別 RE ALD メッセージ送信(0x0A)
+như hình Source_ScanDevice_No11.PNG
+
+-------------------------------------------------
+
+Daily report (01/06/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR) (70%)
+	+ Mapping BD và code xử lý lưu data vào table common ở 4G và đọc data từ table common ở 5G
+	+ Nghiên cứu thêm tài liệu liên quan về No.11
+3> Next tasks:
+- Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+
+4> Issue:
+- Chưa tìm ra xử lý ghi data vào table common ở 4G. Đã log ticket QA assign cho anh Tuân.
+	https://redmine.cloud9-solutions.com/issues/40441
+5> Next Actions
+- Tự điều tra thêm code.
+- Đọc lại spec thì thấy nội dung message mô tả trong BD chưa rõ nên sẽ log ticket confirm với người viết BD
+6> Risk:
+- None
+
+--------------------------------------------------
+Report 17h(01/06/2021):
+1. Task:
+	+ Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+		- Mapping BD và code xử lý lưu data vào table common ở 4G và đọc data từ table common ở 5G.
+		- Nghiên cứu thêm tài liệu liên quan về No.11
+2. Issue:
+	+ Chưa tìm ra xử lý ghi data vào table common ở 4G. Đã log ticket QA assign cho anh Tuân.
+	https://redmine.cloud9-solutions.com/issues/40441
+
+--------------------------------------------------
+
+Report 12h(01/06/2021):
+1. Task:
+	+ Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+		- Mapping BD và code xử lý lưu data vào table common ở 4G và đọc data từ table common ở 5G
+2. Issue:
+	+ Chưa tìm ra xử lý ghi data vào table common ở 4G. Đã log ticket QA assign cho anh Tuân.
+	https://redmine.cloud9-solutions.com/issues/40441
+
+================================================
+Daily report (31/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR) (70%)
+	+ Thêm function cc_cnv API vào đúng vị trí 4G và 5G.
+	+ Đã compile trên máy thật lỗi include file nên đang fix
+	+ Đang đọc source để tìm xử lý đọc data từ table common khi response msg T_MPSW_MSI_O_RAN_ALD_ALD_COMMUNICATION_CFM
+	và tìm xử lý ghi data vào table common ở 4G
+3> Next tasks:
+- Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+
+4> Issue:
+- Check xử lý 5G, 4G
+	Chưa tìm ra được đoạn code ghi data vào table common ở 4G.
+
+5> Next Actions
+- Tự điều tra thêm code
+6> Risk:
+- None
+
+---------------------------------------------
+Report 17h(31/5/2021):
+1. Task:
++ Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+	+ Compile thử trên máy thật bị lỗi include file nên đang fix lại.
+	+ Đang đọc source để tìm xử lý đọc data từ table common khi response msg T_MPSW_MSI_O_RAN_ALD_ALD_COMMUNICATION_CFM.
+	và tìm xử lý ghi data vào table common ở 4G
+2. Issue:
+	+ Chưa tìm ra xử lý ghi data vào table common ở 4G
+
+------------------------
+D_SYS_THDQID_PF_AIH page dat function convert
+CMD_TSKID_RCT page dat function convert
+CMD_TSKID_REC
+------------------------
+
+Report 12h(31/5/2021):
+1. Task:
++ Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+	+ Add xong function API convert ở 4G, 5G
+	+ Đang đọc source để tìm xử lý đọc data table common khi response msg T_MPSW_MSI_O_RAN_ALD_ALD_COMMUNICATION_CFM.
+2. Issue:
+	+ Chưa hiểu hết xử lý khi nhận response msg T_MPSW_MSI_O_RAN_ALD_ALD_COMMUNICATION_CFM để tìm code đọc data từ table common
+
+===================================================
+Daily report (28/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+	+ MK No.11 (50%)
+3> Next tasks:
+- Config môi trường để code develop_it_NR có thể chạy được trên máy thật và máy ảo.
+- Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+
+4> Issue:
+- Về MK NR sẽ có 2 phần tạo API convert đặt vào đúng vị trí và check xủ lý 5G, 4G bổ sung khi bị thiếu.
+	a. Tạo API convert.
+		Ở vị trí đặt function convert, có đoạn kiểm tra điều kiện giá trị trả về của message response để gọi function convert.
+		Đang bị mất thời gian để tìm cách lấy ra giá trị trả về của message response để kiểm tra.
+	b. Check xử lý 5G, 4G
+		Có đoạn đọc, ghi dữ liệu vào table common. Em chưa tìm ra được xử lý đó nên không biết có thiếu ko.
+		Có hỏi Dương vì có liên quan No.25(xử lý 4G phần này) nhưng chỉ mới hướng dẫn code xử lý ghi dữ liệu vào table common thường dùng ở các hàm khác.
+		vì Dương chỉ MK 1 phần của No25 chứ ko MK cái này
+5> Next Actions
+- Tự điều tra thêm code
+6> Risk:
+- None
+
+
+----------------------------------------
+estimate khi nào xong khi có issue phải tự tìm hiểu thấy khó ghê.
+Vì phải tùy khả năng bao lâu mình tìm ra.
+
+
+----------------------------------------
+Report 17h(28/5/2021):
+1. Task:
++ Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+	+ MK No.11 (50%)
+2. Issue:
+
+Về MK NR sẽ có 2 phần tạo API convert đặt vào đúng vị trí và check xủ lý 5G, 4G bổ sung khi bị thiếu.
+a. Tạo API convert.
+Ở vị trí đặt function convert, có đoạn kiểm tra điều kiện giá trị trả về của message response để gọi function convert.
+Em đang tìm hiểu cách lấy ra giá trị trả về của message response để kiểm tra.
+b. Check xử lý 5G, 4G
+Có đoạn đọc, ghi dữ liệu vào table common. Em chưa tìm ra được xử lý đó nên không biết có thiếu ko.
+Em có hỏi Dương vì có liên quan No.25(xử lý 4G phần này) nhưng chỉ mới hướng dẫn code xử lý ghi dữ liệu vào table common thường dùng ở các hàm khác.
+vì Dương MK 1 phần chứ ko MK cái này
+
+----------------------------------------
+Report 12h(28/5/2021):
+
+1. Task:
++ Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+	+ MK No.11 (20%)
+2. Issue:
++ None
+
+
+
+API_CPRICONV_ALD_COMMUNICATION_REQ
+API_CPRICONV_ALD_COMMUNICATION_CFM
+API_CPRICONV_ALD_COMMUNICATION_REJ
+
+=====================================================
+
+Daily report (27/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Create branch develop_it_NR trên git Cloud9 (Finish)
+- Create Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+	+ create DD (90%)
+	+ MK No.11 (10%)
+3> Next tasks:
+- Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+4> Issue:
+- Chưa tìm được xử lý lưu và get data thiết bị ngoại vi từ table common
+5> Next Actions
+- Confirm hỏi thử người làm MK No.25 (liên quan đến xử lý thiết bị ngoại vi)
+6> Risk:
+- None
+
+---------------------------------------------
+
+1. Task:
++ Create branch develop_it_NR trên git Cloud9
+
+2. Issue: 
++ Cấu trúc thư mục ở git Cloud9
+	artiza-5g-project\cpri-int\soft\src
++ Cấu trúc thư mục ở git BackLog
+	cpri-int\cpri-int\soft\src
+
+
+---------------------------------
+
+1. Task:
++ Create branch develop_it_NR trên git Cloud9
+
+2. Issue: 
++ Cấu trúc thư mục ở git Cloud9
+	artiza-5g-project\cpri-int\soft\src
++ Cấu trúc thư mục ở git BackLog
+	cpri-int\cpri-int\soft\src
+
+Nên lúc checkout develop_it_NR trên máy thật rồi compile bị lỗi.
+Sau khi fix bên dưới thì compile OK:
++ Sửa lại theo dạng thư mục cpri-int\cpri-int\soft\src để compile
++ Set các mode:
+chmod +x ./tools/socat/make.sh
+chmod +x ./tools/linuxptp/make.sh
+chmod +x ./gen_re_help.sh
+
+------------------------------
+1/ Tạo nhánh base develop_it_NR trên C9
+    (1) Clone develop_it_no_alm về
+	==> Đã làm rồi
+    (2) Merge phần common mình đã làm trong nhánh it_sim_NR vào (1)
+	==> Cần merge nhánh develop_it_NR ở BackLog vào develop_it_no_alm là được (chưa biết merge bằng lệnh cmd git)
+    (3) Tạo nhánh base develop_it_NR từ (2)
+	==> Ở C9 tạo nhánh develop_it_NR từ it_sim_NR, copy nguyên nhánh develop_it_no_alm đã merge ở (Backlog) vào.
+    (4) remote vào PC để compile (3)
+	==> compile develop_it_no_alm đã merge
+    (5) compile OK thì Push (3) lên git C9
+	==> push develop_it_NR lên git C9
+2/ Tạo nhánh MK các No.xx
+    (1) Tạo nhánh develop_it_NR_No.xx_xxxxx được base từ develop_it_NR trên C9
+    (2) MK cho No.xx
+    (3) Sau khi MK xong thì remote vào PC compile
+	==> diff phần thay đổi trên C9 
+	==> apply vào develop_it_no_alm
+	==> compile
+	(4) Compile OK thì push (1) lên git C9
+
+
+1. Tạo branch develop_it_NR từ branch it_sim ở git C9
+2. Clone source nhánh develop_it_NR trên Backlog
+3. Copy nguyên source develop_it_NR của muc 2(Backlog) vào develop_it_NR của 1(C9)
+4. Push develop_it_NR vừa copy xong lên C9
+5. Tạo branch develop_it_NR_No14 từ develop_it_NR (
+5. Tạo branch develop_it_NR_No11 để MK
+
+
+==================================================
+
+1. Task:
++ Fix bug 349:
+    Đang chờ unit để check
++ MK No11: 30%
+   Create DD: 50%
+   Create MK: -
+
+2. Issue: 
+ + Fix bug 349: 
+	・Chưa có unit để debug xem khi fix bug đoạn code nào gây ra lỗi. 
+    ・Chưa biết xác định như thế nào là pass/fail start up để check
+ + MK No11:
+    ・Chưa hiểu Khi response send data thiết bị ngoại vi ở RE có 2 trường hợp gọi API convert. thì check điều kiện thế nào.
+    ・Lúc gửi request nhận data thiết bị ngoại vi ở L3/rct có lưu vào table nhưng chưa tìm ra code xử lý lưu.
+
+Daily report (26/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- [CPRI_INT-349] xử lý chẩn đoán không được implement đúng
+	+ Đã pendding (do phía bên Nhật đang điều tra)
+- Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+	+ Tạo BD No 11
+
+3> Next tasks:
+- Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+4> Issue:
+- Create MK for (No 11): 
+	+ Chưa hiểu Khi response send data thiết bị ngoại vi ở RE có 2 trường hợp gọi API convert. thì check điều kiện thế nào.
+	+ Lúc gửi request re
+5> Next Actions
+- Hỏi người làm BD để hiểu thời điểm mong muốn gọi API
+- 
+6> Risk:
+- None
+
+
+issue: không có máy thật để check
+
+------------------
+
+với lại khi report lần 2 thì mọi người nên cần nhắc độ ưu tiên của task 
+và chủ động yêu cầu request OT, nếu bên kia đồng ý thì mình OT, 
+ko thì tắt máy ngủ mai làm tiếp
+
+e gửi a kết quả đọc về của các cmd sau: 
+1. rrh -ver
+2. rrh -pser 40
+3. rrh -pser 66
+4. rrh -pser 67
+
+-------------------------------
+
+QnA: BD
+- 4G thì dùng BD no25 phải ko
+- 4-1 外部装置データ送信要求受信, Không thấy response gửi message về
+
+- Đến chổ RE gửi response cho l3/rct thì sẽ gọi API convert phải không
+và opt: 応答結果 = 0：正常以外 là kết quả của cái gì vậy
+
+----------------------------
+10h ~ 11h15: NR
+11h30~ : NR
+13h: fix bug
+14h39~ : NR
+----------------------------
+
+Daily report (25/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Tạo branch develop_it_NR apply code từ it_sim_NR để làm base code NR (finsih)
+3> Next tasks:
+- Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+4> Issue:
+- Chưa hiểu xử lý lib của phần API convert nên mất thời gian điều tra lỗi khi compile
+5> Next Actions
+- Đã raise lỗi compile nhờ Huy xem nhưng đến gần chiều mới biết là do có 2 mode dùng máy thật và máy ảo.
+Nên phải update lib cho phần mode máy thật
+6> Risk:
+- None
+
+
+===============================
+
+- Tạo code base combine cho NR
+Phải tốn thời gian tìm hiểu lại vì sao lỗi bug.
+raise tình trạng bug CPRI_INT-349
+- confirm bị revert code
+
+-------------
+Cho em confirm cái này với anh.
+1. Bị Startup nên họ revert source. Lỗi hiện tại phải revert source thì ko liên quan đến bug CPRI_INT-349
+Vậy nhờ a confirm bên họ giúp Startup thế nào là OK?
+2. Tình trạng:
+CPRI_INT-349 lúc trước assign bug này thì Huy clear hết, chỉ còn thực hiện.
+Nội dung fix bug thì có 2 phần.
+Và Huy chỉ tranfer cho em để thực hiện phần Huy chưa làm.
+3. Việc điều tra chỗ Startup OK sợ sẽ mất nhiều thời gian. Và có thể là do nội dung fix bug mà Huy đã làm.
+Vậy có thể cho Huy cùng support để tìm và fix lỗi nhanh hơn ko anh?
+
+
+
+
+Vậy em confirm lại step sẽ làm anh.
+
+1. clone nhánh develop_it_no_alm
+2. Tạo branch develop_it_NR
+3. Apply phần xử lý code NR từ branch it_sim_NR_No.14(đã MK xong) vào develop_it_NR
+4. Đăng ký slot máy remote.
+5. Compile develop_it_NR
+Em đang làm No.11
+6. Tạo branch it_sim_NR_No.11 từ develop_it_NR
+
+
+
+Startup OK là gì?
+Chổ code nào startup bị lỗi?
+
+
+=============================================
+
+Daily report (24/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+  Đọc hiểu flow BD
+
+3> Next tasks:
+- Create MK for (No 11)RE AISG TILT 監視制御(NR) - RE AISG / TILT Monitoring Control (NR)
+4> Issue:
+- Chưa hiểu xử lý gửi/nhận data thiết bị ngoại vi
+5> Next Actions
+- Tìm hiểu thêm BD của No.25 để hiểu về gửi/nhận data thiết bị ngoại vi.
+6> Risk:
+- None
+
+
+===========================================
+
+Daily report (21/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Create MK for (No 14)中間装置自身の装置状態監視(NR) - Condition monitoring of the intermediate device itself (NR) (Done)
+  Đã tạo DD, code xong và update ticket nhờ người review.
+
+3> Next tasks:
+- Cần add thêm task
+
+4> Issue:
+- None
+5> Next Actions
+- None
+6> Risk:
+- None
+
+
+
+================================================
+
+Daily report (20/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- [CPRI_INT-353] Tạo macro khởi tạo eeprom (phiên bản 0.2) (Close)
+  + Tìm hiểu source fix bug
+- Create MK for (No 14)中間装置自身の装置状態監視(NR) - Condition monitoring of the intermediate device itself (NR)
+  + Create DD
+  
+3> Next tasks:
+- Create MK for (No 14)中間装置自身の装置状態監視(NR) - Condition monitoring of the intermediate device itself (NR)
+
+4> Issue:
+- None
+5> Next Actions
+- None
+6> Risk:
+- None
+
+
+
+[CPRI_INT-353] Tạo macro khởi tạo eeprom (phiên bản 0.2)
+
+[CPRI_INT-309] Làm sao cho chạy được những function chính thức bị tồn động
+
+==================================
+Daily report (19/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- [CPRI_INT-349] xử lý chẩn đoán không được implement đúng (90%)
+
+- [CPRI_INT-379] BDE-EXリンク未確立だがL1断のFaultが設定されていない (50%)
+  
+- [CPRI_INT-309] Làm sao cho chạy được những function chính thức bị tồn động (pending)
+	create branch chứa nội dung code đã điều tra đối với sfp
+
+3> Next tasks:
+- Create MK for (No 14)中間装置自身の装置状態監視(NR) - Condition monitoring of the intermediate device itself (NR)
+
+4> Issue:
+- Chưa clear hết nội dung yêu cầu của ticket [CPRI_INT-379]
+5> Next Actions
+- Put vào ticket nội dung đã làm và confirm nội dung cần làm thêm
+6> Risk:
+- None
+
+
+-----------------
+
+
+
+
+No 349
+
+tạo  branch merge source
+
+
+
+==================================
+
+những bug anh em đã code xong đang chờ hw để test thì ae push vào ticket
+
+1. Phần source code: patch hoặc commit id
+2. Cách test:
+	Chạy 1 unit hay 3 unit
+	File sử dụng trong test
+		-	Scenario nào
+		- 	Có file nào khác không?
+3. Kết quả mong muốn là gì?
+
+p/s: Mô tả càng chi tiết càng tôt
+
+để nhờ bên kia test nhé
+
+
+
+
+
+
+==================================
+
+Daily report (18/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request.
+  + Đặt log debug tìm lỗi xử lý của BPF_HM_DEVC_SFP_READ_EX nhưng run test chưa được
+  + Đọc hiểu code sử lý SFP
+
+3> Next tasks:
+- [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request
+
+4> Issue:
+- Board đang bị lỗi nên không run được trên máy thật.
+5> Next Actions
+- None
+6> Risk:
+- None
+
+
+1. Chạy nhánh develop_it_no_alm
+2. check rrh -pser 40, nếu giá trị trả về là 13 thì phải set thành 10 bằng cmd: rrh -psew 40 10
+3. run
+
+
+
+===============================
+
+Daily report (17/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request.
+Xác định là lỗi do khi xử lý hàm read buffer thay bằng API BPF_HM_DEVC_SFP_READ_EX.
+Cần run flash source trên máy thật để kiểm line bị lỗi trong hàm BPF_HM_DEVC_SFP_READ_EX.
+
+3> Next tasks:
+- [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request
+
+4> Issue:
+- Flash rất lâu không biết bị vấn đề gì.
+5> Next Actions
+- Reset unit và flash lại.
+6> Risk:
+- None
+
+
+
+--------------------
+Hôm qua Dương có commit cho bug 299
+
+fce95ad0da9e90f1c48010ca5ec2c4ec5c29763b
+
+phần sfp này có 4 bug liên quan
+
+261,299,322 và 309
+
+Dũng vào check lại phần 299 mà Dương commit
+
+
+
+
+Check source sfp theo API new
+
+=================================
+
+Daily report (14/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request (70%)
+
+3> Next tasks:
+- [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request
+- Create MK for (No 14)中間装置自身の装置状態監視(NR)
+4> Issue:
+- chạy command debug kết quả chỉ có Port2 SFP+(BDE) có thông tin SFP.
+5> Next Actions
+- OT check lại code để tìm nguyên nhân
+6> Risk:
+- None
+
+---------------------------
+I. Progress: 70%
+II. Đã hoàn thành:
+	1. Update file sử dụng sfp: 4 file
+		\cpri-int\cpri-int\soft\src\pf\ft_sfp\sfp\src\f_sfp_main.c
+		\cpri-int\cpri-int\soft\src\tools\debug\src\f_cmd_sfp_info.c
+		\cpri-int\cpri-int\soft\src\pf\pf_fhm\ft_cpr\cpr\src\f_cpr_CpriStatistMain.c
+		\cpri-int\cpri-int\soft\src\pf\pf_fhm\ft_cpr\cpr\src\f_cpr_sfp_log.c
+III. Công việc còn lại:	
+	1. Kiểm tra code command debug để test
+	2. Run test máy thật
+IV. Issue:
+	None
+	
+V. Dự kiến ngày hoàn thành: 20210514
+-------------------------
+I. Progress: vd 50%
+II. Đã hoàn thành:
+	1. Update file sử dụng sfp: 2 file
+		\cpri-int\cpri-int\soft\src\pf\ft_sfp\sfp\src\f_sfp_main.c
+		\cpri-int\cpri-int\soft\src\tools\debug\src\f_cmd_sfp_info.c
+III. Công việc còn lại:
+	1. Update file sử dụng sfp: 5 file (5 file này đang có issue)
+		\cpri-int\cpri-int\soft\dunit\ct_bpf\ct_hal.c
+		\cpri-int\cpri-int\soft\src\mw\hal\HM\devc\lib_qemu\BPF_HM_DEVC_QEMU.c
+		\cpri-int\cpri-int\soft\src\pf\pf_fhm\ft_cpr\cpr\src\f_cpr_CpriStatistMain.c
+		\cpri-int\cpri-int\soft\src\pf\pf_fhm\ft_cpr\cpr\src\f_cpr_sfp_log.c
+		\cpri-int\cpri-int\soft\src\tools\tp\rrh\rrhlib\CT\dum_BPF_HM_DEVC_SFP_READ.c
+	2. Kiểm tra code command debug để test
+	3. Run test máy thật
+IV. Issue:
+	1. \cpri-int\cpri-int\soft\dunit\ct_bpf\ct_hal.c
+		Chưa hiểu mục đích của file này và có cần phải add thêm define BPF_HM_DEVC_SFP_READ_EX, BPF_HM_DEVC_SFP_WRITE_EX
+	2. \cpri-int\cpri-int\soft\src\mw\hal\HM\devc\lib_qemu\BPF_HM_DEVC_QEMU.c
+		Trong file này tự define function BPF_HM_DEVC_SFP_READ, BPF_HM_DEVC_SFP_WRITE và sử dụng nên không biết sửa thế nào.
+	3. \cpri-int\cpri-int\soft\src\pf\pf_fhm\ft_cpr\cpr\src\f_cpr_CpriStatistMain.c
+	   \cpri-int\cpri-int\soft\src\pf\pf_fhm\ft_cpr\cpr\src\f_cpr_sfp_log.c
+	   Sử dụng ở FHM, chưa biết cách get port i2c để truyền parameter vào BPF_HM_DEVC_SFP_READ_EX (đang tìm hiểu code để get i2c port)
+	   
+	4. \cpri-int\cpri-int\soft\src\tools\tp\rrh\rrhlib\CT\dum_BPF_HM_DEVC_SFP_READ.c
+	   Trong file này tự define function BPF_HM_DEVC_SFP_READ, BPF_HM_DEVC_SFP_WRITE và sử dụng nên không biết sửa thế nào.
+	
+V. Dự kiến ngày hoàn thành: 20210517
+
+
+
+
+---------------------
+D:\CodeClone\develop_it_Backlog\cpri-int\cpri-int\soft\dunit\ct_bpf\ct_hal.c
+D:\CodeClone\develop_it_Backlog\cpri-int\cpri-int\soft\src\mw\hal\HM\devc\lib_qemu\BPF_HM_DEVC_QEMU.c
+-> co the la in log
+
+
+D:\CodeClone\develop_it_Backlog\cpri-int\cpri-int\soft\src\pf\ft_sfp\sfp\src\f_sfp_main.c
+D:\CodeClone\develop_it_Backlog\cpri-int\cpri-int\soft\src\tools\debug\src\f_cmd_sfp_info.c
+-> OK
+D:\CodeClone\develop_it_Backlog\cpri-int\cpri-int\soft\src\pf\pf_fhm\ft_cpr\cpr\src\f_cpr_CpriStatistMain.c
+D:\CodeClone\develop_it_Backlog\cpri-int\cpri-int\soft\src\pf\pf_fhm\ft_cpr\cpr\src\f_cpr_sfp_log.c
+-> Chua biet cach check port để gọi hàm buffer
+
+Tìm hiểu sửa file log
+
+
+D:\CodeClone\develop_it_Backlog\cpri-int\cpri-int\soft\src\tools\tp\rrh\rrhlib\CT\dum_BPF_HM_DEVC_SFP_READ.c
+Không biết có cần sửa ko?
+
+------------------------
+cpri-int\soft\dunit\ct_bpf\ct_hal.c
+cpri-int\soft\src\mw\hal\HM\devc\lib_qemu\BPF_HM_DEVC_QEMU.c
+cpri-int\soft\src\pf\pf_fhm\ft_cpr\cpr\src\f_cpr_CpriStatistMain.c
+cpri-int\soft\src\pf\pf_fhm\ft_cpr\cpr\src\f_cpr_sfp_log.c
+
+cpri-int\soft\src\tools\debug\src\f_cmd_sfp_info.c
+cpri-int\soft\src\tools\tp\rrh\rrhlib\CT\dum_BPF_HM_DEVC_SFP_READ.c
+--------------
+
+issue:
+	+ Phải tìm hiểu xử lý check port, i2c để truyền paramter cho function
+	+ Vẫn chưa hiểu rõ đoạn check mount
+
+File đã sửa
+D:\CodeClone\develop_it_Backlog\cpri-int\cpri-int\soft\src\pf\ft_sfp\sfp\src\f_sfp_main.c
+	+ f_sfp_read
+
+==========================================
+
+Daily report (13/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Create MK for (No 14)中間装置自身の装置状態監視(NR) (60%)
+- [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request
+   + Tìm hiểu code debug command xuất thông tin cho SFP.
+   + Confirm edit API theo follow mới
+- Meeting 30p
+
+3> Next tasks:
+- [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request
+4> Issue:
+- None
+5> Next Actions
+- None
+6> Risk:
+- None
+
+
+-------------------------------
+@Huynh Dạ. vậy em confirm lại cách làm thế này phải ko anh.
++ Code sử dụng hàm củ BPF_HM_DEVC_SFP_READ thì thay bằng sử dụng hàm mới BPF_HM_DEVC_SFP_READ_EX
+
++ stub hàm BPF_HM_DEVC_SFP_WRITE_EX
+
++ Code sử dụng BPF_HM_DEVC_SFP_WRITE thì thay bằng sử dụng BPF_HM_DEVC_SFP_WRITE_EX
+
++ Xóa hàm BPF_HM_DEVC_SFP_READ, BPF_HM_DEVC_SFP_WRITE củ không sử dụng
+--------------------------------
+
+2h30: tìm thông tin sfp
+
+30p meeting dev
+
+==============================================
+Daily report (12/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Create MK for (No 14)中間装置自身の装置状態監視(NR) (50%)
+  + Nghiên cứu cách tạo API sử dung cho NR dựa theo No.5
+  + Đã tạo API, đang tìm chổ để thêm code gọi API
+  
+3> Next tasks:
+- Create MK for (No 14)中間装置自身の装置状態監視(NR) 
+4> Issue:
+- None
+5> Next Actions
+- None
+6> Risk:
+- None
+
+
+
+-----------------
+file đã sửa:
+/home/user/develop/it_sim_NR_No.14/artiza-5g-project/cpri-int/soft/src/cmn/cnv/inc/f_cmn_cnv_inc.h
+->OK
+/home/user/develop/it_sim_NR_No.14/artiza-5g-project/cpri-int/soft/src/cmn/cnv/src/f_cmn_cnv_functions.c
+-> OK
+/home/user/develop/it_sim_NR_No.14/artiza-5g-project/cpri-int/soft/src/sys/inc/f_rrh_def.h
+-> OK
+/home/user/develop/it_sim_NR_No.14/artiza-5g-project/cpri-int/soft/src/cmn/cnv/src/f_cmn_cnv_main.c
+-> OK
+/home/user/develop/gitNo14/artiza-5g-project/cpri-int/soft/src/pf/l3/rct/src/m_rc_ReCntMain.c
+
+=========================
+
+Tam  giờ em làm tiếp task NR Create MK for (No 14). có task nào ưu tiên hơn anh assign cho em với nhé.
+-----------------------------------
+
+
+
+Daily report (11/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+
+- [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request (90%)
+ + Fix xử lý i2c của SFP (BDE/BDE-EX/RE)
+ + build run máy thật
+
+- ［CPRI_INT-322］SFP +, SFP28 Không thể phát hiện ON/OFF đầu ra nguồn (cancel vì bị assign lại cho bên Nhật)
+ + Study requirement
+   
+3> Next tasks:
+- Create MK for (No 14)中間装置自身の装置状態監視(NR) 
+
+4> Issue:
+- None
+
+5> Next Actions
+- None
+6> Risk:
+- None
+
+
+
+-----------------------
+
+D:\CodeClone\develop_it_Backlog\cpri-int\cpri-int\soft\src\sys\inc_mw\BPF_HM_DEVC.h
+D:\CodeClone\develop_it_Backlog\cpri-int\cpri-int\soft\src\mw\hal\HM\devc\lib\bpf_hm_devc_com.c
+D:\CodeClone\develop_it_Backlog\cpri-int\cpri-int\soft\src\mw\hal\HM\devc\lib\BPF_HM_DEVC_SFP_READ.c
+D:\CodeClone\develop_it_Backlog\cpri-int\cpri-int\soft\src\pf\ft_sfp\sfp\src\f_sfp_main.c
+
+
+\cpri-int\cpri-int\soft\src\sys\inc_mw\BPF_HM_DEVC.h
+\cpri-int\cpri-int\soft\src\mw\hal\HM\devc\lib\bpf_hm_devc_com.c
+\cpri-int\cpri-int\soft\src\mw\hal\HM\devc\lib\BPF_HM_DEVC_SFP_READ.c
+\cpri-int\cpri-int\soft\src\pf\ft_sfp\sfp\src\f_sfp_main.c
+
+- fix code Dương để chạy được trên máy thật
+- confirm nội dung ticket, quy trình fix bug
+
+---------------------------------------------------
+1. Ticket [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request
+https://redmine.cloud9-solutions.com/issues/38785
+Trong ticket người ta chỉ nói đến BPF_HM_DEVC_SFP_READ_EX.
+Điều tra sfp thì chỉ trong này : pf\ft_sfp\sfp\src\f_sfp_main.c
+nhưng BPF_HM_DEVC_SFP_READ_EX không được sử dụng trong f_sfp_main.c.
+
+Dương thì có code thêm i2c 2, 3, 4 liên quan đến BPF_HM_DEVC_SFP_READ.
+Không biết 2 cái này có liên quan đến nhau không.
+-> cái Dương đã sửa thì chưa chạy được trên máy thật do lỗi base Addr
+
+2. Cách test cho ticket này chưa biết thế nào.
+Như hôm qua anh nói thì chỉ cần fix chạy test rồi gửi log confirm phải không ạ?
+
+
+3. Quy trình trình nhận ticket -> đến release bug đối với source trên backlog phải thế này không ạ.
+   + Nhận ticket
+   + clone source develop_id tren backlog
+   + fix bug
+   + tạo patch file -> gửi a Tâm để merge develop_id
+   + close ticket
+   
+4. ［CPRI_INT-322］SFP +, SFP28 Không thể phát hiện ON/OFF đầu ra nguồn
+Ticket https://redmine.cloud9-solutions.com/issues/38903
+Em chưa hiểu rõ ý đồ người ta muốn mình làm gì
+
+==========================================
+OT: 2h (tự OT cover để build chạy test trên máy thật)
+
+Daily report (10/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- confirm, tìm hiểu update scenario case 1-11-30-1, 1-11-31-1 để re-test.
+
+- Setup tool run test trên máy thật và tìm hiểu cách build flash run trên máy thật.
+
+- [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request (70%)
+Đợi build, run trên máy thật
+
+- ［CPRI_INT-322］SFP +, SFP28 Không thể phát hiện ON/OFF đầu ra nguồn
+ + Nghiên cứu ticket và source. 
+   
+3> Next tasks:
+- [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request
+- ［CPRI_INT-322］SFP +, SFP28 Không thể phát hiện ON/OFF đầu ra nguồn
+4> Issue:
+- remote Máy PC5 không truy cập được, remote PC6 bị màng hình nhỏ không thể làm việc
+
+- ［CPRI_INT-322］SFP +, SFP28 Không thể phát hiện ON/OFF đầu ra nguồn
+  + Chưa hiểu rõ nội dung ticket yêu cầu nên cần confirm lại. 
+  (Đang hiểu là cần chạy test, double check lại code hiện tại)
+
+5> Next Actions
+- OT để tìm cách sửa màn hình remote PC6 hoặc cần người support để sửa màn hình máy remote PC6
+- Cần người giải thích rõ hơn về yêu cầu của ［CPRI_INT-322］
+6> Risk:
+- None
+
+-----------------------
+15h30 : task 2
+-----------------------
+pass:
+it@sim@real
+
+
+- re-test 2 case.
+Vì sửa lại scenario nên mất thời gian
+
+- confirm nội dung điều tra 
+[CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request
+
+=================================
+
+Daily report (07/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- IT Test: 4 case 
+    1-6-15-1	~	1-6-18-1
+
+- [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request
+Theo như mô tả trong file CPRI中間装置HWInfoVersion.xlsx, row 13, 14, 15 đang mô tả slave address là 0x50, 0x51
+Vì vậy file BPF_HM_DEVC_SFP_READ.c line 493, 496 sửa lại giá trị slave address là 0x50, 0x51 
+Sau khi sửa cần test thử xem có lỗi nào khác không
+
+Theo như mô tả trong file CPRI中間装置HWInfoVersion.xlsx, row 13, 14, 15 đang mô tả slave address là 0x50, 0x51.
+Vì vậy, cần sửa lại giá trị slave address là 0x50, 0x51 ở file BPF_HM_DEVC_SFP_READ.c line 493, 496.
+Test kiểm tra kết quả sau khi sửa để detect mức độ ảnh hưởng.
+
+- Support Triết run test
+   
+3> Next tasks:
+- None
+4> Issue:
+- None
+5> Next Actions
+- None
+6> Risk:
+- None
+
+
+9h18: test case 1-6-15-1~1-6-18-1
+~9h45: support Triết run test file scenario bị lỗi.
+~13h55: điều tra thực hiện test theo feedback của ónite
+
+=================================================
+
+Daily report (06/05/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+
+- Điều tra, đọc BD, re-test feedback case 1-22-9-1
+- [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request
+Dự đoán nguyên nhân do hàm f_sfp_read không được gọi nên đang điều tra.
+Sử dụng case 1-22-9-1 để test, Trong file f_sfp_main.c, Line 792, biến f_sfpw_reg_sfpsta luôn nhận giá trị thanh ghi là 0 nên hàm f_sfp_read không được gọi.
+    
+3> Next tasks:
+- [CPRI_INT-299] Access SFP thông qua PL　Đối ứng change request
+
+4> Issue:
+- Chưa biết cách để biến f_sfpw_reg_sfpsta có giá trị khác 0
+
+5> Next Actions
+- Nhờ Hiệp support để hiểu xử lý code
+6> Risk:
+- None
+
+
+
+- Điều tra, đọc BD của 1-22-9-1
+- Điều tra SFP (9h14~...)
+- Note time sheet
+
+---------------------------------
+anh Tâm ơi. cho em hỏi.
+1/ SFP đang lỗi là không phát hiện việc kết nối SFP ở REC nên cần điều tra nguyên nhân phải không ạ?
+2/ Code theo mô tả trong ticket thì xử lý ở file BPF_HM_DEVC_SFP_READ.c.
+Nhưng trong file này không có hàm BPF_HM_DEVC_SFP_READ_EX chỉ có 2 hàm BPF_HM_DEVC_SFP_READ, BPF_HM_DEVC_SFP_READ_BUFFER
+3/ Mình có thể làm gì để debug kiểm tra được không anh? 
+Em thử thêm code printf vào 2 function BPF_HM_DEVC_SFP_READ, BPF_HM_DEVC_SFP_READ_BUFFER, nhưng 2 hàm này không được gọi
+
+
+===============================================================
+
+Daily report (29/04/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Re-Test: 1tc
+	[BUG IT (Sim)] CPRI_1-21-2-1
+- Create MK no.14
+
+3> Next tasks:
+- Create MK no.14
+
+4> Issue:
+- Chưa hiểu rõ cách làm hàm convert API, cần người sharing hướng dẫn cách tìm vị trí để làm cho nhanh.
+5> Next Actions
+- None
+6> Risk:
+- None
+
+
+
+--------->
+re-test:
+[BUG IT (Sim)] CPRI_1-21-2-1
+
+
+- update file *.dat vào *.dat trên server
+- confirm bug 1-22-9-1, 1-6-15-1~1-6-18-1
+- Log time work redmine
+- Hoàn thành đánh giá performent
+
+==================================================
+
+Daily report (28/04/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Re-Test: 2tc
+	[BUG IT (Sim)] CPRI_1-4-1-1
+	CPRI_INT-91 IT Testcase 1-2-1-1
+- Test IT test case 1-6-15-1 ~ 1-6-18-1
+- Hướng dẫn Ngọc, Triết cách chạy và cách phán định các testcase Pass/Fail
+
+3> Next tasks:
+- Hướng dẫn Ngọc, Triết cách chạy và cách phán định các testcase Pass/Fail.
+- Cần assign thêm task
+
+4> Issue:
+- Test case 1-6-15-1: Sau khi điều tra, thực hiện theo hướng dẫn của onsite thì đang đợi anh Hùng confirm về kết quả run có phải fail không.
+5> Next Actions
+- None
+6> Risk:
+- None
+
+
+----------------------------------------------------
+/home/user/develop/3-23/cpri-int/soft/src/pf/ft_eqs/eqs/src/f_eqs_Common_proc.c
+/home/user/develop/3-23/cpri-int/soft/src/pf/pf_fhm/ft_rsv/rsv/src/f_rsv_Wave.c
+
+
+- Re-Test: 1tc
+	[BUG IT (Sim)] CPRI_1-4-1-1
+
+
+
+
+========================================================
+[BUG IT (Sim)] CPRI_1-15-7-1
+15h57p30s
+
+Daily report (27/04/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Re-Test: 1tc
+	[BUG IT (Sim)] CPRI_1-15-7-1
+	[BUG IT (Sim)] CPRI_1-11-33-1
+- Re-test file scenario tổng hợp
+- Test IT test case 1-6-15-1 ~ 1-6-18-1
+- Build code, run test kiểm tra lỗi socket error
+
+3> Next tasks:
+- Test IT test case 1-6-15-1 ~ 1-6-18-1
+
+4> Issue:
+-  Test case 1-6-15-1 ~ 1-6-18-1 Vẫn chưa biết rõ cách xác nhận kết quả test là pass/fail. 
+5> Next Actions
+- None
+6> Risk:
+- None
+
+=====================================
+
+Daily report (26/04/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Re-Test: 4tc
+	[BUG IT (Sim)] CPRI_1-11-17-1
+	[BUG IT (Sim)] CPRI_1-11-19-1
+	[BUG IT (Sim)] CPRI_1-11-20-1
+	[BUG IT (Sim)] CPRI_1-19-9-1
+- Re-test No27
+- Tìm hiểu tool CPRI-MT để fix lỗi file log bị lỗi font
+
+3> Next tasks:
+-  Re-test No27
+-  Test IT test case 1-6-15-1 ~ 1-6-18-1
+
+4> Issue:
+- File scenario No27 không load được do khai báo tên send_msg, rcv_msg bị trùng phải mất thời gian sửa lại tên biến. 
+5> Next Actions
+- None
+6> Risk:
+- None
+
+=============================
+[BUG IT (Sim)] CPRI_1-11-17-1
+[BUG IT (Sim)] CPRI_1-11-19-1
+[BUG IT (Sim)] CPRI_1-11-20-1
+
+============================================================================
+Daily report (23/04/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Re-Test: 1tc
+	[BUG IT (Sim)] CPRI_1-3-27-1
+- Fix bug:
+	[BUG IT (Sim)] CPRI_1-19-9-1 (90%)
+- Code IQ signals (70%)
+- Meeting
+
+3> Next tasks:
+-  Code IQ signals
+4> Issue:
+- Case CPRI_1-19-9-1 chưa phán định được kết quả pass/fail nên đã assign lại cho anh Hùng confirm.
+- Task code IQ signals đã tạo table thông tin mã lỗi để check và cần chạy test thử debug để kiểm tra lại.
+5> Next Actions
+- None
+6> Risk:
+- None
+
+
+---------------------------------------
+1. thêm thông tin để add backlog
+CPRI_INT-104
+
+re-test
+[BUG IT (Sim)] CPRI_1-3-27-1
+
+Tranfer iq signal từ Hiệp
+========================================================
+Daily report (21/04/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Re-Test: 8tc
+
+	[BUG IT (Sim)] CPRI_1-15-6-1  -> OK
+	[BUG IT (Sim)] CPRI_1-11-23-1 -> OK
+	[BUG IT (Sim)] CPRI_1-11-22-1 -> OK
+	[BUG IT (Sim)] CPRI_1-21-6-1  -> OK
+	[BUG IT (Sim)] CPRI_1-22-6-1  -> NG
+	[BUG IT (Sim)] CPRI_1-11-17-1 -> OK
+	[BUG IT (Sim)] CPRI_1-11-19-1 -> OK
+	[BUG IT (Sim)] CPRI_1-11-20-1 -> OK
+- Meeting
+- Log QnA and feedback QnA
+- Fix bug:
+	[BUG IT (Sim)] CPRI_1-19-6-1 (90%)
+
+3> Next tasks:
+- 
+4> Issue:
+- QA #38414: item struct trong file scenario chưa được define trong file *.dat và source code nên không thể load file scenario vào tool để run
+
+5> Next Actions
+- QA #38414: đã nhờ anh Hùng đã QnA cho onsite về item cần thiết trong scenario
+- Fix bug:
+	[BUG IT (Sim)] CPRI_1-19-9-1
+
+6> Risk:
+- None
+
+
+-------------------------------------
+
+Dear anh Hùng,
+
+Em re-test trên it_sim OK rồi.
+Nhờ anh check rồi release giúp.
+
+Thanks,
+Dũng
+
+
+[BUG IT (Sim)] CPRI_1-15-6-1
+[BUG IT (Sim)] CPRI_1-11-23-1
+[BUG IT (Sim)] CPRI_1-11-22-1
+[BUG IT (Sim)] CPRI_1-21-6-1 
+[BUG IT (Sim)] CPRI_1-22-6-1  -> NG
+[BUG IT (Sim)] CPRI_1-11-17-1
+[BUG IT (Sim)] CPRI_1-11-19-1
+[BUG IT (Sim)] CPRI_1-11-20-1
+
+[BUG IT (Sim)] CPRI_1-11-10-1
+	phải thêm item vào file *.dat
+
+- Test: 1-6-15 ~ 1-6-18
+    13h15 ~ 13h53: confirm viết QA
+	15h05 ~ 15h27: confirm feedback lại QA
+	15h40 ~ 15h45: xác nhận QA
+re-test:
+	14h17: fix bug
+
+
+	
+	
+
+
+
+
+
+======================================================================
+
+Daily report (20/04/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Re-Test: 4tc
+
+	[BUG IT (Sim)] CPRI_1-5-5-1
+	[BUG IT (Sim)] CPRI_1-19-7-1
+	[BUG IT (Sim)] CPRI_1-22-9-1
+	[BUG IT (Sim)] CPRI_1-21-3-1
+- Meeting: 45p
+- Create scenario for testcase 1-6-15-1~1-6-18-1
+
+3> Next tasks:
+- create scenario testcase 1-6-15-1~1-6-18-1
+4> Issue:
+- Chưa biết sử dụng thuộc tính nào để xác nhận cancel carrier, TRX release không thể thực hiện
+5> Next Actions
+- Đã request nhờ support anh Hùng nhưng chưa thấy trả lời.
+Nhờ Toàn support thêm để tạo scenario.
+
+6> Risk:
+- None
+
+
+[BUG IT (Sim)] CPRI_1-5-5-1
+[BUG IT (Sim)] CPRI_1-22-9-1
+CPRI_INT-92 IT Testcase 1-3-2-1
+CPRI_INT-92 IT Testcase 1-3-23-1
+CPRI_INT-92 IT Testcase 1-3-26-1
+
+
+----------------------
+issue:
+	QA chỉ trả lời trình tự thực hiện, nội dung xác nhận.
+	=> phải nghiên cứu làm scenario và kiểm tra kết quả test
+
+==============================================
+
+Daily report (19/04/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Re-Test: 13tc
+
+[BUG IT (Sim)] CPRI_1-5-5-1
+[BUG IT (Sim)] CPRI_1-6-14-1
+[BUG IT (Sim)] CPRI_1-19-11-1
+[BUG IT (Sim)] CPRI_1-19-10-1
+[BUG IT (Sim)] CPRI_1-19-6-1
+[BUG IT (Sim)] CPRI_1-19-4-1
+[BUG IT (Sim)] CPRI_1-9-14-1
+[BUG IT (Sim)] CPRI_1-7-16-1
+[BUG IT (Sim)] CPRI_1-7-14-1
+[BUG IT (Sim)] CPRI_1-7-13-1
+[BUG IT (Sim)] CPRI_1-7-12-1
+[BUG IT (Sim)] CPRI_1-3-29-1
+[BUG IT (Sim)] CPRI_1-1-16-1
+
+
+3> Next tasks:
+- Re-Test
+4> Issue:
+- None
+5> Next Actions
+- Task còn lai: Hiện còn 4 case re-test đang assign nên sẽ OT để làm xong:
+	[BUG IT (Sim)] CPRI_1-5-5-1
+	[BUG IT (Sim)] CPRI_1-19-7-1
+	[BUG IT (Sim)] CPRI_1-22-9-1
+	[BUG IT (Sim)] CPRI_1-21-3-1
+
+6> Risk:
+- None
+
+-----------------------------------
+Dear anh Hùng,
+
+Em re-test trên it_sim OK rồi.
+Nhờ anh check rồi release giúp.
+
+Thanks,
+Dũng
+
+retest:
+	[BUG IT (Sim)] CPRI_1-5-5-1
+	[BUG IT (Sim)] CPRI_1-6-14-1
+	[BUG IT (Sim)] CPRI_1-19-11-1
+	[BUG IT (Sim)] CPRI_1-19-10-1
+	[BUG IT (Sim)] CPRI_1-19-6-1
+	[BUG IT (Sim)] CPRI_1-19-4-1
+	[BUG IT (Sim)] CPRI_1-9-14-1
+	[BUG IT (Sim)] CPRI_1-7-16-1
+	[BUG IT (Sim)] CPRI_1-7-14-1
+	[BUG IT (Sim)] CPRI_1-7-13-1
+	[BUG IT (Sim)] CPRI_1-7-12-1
+	[BUG IT (Sim)] CPRI_1-3-29-1
+ 	[BUG IT (Sim)] CPRI_1-1-16-1
+ 
+ 
+***udpate nội dung log bug theo format mới nhất
+
+
+==========================================
+Daily report (16/04/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Re-Test: 19tc
+
+[BUG IT (Sim)] CPRI_1-3-4-1
+[BUG IT (Sim)] CPRI_1-3-3-1
+[BUG IT (Sim)] CPRI_1-3-12-1
+[BUG IT (Sim)] CPRI_1-3-11-1
+[BUG IT (Sim)] CPRI_1-3-10-1
+[BUG IT (Sim)] CPRI_1-13-4-1
+[BUG IT (Sim)] CPRI_1-13-3-1
+[BUG IT (Sim)] CPRI_1-13-2-1
+[BUG IT (Sim)] CPRI_1-13-1-1
+[BUG IT (Sim)] CPRI_1-3-44-1
+[BUG IT (Sim)] CPRI_1-3-30-1
+[BUG IT (Sim)] CPRI_1-21-58-1
+[BUG IT (Sim)] CPRI_1-3-42-1
+[BUG IT (Sim)] CPRI_1-3-43-1
+[BUG IT (Sim)] CPRI_1-19-5-1
+[BUG IT (Sim)] CPRI_1-1-16-1
+[BUG IT (Sim)] CPRI_1-3-23-1
+[BUG IT (Sim)] CPRI_1-3-26-1
+[BUG IT (Sim)] CPRI_1-3-1-1
+
+- Meeting: 45p
+
+3> Next tasks:
+- Re-Test
+
+4> Issue:
+- None
+5> Next Actions
+- None 
+6> Risk:
+- None
+
+------------------------------------
+
+45p
+
+Dear anh Hùng,
+
+Em re-test trên it_sim OK rồi.
+Nhờ anh check rồi release giúp.
+
+Thanks,
+Dũng
+
+
+
+test
+
+[BUG IT (Sim)] CPRI_1-3-4-1
+[BUG IT (Sim)] CPRI_1-3-3-1
+[BUG IT (Sim)] CPRI_1-3-12-1
+[BUG IT (Sim)] CPRI_1-3-11-1
+[BUG IT (Sim)] CPRI_1-3-10-1
+[BUG IT (Sim)] CPRI_1-13-4-1
+[BUG IT (Sim)] CPRI_1-13-3-1
+[BUG IT (Sim)] CPRI_1-13-2-1
+[BUG IT (Sim)] CPRI_1-13-1-1
+[BUG IT (Sim)] CPRI_1-3-44-1
+
+[BUG IT (Sim)] CPRI_1-3-30-1
+[BUG IT (Sim)] CPRI_1-21-58-1
+[BUG IT (Sim)] CPRI_1-3-42-1
+[BUG IT (Sim)] CPRI_1-3-43-1
+
+[BUG IT (Sim)] CPRI_1-19-5-1
+
+feedback:
+[BUG IT (Sim)] CPRI_1-1-16-1
+[BUG IT (Sim)] CPRI_1-3-23-1
+[BUG IT (Sim)] CPRI_1-3-26-1
+
+
+cancel cần update lại file 006-001
+[BUG IT (Sim)] CPRI_1-3-1-1
+
+
+issue:
+
+phán định lại những case Triết đã test nhưng kết quả ko pass so với lần chạy trên branch.
+nên cần confirm là source code của Triết có mới ko. Hay người fix bug merge code lỗi.
+
+==================================================================================================================
+
+Em count số test case re-test đang assign: 22 tc
+ + 6 case: đánh giá lại kết quả là pass/fail. (vì Triết đã chạy)
+ + 16 case: re-test
+
+
+
+Daily report (15/04/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Re-Test: 24tc
+
+[BUG IT (Sim)] CPRI_1-4-4-1
+[BUG IT (Sim)] CPRI_1-4-5-1
+[BUG IT (Sim)] CPRI_1-11-15-1
+[BUG IT (Sim)] CPRI_1-7-17-1
+[BUG IT (Sim)] CPRI_1-7-18-1
+[BUG IT (Sim)] CPRI_1-7-19-1
+[BUG IT (Sim)] CPRI_1-3-9-1
+[BUG IT (Sim)] CPRI_1-3-5-1
+[BUG IT (Sim)] CPRI_1-3-8-1
+[BUG IT (Sim)] CPRI_1-6-1-1
+[BUG IT (Sim)] CPRI_1-3-43-1
+[BUG IT (Sim)] CPRI_1-3-30-1
+[BUG IT (Sim)] CPRI_1-13-1-1
+[BUG IT (Sim)] CPRI_1-13-2-1
+[BUG IT (Sim)] CPRI_1-13-3-1
+[BUG IT (Sim)] CPRI_1-13-4-1
+[BUG IT (Sim)] CPRI_1-21-55-1
+[BUG IT (Sim)] CPRI_1-11-20-1
+[BUG IT (Sim)] CPRI_1-11-19-1
+[BUG IT (Sim)] CPRI_1-21-17-1
+[BUG IT (Sim)] CPRI_1-21-16-1
+[BUG IT (Sim)] CPRI_1-15-2-1
+[BUG IT (Sim)] CPRI_1-8-9-1
+[BUG IT (Sim)] CPRI_1-8-5-1
+
+- call tranfer cách re-test cho Triết.
+
+3> Next tasks:
+- Re-Test
+- Confirm testcase NG/OK mà Triết đã test(Vì Triết re-test nhưng có 1 số case chưa biết được được NG/OK)
+
+4> Issue:
+- None
+
+5> Next Actions
+- None 
+6> Risk:
+- None
+
+----------------------------
+Dear anh Hùng,
+
+Em re-test trên it_sim OK rồi.
+Nhờ anh check rồi release giúp.
+
+Thanks,
+Dũng
+
+feedback:
+[BUG IT (Sim)] CPRI_1-3-5-1
+
+re-test:
+[BUG IT (Sim)] CPRI_1-4-4-1
+[BUG IT (Sim)] CPRI_1-4-5-1
+[BUG IT (Sim)] CPRI_1-11-15-1
+[BUG IT (Sim)] CPRI_1-7-17-1
+[BUG IT (Sim)] CPRI_1-7-18-1
+[BUG IT (Sim)] CPRI_1-7-19-1
+
+
+---
+old:
+[BUG IT (Sim)] CPRI_1-3-9-1
+[BUG IT (Sim)] CPRI_1-3-5-1
+[BUG IT (Sim)] CPRI_1-3-8-1
+[BUG IT (Sim)] CPRI_1-6-1-1
+
+- retest merge:
+[BUG IT (Sim)] CPRI_1-3-43-1
+[BUG IT (Sim)] CPRI_1-3-30-1
+[BUG IT (Sim)] CPRI_1-13-1-1
+[BUG IT (Sim)] CPRI_1-13-2-1
+[BUG IT (Sim)] CPRI_1-13-3-1
+[BUG IT (Sim)] CPRI_1-13-4-1
+
+[BUG IT (Sim)] CPRI_1-21-55-1
+[BUG IT (Sim)] CPRI_1-11-20-1
+[BUG IT (Sim)] CPRI_1-11-19-1
+[BUG IT (Sim)] CPRI_1-21-17-1
+[BUG IT (Sim)] CPRI_1-21-16-1
+[BUG IT (Sim)] CPRI_1-15-2-1
+[BUG IT (Sim)] CPRI_1-8-9-1
+[BUG IT (Sim)] CPRI_1-8-5-1
+
+
+issue:
+ build cos van def 1-9-3-1 may khac ok nhung not ok
+ một số nhánh update trên it_sim rồi. Nhưng test case vẫn để test ở nhánh củ
+ 1-21-16-1: bị nhầm kết quả test
+ 
+ 
+ call tranfer cách re-test cho Triết.
+
+==================================================================================================================
+
+OT: 2h
+-------------------------
+cancel:
+
+retest fail:
+[BUG IT (Sim)] CPRI_1-3-9-1
+[BUG IT (Sim)] CPRI_1-3-8-1
+re-test:
+[BUG IT (Sim)] CPRI_1-21-67-1
+[BUG IT (Sim)] CPRI_1-24-3-1
+[BUG IT (Sim)] CPRI_1-24-4-1
+[BUG IT (Sim)] CPRI_1-12-7-1
+[BUG IT (Sim)] CPRI_1-12-5-1
+[BUG IT (Sim)] CPRI_1-9-13-1
+[BUG IT (Sim)] CPRI_1-21-41-1
+[BUG IT (Sim)] CPRI_1-21-73-1
+[BUG IT (Sim)] CPRI_1-24-1-1
+
+
+
+raise bug:
+[BUG IT (Sim)] CPRI_1-6-1-1
+[BUG IT (Sim)] CPRI_1-3-1-1
+[BUG IT (Sim)] CPRI_1-3-3-1
+[BUG IT (Sim)] CPRI_1-3-4-1
+------------------------------
+
+Daily report (14/04/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Run Test IT below case:
+	1-3-1-1
+	1-3-3-1
+	1-3-4-1
+	1-20-2-1	~	1-20-4-1
+
+ + Pass/Fail/TotalTest:  3/3/6
+ 
+- QnA: 4tc
+	1-6-15-1
+	1-6-16-1
+	1-6-17-1
+	1-6-18-1
+
+- Meeting nội bộ napa(1.45h)
+
+3> Next tasks:
+- Test IT: 3tc
+- Re-Test: 24tc
+
+4> Issue:
+- Do chưa rõ cách chạy đối với test case phân loại RE. Nên mất thời gian tìm hiểu và discus với Toàn.
+- Mất thời gian để tìm hiểu phán định pass/fail những case 1-6-15-1 ~ 1-6-18-1.
+
+5> Next Actions
+- OT 2h để test xong case trong hôm nay và re-test 
+6> Risk:
+- None
+
+
+------------------------------------------
+1-20-2-1
+1-20-3-1
+1-20-4-1
+
+tìm hiểu về cách chạy file *.dat vì ko được modify message
+
+tìm hiểu vì sao chạy kết quả không đúng ý đồ. và tìm ra là do step 1 request loại thiết bị RE case CPRI_94 đang sai CPRI_INT-94
+
+
+re-test lại case 1-1-18-1
+==================================================================================================================
+
+OT: 1.5h
+Daily report (13/04/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Re-Test
+	[BUG IT (Sim)] CPRI_1-12-7-1
+	[BUG IT (Sim)] CPRI_1-12-5-1
+	[BUG IT (Sim)] CPRI_1-9-13-1
+	[BUG IT (Sim)] CPRI_1-3-7-1
+	[BUG IT (Sim)] CPRI_1-6-3-1
+	[BUG IT (Sim)] CPRI_1-21-20-1
+- Raise bug
+	[BUG IT (Sim)] CPRI_1-3-30-1
+	[BUG IT (Sim)] CPRI_1-3-43-1
+
+3> Next tasks:
+- Test tiếp
+
+4> Issue:
+- None
+
+5> Next Actions
+- None
+6> Risk:
+- None
+
+---------------------------------
+retest:
+[BUG IT (Sim)] CPRI_1-12-7-1
+[BUG IT (Sim)] CPRI_1-12-5-1
+[BUG IT (Sim)] CPRI_1-9-13-1
+------
+it_sim:
+[BUG IT (Sim)] CPRI_1-3-7-1
+[BUG IT (Sim)] CPRI_1-6-3-1
+[BUG IT (Sim)] CPRI_1-21-20-1
+raise bug
+[BUG IT (Sim)] CPRI_1-3-30-1
+[BUG IT (Sim)] CPRI_1-3-43-1
+------------------------------
+Daily report (13/04/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Run Test IT below case:
+	1-3-19-1
+	1-6-10-1	~	1-6-14-1
+	1-11-32-1
+	1-11-33-1
+
+ + Pass/Fail/TotalTest:  5/3/8
+ 
+- QnA: 2QA
+ 
+- Raise bug
+- Feedback review raise bug
+- Meeting nội bộ napa(1.5h)
+
+3> Next tasks:
+- Re-test case đã fixbug
+- Raise bug
+- Vì nhiều case liên quan đến QnA nên sau khi QnA thì sẽ text tiếp
+
+4> Issue:
+- Scenario có item struct không được define trong file *.dat và code nên load file scenario bị lỗi.
+
+5> Next Actions
+- OT để re-test
+6> Risk:
+- None
+
+
+
+
+
+
+
+
+feedback review: 1-11-31-1
+
+
+check defunct: ps -a
+==================================================================================================================
+
+OT: (2h)
+1-1-18-1: NG
+1-3-19-1: OK  
+
+
+---------------------------------
+Daily report (12/04/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Run Test IT below case:
+	1-3-15-1	~	1-3-18-1
+	1-3-30-1	~	1-3-43-1
+	1-13-1-1	~	1-13-4-1
+	1-21-55-1
+	1-24-1-1	~	1-24-4-1
+
+ + Pass/Fail/TotalTest:  16/11/27
+ 
+- Retest: 11 case
+    1-3-6-1
+	1-9-11-1
+	1-9-7-1
+	1-1-15-1
+	1-1-13-1
+	1-1-8-1
+	1-1-7-1
+	1-21-47-1
+	1-21-31-1
+	1-3-7-1
+	1-6-3-1
+
+
+3> Next tasks:
+- Test tiếp
+
+4> Issue:
+- Trong file *.dat define thiếu thuộc tính của struct. Nhưng chưa biết tên thuộc tính của struct define ở đâu, tên tiếng nhật và giá trị khởi tạo.
+- Chưa biết chính xác step chạy đối với case phải chạy scenario của onsite cung cấp để TBTG nhận dạng loại RE trước. 
+(File scenario cung cấp đang thiếu define thuộc tính struct trong file *.dat).
+
+5> Next Actions
+- Tìm trong code để define thuộc tính còn thiếu của struct vào file *.dat
+6> Risk:
+- None
+
+--------------------------------
+Dear anh Hùng,
+
+Bug này re-test trên nhanh it_sim OK.
+
+Nhờ anh release giúp.
+
+Thanks,
+Dũng
+
+
+[BUG IT (Sim)] CPRI_1-21-40-1
+[BUG IT (Sim)] CPRI_1-21-43-1
+[BUG IT (Sim)] CPRI_1-8-17-1
+[BUG IT (Sim)] CPRI_1-21-44-1
+[BUG IT (Sim)] CPRI_1-8-19-1
+[BUG IT (Sim)] CPRI_1-1-14-1
+--------------------------------
+[BUG IT (Sim)] CPRI_1-3-6-1
+[BUG IT (Sim)] CPRI_1-9-11-1
+[BUG IT (Sim)] CPRI_1-9-7-1
+[BUG IT (Sim)] CPRI_1-1-15-1
+[BUG IT (Sim)] CPRI_1-1-13-1
+[BUG IT (Sim)] CPRI_1-1-8-1
+[BUG IT (Sim)] CPRI_1-1-7-1
+[BUG IT (Sim)] CPRI_1-21-47-1
+[BUG IT (Sim)] CPRI_1-21-31-1
+[BUG IT (Sim)] CPRI_1-3-7-1
+[BUG IT (Sim)] CPRI_1-6-3-1
+
+==================================================================================================================
+OT(T7): 3.5h
+OT(T6): 3h
+
+------------------------------
+số case test lần 1: 104
+số case re-test:  6
+số QnA đã log: 14
+số bug đã log: 47
+
+
+Vì có feedback lại nên hơn thực tế 4tc
+--------------------
+Daily report (10/04/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Re-Test IT below case: 10 case
+	11-21-40-1
+	1-8-19-1
+	1-1-7-1
+	1-6-4-1
+	1-1-13_1
+	1-1-15-1
+	1-1-14-1
+	1-9-11-1
+	1-21-35-1
+	1-21-38-1
+- Raise bug and feedback comment bug
+
+3> Next tasks:
+- Re-test test case đã fixbug
+- Re-test test case update theo confirm của onsite
+
+4> Issue:
+- Chưa biết cách chạy test đối với các case khởi động thiết bị
+
+5> Next Actions
+- None
+6> Risk:
+- None
+
+-----------------------------------------------------
+Thu 7:
+  re-test: 
+	1-21-40-1
+	1-8-19-1
+	CPRI_1-1-7-1  re-test OK -> Dong merge IT_sim
+	CPRI_1-6-4-1 : update lỗi
+	CPRI_1-1-13_1: request merge it_sim
+	CPRI_1-1-15-1
+	CPRI_1-1-14-1
+	CPRI_1-9-11-1
+	CPRI_1-21-35-1
+	CPRI_1-21-38-1  confirm lại
+Note: update status vao 006-001	
+	
+	
+------------------------
+số case test lần 1: 109
+số case re-test:  6
+số QnA đã log: 14
+số bug đã log: 47
+
+Target: 
+  + Thứ 2(5/4): 20tc
+  + Thứ 3 ~ 6: 35tc
+
+
+ Note: 
+   + Vì có feedback lại nên hơn thực tế 4tc
+   + Có 4tc điều tra + QA xong onsite confirm ko làm nữa
+   + 1 test case 3G confirm với Toàn ko làm nữa
+------------------
+OT: 
+    + Thứ 6: 3h (21h30 ~ 0h30
+	+ Thứ 7: 9h45 ~ 13h30
+------------------
+Retest:
+PRI_1-8-17-1
+1-7-6-1
+1-6-3-1
+mô tả từng step run,
+==================================================================================================================
+Daily report (09/04/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Run Test IT below case:
+	1-3-9-1
+	1-3-42-1
+	1-11-9-1
+	1-11-10-1
+	1-11-11-1
+	1-11-12-1
+	1-11-14-1
+	1-22-5-1
+	1-22-6-1
+
+ + Pass/Fail/TotalTest:  3/6/9
+ 
+	1-20-2-1
+	1-20-3-1
+	1-20-4-1
+ + QnA: 3 case
+- Retest: 2case
+    1-21-44-1
+	1-3-6-1
+- Raise bug and feedback comment bug
+
+3> Next tasks:
+- Test tiếp
+
+4> Issue:
+- Mất thời gian confirm lại chạy kết quả như thế nào là đúng kết quả mong muốn.(case: 1-11-15-1)
+- Thời gian re-test mất nhiều thời gian. đo thử thời gian 20p/testcase nên cần support lại cách test(checkout branch, build, trả lời ticket bug, fill lại kết quả vào file 006-001,...)
+- Phải Feedback lại nội dung bug và rasie nhiều bug nên mất thời gian.
+- Chưa biết cách chạy các testcasse khởi động thiết bị nên phải vừa tìm hiểu vừa hỏi member khác.
+
+5> Next Actions
+- Hôm nay bận việc nên sẽ OT sau 21h. Sẽ OT sáng thứ 7 nhưng cần người support tìm hiểu cách test cho chức năng khởi động thiết bị
+6> Risk:
+- None
+
+----------------------------------------------------------
+issue:
+confirm lại tín hiệu chạy đúng và kết quả mong muốn.
+1-11-15-1
+
+re-test:
+ 1-21-44-1
+ 1-3-6-1
+ 13h57-14h16
+ 
+ case: đang bị bôi xám
+	1-9-3-1
+	1-9-4-1
+	1-9-5-1
+	1-9-6-1
+Case rut cap chuan: 1-11-14-1
+
+
+@Oanh @Hoàng 
+https://csvn.cloud9-solutions.com/svn/s107.02/deliverables/branches/06_IT/結合試験項目書/CPRI中間装置_結合試験項目書_CPRI_INT-003-001_装置起動.xlsm
+a có update assign file này, nhờ mọi người test giúp
+nếu thiếu thì qua test giúp monitor interface luôn nhé
+https://csvn.cloud9-solutions.com/svn/s107.02/deliverables/branches/06_IT/結合試験項目書/CPRI中間装置_結合試験項目書_CPRI_INT-004-010_モニタインタフェース.xlsm
+
+==================================================================================================================
+Daily report (08/04/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Run Test IT below case:
+	1-9-2-1
+	1-11-15-1  ~  1-11-20-1
+	1-12-5-1   ~  1-12-8-1
+	1-19-3-1   ~  1-19-9-1
+	1-19-10-1
+	1-19-11-1
+
+ + Pass/Fail/TotalTest:  6/14/20
+ 
+	1-22-5-1
+	1-22-6-1
+ + QnA: 2 case
+- Log QnA
+- Add message còn thiếu vào L3_Msg_Info.dat
+
+3> Next tasks:
+- Test tiếp
+
+4> Issue:
+- Case 1-19-3-1 ~ 1-19-7-1 mất thời gian thảo luận lại với người tạo scenario để sửa.
+- Thiếu message cho các case nên phải tìm hiểu cách add message.
+    1-11-22-1, 1-11-23-1
+    1-11-29-1 ~ 1-11-31-1
+
+5> Next Actions
+- Hôm nay bận việc cá nhân không OT được. Nên sẽ OT cover lại vào thứ 6 và thứ 7
+6> Risk:
+- None
+
+
+issue: 1-19-3-1 ~ 1-19-7-1, phải thảo luận lại scenario với người tạo
+thêm message vào file *.dat
+
+==================================================================================================================
+
+Daily report (07/04/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Run Test IT below case:
+	1-3-5-1 ~ 1-3-8-1
+	1-6-3-1
+	1-6-4-1
+	1-9-13-1 ~ 1-9-17-1
+	1-11-13-1
+	1-21-6-1
+
+ + Pass/Fail/TotalTest:  4/9/13
+	1-9-3-1 ~ 1-9-6-1
+	1-11-9-1 ~ 1-11-12-1
+	1-11-14-1
+	1-20-2-1 ~ 1-20-4-1
+ + QnA: 12 case
+- Log QnA
+
+3> Next tasks:
+- Test tiếp
+
+4> Issue:
+- Do phải kiểm tra xem kết quả test là fail hay scenario đang bị sai nên mất thời gian.
+
+5> Next Actions
+- Do thứ 5 cũng bận không OT được. Nên sẽ cover lại vào thứ 6 và thứ 7
+6> Risk:
+- None
+
+
+
+------------------------------
+issue: thay đổi cách chạy mà ko báo. thì phải chạy lại take time
+
+1-11-9-1
+	+ scenario gửi tín hiệu 3G nhưng cả RE và REC đều send
+1-11-10-1
+    + scenario file [0x2121][RSP] đang nhập sai.
+	   CMT_CPRIF_FIRMFILERES_S3G snd_msg;
+       CMT_CPRIF_FIRMFILERES_S3G rcv_msg;
+	   
+1-11-14-1
+    File [0x2211][REQ] đang gọi L3_Receive trước L3_Send. nên kết quả test không đúng.
+	Nhờ confirm lại. có thể phải sửa lại là gọi L3_Send trước
+	   
+
+
+=======================================
+OT:
+- Pass/Fail/TotalTest:  7/2/9
+Total:
+  Pass/Fail/TotalTest:  13/21/34
+  1 case đang confirm lại scenario.
+
+Daily report (06/04/2021):
+1> Overall status : 
+Done: Behind schedule
+
+2> Today tasks:
+- Run Test IT below case:
+	1-1-16-1
+	1-2-6-1
+	1-2-7-1
+	1-3-30-1 ~ 1-3-43-1
+	1-4-2-1  ~ 1-4-5-1
+	1-7-5-1  ~ 1-7-9-1
+
+- Pass/Fail/Confirm/TotalTest:  6/19/1/26
+
+3> Next tasks:
+- Test tiếp
+
+4> Issue:
+- Do bên team fixbug mới update code liên quan nên khả năng phải test lại các case: 1-3-30-1 ~ 1-3-43-1
+
+5> Next Actions
+- OT thêm từ 21h30 để đạt target 35case/ngày
+6> Risk:
+- None
+
+(OT: 2h)
+
+
+=======================================
+
+Daily report (05/04/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Run Test IT below case:
+	1-3-23 ~ 1-3-26
+	1-9-7 ~ 1-9-11
+	1-20-5 ~ 1-20-9
+	1-21-22
+	1-21-33
+	1-21-35 ~ 1-21-38
+        1-1-14-1
+
+- Pass/Fail/TotalTest:  13/8/21
+
+
+3> Next tasks:
+- Test tiếp
+
+4> Issue:
+- Những case abnormal thì có thể run test và phán định kết quả nhanh.
+Những case đặc biệt thì mất thời gian hơn 1 chút tìm hiểu để phán định NG/OK.
+
+5> Next Actions
+- Nếu theo target mới 40tc/ngày thì OT sau 22h để corver thêm.
+
+6> Risk:
+- None
+
+(OT: 0h)
+==================================
+Daily report (02/04/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Run Test IT below case:
+	1-1-7-1 (NG)
+	1-1-8-1 (NG)
+	1-1-9-1
+	1-1-10-1
+	1-1-13-1 (NG)
+	1-1-15-1 (NG)
+	1-21-20-1 (NG)
+	1-21-21-1
+	
+- Pass/Fail/TotalTest:  3/5/8
+
+3> Next tasks:
+- Chưa có tasks tiếp theo
+
+4> Issue:
+- Có 1 số scenario bị set nhầm giữa RE/REC.
+    Vd: Gửi tín hiệu 3G ở file [0x9391][REQ][CPRI01]FLD-MTデータコマンド転送受信.snr,
+	nhưng đang set gửi tín hiệu 3G ở file [0x93A1][RES][CPRI01]FLD-MTデータコマンド転送受信.snr
+- Lỗi syntax error khi load file scenario ở case 1-1-7-1.
+    Nguyên nhân trong file [0x4221][RSP][CPRI01]TRX解放(異常応答).snr line 15, có ký tự đặc biệt không nhìn thấy được
+
+5> Next Actions
+- OT thêm 2h (từ 22h00~0h00) để test thêm những case đã tạo scenario
+
+6> Risk:
+- None
+
+(OT: 0h)
+=================================================
+
+
+Daily report (01/04/2021):
+1> Overall status : 
+Done: On schedule
+
+2> Today tasks:
+- Run Test IT below case:
+   1-21-30～1-21-33
+   1-21-40～1-21-44
+   1-21-46～1-21-49
+   1-8-16-1
+   1-8-17-1
+   1-8-18-1
+   1-8-19-1
+
+3> Next tasks:
+- Chưa có tasks tiếp theo
+
+4> Issue:
+
+- Cần confirm lại cách run test case 1-21-32-1 (trường hợp rút cáp ở BDE), theo ticket QA #37259
+- Đối với Case test gửi tín hiệu 3G. Trong file scenario gửi 3G nhưng nhận 4G nên kết quả log không chính xác
+
+
+5> Next Actions
+	Nếu nhận thêm task thì có thể OT thêm 2h (từ 20h30~22h30)
+
+6> Risk:
+- None
+
+(OT: 0h)
+=================================================
