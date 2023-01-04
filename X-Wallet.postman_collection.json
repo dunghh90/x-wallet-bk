@@ -1,0 +1,1789 @@
+{
+	"info": {
+		"_postman_id": "91411d45-3765-4bb0-b6ec-9cfd62675dda",
+		"name": "X-Wallet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "register",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "ngoc8@yopmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "ngoc8",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/register",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "ngoc3@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "otp",
+							"value": "658436",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/login",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getMe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "emai",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/getme",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"getme"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "changeUsername",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "username",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/changeUsername",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"changeUsername"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "resetPassword",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "hatreyannemou-6540@yopmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "password111",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/resetPassword",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"resetPassword"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "forgotPassword",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "hatreyannemou-6540@yopmail.com",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/forgotPassword",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"forgotPassword"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "changePassword",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "hatreyannemou-6540@yopmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "password1",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/changePassword",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"changePassword"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "validatePassword",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "ngoc@gmail.com",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "otp",
+							"value": "113493",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/validatePassword",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"validatePassword"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "genGoogleAuth",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/mfa/gen-google-auth-secret",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"mfa",
+						"gen-google-auth-secret"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "disableGoogleAuth",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "otp",
+							"value": "249506",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/mfa/disable-google-auth-secret",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"mfa",
+						"disable-google-auth-secret"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "confirmGoogleAuth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "otp",
+							"value": "245837",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/mfa/confirm-google-auth",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"mfa",
+						"confirm-google-auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verifyGoogleAuth",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "otp",
+							"value": "936760",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/mfa/verify-google-auth",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"mfa",
+						"verify-google-auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addApikey",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "otp",
+							"value": "458390",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/api-key/create",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"api-key",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addNewWallet",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "currency",
+							"value": "xrp",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "aaaa",
+							"type": "text"
+						},
+						{
+							"key": "passphrase",
+							"value": "123456",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/api/polygon/addNew",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"api",
+						"polygon",
+						"addNew"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "setPassPharse",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "currency",
+							"value": "xrp",
+							"type": "text"
+						},
+						{
+							"key": "passPharse",
+							"value": "123123",
+							"type": "text"
+						},
+						{
+							"key": "passphrase",
+							"value": "123456",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/api/setPassPharse",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"api",
+						"setPassPharse"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verifyPassPharse",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "currency",
+							"value": "xrp",
+							"type": "text"
+						},
+						{
+							"key": "passPharse",
+							"value": "123123123",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/api/verifyPassPharse",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"api",
+						"verifyPassPharse"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteWallet",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/api/wallets/xrp",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"api",
+						"wallets",
+						"xrp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getWalletList",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "ngoc@gmail.com",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "password",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "otp",
+							"value": "113493",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/api/wallets",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"api",
+						"wallets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getWalletDetail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/api/walletDetail/polygon",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"api",
+						"walletDetail",
+						"polygon"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllListTransaction",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "type",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "allTokens",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "dateGte",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "dateLt",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "height",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "limit",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "prevId",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "searchLabel",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "state",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "valueGte",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "valueLt",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "[\"0x7af0A5d1d2DbaEa45d1F4059ccA969362c957536\"]",
+							"type": "text"
+						},
+						{
+							"key": "memoId",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "currency",
+							"value": "",
+							"type": "default"
+						},
+						{
+							"key": "txid",
+							"value": "",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/api/bnb/wallet/192/transfer",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"api",
+						"bnb",
+						"wallet",
+						"192",
+						"transfer"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "send",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllListTransaction Copy",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "type",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "allTokens",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "dateGte",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "dateLt",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "height",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "limit",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "prevId",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "searchLabel",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "state",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "valueGte",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "valueLt",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "0x48F93D764a49E6EedFec0e5D6961452da7d3D9ba",
+							"type": "text"
+						},
+						{
+							"key": "memoId",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/api/bnb/wallet/192/transfer",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"api",
+						"bnb",
+						"wallet",
+						"192",
+						"transfer"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "send",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "searchWallet",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "textSearch",
+							"value": "e",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/api/wallets/search",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"api",
+						"wallets",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addWebhook",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "url",
+							"value": "https://sotatek.com",
+							"type": "text"
+						},
+						{
+							"key": "label",
+							"value": "webhook1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/webhooks",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"webhooks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getWebhookList",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "otp",
+							"value": "670564",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/webhooks",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"webhooks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "removeWebhook",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/webhooks?url=https://sotatek3.com",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"webhooks"
+					],
+					"query": [
+						{
+							"key": "url",
+							"value": "https://sotatek3.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sendCoin",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "amount",
+							"value": "0.002",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "0xB5248a89962ebb8d5681F50c4612F92f540db5Cf",
+							"type": "text"
+						},
+						{
+							"key": "memo",
+							"value": "test transfer 2",
+							"type": "text"
+						},
+						{
+							"key": "otp",
+							"value": "808796",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/withdrawal/wallet/bnb/192",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"withdrawal",
+						"wallet",
+						"bnb",
+						"192"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "generateNewHotWallet",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "type",
+							"value": "normal",
+							"type": "text"
+						},
+						{
+							"key": "label",
+							"value": "test2",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/hot-wallets/xrp",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"hot-wallets",
+						"xrp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllHotWallets",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/hot-wallets/receive/xrp?type=normal&walletId=117",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"hot-wallets",
+						"receive",
+						"xrp"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "normal"
+						},
+						{
+							"key": "walletId",
+							"value": "117"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateLabelHotWallet",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "label",
+							"value": "Master addresssssss",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "rGzuY2pvu7JkrbQmM2WeTrAetErgVEaNQb",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/hot-wallets/xrp",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"hot-wallets",
+						"xrp"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "normal",
+							"disabled": true
+						},
+						{
+							"key": "walletId",
+							"value": "103",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createAddress",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "a1c07bb5b88c12d3aec1b3c77ce73c4c392b09ebb4da95c63589bccf32cba2d3",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "api-key",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "label",
+							"value": "Master addresssssss",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "rGzuY2pvu7JkrbQmM2WeTrAetErgVEaNQb",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/api/v1/xrp/wallet/120/address",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"xrp",
+						"wallet",
+						"120",
+						"address"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "normal",
+							"disabled": true
+						},
+						{
+							"key": "walletId",
+							"value": "103",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getBalance",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "amount",
+							"value": "0.002",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "0x7af0A5d1d2DbaEa45d1F4059ccA969362c957536",
+							"type": "text"
+						},
+						{
+							"key": "memo",
+							"value": "test transfer 2",
+							"type": "text"
+						},
+						{
+							"key": "otp",
+							"value": "808796",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/withdrawal/balance/bnb/bsc/0xE001C31Bc60606186564EA393E554e110e3a8DA0",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"withdrawal",
+						"balance",
+						"bnb",
+						"bsc",
+						"0xE001C31Bc60606186564EA393E554e110e3a8DA0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "validateAddress",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "amount",
+							"value": "0.002",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "0x7af0A5d1d2DbaEa45d1F4059ccA969362c957536",
+							"type": "text"
+						},
+						{
+							"key": "memo",
+							"value": "test transfer 2",
+							"type": "text"
+						},
+						{
+							"key": "otp",
+							"value": "808796",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost}}/withdrawal/validateAddress/bsc/0xE001C31Bc60606186564EA393E554e110e3a8DA0",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"withdrawal",
+						"validateAddress",
+						"bsc",
+						"0xE001C31Bc60606186564EA393E554e110e3a8DA0"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
