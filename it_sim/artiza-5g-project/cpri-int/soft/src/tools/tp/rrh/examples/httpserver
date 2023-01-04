@@ -1,0 +1,78 @@
+Rrh.require("./verbose")
+Rrh.require("./httpmsg")
+
+socket =  Rrh.tsocket()
+if Rrh.tbind(socket,@hostip,@hostport) != 0 then
+ puts "Bind NG"
+ Rrh.tclose(socket)
+ exit
+end
+
+if Rrh.tlisten(socket,@listennum) != 0 then
+ puts "Listen NG"
+ Rrh.tclose(socket)
+ exit
+end
+
+head = Head.new
+http = Hftp.new
+http_s = Hftp_s.new
+http_d = Hftp_d.new
+acceptsocket = 0
+sendsize = 65536
+size = 4096
+recvptr = Rrh.malloc(size)
+sendptr = Rrh.malloc(sendsize)
+
+num = 0
+while num < 1 do
+ acceptsocket = Rrh.taccept(socket,head)
+ if acceptsocket <= 0 then
+   puts "Accept NG"
+   break
+ end
+
+ printf("Accept client IP:%s , Port:%d \n",head.ip,head.port)
+ 
+  if Rrh.select(acceptsocket,10,0) <= 0 then
+   puts "Select time out"
+   break
+  end
+ 
+  if Rrh.recv(acceptsocket,recvptr,size) <= 0 then
+   puts "Recv error"
+   break
+  end
+
+  Rrh.system("echo -e \"<pre>\" > log.log")
+  Rrh.system("echo -e \"************  RRH Monitor **************\" >> log.log")
+  Rrh.system("free >> log.log")
+  Rrh.system("cat /proc/interrupts >> log.log")
+  Rrh.system("echo -e \"</pre>\" >> log.log")
+ # Rrh.system("echo -e \"<meta http-equiv=\"Refresh\" content=\"1\">\" >> log.log")
+  http_s.cmd = "HTTP/1.0 200 OK\n"
+  http_s.len = sprintf("Content-Length: %d\n", Rrh.fsizeget("./log.log"))
+  http_s.keep = "Keep-Alive: timeout=15, max=100\n"
+  http_s.con = "Connection: Keep-Alive\n"
+  http_s.type = "Content-Type: text/html\n"
+  http_s.dummy = "\n"
+
+  sendsize = Rrh.httpset(sendptr,http_s)
+
+  fp = Rrh.fopen("./log.log","r")
+   while 1 do
+    http_d.text = Rrh.fgetline(fp)
+     unless http_d.text then
+        break
+     end
+    sendsize = sendsize + Rrh.httpset(sendptr + sendsize,http_d)
+   end
+  Rrh.fclose(fp)
+  Rrh.send(acceptsocket,sendptr,sendsize)
+  num = num + 1
+end
+Rrh.tclose(acceptsocket)
+Rrh.tclose(socket)
+Rrh.free(recvptr)
+Rrh.free(sendptr)
+

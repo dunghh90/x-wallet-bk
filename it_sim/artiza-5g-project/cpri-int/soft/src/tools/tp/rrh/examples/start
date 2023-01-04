@@ -1,0 +1,143 @@
+Rrh.system("ifconfig lo up 1>/dev/null 2>/dev/null")
+Rrh.system("mount -t devpts none /dev/pts -o gid=5,mode=620")
+Rrh.system("mount -t tmpfs none /dev/shm")
+Rrh.system("mount -t proc none /proc")
+Rrh.system("mount -t sysfs none /sys")
+Rrh.system("mount -t tmpfs -o size=64m none /tmp")
+Rrh.system("mount -t tmpfs -o size=64m none /var/log")
+Rrh.system("/usr/sbin/inetd 1>/dev/null 2>/dev/null")
+Rrh.system("mkdir /var/log/troublelog")
+Rrh.system("mkdir /var/log/troublelog_rst")
+Rrh.system("mkdir /var/log/sendlog")
+Rrh.system("mkdir /var/log/sendlog_3g")
+Rrh.system("mkdir /var/log/healthchklog")
+Rrh.system("echo 32768 > /proc/sys/kernel/msgmax")
+Rrh.system("echo 131072 > /proc/sys/kernel/msgmnb")
+Rrh.system("echo 39845888 > /proc/sys/kernel/shmmax")
+Rrh.system("echo 20480 > /proc/sys/kernel/shmmni")
+Rrh.system("echo 1 > /proc/irq/51/smp_affinity_list")
+Rrh.system("echo 1 > /proc/irq/52/smp_affinity_list")
+Rrh.system("echo 1 > /proc/irq/57/smp_affinity_list")
+Rrh.system("echo 1 > /proc/irq/61/smp_affinity_list")
+Rrh.system("echo 1 > /proc/irq/63/smp_affinity_list")
+Rrh.system("echo 1 > /proc/irq/65/smp_affinity_list")
+Rrh.system("echo 1 > /proc/irq/66/smp_affinity_list")
+Rrh.system("echo 1 > /proc/irq/80/smp_affinity_list")
+Rrh.system("echo 1 > /proc/irq/82/smp_affinity_list")
+
+# initial mode setting start 
+mode = Rrh.eepdrv("r",0x216,1)
+case mode 
+ when 1 then
+  Rrh.require("./verbose")
+
+  def func_ethstart ()
+   Rrh.sleep(1,0)
+   puts "Auto ether setting start "
+   Rrh.system("ifconfig eth0 192.168.1.131 netmask 255.255.255.0")
+   Rrh.sleep(1,0)
+   puts ".. > Finish "
+   return
+  end
+  
+  if ( face = Rrh.eepdrv("r",0x69,1) ) > 1 then
+    face = 1
+  end
+
+  puts "*********************************************************************"
+  printf("User debug mode Start up side %d \n",face)
+  puts "*********************************************************************"
+  puts "Debug file loading start ... "
+  Flash = Struct.new( :face, :len, :ofs ,:bufaddr ,:val)
+  dbghead = Flash.new
+  dbgfile = Flash.new
+  dbghead.face = face
+  dbghead.len = 4
+  dbghead.ofs = 0x00700000
+  dbghead.bufaddr = Rrh.malloc( dbghead.len)
+  dbghead.val = 0
+
+  if  !Rrh.devinit() then
+    puts "device init NG"
+    Rrh.free(dbghead.bufaddr)
+    func_ethstart()
+    exit
+  end
+
+  if  !Rrh.assign() then
+    puts "device assign NG"
+    Rrh.free(dbghead.bufaddr)
+    func_ethstart()
+    exit
+  end
+ 
+  if !Rrh.flashread(dbghead) then
+    puts "... loading NG read fail !!!!!!"
+    Rrh.free(dbghead.bufaddr)
+    func_ethstart()
+    exit
+  end
+
+  if  ( dbghead.val > 0x00200000 ) || ( dbghead.val == 0 ) then
+    puts "... loading NG length fail !!!!!!"
+    Rrh.free(dbghead.bufaddr)
+    func_ethstart()
+    exit
+  end
+
+  dbgfile.face = face
+  dbgfile.len = dbghead.val
+  dbgfile.ofs = 0x00700004
+  dbgfile.bufaddr = Rrh.malloc( dbgfile.len )
+  dbgfile.val = 0
+  if !Rrh.flashread(dbgfile) then
+    puts "... loading NG data fail !!!!!!"
+    Rrh.free(dbgfile.bufaddr)
+    func_ethstart()
+    exit
+  end
+
+  fp = Rrh.fopen("/tmp/dbgfile.tar.gz","wb")
+  Rrh.fwrite( dbgfile.bufaddr , dbgfile.len ,fp)
+  Rrh.fclose(fp)
+  Rrh.free(dbgfile.bufaddr)
+  Rrh.unassign()
+  
+  puts "...> Finish !!!!!!"
+
+  puts "Debug file Install start ... "
+  Rrh.system("tar zxvf /tmp/dbgfile.tar.gz -C /tmp")
+  Rrh.system("cp -rf /tmp/lib /")
+  Rrh.system("cp -rf /tmp/opt /")
+  Rrh.system("chmod 777 /opt/proc/*")
+  Rrh.system("chmod 777 /opt/debug/*")
+  Rrh.system("chmod 777 /opt/tp/rrh")
+  Rrh.system("chmod u+s /opt/debug/*")
+  Rrh.system("chmod u+s /opt/tp/*")
+  Rrh.system("rm -rf /tmp/lib")
+  Rrh.system("rm -rf /tmp/opt")
+  Rrh.system("rm -rf /tmp/dbgfile.tar.gz")
+  puts "...> Finish !!!!!!"
+
+  puts "Pakcet dump setup start ..."
+  Rrh.require("./pfdump")
+  puts "...> Finish !!!!!!"
+
+  puts ""
+  puts "....>>>>>>>>>>>>>>> Initial setup All complete !!!"
+  puts ""
+  puts "*************************************************"
+  puts " +++++    ++++++    ++++++    +     +    +++++  "
+  puts "  + +     +     +   +     +   +     +     + +   "
+  puts "   +   |  +++++++   +++++++   +++++++  |   +    "
+  puts "   +  ||  +     *   +     *   +     *  ||  +    "
+  puts "   + |||  +      *  +      *  +     +  ||| +    "
+  puts "*************************************************"
+  puts "................................. Good Luck !! "
+  func_ethstart()
+
+ else
+  puts "Normal mode start"
+  Rrh.system("cmd_rrupfdump -e lo -F \"0 1400040 1FE 280 7E4\" -c /var/log/lo.pcap &")
+  Rrh.system("rrh_init &")
+end

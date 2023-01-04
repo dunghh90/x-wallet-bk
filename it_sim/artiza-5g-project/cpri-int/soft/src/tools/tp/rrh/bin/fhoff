@@ -1,0 +1,9 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+
+Rrh.regbitoff("a1000020","00000001")
+Rrh.regbitoff("a1000040","00000001")
+puts DuCode::ERR_DESCRIPTION[0]
+

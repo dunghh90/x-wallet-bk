@@ -1,0 +1,54 @@
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+
+# usage
+if ARGV.length < 1 then
+	puts "usage:"+$0+" <ant/all> ",
+	"(m):<ant/all> is ant num (0:Ant.A 1:Ant.B or all)"
+	exit(1)
+end
+
+ant_s = ARGV[0]
+
+Rrh.assign()
+if !res = Rrh.eepread(0x40) then
+	puts "eep read error"
+else
+	case res
+	when "13"
+		puts "Command Unsupport"
+		exit(1)
+	when "14"
+		kind = "BPF_HM_DEVC_MMW"
+	else
+		puts "kind num error"
+		exit(1)
+	end
+end
+
+if ant_s == "0" || ant_s == "all" then
+	# antA
+	addr = 0x18
+	if (data1_s = Rrh.tpshmread("apde2pRX_vt_mmw","",addr.to_s(16))) == false then
+		puts "Shard Memory Read Error!! No.1"
+		exit(1)
+	end
+	printf(" Ant-A = N:0x%s \n",data1_s[6..7])
+	puts "complete"
+end
+if ant_s == "1" || ant_s == "all" then
+	# antB
+	addr = 0x19
+	if (data1_s = Rrh.tpshmread("apde2pRX_vt_mmw","",addr.to_s(16))) == false then
+	  puts "Shard Memory Read Error!! No.1"
+	  exit(1)
+	end
+	printf(" Ant-B = N:0x%s \n",data1_s[6..7])
+	puts "complete"
+end
+
+Rrh.unassign()

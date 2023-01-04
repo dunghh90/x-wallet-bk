@@ -1,0 +1,12 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+
+offset_i = Rrh.get_shmcm("radio_frame_ofs")
+if offset_i != false then
+	puts "radio-frame-offset : #{offset_i.to_i(16)}"
+else
+	puts DuCode::ERR_DESCRIPTION[8]
+end
+

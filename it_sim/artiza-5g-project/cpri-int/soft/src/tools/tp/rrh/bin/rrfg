@@ -1,0 +1,49 @@
+#
+# RFGAIN reg read
+# rrh -rrfg <ant/all>
+#
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh.require("./z_global")
+#Rrh.dmsg(1)
+
+# usage
+if ARGV.length < 1 then
+	puts "usage:"+$0+" <ant/all>",
+	"(m):<ant/all>    is ant num"
+	exit(1)
+end
+
+ant_s  = ARGV[0]
+ant_i  = ant_s.to_i(16)
+
+Rrh.assign()
+# reg read
+if ant_s == "all" then
+
+	for cnt in 0..3 do
+		addr_i = 0x400 * cnt
+		addr_s = Rrh.calc(addr_i.to_s(16),"+","B12000E0")
+		data_s = Rrh.regread(addr_s.to_s(16))
+		printf("%08x : ant%d\n",data_s.to_i(16),cnt)
+	end
+
+
+else
+
+	if ant_i > 3 then
+		puts "antnum error"
+		exit(1)
+	end
+
+
+		addr_i = 0x400 * ant_i
+		addr_s = Rrh.calc(addr_i.to_s(16),"+","B12000E0")
+
+	data_s = Rrh.regread(addr_s.to_s(16))
+	printf("%08x\n",data_s.to_i(16))
+
+end
+
+Rrh.unassign()
+

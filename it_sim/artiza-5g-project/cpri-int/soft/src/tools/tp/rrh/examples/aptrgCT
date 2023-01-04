@@ -1,0 +1,5 @@
+# 
+# training
+# 
+Rrh.require("../bin/dbgon")
+Rrh.require("../bin/aptrg")

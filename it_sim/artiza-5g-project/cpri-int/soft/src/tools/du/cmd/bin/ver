@@ -1,0 +1,139 @@
+Rrh.require("./verbose")
+
+device_type = Rrh.get_shmcm("device_type")
+support_band = Rrh.get_shmcm("support_band")
+
+activeface = Rrh.eepread(0x50)
+if activeface == "00" then
+	active0 = "True"
+	active1 = "False"
+else
+	active0 = "False"
+	active1 = "True"
+end
+
+
+startup_face = Rrh.get_shmcm("startup_face")
+if startup_face == "00000000" then
+	running0 = "True"
+	running1 = "False"
+else
+	running0 = "False"
+	running1 = "True"
+end
+
+status = Rrh.eepread(0x17c)
+if status == "01" then
+	status0 = "VALID"
+	bld0name = ""
+	if (name = Rrh.eepread_txt(0x180,0x20)) != false then
+		bld0name = name
+	end
+
+	bld0ver = ""
+	for index in 0x70 .. 0x71
+		if ( name = Rrh.eepread(index)) != false then
+			bld0ver = bld0ver + name
+		end
+	end
+
+	bld0date = ""
+	for index in 0x72 .. 0x73
+		if ( name = Rrh.eepread(index)) != false then
+			bld0date = bld0date + name
+		end
+	end
+		bld0date = bld0date + "-"
+	for index in 0x74 .. 0x75
+		if ( name = Rrh.eepread(index)) != false then
+			bld0date = bld0date + name
+			if index == 0x74 then
+				bld0date = bld0date + "-"
+			end
+		end
+	end
+
+	bld0size = ""
+	for index in 0x1A2 .. 0x1A5
+		if ( name = Rrh.eepread(index)) != false then
+			bld0size = bld0size + name
+		end
+	end
+else 
+	if status == "02" then
+		status0  = "INVALID"
+	else
+		status0  = "EMPTY"
+	end
+	bld0ver  = ""
+	bld0name = ""
+	bld0date = ""
+	bld0size = "0"
+end
+
+status = Rrh.eepread(0x17d)
+if status == "01" then
+	status1 = "VALID"
+	bld1name = ""
+	if (name = Rrh.eepread_txt(0x1c0,0x20)) != false then
+		bld1name = name
+	end
+
+	bld1ver = ""
+	for index in 0xB0 .. 0xB1
+		if ( name = Rrh.eepread(index)) != false then
+			bld1ver = bld1ver + name
+		end
+	end
+	bld1date = ""
+	for index in 0xB2 .. 0xB3
+		if ( name = Rrh.eepread(index)) != false then
+			bld1date = bld1date + name
+		end
+	end
+	bld1date = bld1date + "-"
+	for index in 0xB4 .. 0xB5
+		if ( name = Rrh.eepread(index)) != false then
+			bld1date = bld1date + name
+			if index == 0xB4 then
+				bld1date = bld1date + "-"
+			end
+		end
+	end
+	bld1size = ""
+	for index in 0x1A6 .. 0x1A9
+		if ( name = Rrh.eepread(index)) != false then
+			bld1size = bld1size + name
+		end
+	end
+else 
+	if status == "02" then
+		status1  = "INVALID"
+	else
+		status1  = "EMPTY"
+	end
+	bld1ver  = ""
+	bld1name = ""
+	bld1date = ""
+	bld1size = "0"
+end
+
+	  puts ""
+	  puts "SW inventory information"
+	  puts ""
+	  puts "Vendor-code: FJ"
+	  puts "Build-id   : #{device_type[6..7]}#{support_band[6..7]}"
+	  puts ""
+	  puts "Slot : Active   : Running  : Status   : BuildVer : Date       : BuildName                        : Size           "
+	  puts "------------------------------------------------------------------------------------------------------------------"
+	printf("   0 : %-8s : %-8s : %-8s : %-8s : %-10s : %-32s : %dbytes\n",active0,running0,status0,bld0ver,bld0date,bld0name,bld0size.to_i(16))
+	printf("   1 : %-8s : %-8s : %-8s : %-8s : %-10s : %-32s : %dbytes\n",active1,running1,status1,bld1ver,bld1date,bld1name,bld1size.to_i(16))
+	  puts "------------------------------------------------------------------------------------------------------------------"
+	  puts ""
+	  puts "* NOTE *"
+	  puts "   Slot is slot number. There are slot0 and slot1."
+	  puts "   Active is current active slot. True is active."
+	  puts "   Running is current running slot. True is running."
+	  puts "   Status is slot status. There are VALID,INVALID or EMPTY"
+	  puts ""
+

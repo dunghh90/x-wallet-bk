@@ -1,0 +1,50 @@
+Rrh.require("./verbose")
+
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <irqname> <count>",
+ "(m):<irqname> is below. ",
+ " wdt  : wdt irq ",
+ " 1sec : 1sec irq ",
+ " 1pps : 1pps irq ",
+ " sv   : sv irq ",
+ " mac0 : fh eth0 mac irq",
+ "(o):<opt> is irq count."
+ exit(1)
+end
+
+puts "IRQ check start ..."
+
+irqno = 0
+case ARGV[0].to_s.downcase
+ when "wdt" then
+  irqno = 1
+ when "1sec" then
+  irqno = 2
+ when "1pps" then
+  irqno = 3
+ when "sv" then
+  irqno = 4
+ when "mac0" then
+  irqno = 5
+ else
+  puts "UnKnown IRQ."
+  exit(1)
+end
+
+irqcount = 1
+if ARGV.length > 1 then
+ irqcount = ARGV[1].to_i
+end
+
+puts "#{ARGV[0].to_s}-IRQ wait start ..."
+Rrh.assign()
+loopnum = 0
+while loopnum < irqcount do
+  if  Rrh.irqwait(irqno) == true then
+    puts "#{ARGV[0].to_s}-IRQ OK(#{loopnum})"
+  end
+  loopnum = loopnum + 1
+end
+Rrh.unassign()
+exit(0)
+

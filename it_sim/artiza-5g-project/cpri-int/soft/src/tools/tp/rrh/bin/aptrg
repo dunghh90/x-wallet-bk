@@ -1,0 +1,479 @@
+#
+# apd training
+# rrh -aptrg
+#
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+Rrh.require("./z_global")
+Rrh.require("./apd_delayadjust")
+Rrh.require("./tpshm_access")
+#Rrh.dmsg(1)
+
+# usage
+if ARGV.length < 2 then
+ puts "usage:"+$0+" <ant> <typ>",
+ "(m):<ant>  is ant num",
+ "(m):<typ>  is below.",
+ " 0: DPDpath_DEMGAIN",
+ " 1: DPDpath_DLYstep1,2(LOG OFF)",
+ " 2: DPDpath_DLYstep1,2(LOG ON)",
+ " 3: VSWR_DEMGAIN",
+ " 4: TxCALpath_DEMGAIN",
+ " 5: TxCALpath_DLYstep1,2(LOG OFF)",
+ " 6: TxCALpath_DLYstep1,2(LOG ON)",
+ " 7: RxCALpath_DEMGAIN",
+ " 8: RxCALpath_DLYstep1,2(LOG OFF)",
+ " 9: RxCALpath_DLYstep1,2(LOG ON)"
+  exit(1)
+end
+
+Rrh.assign()
+def self.fn_CalcDemGain(antnum)
+
+	ret = 0
+	swcnt0_addr_s       = Register::FPGA_FB_SWCNTABCD
+
+	rfsw0_addr_s        = Register::FPGA_FB_RFSWABCD
+
+
+	case antnum 
+		when 0..3  then
+			demogain_addr_s     = Register::FPGA_FB_DEMGAINABCD
+		when 4..7 then
+			demogain_addr_s     = Register::FPGA_FB_DEMGAINEFGH
+		else
+	end
+
+	case antnum 
+		when 0 then
+			demogain_ant_addr_s = Register::FPGA_FB_ANTDEMGAINA
+			rfsw0_val           = "00000000"
+
+			powlat_addr_s       = Register::FPGA_FB_POWLATA
+			refsw_addr_s        = Register::FPGA_FB_PSWREFSWA
+			fbksw_addr_s        = Register::FPGA_FB_PSWFBKSWA
+		when 1 then
+			demogain_ant_addr_s = Register::FPGA_FB_ANTDEMGAINB
+			rfsw0_val           = "00000001"
+
+			powlat_addr_s       = Register::FPGA_FB_POWLATB
+			refsw_addr_s        = Register::FPGA_FB_PSWREFSWB
+			fbksw_addr_s        = Register::FPGA_FB_PSWFBKSWB
+		when 2 then
+			demogain_ant_addr_s = Register::FPGA_FB_ANTDEMGAINC
+			rfsw0_val           = "00000002"
+
+			powlat_addr_s       = Register::FPGA_FB_POWLATC
+			refsw_addr_s        = Register::FPGA_FB_PSWREFSWC
+			fbksw_addr_s        = Register::FPGA_FB_PSWFBKSWC
+		when 3 then
+			demogain_ant_addr_s = Register::FPGA_FB_ANTDEMGAIND
+			rfsw0_val           = "00000003"
+
+			powlat_addr_s       = Register::FPGA_FB_POWLATD
+			refsw_addr_s        = Register::FPGA_FB_PSWREFSWD
+			fbksw_addr_s        = Register::FPGA_FB_PSWFBKSWD
+
+		else
+			printf("Not supported ANT(%d)\n",antnum)
+			return false
+	end
+	Rrh.regwrite(swcnt0_addr_s,    "0F000000")
+	Rrh.regwrite(rfsw0_addr_s,     rfsw0_val)
+	for cnt in 0..9 do	# 1sec wait
+		Rrh.sleep(0,100000000)	# sleep 100ms
+		printf(". ")
+	end	
+	Rrh.regwrite(demogain_addr_s, "10001000")	# 1.0倍設定
+
+
+
+
+	for cnt in 0..9 do	# 1sec wait
+		Rrh.sleep(0,100000000)	# sleep 100ms
+		printf(". ")
+	end
+	Rrh.regwrite(powlat_addr_s,   "00000001")
+	res_s = Rrh.regread(demogain_addr_s)
+	printf("FB_DEMGAIN(0x%s) = 0x%s\n",demogain_addr_s.upcase,res_s)	# debug
+	res_s = Rrh.regread(swcnt0_addr_s)
+	printf("FB_SWCNT0(0x%s)   = 0x%s\n",swcnt0_addr_s.upcase,res_s)	# debug
+
+	res_s = Rrh.regread(rfsw0_addr_s)
+	printf("FB_RFSW0(0x%s)    = 0x%s\n",rfsw0_addr_s.upcase,res_s)	# debug
+
+	res_s = Rrh.regread(powlat_addr_s)
+	printf("FB_POWLAT(0x%s)  = 0x%s\n",powlat_addr_s.upcase,res_s)	# debug
+	for cnt in 0..9 do	# 1sec wait
+		Rrh.sleep(0,100000000)	# sleep 100ms
+		printf(". ")
+	end
+	printf("\n")
+	refsw_res_s = Rrh.regread(refsw_addr_s)
+	printf("FB_PSWREFSW(0x%s) = 0x%s\n",refsw_addr_s.upcase,refsw_res_s)	# debug
+	fbksw_res_s = Rrh.regread(fbksw_addr_s)
+	printf("FB_PSWFBKSW(0x%s) = 0x%s\n",fbksw_addr_s.upcase,fbksw_res_s)	# debug
+	if( refsw_res_s.to_i(16) < 0x00010000 ) then
+		printf("NG The FB_PSWREFSW-value is too small(0x%x)\n",refsw_res_s.to_i(16))
+		return false
+	end
+
+	printf("Start the DEMGAIN calculation.\n")
+	d_setval = Math::sqrt(refsw_res_s.to_i(16))
+	printf("The square root of FB_PSWREFSW(dec) X1:%d\n",d_setval)
+	d_setval *= 4096.0
+	printf("                         x4096(dec) X2:%d\n",d_setval)
+	d_fbvalsq = Math::sqrt(fbksw_res_s.to_i(16))
+	printf("The square root of FB_PSWFBKSW(dec) Y1:%d\n",d_fbvalsq)
+	d_setval /= d_fbvalsq.to_i(16)
+	d_setval = d_setval.round
+	setval = d_setval.to_i(16)
+	if setval > 0x00003FFF then
+	printf("**** overflow                         :%d -> 0x3fff \n",setval)
+		setval = 0x00003FFF
+	end
+	printf("DEMGAIN result value(dec)           Z1:%d\n",setval)
+
+	setval_s = Rrh.calc(setval.to_s(16),"+","00000000")
+	data_s = Rrh.calc(setval_s,"<","00000010")
+	data_s = Rrh.calc(data_s,"+",setval_s)
+	Rrh.regwrite(demogain_ant_addr_s, data_s)
+	Rrh.regwrite(demogain_addr_s, data_s)
+	regval_s = Rrh.regread(demogain_addr_s)
+	printf("Register setting value(hex) %s\n",regval_s)
+	printf("Finish the DEMGAIN ADJUST.\n")
+	return true
+
+end
+
+def self.fn_AdjDlyitgNew2(antnum)
+
+	swcnt0_addr_s      = Register::FPGA_FB_SWCNTABCD
+
+	rfsw0_addr_s       = Register::FPGA_FB_RFSWABCD
+
+
+	case antnum 
+		when 0..3 then
+			fbdly_addr_s        = Register::FPGA_FB_FBDLY_ABCD
+		else
+	end
+
+	case antnum 
+		when 0 then
+			rfsw0_val          = "00000000"
+			rfsw1_val          = "00000005"
+			fbdly_ant_addr_s  = Register::FPGA_FB_FBDLY_A
+		when 1 then
+			rfsw0_val          = "00000001"
+			rfsw1_val          = "00000004"
+			fbdly_ant_addr_s  = Register::FPGA_FB_FBDLY_B
+		when 2 then
+			rfsw0_val          = "00000002"
+			rfsw1_val          = "00000007"
+			fbdly_ant_addr_s  = Register::FPGA_FB_FBDLY_C
+		when 3 then
+			rfsw0_val          = "00000003"
+			rfsw1_val          = "00000006"
+			fbdly_ant_addr_s  = Register::FPGA_FB_FBDLY_D
+		else
+			printf("Not supported ANT(%d)\n",antnum)
+			return false
+	end
+
+
+	Rrh.regwrite(swcnt0_addr_s,    "FF000000")
+
+	Rrh.regwrite(rfsw0_addr_s,    rfsw0_val)
+
+
+	res_s = Rrh.regread(swcnt0_addr_s)
+	printf("FB_SWCNT0(0x%s) = 0x%s\n",swcnt0_addr_s.upcase,res_s)	# debug
+
+	res_s = Rrh.regread(rfsw0_addr_s)
+	printf("FB_RFSW0(0x%s)  = 0x%s\n",rfsw0_addr_s.upcase,res_s)	# debug
+
+	for cnt in 0..9 do	# 1sec wait
+		Rrh.sleep(0,100000000)	# sleep 100ms
+		printf(". ")
+	end
+	printf("\n")
+	if Rrh.fn_DelayAdjNew2(antnum) == false then
+		return false
+	end
+	regval_s = Rrh.regread(fbdly_addr_s)
+	printf("        FBDLY(%s) ant%x  = 0x%s\n",fbdly_addr_s,antnum,regval_s);
+	Rrh.regwrite(fbdly_ant_addr_s,    regval_s)
+	printf("    Ant FBDLY(%s) ant%x  = 0x%s\n",fbdly_ant_addr_s,antnum,regval_s);
+	printf("\n")
+	return true
+end
+
+#---------------------------------------------------------------------
+# Main
+#---------------------------------------------------------------------
+ant_s = ARGV[0]
+typ_s = ARGV[1]
+antnum  = ant_s.to_i(16)
+trgtype = typ_s.to_i(16)
+
+if !res = Rrh.eepread(0x40) then
+ puts "device kind read error #{res}"
+else
+ case res
+  when "13" then
+  else
+  puts "device kind num error #{res}. This command is supported for sub6 device"
+  exit(1)
+ end
+end
+
+data_s = Rrh.bpfshmread("E_RRH_SHMID_APL_DU_PROCESS_INFO", "", "dbgmode")
+if data_s.to_i(16) == 0 then
+	printf(" Currently , DBG mode OFF \n")
+	printf(" Please put rrh -dbgon command.\n")
+	exit(1)
+end
+
+if ant_s == "all" then
+	printf("ALL Ant Start ...\n")
+ if trgtype == 0 then
+	Rrh.system("rrh -aptrg 0 0")
+	Rrh.system("rrh -aptrg 1 0")
+	Rrh.system("rrh -aptrg 2 0")
+	Rrh.system("rrh -aptrg 3 0")
+
+ elsif (trgtype == 1 ) then
+	Rrh.system("rrh -aptrg 0 1")
+	Rrh.system("rrh -aptrg 1 1")
+	Rrh.system("rrh -aptrg 2 1")
+	Rrh.system("rrh -aptrg 3 1")
+
+ elsif (trgtype == 2) then
+	Rrh.system("rrh -aptrg 0 2")
+	Rrh.system("rrh -aptrg 1 2")
+	Rrh.system("rrh -aptrg 2 2")
+	Rrh.system("rrh -aptrg 3 2")
+
+ else
+	printf("Not supported trgtype(%d)\n",trgtype)
+	exit(1)
+ end
+end
+
+if antnum > 3 then
+	printf("Not supported ANT(%d)\n",antnum)
+	exit(1)
+end
+
+ret = false
+if trgtype == 0 then
+	printf("\n")
+	printf("ANT%d Start the DEMGAIN ADJUST.\n",antnum)
+	ret = fn_CalcDemGain(antnum)
+elsif (trgtype == 1) || (trgtype == 2) then
+	if trgtype == 1 then
+		Rrh.tpshmwrite("apdivc","",APDIVC_APDLOGPRINT,"00000000")
+	else
+		Rrh.tpshmwrite("apdivc","",APDIVC_APDLOGPRINT,"00000001")
+	end
+	printf("\n")
+	printf("ANT%d Start the DELAY ADJUST.\n",antnum)
+	case antnum 
+		when 0 then
+			apdon_addr_s    = Register::FPGA_PD_APDON_A
+		when 1 then
+			apdon_addr_s    = Register::FPGA_PD_APDON_B
+		when 2 then
+			apdon_addr_s    = Register::FPGA_PD_APDON_C
+		when 3 then
+			apdon_addr_s    = Register::FPGA_PD_APDON_D
+		else
+			printf("Not supported ANT(%d)\n",antnum)
+			return false
+	end
+	Rrh.regwrite(apdon_addr_s, "00000000")
+	ret = fn_AdjDlyitgNew2(antnum)
+	Rrh.regwrite(apdon_addr_s, "00000001")
+else
+	printf("\n")
+	printf("The training do not to run, cause type is missing.\n")
+end
+
+if ret != true then
+	printf("NG The training abnormal end.\n")
+else
+	printf("OK The training normal end.\n")
+	printf("\n")
+	printf("Register settings are shown in below.\n")
+	printf("debug disp.  The training end.\n")		# debug
+
+	swcnt0_addr_s       = Register::FPGA_FB_SWCNTABCD
+
+	rfsw0_addr_s        = Register::FPGA_FB_RFSWABCD
+
+
+	case antnum 
+		when 0..3 then
+			demogain_addr_s     = Register::FPGA_FB_DEMGAINABCD
+			itdata_addr_s       = Register::FPGA_FB_ITDATA_ABCD
+			itmba_addr_s        = Register::FPGA_FB_ITMBA_ABCD
+			ifbstrmcfg_addr_s   = Register::FPGA_FB_FBSTRMCFG_ABCD
+			calcmode_addr_s     = Register::FPGA_FB_CALCMODE_ABCD
+			itrst_addr_s        = Register::FPGA_FB_ITRST_ABCD
+			it1x_s              = Register::FPGA_FB_IT1X_ABCD
+			it2x_s              = Register::FPGA_FB_IT2X_ABCD
+			it3x_s              = Register::FPGA_FB_IT3X_ABCD
+			fbdly_addr_s        = Register::FPGA_FB_FBDLY_ABCD
+
+		else
+	end
+
+	case antnum 
+		when 0 then
+			printf("--- AntA ---\n")
+			demogain_ant_addr_s = Register::FPGA_FB_ANTDEMGAINA
+			powlat_addr_s       = Register::FPGA_FB_POWLATA
+			refsw_addr_s        = Register::FPGA_FB_PSWREFSWA
+			fbksw_addr_s        = Register::FPGA_FB_PSWFBKSWA
+			fbdly_ant_addr_s    = Register::FPGA_FB_FBDLY_A
+			apdon_addr_s        = Register::FPGA_PD_APDON_A
+			vt_demo_ofs = 0x0004
+			vt_dly_ofs  = 0x0008
+		when 1 then
+			printf("--- AntB ---\n")
+			demogain_ant_addr_s = Register::FPGA_FB_ANTDEMGAINB
+			powlat_addr_s       = Register::FPGA_FB_POWLATB
+			refsw_addr_s        = Register::FPGA_FB_PSWREFSWB
+			fbksw_addr_s        = Register::FPGA_FB_PSWFBKSWB
+			fbdly_ant_addr_s    = Register::FPGA_FB_FBDLY_B
+			apdon_addr_s        = Register::FPGA_PD_APDON_B
+			vt_demo_ofs = 0x0084
+			vt_dly_ofs  = 0x0088
+		when 2 then
+			printf("--- AntC ---\n")
+			demogain_ant_addr_s = Register::FPGA_FB_ANTDEMGAINC
+			powlat_addr_s       = Register::FPGA_FB_POWLATC
+			refsw_addr_s        = Register::FPGA_FB_PSWREFSWC
+			fbksw_addr_s        = Register::FPGA_FB_PSWFBKSWC
+			fbdly_ant_addr_s    = Register::FPGA_FB_FBDLY_C
+			apdon_addr_s        = Register::FPGA_PD_APDON_C
+			vt_demo_ofs = 0x0104
+			vt_dly_ofs  = 0x0108
+		when 3 then
+			printf("--- AntD ---\n")
+			demogain_ant_addr_s = Register::FPGA_FB_ANTDEMGAIND
+			powlat_addr_s       = Register::FPGA_FB_POWLATD
+			refsw_addr_s        = Register::FPGA_FB_PSWREFSWD
+			fbksw_addr_s        = Register::FPGA_FB_PSWFBKSWD
+			fbdly_ant_addr_s    = Register::FPGA_FB_FBDLY_D
+			apdon_addr_s        = Register::FPGA_PD_APDON_D
+			vt_demo_ofs = 0x0184
+			vt_dly_ofs  = 0x0188
+
+		else
+			printf("Not supported ANT(%d)\n",antnum)
+			return false
+	end
+	if trgtype == 0 then
+		res_s = Rrh.regread(demogain_addr_s)
+		printf("FB_DEMGAIN(0x%s)  = 0x%s\n",demogain_addr_s.upcase,res_s)	# debug
+		demo_res_s = Rrh.regread(demogain_ant_addr_s)
+		printf("FB_DEMGAIN ANT(0x%s)  = 0x%s\n",demogain_ant_addr_s.upcase,demo_res_s)	# debug
+		res_s = Rrh.regread(swcnt0_addr_s)
+		printf("FB_SWCNT0(0x%s)    = 0x%s\n",swcnt0_addr_s.upcase,res_s)	# debug
+
+		res_s = Rrh.regread(rfsw0_addr_s)
+		printf("FB_RFSW0(0x%s)     = 0x%s\n",rfsw0_addr_s.upcase,res_s)	# debug
+
+		res_s = Rrh.regread(powlat_addr_s)
+		printf("FB_POWLAT(0x%s)   = 0x%s\n",powlat_addr_s.upcase,res_s)	# debug
+		refsw_res_s = Rrh.regread(refsw_addr_s)
+		printf("FB_PSWREFSW(0x%s) = 0x%s\n",refsw_addr_s.upcase,refsw_res_s)
+		fbksw_res_s = Rrh.regread(fbksw_addr_s)
+		printf("FB_PSWFBKSW(0x%s) = 0x%s\n",fbksw_addr_s.upcase,fbksw_res_s)
+		demoval = "000000" + demo_res_s[0..1]
+		if !res = Rrh.tpshmwrite("apde2pTX_vt","",vt_demo_ofs.to_s(16),demoval.to_s(16)) then
+			puts " Virtual Memory Write Error!! #{vt_demo_ofs.to_s(16)} #{demo_res_s[0..0]}"
+			exit(1)
+		end
+		demoval = "000000" + demo_res_s[2..3]
+		vt_demo_ofs = vt_demo_ofs + 1
+		if !res = Rrh.tpshmwrite("apde2pTX_vt","",vt_demo_ofs.to_s(16),demoval.to_s(16)) then
+			puts " Virtual Memory Write Error!! #{vt_demo_ofs.to_s(16)} #{demo_res_s[1..0]}"
+			exit(1)
+		end
+		demoval = "000000" + demo_res_s[4..5]
+		vt_demo_ofs = vt_demo_ofs + 1
+		if !res = Rrh.tpshmwrite("apde2pTX_vt","",vt_demo_ofs.to_s(16),demoval.to_s(16)) then
+			puts " Virtual Memory Write Error!! #{vt_demo_ofs.to_s(16)} #{demo_res_s[1..0]}"
+			exit(1)
+		end
+		demoval = "000000" + demo_res_s[6..7]
+		vt_demo_ofs = vt_demo_ofs + 1
+		if !res = Rrh.tpshmwrite("apde2pTX_vt","",vt_demo_ofs.to_s(16),demoval.to_s(16)) then
+			puts " Virtual Memory Write Error!! #{vt_demo_ofs.to_s(16)} #{demo_res_s[1..0]}"
+			exit(1)
+		end
+		vt_demo_ofs = vt_demo_ofs - 3
+		printf("Virtual write OK offset:0x%s <- val:0x%s \n",vt_demo_ofs.to_s(16).upcase,demo_res_s)
+
+	elsif (trgtype == 1) || (trgtype == 2) then
+		res_s = Rrh.regread(swcnt0_addr_s)
+		printf("FB_SWCNT0(0x%s)    = 0x%s\n",swcnt0_addr_s.upcase,res_s)	# debug
+
+		res_s = Rrh.regread(rfsw0_addr_s)
+		printf("FB_RFSW0(0x%s)     = 0x%s\n",rfsw0_addr_s.upcase,res_s)	# debug
+
+		regval_s = Rrh.regread(itdata_addr_s)
+		printf("ITDATA(%s)         = 0x%s \n",itdata_addr_s.upcase,regval_s)
+		regval_s = Rrh.regread(itmba_addr_s)
+		printf("ITMBA(%s)          = 0x%s \n",itmba_addr_s.upcase,regval_s)
+		regval_s = Rrh.regread(ifbstrmcfg_addr_s)
+		printf("FBSTRMCFG(%s)      = 0x%s \n",ifbstrmcfg_addr_s.upcase,regval_s)
+		regval_s = Rrh.regread(calcmode_addr_s)
+		printf("CALCMODE(%s)       = 0x%s \n",calcmode_addr_s.upcase,regval_s)
+		regval_s = Rrh.regread(it1x_s)
+		printf("IT1X (%s)          = 0x%s \n",it1x_s.upcase,regval_s)
+		regval_s = Rrh.regread(it2x_s)
+		printf("IT2X (%s)          = 0x%s \n",it2x_s.upcase,regval_s)
+		regval_s = Rrh.regread(it3x_s)
+		printf("IT3X (%s)          = 0x%s \n",it3x_s.upcase,regval_s)
+		regval_s = Rrh.regread(fbdly_addr_s)
+		printf("FBDLY(%s)          = 0x%s \n",fbdly_addr_s.upcase,regval_s)
+		ant_dly = Rrh.regread(fbdly_ant_addr_s)
+		printf("    Ant FBDLY(%s)  = 0x%s \n",fbdly_ant_addr_s.upcase,ant_dly)
+		regval_s = Rrh.regread(apdon_addr_s)
+		printf("APDON(%s)          = 0x%s \n",apdon_addr_s.upcase,regval_s)
+
+		ant_dly_val = "000000" + ant_dly[0..1]
+		if !res = Rrh.tpshmwrite("apde2pTX_vt","",vt_dly_ofs.to_s(16),ant_dly_val.to_s(16)) then
+			puts " Virtual Memory Write Error!! #{vt_dly_ofs.to_s(16)} #{ant_dly[0..0]}"
+			exit(1)
+		end
+		ant_dly_val = "000000" + ant_dly[2..3]
+		vt_dly_ofs = vt_dly_ofs + 1
+		if !res = Rrh.tpshmwrite("apde2pTX_vt","",vt_dly_ofs.to_s(16),ant_dly_val.to_s(16)) then
+			puts " Virtual Memory Write Error!! #{vt_dly_ofs.to_s(16)} #{ant_dly[1..0]}"
+			exit(1)
+		end
+		ant_dly_val = "000000" + ant_dly[4..5]
+		vt_dly_ofs = vt_dly_ofs + 1
+		if !res = Rrh.tpshmwrite("apde2pTX_vt","",vt_dly_ofs.to_s(16),ant_dly_val.to_s(16)) then
+			puts " Virtual Memory Write Error!! #{vt_dly_ofs.to_s(16)} #{ant_dly[1..0]}"
+			exit(1)
+		end
+		ant_dly_val = "000000" + ant_dly[6..7]
+		vt_dly_ofs = vt_dly_ofs + 1
+		if !res = Rrh.tpshmwrite("apde2pTX_vt","",vt_dly_ofs.to_s(16),ant_dly_val.to_s(16)) then
+			puts " Virtual Memory Write Error!! #{vt_dly_ofs.to_s(16)} #{ant_dly[1..0]}"
+			exit(1)
+		end
+		vt_dly_ofs = vt_dly_ofs - 3
+		printf("Virtual write OK offset:0x%s <- val:0x%s \n",vt_dly_ofs.to_s(16).upcase,ant_dly)
+	else
+		printf("Not supported type(%d)\n",trgtype)
+	end
+end
+Rrh.unassign()

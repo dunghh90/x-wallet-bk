@@ -1,0 +1,408 @@
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+Rrh.require("./z_global")
+Rrh.require("./apd_delayadjust")
+Rrh.require("./tpshm_access")
+
+Rrh.assign()
+###################################
+### TXANTCAL#X
+###################################
+def self.fn_rxantcal(antnum)
+for cnt in 0..4 do	# 0.5sec wait
+	Rrh.sleep(0,100000000)	# sleep 100ms
+#	printf(". ")
+end
+
+	OFFSET = "00000000"
+	if antnum == 0 then
+		#puts"----------Ant.A-----------"
+		Rrh.regwrite("b13003f8","00000800")
+		
+	elsif antnum == 1 then
+		#puts"----------Ant.B-----------"
+		Rrh.regwrite("b13007f8","00000800")
+
+	elsif antnum == 2 then
+		#puts"----------Ant.C-----------"
+		Rrh.regwrite("b1300bf8","00000800")
+	else
+		#puts"----------Ant.D-----------"
+		Rrh.regwrite("b1300ff8","00000800")
+	end
+
+
+
+	
+	Rrh.sleep(0,10000000)	# sleep 10ms
+	addr_s = Rrh.calc(OFFSET,"+","B0000FD4")
+	Rrh.regwrite(addr_s,"00000001")
+	addr_s = Rrh.calc(OFFSET,"+","B12029FC")
+	Rrh.regwrite(addr_s,"00000027")
+	addr_s = Rrh.calc(OFFSET,"+","B0000FD0")
+	Rrh.regwrite(addr_s,"00008000")
+
+	Rrh.sleep(0,10000000)	# sleep 10ms
+	COUNT =0
+	FBISUM = 0.0
+	FBQSUM = 0.0
+	REFISUM = 0.0
+	REFQSUM = 0.0
+	AMPREFSUM = 0.0
+	AMPFBSUM = 0.0
+	
+	for cnt in 0..4095 do  #4095
+		addr_i = 0x8 * cnt     
+		addr_s = Rrh.calc(addr_i.to_s(16),"+","B0E00000")
+		addr_s = Rrh.calc(addr_s,"+",OFFSET)
+		data_s = Rrh.regread(addr_s)
+		FBIdata_s = Rrh.calc(data_s,"&","FFFF0000") 
+		FBIdata_i = FBIdata_s.to_i(16) / 0x10000
+		if FBIdata_i > 32768 then
+			FBIdata_i = FBIdata_i - 65536
+		end
+	
+		FBQdata_s = Rrh.calc(data_s,"&","0000FFFF") 
+		FBQdata_i = FBQdata_s.to_i(16)
+		if FBQdata_i > 32768 then
+			FBQdata_i = FBQdata_i - 65536
+		end
+
+		addr_i = 0x8 * cnt     
+		addr_s = Rrh.calc(addr_i.to_s(16),"+","B0E00004")
+		addr_s = Rrh.calc(addr_s,"+",OFFSET)
+		data_s = Rrh.regread(addr_s)
+		REFIdata_s = Rrh.calc(data_s,"&","FFFF0000") 
+		REFIdata_i = REFIdata_s.to_i(16) / 0x10000
+		if REFIdata_i > 32768 then
+			REFIdata_i = REFIdata_i - 65536
+		end
+
+		REFQdata_s = Rrh.calc(data_s,"&","0000FFFF") 
+		REFQdata_i = REFQdata_s.to_i(16)
+		if REFQdata_i > 32768 then
+			REFQdata_i = REFQdata_i - 65536
+		end
+		AMPREF = REFIdata_i*REFIdata_i + REFQdata_i * REFQdata_i
+		AMPFB = FBIdata_i*FBIdata_i + FBQdata_i * FBQdata_i
+		if AMPREF > 0 then
+			if AMPFB > 0 then
+				COS = Math.cos(cnt * 2 * (Math::PI) * (-49860) / 245760)
+				SIN = Math.sin(cnt * 2 * (Math::PI) * (-49860) / 245760)
+				
+				FBCOS = FBIdata_i * COS - FBQdata_i * SIN
+				FBSIN = FBIdata_i * SIN + FBQdata_i * COS
+				FBISUM = FBISUM + FBCOS
+				FBQSUM = FBQSUM + FBSIN
+
+				REFCOS = REFIdata_i * COS - REFQdata_i * SIN
+				REFSIN = REFIdata_i * SIN + REFQdata_i * COS
+				REFISUM = REFISUM + REFCOS
+				REFQSUM = REFQSUM + REFSIN
+
+				COUNT =COUNT+1
+				
+				AMPREFSUM = AMPREFSUM + AMPREF
+				AMPFBSUM = AMPFBSUM + AMPFB
+			end
+		end
+			#puts "#{FBIdata_i }, #{FBQdata_i }, #{REFIdata_i }, #{REFQdata_i }, #{COS }, #{SIN }, #{FBCOS }, #{FBSIN }, #{REFCOS }, #{REFSIN }, #{AMPFB }, #{AMPREF }"
+#		#puts "#{THETA }"
+	end
+	if COUNT != 0
+		AMPRATIO = AMPFBSUM / AMPREFSUM
+		#puts "Ant#{antnum } AMPFBSUM = #{AMPFBSUM }"
+		#puts "Ant#{antnum } AMPREFSUM = #{AMPREFSUM }"
+		#puts "Ant#{antnum } AMPFBSUM  / AMPREFSUM = #{AMPRATIO }"
+		if  AMPRATIO < 0.003                   #####LNA故障検出
+			THETAAVE=0.0
+			CALcoef[antnum] = "40000000"		
+			#puts " LNA #{antnum } Error"
+
+		else
+			THETAAVE = Math.atan2((FBISUM * REFQSUM - FBQSUM * REFISUM), (FBISUM * REFISUM + FBQSUM * REFQSUM ) ) 
+			I=0x4000 * Math.cos(THETAAVE)
+			In=I.round
+
+			if In < 0 then
+				In = In + 0x10000
+			end
+			Q=0x4000 * Math.sin(THETAAVE)
+			Qn=Q.round
+			if Qn < 0 then
+				Qn = Qn + 0x10000
+			end
+			coef = In * 0x10000 + Qn
+			CALcoef[antnum] = coef.to_s(16)
+		end
+	else
+		THETAAVE=0.0
+		CALcoef[antnum] = "40000000"
+	end
+	addr_s = Rrh.calc(OFFSET,"+","B12029FC")
+	Rrh.regwrite(addr_s,"00000000")
+
+	if antnum == 0 then
+		Rrh.regwrite("b13003f8","00000000")
+	elsif antnum == 1 then
+		Rrh.regwrite("b13007f8","00000000")
+	elsif antnum == 2 then
+		Rrh.regwrite("b1300bf8","00000000")
+	else
+		Rrh.regwrite("b1300ff8","00000000")
+	end
+	addr_s = Rrh.calc(OFFSET,"+","B0000FD4")
+	Rrh.regwrite(addr_s,"00000000")
+	RXCALPHASE[antnum] = THETAAVE
+	#puts "THETA_#{antnum} = #{THETAAVE} (rad.) , coef_#{antnum} = #{CALcoef[antnum]}"
+	#puts"--------------------------"
+
+
+end
+
+puts "Rx Antenna Calibration Start"
+CALcoef = ['0', '0', '0', '0']
+RXCALPHASE =  ['0', '0', '0', '0']
+
+###################################
+### 初期設定
+###################################
+Rrh.regwrite("A2010000","00000000")
+Rrh.regwrite("A2000904","00000000")
+Rrh.regwrite("A2000900","00000001")
+Rrh.regwrite("B1202000","0F000000")
+Rrh.regwrite("B1000714","00000006")
+Rrh.regwrite("B1000710","00000006")
+Rrh.regwrite("B100071C","00000006")
+Rrh.regwrite("B1000718","00000006")
+Rrh.regwrite("B1000724","00000006")
+Rrh.regwrite("B1000720","00000006")
+Rrh.regwrite("B100072C","00000006")
+Rrh.regwrite("B1000728","00000006")
+Rrh.regwrite("B1000734","0000000B")
+Rrh.regwrite("B1000730","0000001F")
+Rrh.regwrite("B100073C","0000000B")
+Rrh.regwrite("B1000738","0000001F")
+Rrh.regwrite("B1000744","00000081")
+Rrh.regwrite("B1000740","0000008F")
+Rrh.regwrite("B100074C","00000001")
+Rrh.regwrite("B1000748","0000000F")
+Rrh.regwrite("B1000754","00000001")
+Rrh.regwrite("B1000750","0000000F")
+Rrh.regwrite("B100075C","00000001")
+Rrh.regwrite("B1000758","0000000F")
+Rrh.regwrite("B1000764","00000021")
+Rrh.regwrite("B1000760","00000037")
+Rrh.regwrite("B100076C","00000003")
+Rrh.regwrite("B1000768","00000037")
+Rrh.regwrite("B1202950","0000BB00")
+Rrh.regwrite("B1202960","00000000")
+Rrh.regwrite("B1202948","20002000")
+###################################
+### PAOFF 設定
+###################################
+Rrh.regbitoff("A0000020","00000001")
+
+
+###################################
+### ANTA CAL設定
+###################################
+Rrh.regwrite("B1000764","00000021")
+Rrh.regwrite("B1000760","00000037")
+Rrh.regwrite("B1202800","00000000")
+
+
+###################################
+### 送信設定
+###################################
+Rrh.regwrite("B1100144","00004F21")
+Rrh.regwrite("B1100140","00000001")
+Rrh.regwrite("B1100544","00000000")
+Rrh.regwrite("B1100580","00000001")
+Rrh.regwrite("B1100944","00000000")
+Rrh.regwrite("B1100940","00000001")
+Rrh.regwrite("B1100D44","00000000")
+Rrh.regwrite("B1100D40","00000001")
+Rrh.regwrite("B1100010","00000009")
+Rrh.regwrite("B1100220","00000CFC")
+Rrh.regwrite("B1100240","02000C0F")
+Rrh.regwrite("B1100244","02000C0F")
+Rrh.regwrite("B1100280","00000C0F")
+Rrh.regwrite("B1000040","00000003")
+Rrh.regwrite("B1100000","00000001")
+Rrh.regwrite("B1100410","00000009")
+Rrh.regwrite("B1100620","00000CFC")
+Rrh.regwrite("B1100640","02000C0F")
+Rrh.regwrite("B1100644","02000C0F")
+Rrh.regwrite("B1100680","00000C0F")
+Rrh.regwrite("B1100400","00000001")
+Rrh.regwrite("B1000044","00000003")
+Rrh.regwrite("B1100A20","00000CFC")
+Rrh.regwrite("B1100A40","02000C0F")
+Rrh.regwrite("B1100A44","02000C0F")
+Rrh.regwrite("B1100A80","00000C0F")
+Rrh.regwrite("B1100800","00000001")
+Rrh.regwrite("B1000048","00000003")
+Rrh.regwrite("B1100E20","00000CFC")
+Rrh.regwrite("B1100E40","02000C0F")
+Rrh.regwrite("B1100E44","02000C0F")
+Rrh.regwrite("B1100E80","00000C0F")
+Rrh.regwrite("B1100C00","00000001")
+Rrh.regwrite("B100004C","00000003")
+Rrh.regwrite("B1000000","00000001")
+for cnt in 0..4 do	# 0.5sec wait
+	Rrh.sleep(0,100000000)	# sleep 100ms
+#	printf(". ")
+end
+
+###################################
+### ANTA キャプチャ
+###################################
+fn_rxantcal(0)
+
+###################################
+### ANTC CAL設定
+###################################
+Rrh.regwrite("B1000764","00000023")
+Rrh.regwrite("B1000760","00000037")
+Rrh.regwrite("B1202800","00000002")
+
+
+###################################
+### ANTC キャプチャ
+###################################
+fn_rxantcal(2)
+
+###################################
+### ANTB CAL設定
+###################################
+Rrh.regwrite("B1000764","00000024")
+Rrh.regwrite("B1000760","00000037")
+Rrh.regwrite("B1202800","00000001")
+
+
+###################################
+### ANTB キャプチャ
+###################################
+fn_rxantcal(1)
+
+###################################
+### ANTD CAL設定
+###################################
+Rrh.regwrite("B1000764","00000022")
+Rrh.regwrite("B1000760","00000037")
+Rrh.regwrite("B1202800","00000003")
+
+
+###################################
+### ANTD キャプチャ
+###################################
+fn_rxantcal(3)
+
+###################################
+### 送信停止
+###################################
+Rrh.regwrite("B1100144","00000000")
+Rrh.regwrite("B1100140","00000000")
+Rrh.regwrite("B1100544","00000000")
+Rrh.regwrite("B1100580","00000000")
+Rrh.regwrite("B1100944","00000000")
+Rrh.regwrite("B1100940","00000000")
+Rrh.regwrite("B1100D44","00000000")
+Rrh.regwrite("B1100D40","00000000")
+Rrh.regwrite("B1100010","00000000")
+Rrh.regwrite("B1100220","00000000")
+Rrh.regwrite("B1100240","02000C00")
+Rrh.regwrite("B1100244","02000C00")
+Rrh.regwrite("B1100280","00000C00")
+
+Rrh.regwrite("B1100000","00000000")
+Rrh.regwrite("B1100410","00000000")
+Rrh.regwrite("B1100620","00000000")
+Rrh.regwrite("B1100640","00000000")
+Rrh.regwrite("B1100644","00000000")
+Rrh.regwrite("B1100680","00000000")
+Rrh.regwrite("B1100400","00000000")
+
+Rrh.regwrite("B1100A20","00000000")
+Rrh.regwrite("B1100A40","00000000")
+Rrh.regwrite("B1100A44","00000000")
+Rrh.regwrite("B1100A80","00000000")
+Rrh.regwrite("B1100800","00000000")
+
+Rrh.regwrite("B1100E20","00000000")
+Rrh.regwrite("B1100E40","00000000")
+Rrh.regwrite("B1100E44","00000000")
+Rrh.regwrite("B1100E80","00000000")
+Rrh.regwrite("B1100C00","00000000")
+
+Rrh.regwrite("B1000000","00000000")
+for cnt in 0..4 do	# 0.5sec wait
+	Rrh.sleep(0,100000000)	# sleep 100ms
+#	printf(". ")
+end
+
+
+
+###################################
+### RXCAL終了設定
+###################################
+Rrh.regwrite("A2010000","00000000")
+Rrh.regwrite("A2000904","00000000")
+Rrh.regwrite("A2000900","00000000")
+Rrh.regwrite("B1202000","00000000")
+Rrh.regwrite("B1000714","00000000")
+Rrh.regwrite("B1000710","00000000")
+Rrh.regwrite("B100071C","00000000")
+Rrh.regwrite("B1000718","00000000")
+Rrh.regwrite("B1000724","00000000")
+Rrh.regwrite("B1000720","00000000")
+Rrh.regwrite("B100072C","00000000")
+Rrh.regwrite("B1000728","00000000")
+Rrh.regwrite("B1000734","00000000")
+Rrh.regwrite("B1000730","00000000")
+Rrh.regwrite("B100073C","00000000")
+Rrh.regwrite("B1000738","00000000")
+Rrh.regwrite("B1000744","00000000")
+Rrh.regwrite("B1000740","00000000")
+Rrh.regwrite("B100074C","00000000")
+Rrh.regwrite("B1000748","00000000")
+Rrh.regwrite("B1000754","00000000")
+Rrh.regwrite("B1000750","00000000")
+Rrh.regwrite("B100075C","00000000")
+Rrh.regwrite("B1000758","00000000")
+Rrh.regwrite("B1000764","00000000")
+Rrh.regwrite("B1000760","00000000")
+Rrh.regwrite("B100076C","00000000")
+Rrh.regwrite("B1000768","00000000")
+Rrh.regwrite("B1202950","00000000")
+Rrh.regwrite("B1202948","00000000")
+
+
+###################################
+### PAON 設定
+###################################
+Rrh.regbiton("A0000020","00000001")
+Rrh.regwrite("A2000900","00000000")
+Rrh.regwrite("A2010000","00000001")
+Rrh.regwrite("B1000000","00000001")
+
+###################################
+### CAL係数表示
+###################################
+#puts "Ant.A : #{CALcoef[0]}  #{RXCALPHASE[0] * 180 / (Math::PI)}"
+#puts "Ant.B : #{CALcoef[1]}  #{RXCALPHASE[1] * 180 / (Math::PI)}"
+#puts "Ant.C : #{CALcoef[2]}  #{RXCALPHASE[2] * 180 / (Math::PI)}"
+#puts "Ant.D : #{CALcoef[3]}  #{RXCALPHASE[3] * 180 / (Math::PI)}"
+
+Rrh.set_calphase(1,0,RXCALPHASE[0].to_s)
+Rrh.set_calphase(1,1,RXCALPHASE[1].to_s)
+Rrh.set_calphase(1,2,RXCALPHASE[2].to_s)
+Rrh.set_calphase(1,3,RXCALPHASE[3].to_s)
+
+
+puts "Rx Antenna Calibration End"
+Rrh.unassign()
+
+

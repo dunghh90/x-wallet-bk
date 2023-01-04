@@ -1,0 +1,55 @@
+#
+# failsafe function on/off
+# rrh -failsafe
+#
+# @date		2018/08/24 KCN) wang êVãK
+
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+Rrh.require("./z_global")
+
+# usage
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <dat>",
+ "(m):<dat>  is 0:off, 1:on"
+ exit(1)
+end
+
+Rrh.assign()
+
+#---------------------------------------------------------------------
+# Main
+#---------------------------------------------------------------------
+	dat_s = ARGV[0]
+	dat_i = dat_s.to_i(16)
+
+	if dat_i == 0 then
+		# falsefe OFF
+		data_s = Rrh.regread("B1202C0C")
+		data_s = Rrh.calc(data_s,"&","FFFFFFF0")
+		Rrh.regwrite("B1202C0C", data_s)
+		data_s = Rrh.regread("B3202C0C")
+		data_s = Rrh.calc(data_s,"&","FFFFFFF0")
+		Rrh.regwrite("B3202C0C", data_s)
+	else
+		# falsefe ON
+		data_s = Rrh.regread("B1202C00")	# read clear
+		data_s = Rrh.regread("B1202C00")	# read clear
+		data_s = Rrh.regread("B1202C00")	# read clear
+		data_s = Rrh.regread("B1202C00")	# read clear
+		data_s = Rrh.regread("B1202C0C")
+		data_s = Rrh.calc(data_s,"&","FFFFFFF0")
+		data_s = Rrh.calc(data_s,"+","00000002")
+		Rrh.regwrite("B1202C0C", data_s)
+		data_s = Rrh.regread("B3202C00")	# read clear
+		data_s = Rrh.regread("B3202C00")	# read clear
+		data_s = Rrh.regread("B3202C00")	# read clear
+		data_s = Rrh.regread("B3202C00")	# read clear
+		data_s = Rrh.regread("B3202C0C")
+		data_s = Rrh.calc(data_s,"&","FFFFFFF0")
+		data_s = Rrh.calc(data_s,"+","00000002")
+		Rrh.regwrite("B3202C0C", data_s)
+	end
+
+Rrh.unassign()

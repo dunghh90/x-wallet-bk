@@ -1,0 +1,162 @@
+# 
+# FAN infomation display(5G-商用DU)
+# rrh -fanmon
+# 
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+if ARGV.length > 0 then
+  if ARGV[0] == "ALL" then
+    dbgF_i = 2
+    puts "shared memory ALL monitor"
+    puts " "
+  else
+    dbgF_i = 1
+    puts "register monitor"
+    puts " "
+  end
+else
+  dbgF_i = 0
+end
+
+Rrh.assign()
+#レジスタ情報取得
+if(dbgF_i == 1) then
+  
+  #FAN Fault状態読出
+  reg_s = Rrh.regread( "A0000200")
+  
+  #FAN Mount
+  if((reg_s.to_i(16) & 0x01000000) != 0) then
+    puts "  FAN Mount ST     : Unmount"
+  else
+    puts "  FAN Mount ST     : Mount"
+  end
+  
+  #FAN PS Fault
+  if((reg_s.to_i(16) & 0x00000002) != 0) then
+    puts "  FAN Power ALM ST : Fault"
+  else
+    puts "  FAN Power ALM ST : Normal"
+  end
+  
+  #FAN1回転数
+  speed_s =  Rrh.regread( "A00003C0" )
+  rpm_i = speed_s.to_i(16)*30
+  percent_f = rpm_i/38
+  puts "  FAN#1 speed : #{rpm_i}(rpm) / #{percent_f.to_i}(%)"
+  
+  #FAN2回転数
+  speed_s =  Rrh.regread( "A00003C4" )
+  rpm_i = speed_s.to_i(16)*30
+  percent_f = rpm_i/38
+  puts "  FAN#2 speed : #{rpm_i}(rpm) / #{percent_f.to_i}(%)"
+  
+  #FAN3回転数
+  speed_s =  Rrh.regread( "A00003C8" )
+  rpm_i = speed_s.to_i(16)*30
+  percent_f = rpm_i/38
+  puts "  FAN#3 speed : #{rpm_i}(rpm) / #{percent_f.to_i}(%)"
+
+#共有メモリの全情報取得
+elsif(dbgF_i == 2) then
+  #FANデバッグモード
+  str_s = Rrh.getFanInfo( "fandbgf")
+  if(str_s.to_i(16) == 0) then
+    puts "  FAN ctrl mode    : Normal"
+  else
+    puts "  FAN ctrl mode    : debug"
+  end
+  
+  #FANユニットFault状態読出
+  str_s = Rrh.getFanInfo( "unitSts")
+  
+  #FAN Mount
+  if((str_s.to_i(16) & 1) != 0) then
+    puts "  FAN Mount ST     : Unmount"
+  else
+    puts "  FAN Mount ST     : Mount"
+  end
+  
+  #FAN PS Fault
+  if((str_s.to_i(16) & 2) != 0) then
+    puts "  FAN Power ALM ST : Fault"
+  else
+    puts "  FAN Power ALM ST : Normal"
+  end
+  
+  #FAN回転数状態
+  str_s = Rrh.getFanInfo( "fansFlt")
+  if((str_s.to_i(16) & 1) != 0) then
+    puts "  FAN#1 speed ST  : Fault"
+  else
+    puts "  FAN#1 speed ST  : normal"
+  end
+  if((str_s.to_i(16) & 2) != 0) then
+    puts "  FAN#2 speed ST  : Fault"
+  else
+    puts "  FAN#2 speed ST  : normal"
+  end
+  if((str_s.to_i(16) & 4) != 0) then
+    puts "  FAN#3 speed ST  : Fault"
+  else
+    puts "  FAN#3 speed ST  : normal"
+  end
+  
+  #FAN1回転数
+  str_s = Rrh.getFanInfo( "f1Speed")
+  rpm_i = str_s.to_i(16)*30
+  percent_f = rpm_i/38
+  puts "  FAN#1 speed : #{rpm_i}(rpm) / #{percent_f.to_i}(%) / reg : #{str_s.to_i(16)}"
+  
+  #FAN2回転数
+  str_s = Rrh.getFanInfo( "f2Speed")
+  rpm_i = str_s.to_i(16)*30
+  percent_f = rpm_i/38
+  puts "  FAN#2 speed : #{rpm_i}(rpm) / #{percent_f.to_i}(%) / reg : #{str_s.to_i(16)}"
+  
+  #FAN3回転数
+  str_s = Rrh.getFanInfo( "f3Speed")
+  rpm_i = str_s.to_i(16)*30
+  percent_f = rpm_i/38
+  puts "  FAN#3 speed : #{rpm_i}(rpm) / #{percent_f.to_i}(%) / reg : #{str_s.to_i(16)}"
+
+#共有メモリ情報取得
+else
+  #FAN Fault状態読出
+  str_s = Rrh.getFanInfo( "unitSts")
+  
+  #FAN Mount
+  if((str_s.to_i(16) & 1) != 0) then
+    puts "  FAN Mount ST     : Unmount"
+  else
+    puts "  FAN Mount ST     : Mount"
+  end
+  
+  #FAN PS Fault
+  if((str_s.to_i(16) & 2) != 0) then
+    puts "  FAN Power ALM ST : Fault"
+  else
+    puts "  FAN Power ALM ST : Normal"
+  end
+  
+  #FAN1回転数
+  str_s = Rrh.getFanInfo( "f1Speed")
+  rpm_i = str_s.to_i(16)*30
+  percent_f = rpm_i/38
+  puts "  FAN#1 speed : #{rpm_i}(rpm) / #{percent_f.to_i}(%)"
+  
+  #FAN2回転数
+  str_s = Rrh.getFanInfo( "f2Speed")
+  rpm_i = str_s.to_i(16)*30
+  percent_f = rpm_i/38
+  puts "  FAN#2 speed : #{rpm_i}(rpm) / #{percent_f.to_i}(%)"
+  
+  #FAN3回転数
+  str_s = Rrh.getFanInfo( "f3Speed")
+  rpm_i = str_s.to_i(16)*30
+  percent_f = rpm_i/38
+  puts "  FAN#3 speed : #{rpm_i}(rpm) / #{percent_f.to_i}(%)"
+
+end
+Rrh.unassign()

@@ -1,0 +1,80 @@
+
+#QMOD(ADMV1014)レジスタ読み込み
+#第1引数(hex): 0: Tx1(Ant.A ) 1: Tx2(Ant.B) or all
+#20180730新規作成 若水
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./tpshm_access")
+
+#パラメータ確認
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <Ant.A/Ant.B/all>",
+ "(m):<Ant.A/Ant.B> is ant num(0=A 1=B or all)"
+ raise 
+end
+
+
+ant_s = ARGV[0]
+
+MAX = 1
+Rrh.assign()
+
+if ant_s == "all" then
+	addr = 0x020
+	
+	for ant in 0..MAX
+		if (data1_s = Rrh.tpshmread("apde2pRX_vt_mmw","",addr.to_s(16))) == false then
+			puts "Shard Memory Read error No.1"
+			exit(1)
+		end
+		addr = addr + 1
+		if (data2_s = Rrh.tpshmread("apde2pRX_vt_mmw","",addr.to_s(16))) == false then
+			puts "Shard Memory Read error No.2"
+			exit(1)
+		else
+			data = (data1_s.to_i(16) * 256) + data2_s.to_i(16)
+			case ant
+				when 0
+					ant_X = "Ant-A"
+				when 1
+					ant_X = "Ant-B"
+			end
+			puts "#{ant_X} = #{data.to_s(16)}"
+		end
+		addr = 0x022
+	end
+
+else
+	if ant_s.to_i > MAX then
+		puts "Input value is incorrect : <ant>"
+		exit(1)
+	end
+	
+	if ant_s.to_i == 0 then
+		addr = 0x020
+	else
+		addr = 0x022
+	end
+	
+	if (data1_s = Rrh.tpshmread("apde2pRX_vt_mmw","",addr.to_s(16))) == false then
+		puts "Shard Memory Read error No.1"
+	end
+	addr = addr + 1
+	if (data2_s = Rrh.tpshmread("apde2pRX_vt_mmw","",addr.to_s(16))) == false then
+		puts "Shard Memory Read error No.2"
+	else
+		data = (data1_s.to_i(16) * 256) + data2_s.to_i(16)
+		case ant_s
+			when "0"
+				ant_X = "Ant-A"
+			when "1"
+				ant_X = "Ant-B"
+		end
+		puts "#{ant_X} = #{data.to_s(16)}"
+	end
+end
+
+
+Rrh.unassign()

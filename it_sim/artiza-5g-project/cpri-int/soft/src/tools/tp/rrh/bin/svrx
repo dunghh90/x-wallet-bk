@@ -1,0 +1,238 @@
+#
+# svrx
+# rrh -svrx <ant> <param0> <param1> <param2> <param3>
+#
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+Rrh.require("./z_global")
+Rrh.require("./sveep")
+Rrh.require("./input_check")
+Rrh.require("./tpshm_access")
+#Rrh.dmsg(1)
+# usage
+if ARGV.length < 1 then
+	puts "[SUB6]",
+	    "usage:"+$0+" <ant/all>",
+	"(m):<ant/all> is ant num (all)",
+	    "[mmW]",
+	    "usage:"+$0+" <ant/all> <param> <mode>",
+	    "(m):<ant/all> is ant num (all)",
+	    "(m):<param> is Parameter (0:QMOD/1:RXVATT/2:QMOD_DAC or all)"
+	exit(1)
+end
+
+Rrh.assign()
+def self.fn_talise_getRxGain(antnum)
+	case antnum 
+		when 0 then
+			unit_rx = "0 1"
+		when 1 then
+			unit_rx = "0 2"
+		when 2 then
+			unit_rx = "1 1"
+		when 3 then
+			unit_rx = "1 2"
+		else
+			return false
+	end
+	cmd = "rrh -talise_getRxGain"
+	allcmd = cmd + " " + unit_rx + " " + "1>/dev/null 2>/dev/null"
+	if Rrh.system(allcmd) != 0 then
+		puts "command error #{allcmd}"
+		return false
+	end
+	return true
+end
+
+def self.fn_sub6_saveRx(antnum)
+	ret = fn_talise_getRxGain(antnum)
+	if ret == false then
+		return false
+	end
+	case antnum
+		when 0 then
+			ant_ofs_str = "00000000"
+		when 1 then
+			ant_ofs_str = "00000040"
+		when 2 then
+			ant_ofs_str = "00000080"
+		when 3 then
+			ant_ofs_str = "000000C0"
+		else
+			puts "Ant num error #{antnum}"
+			return false
+	end
+	if (gain = Rrh.tpshmread("apde2pRX_vt","",ant_ofs_str)) == false then
+		puts "VM Read error #{ant_ofs_str}"
+		return false
+	end
+
+	if Rrh.update_RXparam(antnum, gain.to_i(16)) == false then
+		puts "TR update error #{antnum} #{gain.to_i(16)}"
+		return false
+	end
+
+	printf("sub6 ant%d RxParam(0x%s) Save Complete \n",antnum,gain)
+	return true
+end
+
+def self.fn_mmw_saveRx(antnum,param_num)
+	case antnum
+		when 0 then
+			case param_num
+				when 0 then
+					vt_offs = 0x010
+					vt_size = 2
+					v_flg_ofs = 0x39
+				when 1 then
+					vt_offs = 0x018
+					vt_size = 1
+					v_flg_ofs = 0x3B
+				when 2 then
+					vt_offs = 0x020
+					vt_size = 2
+					v_flg_ofs = 0x3D
+				else
+					puts "param num error #{param_num}"
+					return false
+			end
+		when 1 then
+			case param_num
+				when 0 then
+					vt_offs = 0x012
+					vt_size = 2
+					v_flg_ofs = 0x3A
+				when 1 then
+					vt_offs = 0x019
+					vt_size = 1
+					v_flg_ofs = 0x3C
+				when 2 then
+					vt_offs = 0x022
+					vt_size = 1
+					v_flg_ofs = 0x3E
+				else
+					puts "param num error #{param_num}"
+					return false
+			end
+		else
+			puts "Ant num error #{antnum}"
+			return false
+	end
+# FLG off
+	rf_eep_offs = 0x600
+	high_val = "00000000"
+	low_val  = "00000000"
+	
+	if (high_val = Rrh.tpshmread("apde2pRX_vt_mmw","",vt_offs.to_s(16))) == false then
+		puts "VM Read error #{vt_offs.to_s(16)}"
+		return false
+	end
+	if vt_size > 1 then
+		low_offs = vt_offs + 1
+		if (low_val = Rrh.tpshmread("apde2pRX_vt_mmw","",low_offs.to_s(16))) == false then
+			puts "VM Read error #{low_offs.to_s(16)}"
+			return false
+		end
+		total_val = "0000" + high_val[6..7] + low_val[6..7]
+		if Rrh.calc(total_val,"&","0000ffff") == "0000ffff" then
+			puts "Value Not updated yet #{total_val}"
+			return false
+		end
+	else
+		if Rrh.calc(high_val,"&","000000ff") == "000000ff" then
+			puts "Value was not updated yet #{high_val}"
+			return false
+		end
+	end
+
+	if (ret = Rrh.rfewrite(v_flg_ofs , 0 )) == false then
+		puts "RF eep write error 0x#{v_flg_ofs} off"
+		return false
+	end
+
+	eep_offs = rf_eep_offs + vt_offs
+	if (ret = Rrh.rfewrite(eep_offs , high_val.to_i(16) )) == false then
+		puts "RF eep write error 0x#{eep_offs} 0x#{high_val.to_i(16)} "
+		return false
+	end
+	if vt_size > 1 then
+		vt_offs = vt_offs + 1
+		eep_offs = rf_eep_offs + vt_offs
+		if (ret = Rrh.rfewrite(eep_offs , low_val.to_i(16) )) == false then
+			puts "RF eep write error 0x#{rf_eep_offs} 0x#{low_val.to_i(16)} "
+			return false
+		end
+	end
+	if (ret = Rrh.rfewrite(v_flg_ofs , 1 )) == false then
+		puts "RF eep write error 0x#{v_flg_ofs} On "
+		return false
+	end
+	printf("mmW ant%d RxParam(%s%s) Save Complete \n",antnum,high_val[6..7],low_val[6..7])
+	return true
+end
+
+if !res = Rrh.eepread(0x40) then
+	puts "eep read error"
+else
+	case res
+		when "13"
+			kind = "sub6"
+			ant_s = ARGV[0]
+		when "14"
+			kind = "mmw"
+			if ARGV.length < 2 then
+				puts "Input param error #{ARGV.length}"
+				exit(1)
+			end
+			ant_s   = ARGV[0]
+			param_s = ARGV[1]
+		else
+			puts "kind num error"
+			exit(1)
+	end
+end
+
+if ant_s.downcase != "all" then
+	puts "Input param ant error"
+	exit(1)
+end
+
+if kind == "sub6" then
+	for antnum in 0..3
+		ret = fn_sub6_saveRx(antnum)
+		if ret == false then
+			exit(1)
+		end
+	end
+	if Rrh.svvsrx() == false then
+		puts "EEP update error "
+		exit(1)
+	end
+	printf("CRC saved \n")
+else
+	if param_s == "all" then
+		for antnum in 0..1
+			for paranum in 0..2
+				ret = fn_mmw_saveRx(antnum,paranum)
+				if ret == false then
+					exit(1)
+				end
+			end
+		end
+	else
+		for antnum in 0..1
+			ret = fn_mmw_saveRx(antnum,param_s.to_i(16))
+			if ret == false then
+				exit(1)
+			end
+		end
+	end
+
+	if Rrh.svvsrx_rf_n() == false then
+		puts "EEP update error "
+		exit(1)
+	end
+	printf("CRC saved \n")
+end
+Rrh.unassign()

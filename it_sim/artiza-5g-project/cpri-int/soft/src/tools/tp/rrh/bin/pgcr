@@ -1,0 +1,32 @@
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+if ARGV.length < 2 then
+ puts "usage:"+$0+" <grp> <txrx> ",
+ "(m):<grp> is device group(1-8)",
+ "(m):<txrx> is tx:1,rx:2"
+ exit(1) 
+end
+
+grp_s = ARGV[0]
+txrx_s = ARGV[1]
+
+#inparaチェック
+
+if grp_s.to_i > 8 or grp_s.to_i < 1 then
+ puts "Input value is incorrect : <grp(1-8)>"
+ exit(1) 
+end
+
+if txrx_s.to_i > 2 or txrx_s.to_i < 1 then
+ puts "Input value is incorrect : <txrx(1-2)>"
+ exit(1) 
+end
+
+Rrh.assign()
+if !res = Rrh.pgcread( grp_s.to_i , txrx_s.to_i) then
+ puts "pgc read error"
+end
+
+Rrh.unassign()

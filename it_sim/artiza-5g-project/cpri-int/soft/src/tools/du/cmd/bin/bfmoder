@@ -1,0 +1,11 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+bfmode = Rrh.get_shmcm("bfmode")
+if bfmode.to_i(16) == 0 then
+		puts "BF Mode = Non Beamforming mode"
+	else
+		puts "BF Mode = Beamforming mode"
+	end
+end

@@ -1,0 +1,111 @@
+Rrh.require("./verbose")
+Rrh.require("./dac_module")
+
+puts "PA Gatebias DAC set Start ..."
+
+Rrh.assign()
+
+	# Pa Gatebias
+	# PAFA_A
+	txanth0 = Rrh.eepread(0x412)
+	txanth1 = Rrh.eepread(0x413)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(0, txanth_s, 0) == false then
+		printf(" Timeout PAFA_A \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+	# PAFA_B
+	txanth0 = Rrh.eepread(0x472)
+	txanth1 = Rrh.eepread(0x473)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(1, txanth_s, 0) == false then
+		printf(" Timeout PAFA_B \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+	# PAFA_C
+	txanth0 = Rrh.eepread(0x4D2)
+	txanth1 = Rrh.eepread(0x4D3)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(2, txanth_s, 0) == false then
+		printf(" Timeout PAFA_C \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+
+	# PAFA_D
+	txanth0 = Rrh.eepread(0x532)
+	txanth1 = Rrh.eepread(0x533)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(3, txanth_s, 0) == false then
+		printf(" Timeout PAFA_C \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+
+	# PAFA_E
+	txanth0 = Rrh.eepread(0x592)
+	txanth1 = Rrh.eepread(0x593)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(4, txanth_s, 1) == false then
+		printf(" Timeout PAFA_E \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+	# PAFA_F
+	txanth0 = Rrh.eepread(0x5F2)
+	txanth1 = Rrh.eepread(0x5F3)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(5, txanth_s, 1) == false then
+		printf(" Timeout PAFA_F \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+	# PAFA_G
+	txanth0 = Rrh.eepread(0x652)
+	txanth1 = Rrh.eepread(0x653)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(6, txanth_s, 1) == false then
+		printf(" Timeout PAFA_G \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+
+	# PAFA_H
+	txanth0 = Rrh.eepread(0x6B2)
+	txanth1 = Rrh.eepread(0x6B3)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(7, txanth_s, 1) == false then
+		printf(" Timeout PAFA_H \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+
+Rrh.unassign()
+exit(0)
+

@@ -1,0 +1,848 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+Rrh.require("./sveep")
+
+# usage
+if ARGV.length < 1 then
+    puts "[SUB6]",
+        "usage:"+$0+" <ant/all>",
+        "(m):<ant/all> is ant num (0~3 or all)",
+        "[mmW]",
+        "usage:"+$0+" <ant/all> <param> <mode>",
+        "(m):<ant/all> is ant num (0~1 or all)",
+        "(m):<param> is Parameter (0:QMOD/1:TXVATT/2:QMOD_DAC or all)"
+    exit(1)
+end
+
+ant_s = ARGV[0]
+
+Rrh.assign()
+def self.fn_talise_getObsRxGain(unitnum)
+	case unitnum 
+		when 0 then
+			unit_rx = "0 1"
+		when 1 then
+			unit_rx = "1 1"
+		else
+			return false
+	end
+	cmd = "rrh -talise_getObsRxGain"
+	allcmd = cmd + " " + unit_rx + " " + "1>/dev/null 2>/dev/null"
+	if Rrh.system(allcmd) != 0 then
+		puts "command error #{allcmd}"
+		allcmd = cmd + " " + unit_rx
+		Rrh.system(allcmd)
+		return false
+	end
+	return true
+end
+
+
+addr_eep = 64
+if !res = Rrh.eepread(addr_eep.to_i(16)) then
+    puts "eep read error"
+else
+    case res
+    when "13"
+        kind = "BPF_HM_DEVC_SUB6"
+    when "14"
+        kind = "BPF_HM_DEVC_MMW"
+        param_s = ARGV[1]
+		if !(param_s == "all") then
+		    if param_s.to_i > 2 then
+		        puts "Input value is incorrect : <param>"
+		        raise
+		    end
+		end
+    else
+        puts "kind num error"
+        exit(1)
+    end
+end
+
+#想定外の値NG
+#アンテナ数
+if !(ant_s == "all") then
+   puts "Input value is incorrect : <ant>"
+   raise
+end
+
+#パラメータ
+
+
+
+#mmW 0~1 sub6 0~3
+
+if kind == "BPF_HM_DEVC_SUB6" then
+    MAX = 3
+    fpga_rfgain = 0xB12000E0
+    fpga_demgain = 0xB1203048
+    fpga_dly = 0xB1203050
+    fpga_mcgain = 0xB12000D0
+    rfgain = 0x00
+    demgainq = 0x04
+    demgaini = 0x06
+    dlyclk = 0x08
+    dlyfli = 0x0A
+    mcgain = 0x02
+    vattdac = 0x0e
+    rtngain_q = 0x14
+    rtngain_i = 0x16
+    fpga_rtngain = 0xB1203074
+
+	for ant in 0..MAX
+	   addr = fpga_rfgain + ( ant * 0x400 )
+	   if (rfgain1 = Rrh.regread(addr.to_s(16))) == false then
+	       puts" RF-GAIN FPGA Register Read Error "
+	       exit(1)
+	   end
+	
+	   addr = fpga_mcgain + ( ant * 0x400 )
+	   if (mcgain1 = Rrh.regread(addr.to_s(16))) == false then
+	       puts" MC-GAIN FPGA Register Read Error "
+	       exit(1)
+	   end
+	
+	   addr = fpga_demgain + ( ant * 0x400 )
+	   if (demgain1 = Rrh.regread(addr.to_s(16))) == false then
+	       puts" DEM-GAIN FPGA Register Read Error "
+	       exit(1)
+	   end
+	
+	   addr = fpga_dly + ( ant * 0x400 )
+	   if (dlyclk1 = Rrh.regread(addr.to_s(16))) == false then
+	       puts" FB-DELY FPGA Register Read Error "
+	       exit(1)
+	   end
+
+	   addr = fpga_rtngain + ( ant * 0x400 )
+	   if (rtngain1 = Rrh.regread(addr.to_s(16))) == false then
+	       puts" RTNGAIN FPGA Register Read Error "
+	       exit(1)
+	   end
+
+
+	    addr = vattdac + ( ant * 0x80 )
+	    if (vattdac1 = Rrh.tpshmread("apde2pTX_vt","",addr.to_s(16))) == false then
+	        puts" FWVATT-DAC Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (vattdac2 = Rrh.tpshmread("apde2pTX_vt","",addr.to_s(16))) == false then
+	        puts" FWVATT-DAC Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    #これを共有メモリに保存
+	    addr = rfgain + ( ant * 0x80 )
+	    rfgain1_s = rfgain1[4..5]
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), rfgain1_s) then
+	        puts "RF-GAIN Vertual Shard Memory Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    rfgain2 = rfgain1[6..7]
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), rfgain2) then
+	        puts "RF-GAIN Vertual Shard Memory Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = demgainq + ( ant * 0x80 )
+	    demgainq1 = demgain1[4..5]
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), demgainq1) then
+	        puts "DEM-GAIN_BitQ Vertual Shard Memory Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    demgainq2 = demgain1[6..7]
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), demgainq2) then
+	        puts "DEM-GAIN_BitQ Vertual Shard Memory Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = demgaini + ( ant * 0x80 )
+	    demgaini1 = demgain1[0..1]
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), demgaini1) then
+	        puts "DEM-GAIN_BitI Vertual Shard Memory Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    demgaini2 = demgain1[2..3]
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), demgaini2) then
+	        puts "DEM-GAIN_BitI Vertual Shard Memory Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = dlyclk + ( ant * 0x80 )
+	    dlyclk1_s = dlyclk1[2..3]
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), dlyclk1_s) then
+	        puts "FB-DELY_CLK Vertual Shard Memory Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    dlyclk2 = dlyclk1[4..5]
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), dlyclk2) then
+	        puts "FB-DELY_CLK Vertual Shard Memory Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = dlyfli + ( ant * 0x80 )
+	    addr = addr + 1
+	    dlyfli2_i = dlyclk1[6..7].to_i(16)
+	    dlyfli2_i = dlyfli2_i >> 1
+	    dlyfli2 = dlyfli2_i.to_s(16)
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), dlyfli2) then
+	        puts "FB-DELY_FLI Vertual Shard Memory Write Error No.2"
+	        exit(1)
+	    end
+
+	    addr = rtngain_q + ( ant * 0x80 )
+	    rtngain_q_s = rtngain1[0..1]
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), rtngain_q_s) then
+	        puts "FBANT_VSWR_RTNGAIN Q Vertual Shard Memory Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    rtngain_q_s = rtngain1[2..3]
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), rtngain_q_s) then
+	        puts "FBANT_VSWR_RTNGAIN Q Vertual Shard Memory Write Error No.2"
+	        exit(1)
+	    end
+
+	    addr = rtngain_i + ( ant * 0x80 )
+	    rtngain_i_s = rtngain1[4..5]
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), rtngain_i_s) then
+	        puts "FBANT_VSWR_RTNGAIN I Vertual Shard Memory Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    rtngain_i_s = rtngain1[6..7]
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), rtngain_i_s) then
+	        puts "FBANT_VSWR_RTNGAIN I Vertual Shard Memory Write Error No.2"
+	        exit(1)
+	    end
+
+	    addr = mcgain + ( ant * 0x80 )
+	    mcgain1_s = mcgain1[4..5]
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), mcgain1_s) then
+	        puts "MC-GAIN Vertual Shard Memory Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    mcgain2 = mcgain1[6..7]
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), mcgain2) then
+	        puts "MC-GAIN Vertual Shard Memory Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = vattdac + ( ant * 0x80 )
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), vattdac1) then
+	        puts "FWVATT-DAC Vertual Shard Memory Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), vattdac2) then
+	        puts "FWVATT-DAC Vertual Shard Memory Write Error No.2"
+	        exit(1)
+	    end
+
+		talise_res = fn_talise_getObsRxGain(0)
+		if talise_res == false then
+	        puts "talise getObsRxGain(0) error"
+		end
+
+		talise_res = fn_talise_getObsRxGain(1)
+		if talise_res == false then
+	        puts "talise getObsRxGain(1) error"
+		end
+	
+	end
+	printf("Save Complete [sub6] ant:all\n")
+
+elsif kind == "BPF_HM_DEVC_MMW" then
+    MAX = 1
+    qmodimiv = 0x10
+    qmodimqv = 0x12
+    qmodloiv = 0x14
+    qmodloqv = 0x16
+    qmodimih = 0x18
+    qmodimqh = 0x1A
+    qmodloih = 0x1C
+    qmodloqh = 0x1E
+    txvattv  = 0x24
+    txvatth  = 0x25
+    qmoddacv = 0x2C
+    qmoddach = 0x2E
+    eep_offset = 0x400
+
+	case param_s
+	#Paremeter "All"
+	when "all"
+	    addr = qmodimiv
+	    if (qmodimiv1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_I_V Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodimiv2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_I_V Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodimqv
+	    if (qmodimqv1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_Q_V Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodimqv2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_Q_V Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloiv
+	    if (qmodloiv1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_I_V Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodloiv2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_I_V Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloqv
+	    if (qmodloqv1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_Q_V Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodloqv2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_Q_V Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = txvattv
+	    if (txvattV = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "TXVATT_V Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    
+	    addr = qmoddacv
+	    if (qmoddacv1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "N_QMOD_DAC_V Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmoddacv2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "N_QMOD_DAC_V Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodimih
+	    if (qmodimih1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_I_H Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodimih2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_I_H Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodimqh
+	    if (qmodimqh1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_Q_H Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodimqh2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_Q_H Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloih
+	    if (qmodloih1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_I_H Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodloih2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_I_H Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloqh
+	    if (qmodloqh1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_Q_H Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodloqh2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_Q_H Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = txvatth
+	    if (txvattH = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "TXVATT_H Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    
+	    addr = qmoddach
+	    if (qmoddach1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "N_QMOD_DAC_H Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmoddach2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "N_QMOD_DAC_H Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    #これをEEPROMに保存
+	    addr = qmodimiv + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodimiv1.to_i(16)) then
+	        puts "QMOD_IM_I_V EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodimiv2.to_i(16)) then
+	        puts "QMOD_IM_I_V EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodimqv +  eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodimqv1.to_i(16)) then
+	        puts "QMOD_IM_Q_V EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodimqv2.to_i(16)) then
+	        puts "QMOD_IM_Q_V EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloiv + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodloiv1.to_i(16)) then
+	        puts "QMOD_LO_I_V EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodloiv2.to_i(16)) then
+	        puts "QMOD_LO_I_V EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloqv + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodloqv1.to_i(16)) then
+	        puts "QMOD_LO_Q_V EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodloqv2.to_i(16)) then
+	        puts "QMOD_LO_Q_V EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = txvattv + eep_offset
+	    if !res = Rrh.rfewrite( addr, txvattV.to_i(16)) then
+	        puts "TXVATT_V EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    
+	    addr = qmoddacv + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmoddacv1.to_i(16)) then
+	        puts "N_QMOD_DAC_V EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmoddacv2.to_i(16)) then
+	        puts "N_QMOD_DAC_V EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodimih + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodimih1.to_i(16)) then
+	        puts "QMOD_IM_I_H EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodimih2.to_i(16)) then
+	        puts "QMOD_IM_I_h EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodimqh + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodimqh1.to_i(16)) then
+	        puts "QMOD_IM_Q_H EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodimqh2.to_i(16)) then
+	        puts "QMOD_IM_Q_H EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloih + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodloih1.to_i(16)) then
+	        puts "QMOD_LO_I_H EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodloih2.to_i(16)) then
+	        puts "QMOD_LO_I_H EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloqh + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodloqh1.to_i(16)) then
+	        puts "QMOD_LO_Q_H EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodloqh2.to_i(16)) then
+	        puts "QMOD_LO_Q_H EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = txvatth + eep_offset
+	    if !res = Rrh.rfewrite( addr, txvattH.to_i(16)) then
+	        puts "TXVATT_H EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    
+	    addr = qmoddach + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmoddach1.to_i(16)) then
+	        puts "N_QMOD_DAC_H EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmoddach2.to_i(16)) then
+	        puts "N_QMOD_DAC_H EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    if !res = Rrh.rfewrite( 0x30 , 0x01 ) then
+	      puts "N_QMOD_V_FLAG Traning Flag Write Error"
+	      exit(1)
+	    end
+	    if !res = Rrh.rfewrite( 0x31 , 0x01 ) then
+	      puts "N_QMOD_H_FLAG Traning Flag Write Error"
+	      exit(1)
+	    end
+	    if !res = Rrh.rfewrite( 0x32 , 0x01 ) then
+	      puts "N_TXVATT_V_FLAG Traning Flag Write Error"
+	      exit(1)
+	    end
+	    if !res = Rrh.rfewrite( 0x33 , 0x01 ) then
+	      puts "N_TXVATT_H_FLAG Traning Flag Write Error"
+	      exit(1)
+	    end
+	    if !res = Rrh.rfewrite( 0x34 , 0x01 ) then
+	      puts "N_QMOD_DAC_V_FLAG Traning Flag Write Error"
+	      exit(1)
+	    end
+	    if !res = Rrh.rfewrite( 0x35 , 0x01 ) then
+	      puts "N_QMOD_DAC_H_FLAG Traning Flag Write Error"
+	      exit(1)
+	    end
+	when "0"
+	    printf("Parameter [mmw] ant:all, param:%02x\n", param_s.to_i)
+	    addr = qmodimiv
+	    if (qmodimiv1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_I_V Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodimiv2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_I_V Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodimqv
+	    if (qmodimqv1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_Q_V Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodimqv2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_Q_V Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloiv
+	    if (qmodloiv1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_I_V Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodloiv2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_I_V Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloqv
+	    if (qmodloqv1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_Q_V Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodloqv2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_Q_V Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodimih
+	    if (qmodimih1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_I_H Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodimih2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_I_H Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodimqh
+	    if (qmodimqh1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_Q_H Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodimqh2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_IM_Q_H Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloih
+	    if (qmodloih1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_I_H Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodloih2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_I_H Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloqh
+	    if (qmodloqh1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_Q_H Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmodloqh2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "QMOD_LO_Q_H Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    
+	    #EEPROMに保存
+	    addr = qmodimiv + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodimiv1.to_i(16)) then
+	        puts "QMOD_IM_I_V EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodimiv2.to_i(16)) then
+	        puts "QMOD_IM_I_V EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodimqv+ eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodimqv1.to_i(16)) then
+	        puts "QMOD_IM_Q_V EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodimqv2.to_i(16)) then
+	        puts "QMOD_IM_Q_V EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloiv + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodloiv1.to_i(16)) then
+	        puts "QMOD_LO_I_V EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodloiv2.to_i(16)) then
+	        puts "QMOD_LO_I_V EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloqv + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodloqv1.to_i(16)) then
+	        puts "QMOD_LO_Q_V EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodloqv2.to_i(16)) then
+	        puts "QMOD_LO_Q_V EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodimih + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodimih1.to_i(16)) then
+	        puts "QMOD_IM_I_H EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodimih2.to_i(16)) then
+	        puts "QMOD_IM_I_h EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodimqh + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodimqh1.to_i(16)) then
+	        puts "QMOD_IM_Q_H EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodimqh2.to_i(16)) then
+	        puts "QMOD_IM_Q_H EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloih + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodloih1.to_i(16)) then
+	        puts "QMOD_LO_I_H EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodloih2.to_i(16)) then
+	        puts "QMOD_LO_I_H EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmodloqh + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmodloqh1.to_i(16)) then
+	        puts "QMOD_LO_Q_H EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmodloqh2.to_i(16)) then
+	        puts "QMOD_LO_Q_H EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    #トレーニングフラグの設定
+	    if !res = Rrh.rfewrite( 0x30 , 0x01 ) then
+	      puts "N_QMOD_V_FLAG Traning Flag Write Error"
+	      exit(1)
+	    end
+	    if !res = Rrh.rfewrite( 0x31 , 0x01 ) then
+	      puts "N_QMOD_H_FLAG Traning Flag Write Error"
+	      exit(1)
+	    end
+	when "1"
+	    addr = txvattv
+	    if (txvattV = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "TXVATT_V Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    
+	    addr = txvatth
+	    if (txvattH = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "TXVATT_H Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    
+	    
+	    #EEPROMに保存
+	    addr = txvattv + eep_offset
+	    if !res = Rrh.rfewrite( addr, txvattV.to_i(16)) then
+	        puts "TXVATT_V EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    
+	    addr = txvatth + eep_offset
+	    if !res = Rrh.rfewrite( addr, txvattH.to_i(16)) then
+	        puts "TXVATT_H EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    #トレーニングフラグの設定
+	    if !res = Rrh.rfewrite( 0x32 , 0x01 ) then
+	      puts "N_TXVATT_V_FLAG Traning Flag Write Error"
+	      exit(1)
+	    end
+	    if !res = Rrh.rfewrite( 0x33 , 0x01 ) then
+	      puts "N_TXVATT_H_FLAG Traning Flag Write Error"
+	      exit(1)
+	    end
+	when "2"
+	    addr = qmoddacv
+	    if (qmoddacv1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "N_QMOD_DAC_V Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmoddacv2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "N_QMOD_DAC_V Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmoddach
+	    if (qmoddach1 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "N_QMOD_DAC_H Shard Memory Read Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if (qmoddach2 = Rrh.tpshmread("apde2pTX_vt_mmw","",addr.to_s(16))) == false then
+	        puts "N_QMOD_DAC_H Shard Memory Read Error No.2"
+	        exit(1)
+	    end
+	    
+	    #EEPROMに保存
+	    addr = qmoddacv + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmoddacv1.to_i(16)) then
+	        puts "N_QMOD_DAC_V EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmoddacv2.to_i(16)) then
+	        puts "N_QMOD_DAC_V EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    
+	    addr = qmoddach + eep_offset
+	    if !res = Rrh.rfewrite( addr, qmoddach1.to_i(16)) then
+	        puts "N_QMOD_DAC_H EEPROM Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 1
+	    if !res = Rrh.rfewrite( addr, qmoddach2.to_i(16)) then
+	        puts "N_QMOD_DAC_H EEPROM Write Error No.2"
+	        exit(1)
+	    end
+	    #トレーニングフラグの設定
+	    if !res = Rrh.rfewrite( 0x34 , 0x01 ) then
+	      puts "N_QMOD_DAC_V_FLAG Traning Flag Write Error"
+	      exit(1)
+	    end
+	    if !res = Rrh.rfewrite( 0x35 , 0x01 ) then
+	      puts "N_QMOD_DAC_H_FLAG Traning Flag Write Error"
+	      exit(1)
+	    end
+	end
+	if param_s == "all"then
+		printf("Save Complete [mmw] ant:all, param:all\n")
+	else
+		printf("Save Complete [mmw] ant:all, param:%02x\n", param_s.to_i)
+	end
+end
+
+if kind == "BPF_HM_DEVC_SUB6" then
+    if Rrh.svvstx() == false then
+        puts "EEP update error "
+        exit(1)
+    end
+    printf("CRC saved \n")
+else
+    if Rrh.svvstx_rf_n() == false then
+        puts "EEP update error "
+        exit(1)
+    end
+    printf("CRC saved \n")
+end
+Rrh.unassign()

@@ -1,0 +1,47 @@
+
+def func_packetdump( val )
+ if Rrh.system("ps -ef | grep -v grep | grep cmd_rrupfdump 1>/dev/null 2>/dev/null") == 0 then
+    puts "kill cmd_rrupfdump !"
+    Rrh.system("killall -9 cmd_rrupfdump 1>/dev/null 2>/dev/null")
+ end
+ case val
+  when 1
+   puts "Realtime packet dump to console"
+   Rrh.system("cmd_rrupfdump -e lo -c -")
+  when 2
+   puts "Realtime packet dump to file"
+   Rrh.system("cmd_rruplogstart")
+  else
+   puts "Realtime packet dump stop"
+ end
+ return
+end
+
+if ARGV.length > 0 then
+ case ARGV[0].to_s
+  when "-stop","-s" then
+    val = 0
+  when "-cons","-c" then
+    val = 1
+  when "-file","-f" then
+    val = 2
+  when "-dump","-d" then
+    puts " Current packet file dump start ... "
+    Rrh.system("cmd_rruplogdump lg")
+    puts " ... finish"
+   exit
+  else
+   puts "usage:"+$0+" <opt>",
+   "(o):<opt> is below.",
+   "-cons,-c         : Realtime packet dump to console.",
+   "-file,-f         : Realtime packet dump to file.",
+   "-stop,-s         : Realtime packet dump stop.",
+   "-dump,-d         : Current packet file dump. "
+   exit
+ end
+else
+ val = Rrh.eepdrv("r",0x214,1)
+end
+
+func_packetdump(val)
+

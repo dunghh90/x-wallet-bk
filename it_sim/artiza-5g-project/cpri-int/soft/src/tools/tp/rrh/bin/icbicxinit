@@ -1,0 +1,210 @@
+# 
+# PTP setup
+# 
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh.assign()
+result=0
+loopnum = 0
+puts "ICBICX start ..."
+val = Rrh.regread("a0000210")
+val = Rrh.regread("a0000210")
+if  Rrh.calc(val,"&","00000008") != "00000000" then
+    printf("LLB SerDes Power ALM:0x%s\n",val)
+    result = 1
+    exit(2)
+end
+
+if result == 0 then
+ val = Rrh.regread("a0000210")
+ if  Rrh.calc(val,"&","00000070") != "00000000" then
+    printf("LLB QPLL Lock-ERROR:0x%s\n",val)
+    result = 1
+    exit(3)
+ end
+end
+
+if result == 0 then
+  val = Rrh.regread("a0000b00")
+  val = Rrh.regread("a0000210")
+  if Rrh.calc(val,"&","00000100") != "00000000" then
+    #retry
+    Rrh.sleep(0,10000000)
+    val = Rrh.regread("a0000b00")
+    val = Rrh.regread("a0000210")
+    if Rrh.calc(val,"&","00000100") != "00000000" then
+      printf("LLB GTH Tx Done ERROR:0x%s\n",val)
+      result = 1
+      exit(4)
+    end
+  end
+end
+
+if result == 0 then
+ val = Rrh.regread("b0000200")
+ val = Rrh.regread("b0000200")
+ if  Rrh.calc(val,"&","00000008") != "00000000" then
+  printf("TRX1 SerDes-ALM:0x%s\n",val)
+  result = 1
+  exit(5)
+ end
+end
+
+if result == 0 then
+ val = Rrh.regread("b0000200")
+ if  Rrh.calc(val,"&","00000070") != "00000000" then
+  printf("TRX1 QPLL Lock:0x%s\n",val)
+  result = 1
+  exit(6)
+ end
+end
+
+if result == 0 then
+ val = Rrh.regread("b0000b00")
+ val = Rrh.regread("b0000200")
+ if  Rrh.calc(val,"&","00001000") != "00000000" then
+   #Retry
+   Rrh.sleep(0,10000000)
+   val = Rrh.regread("b0000b00")
+   val = Rrh.regread("b0000200")
+   if Rrh.calc(val,"&","00001000") != "00000000" then
+     printf("TRX1 GTH Tx Done:0x%s\n",val)
+     result = 1
+     exit(7)
+   end
+ end
+end
+
+if result == 0 then
+puts "LLB RX GTH reset"
+Rrh.regbiton("a0000048","0FFF0000")
+puts "TRX1 RX GTH reset"
+Rrh.regbiton("b0000048","00FF0000")
+Rrh.sleep(0,20000000)
+
+while loopnum < 10 do
+ val = Rrh.regread("a0000b00")
+ val = Rrh.regread("a0000210")
+ if  Rrh.calc(val,"&","00000200") != "00000000" then
+     Rrh.sleep(0,10000000)
+     loopnum = loopnum + 1
+ else
+     break
+ end
+end
+if loopnum >= 10 then
+  printf("LLB GTH Rx Done ERROR:0x%s\n",val)
+  result = 1
+  exit(8)
+end
+end
+
+if result == 0 then
+ val = Rrh.regread("b0000b00")
+ val = Rrh.regread("b0000200")
+ if  Rrh.calc(val,"&","00002000") != "00000000" then
+   Rrh.sleep(0,10000000)
+   val = Rrh.regread("b0000b00")
+   val = Rrh.regread("b0000200")
+   if  Rrh.calc(val,"&","00002000") != "00000000" then
+     printf("TRX1 GTH Rx Done:0x%s\n",val)
+     result = 9
+     exit(9)
+   end
+ end
+end
+
+if result == 0 then
+	devkind = Rrh.eepread(Register::EEP_BOARD_TYPE.to_i(16))
+	if devkind == "13" then
+		Rrh.regwrite("a0000b04","F000FF00")
+
+		val = Rrh.regread("a0000b14")
+		val2 =  Rrh.calc(val,"&","FFFFF000")
+		val3 = Rrh.calc(val2,"|","00000F00")
+		Rrh.regwrite("a0000b14",val3)
+		Rrh.regwrite("a0000b24","00000000")
+		Rrh.regwrite("a0000b34","00000000")
+
+		 Rrh.regwrite("b0000b04","FF00F000")
+		Rrh.regbitoff("b0000b14","00000FFF")
+		 Rrh.regwrite("b0000b24","00000000")
+
+		Rrh.regbitoff("a00581F8","00008000")
+		Rrh.regbitoff("a00591F8","00008000")
+		Rrh.regbitoff("a005A1F8","00008000")
+		Rrh.regbitoff("a005B1F8","00008000")
+
+		Rrh.regbitoff("b0040198","00000020")
+		Rrh.regbitoff("b0041198","00000020")
+		Rrh.regbitoff("b0042198","00000020")
+		Rrh.regbitoff("b0043198","00000020")
+
+	else
+
+		Rrh.regwrite("a0000b04","F000FF88")
+
+		val = Rrh.regread("a0000b14")
+		val2 = Rrh.calc(val,"&","FFFFF000")
+		val3 = Rrh.calc(val2,"|","00000F88")
+		Rrh.regwrite("a0000b14",val3)
+		Rrh.regwrite("a0000b24","00000000")
+		Rrh.regwrite("a0000b34","00000000")
+
+
+		 Rrh.regwrite("b0000b04","FF88F000")
+		Rrh.regbitoff("b0000b14","00000FFF")
+		 Rrh.regwrite("b0000b24","F0000F00")
+
+		Rrh.regbitoff("a0000054","00000088")
+		Rrh.regbitoff("a00531F8","00008000")
+		Rrh.regbitoff("a00571F8","00008000")
+		Rrh.regbitoff("a00581F8","00008000")
+		Rrh.regbitoff("a00591F8","00008000")
+		Rrh.regbitoff("a005A1F8","00008000")
+		Rrh.regbitoff("a005B1F8","00008000")
+
+		Rrh.regbitoff("b0000054","00880000")
+		Rrh.regbitoff("b0040198","00000020")
+		Rrh.regbitoff("b0041198","00000020")
+		Rrh.regbitoff("b0042198","00000020")
+		Rrh.regbitoff("b0043198","00000020")
+		Rrh.regbitoff("b0044198","00000020")
+		Rrh.regbitoff("b004B198","00000020")
+
+	end
+	
+	val = Rrh.regread("a0000210")
+	if  Rrh.calc(val,"&","00003000") != "00000000" then
+		Rrh.sleep(0,10000000)
+		val = Rrh.regread("a0000210")
+		if  Rrh.calc(val,"&","00003000") != "00000000" then
+			printf("LLB IC ERR :0x%s\n",val)
+			result = 10
+		end
+	end
+
+	if result == 0 then
+		val = Rrh.regread("b0000210")
+		if  Rrh.calc(val,"&","00003000") != "00000000" then
+			Rrh.sleep(0,10000000)
+			val = Rrh.regread("b0000210")
+			if  Rrh.calc(val,"&","00003000") != "00000000" then
+				printf("TRX IC ERR :0x%s\n",val)
+				result = 11
+			end
+		end
+	end
+end
+
+
+if result == 0 then
+	Rrh.regwrite("A2000820","00000000")
+	Rrh.regwrite("B1000110","00000000")
+	Rrh.regwrite("B1000114","00000000")
+end
+
+puts "Completed"
+Rrh.unassign()
+exit(result)
+

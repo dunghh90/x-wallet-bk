@@ -1,0 +1,99 @@
+#
+# LUT dump
+# rrh -lutget
+#
+# @date		2018/08/24 KCN) wang 新規
+
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh.require("./z_global")
+
+# usage
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <ant>",
+ "(m):<ant>  is ant num"
+ exit(1)
+end
+ant_s = ARGV[0]
+antnum  = ant_s.to_i(16)
+if (antnum<0 or antnum>7)then
+	puts "Input value is incorrect((0:AntA~7:AntH)) : <ant>"
+	exit(1)
+end
+
+Rrh.assign()
+
+#---------------------------------------------------------------------
+# Main
+#---------------------------------------------------------------------
+
+	data_s = Rrh.bpfshmread("E_RRH_SHMID_APL_DPDA_MNG_TBL", "", "dbgmode")
+	if data_s == 0 then
+		printf(" Please put rrh -dbgon command.\n")
+		exit(1)
+	end
+
+	#XYZの読替が必要（ANTの8つパターン時レジスタアドレスが変わる）
+	#X配列
+	X = ["3","7","B","F","3","7","B","F"]
+	#Y配列
+	Y = ["0","4","8","C","0","4","8","C"]
+	#Z配列
+	Z = ["1","1","1","1","3","3","3","3"]
+	string = ["BZ201Xf0","BZ220000","BZ234FFF","BZ201Xf0","BZ203YB0"]
+	for cnt0 in 0..4 do
+		for cnt in 0..7 do
+			if antnum == cnt then
+				string[cnt0] = string[cnt0].gsub("X", X[cnt])
+				string[cnt0] = string[cnt0].gsub("Y", Y[cnt])
+				string[cnt0] = string[cnt0].gsub("Z", Z[cnt])
+				break
+			end
+		end
+		if cnt0 == 0 then
+			string1 = string[cnt0] 
+		elsif cnt0 == 1 then
+			string2 = string[cnt0] 
+		elsif cnt0 == 2 then
+			string3 = string[cnt0] 
+		elsif cnt0 == 3 then
+			string4 = string[cnt0] 
+		else
+			string5 = string[cnt0]  
+		end
+
+	end
+
+	#XYZの読替が必要（ANTの8つパターン時レジスタアドレスが変わる）
+	addr_s = string1.to_s(16)
+	Rrh.regwrite(addr_s, "00000001")
+
+	addr_s = string2.to_s(16)
+	len_byte = 0x15000.to_i(10)
+	# memory mapは、PD：LUT	0xB122_0000	0xB123_4FFFの範囲(可変)
+
+	printf("ADDRESS  +0       +4       +8       +C \n")
+	printf("-------- -------- -------- -------- --------\n")
+	for cnt in 0..(len_byte - 1) do
+		if (cnt % 4) == 0 then
+			if (cnt % 16) == 0 then
+				printf("%s ",addr_s)
+			end
+			data_s = Rrh.regread(addr_s)
+			printf("%s ",data_s)
+			if (cnt % 16) == 12 then
+				printf("\n")
+			end
+			addr_s = Rrh.calc(addr_s,"+","00000004")
+		end
+	end
+	printf("\n")
+
+	addr_s = string4.to_s(16)
+	Rrh.regwrite(addr_s, "00000000")
+
+	addr_s = string5.to_s(16)
+	data_s = Rrh.regread(addr_s)
+	printf("add: %s data: %s\n",addr_s,data_s)
+
+Rrh.unassign()

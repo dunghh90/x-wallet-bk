@@ -1,0 +1,164 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+device_type = Rrh.get_shmcm("device_type")
+if device_type == "00000013" then
+	if ARGV.length < 4 then
+		puts "usage:"+$0+" <p1> <p2> <p3> <p4>",
+			"(m):<p1> is below .",
+			"        Bit[3]=AntD",
+			"        Bit[2]=AntC",
+			"        Bit[1]=AntB",
+			"        Bit[0]=AntA",
+			"(m):<p2> is below .",
+			"        0 : Cr0",
+			"        1 : Cr1",
+			"(m):<p3> is Frequency.",
+			"        3.7G:3,454,240 ~ 3,945,760(kHz)",
+			"        4.5G:4,554,240 ~ 5,045,760(kHz)",
+			"(m):<p4> is below .",
+			"        9 : 100M"
+		Rrh.exit(1)
+	end
+elsif device_type == "00000014"then
+	if ARGV.length < 4 then
+		puts "usage:"+$0+" <p1> <p2> <p3> <p4> <p5>",
+			"(m):<p1> is below .",
+			"        Bit[1]=AntB",
+			"        Bit[0]=AntA",
+			"(m):<p2> is below .",
+			"        0 : Cr0",
+			"        1 : Cr1",
+			"        2 : Cr2",
+			"        3 : Cr3",
+			"(m):<p3> is Frequency.",
+			"        27,508,480 ~ 28,491,520(kHz)",
+			"(m):<p4> is below .",
+			"        9 : 100M",
+			"(m):<p5> is below .",
+			"        0 : 15kHz(mmw not supported)",
+			"        1 : 30kHz(mmw not supported)",
+			"        2 : 60kHz(mmw not supported)",
+			"        3 : 120kHz",
+			"        4 : 240kHz"
+		Rrh.exit(1)
+	end
+else
+	puts DuCode::ERR_DESCRIPTION[3]
+	Rrh.exit(1)
+end
+
+
+ant = ARGV[0]
+ant_i = Rrh.hex_check(ant)
+
+if ant_i == false then
+	puts DuCode::ERR_DESCRIPTION[1]
+	Rrh.exit(1)
+else
+	if device_type == "00000013" then
+		if ant_i > 0xF || ant_i < 1 then
+			puts DuCode::ERR_DESCRIPTION[2]
+			Rrh.exit(1)
+		end
+	else
+		if ant_i > 0x03 || ant_i < 1 then
+			puts DuCode::ERR_DESCRIPTION[2]
+			Rrh.exit(1)
+		end
+	end
+end
+
+
+cr = ARGV[1]
+cr_i = Rrh.hex_check(cr)
+
+if cr_i == false then
+	puts DuCode::ERR_DESCRIPTION[1]
+	Rrh.exit(1)
+else
+	if device_type == "00000013" then
+		case cr_i
+			when 0 then
+			when 1 then
+			else
+				puts DuCode::ERR_DESCRIPTION[2]
+				Rrh.exit(1)
+		end
+	else
+		if cr_i > 3 || cr_i < 0 then
+			puts DuCode::ERR_DESCRIPTION[2]
+			Rrh.exit(1)
+		end
+	end
+end
+
+
+freq = ARGV[2]
+freq_i = Rrh.hex_check(freq)
+if freq_i == false then
+	puts DuCode::ERR_DESCRIPTION[1]
+	Rrh.exit(1)
+end
+
+bw = ARGV[3]
+bw_i = Rrh.hex_check(bw)
+
+if bw_i == false then
+	puts DuCode::ERR_DESCRIPTION[1]
+	Rrh.exit(1)
+else
+	if bw_i.to_i(10) > 11 || bw_i.to_i(10) < 0 then
+		puts DuCode::ERR_DESCRIPTION[2]
+		Rrh.exit(1)
+	end
+end
+
+if device_type == "00000014" then
+	if ARGV.length > 4 then
+		scs = ARGV[4]
+		scs_i = Rrh.hex_check(scs)
+
+		if scs_i == false then
+			puts DuCode::ERR_DESCRIPTION[1]
+			Rrh.exit(1)
+		else
+			if scs_i.to_i(10) > 4 || scs_i.to_i(10) < 0 then
+				puts DuCode::ERR_DESCRIPTION[2]
+				Rrh.exit(1)
+			end
+		end
+		scsv = scs_i
+	else
+		#mmw scs is 120kHz or 240kHz
+		scsv = 3
+	end
+end
+
+
+mask = ["00000001","00000002","00000004","00000008","00000010","00000020","00000040","00000080"]
+antname = ["a","b","c","d","e","f","g","h"]
+scsval = [15,30,60,120,240]
+
+for cnt in 0..3 do
+	if mask[cnt] == Rrh.calc(mask[cnt],"&",ant) then
+		CC_no = cr + "_cc"
+		ANT_no = antname[cnt] + "_array"
+
+		if device_type == "00000013" then
+			#sub6 scs = 30kHz
+			scsv = 1
+		else
+			if cnt > 1 then
+				break
+			end
+		end
+		Rrh.set_shmtx(CC_no,ANT_no,"nr_bandwidth",bw)
+		Rrh.set_shmtx(CC_no,ANT_no,"nr_freq",freq)
+		Rrh.set_shmtx(CC_no,ANT_no,"nr_scs",scsv)
+	end
+end
+
+puts DuCode::ERR_DESCRIPTION[0]
+

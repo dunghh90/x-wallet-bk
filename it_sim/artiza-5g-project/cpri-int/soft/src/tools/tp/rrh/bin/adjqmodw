@@ -1,0 +1,87 @@
+
+#QMOD電圧データ設定(DAC104S085)
+#第1引数(hex):アンテナ番号(0:Ant.A ～ 1:Ant.B)
+#第2引数(hex): 電圧設定値(hex) (0x0-3FF)
+
+#20180802新規作成 若水
+
+
+
+
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./tpshm_access")
+
+#パラメータ確認
+
+if ARGV.length < 2 then
+ puts "usage:"+$0+" <Ant.A/Ant.B> <data>",
+ "(m):<Ant.A/Ant.B> is ant num(0=A 1=B)",
+ "(m):<data> is written data"
+ raise 
+end
+
+ant_s = ARGV[0]
+data_s = ARGV[1]
+sel = 3
+addr = 0	# 使わない
+
+#想定外の値NGを追記
+
+if ant_s.to_i > 1 then
+ puts "Input value is incorrect : <ant>"
+ raise 
+end
+
+
+
+#アドレスチェック
+
+if !Rrh.input_check(data_s,4) then
+ puts "Input value is incorrect : <data>"
+ raise 
+end
+
+# データ文字列長を4文字化
+case data_s.length
+   when 1
+     data_s = "000" + data_s
+   when 2
+     data_s = "00" + data_s
+   when 3
+     data_s = "0" + data_s
+   else
+     data_s = data_s
+end
+
+Rrh.assign()
+
+if !res = Rrh.qmodwrite( ant_s , sel , addr.to_i(16) , data_s.to_i(16) ) then
+ puts "error"
+else
+ puts "complete"
+end
+
+#仮想レジスタ(共有メモリ)へのデータ保持
+if ant_s == "0" then
+	addr_n = 0x02C
+else
+	addr_n = 0x02E
+end
+
+data1 = data_s[0..1]
+if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr_n.to_s(16),data1) then
+	puts "error:can't write shared memmory No.1"
+	exit(1)
+end
+
+addr_n = addr_n + 1
+data2 = data_s[2..3]
+if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr_n.to_s(16),data2) then
+	puts "error:can't write shared memmory No.3"
+	exit(1)
+end
+
+Rrh.unassign()

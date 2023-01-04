@@ -1,0 +1,59 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <kind> <kHz>",
+ "(m):<kind> is 0:OFF/1:ON",
+ "(o):<kHz> is Freq"
+ exit(1)
+end
+
+kind = ARGV[0]
+case kind
+	when "0" then
+		value = 0xFF
+	when "1" then
+		value = 0x01
+		freq_s  = ARGV[1]
+		if !Rrh.input_check(freq_s,10) then
+			puts "Input value is incorrect : <Freq>"
+			raise 
+		end
+	else
+		puts "Error kind"
+		exit(1)
+end
+	
+Rrh.assign()
+
+if value == 1 then
+	freq_num_hex = Rrh.v_to_v( "d" , "h" , freq_s )
+	case freq_num_hex.length 
+		when 1 then
+			freq_num_hex_s = "0000000" + freq_num_hex
+		when 2 then
+			freq_num_hex_s = "000000" + freq_num_hex
+		when 3 then
+			freq_num_hex_s = "00000" + freq_num_hex
+		when 4 then
+			freq_num_hex_s = "0000" + freq_num_hex
+		when 5 then
+			freq_num_hex_s = "000" + freq_num_hex
+		when 6 then
+			freq_num_hex_s = "00" + freq_num_hex
+		when 7 then
+			freq_num_hex_s = "0" + freq_num_hex
+		else
+			freq_num_hex_s = freq_num_hex
+	end
+	Rrh.eepwrite( 0x3f7, freq_num_hex_s[0..1].to_i(16))
+	Rrh.eepwrite( 0x3f8, freq_num_hex_s[2..3].to_i(16))
+	Rrh.eepwrite( 0x3f9, freq_num_hex_s[4..5].to_i(16))
+	Rrh.eepwrite( 0x3fA, freq_num_hex_s[6..7].to_i(16))
+end
+
+Rrh.eepwrite( 0x3f6, value)
+
+Rrh.unassign()
+

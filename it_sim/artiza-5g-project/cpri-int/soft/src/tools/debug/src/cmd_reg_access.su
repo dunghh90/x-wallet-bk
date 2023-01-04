@@ -1,0 +1,2 @@
+cmd_reg_access.c:31:6:cmd_reg_access_print_usage	48	static
+cmd_reg_access.c:57:5:cmd_reg_access_main	96	static

@@ -1,0 +1,721 @@
+@global_logcounter = "entry"	# -> log history mask
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+
+Rrh.assign()
+sv1 = Rrh.regread("A0000150")
+sv2 = Rrh.regread("A0000154")
+sv3 = Rrh.regread("A0000158")
+sv4 = Rrh.regread("A000015C")
+sv5 = Rrh.regread("A0000160")
+sv6 = Rrh.regread("A0000164")
+sv7 = Rrh.regread("A0000168")
+sv8 = Rrh.regread("A000016C")
+sv9 = Rrh.regread("A0000170")
+sv10 = Rrh.regread("A0000174")
+sv11 = Rrh.regread("A0000178")
+sv12 = Rrh.regread("A000017C")
+sv13 = Rrh.regread("A0000180")
+sv14 = Rrh.regread("A0000184")
+sv15 = Rrh.regread("A0000188")
+sv16 = Rrh.regread("A000018C")
+
+puts ""
+puts "SV01 State a0000150:0x#{sv1}"
+if Rrh.calc(sv1,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv1,"&","0000000F") != "00000000" then
+		print " Admin State:"
+		if Rrh.calc(sv1,"&","00000001") != "00000000" then
+			print " locked ON "
+		end
+		if Rrh.calc(sv1,"&","00000002") != "00000000" then
+			print " shutting down ON "
+		end
+		if Rrh.calc(sv1,"&","00000004") != "00000000" then
+			print " unlocked ON "
+		end
+		if Rrh.calc(sv1,"&","01000000") != "00000000" then
+			print " locked(local) ON "
+		end
+		if Rrh.calc(sv1,"&","04000000") != "00000000" then
+			print " unlocked(local) ON "
+		end
+		puts ""
+	end
+
+	if Rrh.calc(sv1,"&","000000F0") != "00000000" then
+		print " Energysaving state:"
+		if Rrh.calc(sv1,"&","00000010") != "00000000" then
+			print " sleep ON "
+		end
+		if Rrh.calc(sv1,"&","00000020") != "00000000" then
+			print " awake ON "
+		end
+		puts ""
+	end
+	
+	if Rrh.calc(sv1,"&","00000F00") != "00000000" then
+		print " Operational State:"
+		if Rrh.calc(sv1,"&","00000100") != "00000000" then
+			print " enable ON "
+		end
+		if Rrh.calc(sv1,"&","00000200") != "00000000" then
+			print " disable ON "
+		end
+		puts ""
+	end
+
+	if Rrh.calc(sv1,"&","0000F000") != "00000000" then
+		print " availability State:"
+		if Rrh.calc(sv1,"&","00001000") != "00000000" then
+			print " faulty ON "
+		end
+		if Rrh.calc(sv1,"&","00002000") != "00000000" then
+			print " degraded ON "
+		end
+		if Rrh.calc(sv1,"&","00004000") != "00000000" then
+			print " normal ON "
+		end
+		puts ""
+	end
+
+	if Rrh.calc(sv1,"&","000F0000") != "00000000" then
+		print " usage State:"
+		if Rrh.calc(sv1,"&","00010000") != "00000000" then
+			print " busy ON "
+		end
+		if Rrh.calc(sv1,"&","00020000") != "00000000" then
+			print " active ON "
+		end
+		if Rrh.calc(sv1,"&","00040000") != "00000000" then
+			print " idle ON "
+		end
+		puts ""
+	end
+end
+
+puts "SV02 State a0000154:0x#{sv2} "
+if Rrh.calc(sv2,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv2,"&","00000001") != "00000000" then
+		puts " ANT-A USE C0 ON"
+	end
+	if Rrh.calc(sv2,"&","00000002") != "00000000" then
+		puts " ANT-A USE C1 ON"
+	end
+	if Rrh.calc(sv2,"&","00000004") != "00000000" then
+		puts " ANT-A USE C2 ON"
+	end
+	if Rrh.calc(sv2,"&","00000008") != "00000000" then
+		puts " ANT-A USE C3 ON"
+	end
+	if Rrh.calc(sv2,"&","00000010") != "00000000" then
+		puts " ANT-A SLP C0 ON"
+	end
+	if Rrh.calc(sv2,"&","00000020") != "00000000" then
+		puts " ANT-A SLP C1 ON"
+	end
+	if Rrh.calc(sv2,"&","00000040") != "00000000" then
+		puts " ANT-A SLP C2 ON"
+	end
+	if Rrh.calc(sv2,"&","00000080") != "00000000" then
+		puts " ANT-A SLP C3 ON"
+	end
+	if Rrh.calc(sv2,"&","00000100") != "00000000" then
+		puts " ANT-B USE C0 ON"
+	end
+	if Rrh.calc(sv2,"&","00000200") != "00000000" then
+		puts " ANT-B USE C1 ON"
+	end
+	if Rrh.calc(sv2,"&","00000400") != "00000000" then
+		puts " ANT-B USE C2 ON"
+	end
+	if Rrh.calc(sv2,"&","00000800") != "00000000" then
+		puts " ANT-B USE C3 ON"
+	end
+	if Rrh.calc(sv2,"&","00001000") != "00000000" then
+		puts " ANT-B SLP C0 ON"
+	end
+	if Rrh.calc(sv2,"&","00002000") != "00000000" then
+		puts " ANT-B SLP C1 ON"
+	end
+	if Rrh.calc(sv2,"&","00004000") != "00000000" then
+		puts " ANT-B SLP C2 ON"
+	end
+	if Rrh.calc(sv2,"&","00008000") != "00000000" then
+		puts " ANT-B SLP C3 ON"
+	end
+	if Rrh.calc(sv2,"&","00010000") != "00000000" then
+		puts " ANT-C USE C0 ON"
+	end
+	if Rrh.calc(sv2,"&","00100000") != "00000000" then
+		puts " ANT-C SLP C0 ON"
+	end
+	if Rrh.calc(sv2,"&","01000000") != "00000000" then
+		puts " ANT-D USE C0 ON"
+	end
+	if Rrh.calc(sv2,"&","10000000") != "00000000" then
+		puts " ANT-D SLP C0 ON"
+	end
+end
+
+puts "SV03 State a0000158:0x#{sv3}"
+if Rrh.calc(sv3,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv3,"&","00000001") != "00000000" then
+		puts " Minor ON"
+	end
+	if Rrh.calc(sv3,"&","00000002") != "00000000" then
+		puts " Major ON"
+	end
+	if Rrh.calc(sv3,"&","00000004") != "00000000" then
+		puts " Critical ON"
+	end
+end
+
+puts "SV04 State a000015c:0x#{sv4}"
+if Rrh.calc(sv4,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv4,"&","00000001") != "00000000" then
+		puts " FaultID:0x1 ON"
+	end
+	if Rrh.calc(sv4,"&","00000002") != "00000000" then
+		puts " FaultID:0x2 ON"
+	end
+	if Rrh.calc(sv4,"&","00000004") != "00000000" then
+		puts " FaultID:0x3 ON"
+	end
+	if Rrh.calc(sv4,"&","00000008") != "00000000" then
+		puts " FaultID:0x4 ON"
+	end
+	if Rrh.calc(sv4,"&","00000010") != "00000000" then
+		puts " FaultID:0x5 ON"
+	end
+	if Rrh.calc(sv4,"&","00000020") != "00000000" then
+		puts " FaultID:0x6 ON"
+	end
+	if Rrh.calc(sv4,"&","00000040") != "00000000" then
+		puts " FaultID:0x7 ON"
+	end
+	if Rrh.calc(sv4,"&","00000080") != "00000000" then
+		puts " FaultID:0x8 ON"
+	end
+	if Rrh.calc(sv4,"&","00000100") != "00000000" then
+		puts " FaultID:0x10 ON"
+	end
+	if Rrh.calc(sv4,"&","00000200") != "00000000" then
+		puts " FaultID:0x11 ON"
+	end
+	if Rrh.calc(sv4,"&","00000400") != "00000000" then
+		puts " FaultID:0x12 ON"
+	end
+	if Rrh.calc(sv4,"&","00001000") != "00000000" then
+		puts " FaultID:0x30 ON"
+	end
+	if Rrh.calc(sv4,"&","00002000") != "00000000" then
+		puts " FaultID:0x31 ON"
+	end
+	if Rrh.calc(sv4,"&","00010000") != "00000000" then
+		puts " FaultID:0x40 ON"
+	end
+	if Rrh.calc(sv4,"&","00020000") != "00000000" then
+		puts " FaultID:0x41 ON"
+	end
+	if Rrh.calc(sv4,"&","00040000") != "00000000" then
+		puts " FaultID:0x42 ON"
+	end
+	if Rrh.calc(sv4,"&","00080000") != "00000000" then
+		puts " FaultID:0x43 ON"
+	end
+	if Rrh.calc(sv4,"&","00100000") != "00000000" then
+		puts " FaultID:0x44 ON"
+	end
+	if Rrh.calc(sv4,"&","01000000") != "00000000" then
+		puts " FaultID:0x50 ON"
+	end
+	if Rrh.calc(sv4,"&","04000000") != "00000000" then
+		puts " FaultID:0x51 ON"
+	end
+	if Rrh.calc(sv4,"&","10000000") != "00000000" then
+		puts " FaultID:0xf0 ON"
+	end
+	if Rrh.calc(sv4,"&","20000000") != "00000000" then
+		puts " FaultID:0xf1 ON"
+	end
+	if Rrh.calc(sv4,"&","40000000") != "00000000" then
+		puts " FaultID:0xf2 ON"
+	end
+	if Rrh.calc(sv4,"&","80000000") != "00000000" then
+		puts " FaultID:0xff ON"
+	end
+end
+
+puts "SV05 State a0000160:0x#{sv5}"
+if Rrh.calc(sv5,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv5,"&","0000FFFF") != "00000000" then
+		code = Rrh.calc(sv5,"&","0000FFFF")
+		puts " Software ALM Code : #{code}"
+	end
+	
+	if Rrh.calc(sv5,"&","FFFF0000") != "00000000" then
+		code = Rrh.calc(sv5,"&","FFFF0000")
+		code2 = Rrh.calc(code,">","00000010")
+		puts " Initialization failure Code : #{code2}"
+	end
+end
+
+puts "SV06 State a0000164:0x#{sv6}"
+if Rrh.calc(sv6,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv6,"&","00000001") != "00000000" then
+		puts " PTP UnLock HoldOver ON"
+	end
+	if Rrh.calc(sv6,"&","00000010") != "00000000" then
+		puts " JC-PLL Unlock ON"
+	end
+	if Rrh.calc(sv6,"&","00000020") != "00000000" then
+		puts " RF-PLL Unlock ON"
+	end
+	if Rrh.calc(sv6,"&","00000100") != "00000000" then
+		puts " FH1 L1 down ON"
+	end
+	if Rrh.calc(sv6,"&","00000200") != "00000000" then
+		puts " FH1 Critical BER detected ON"
+	end
+	if Rrh.calc(sv6,"&","00000400") != "00000000" then
+		puts " FH1 SFP unmount ON"
+	end
+	if Rrh.calc(sv6,"&","00001000") != "00000000" then
+		puts " FH1 S-plane abnormal ON"
+	end
+	if Rrh.calc(sv6,"&","00002000") != "00000000" then
+		puts " FH1 U-plane abnormal ON"
+	end
+	if Rrh.calc(sv6,"&","00004000") != "00000000" then
+		puts " FH1 FC-plane abnormal ON"
+	end
+	if Rrh.calc(sv6,"&","01000000") != "00000000" then
+		puts " RF Module PS ALM ON"
+	end
+	if Rrh.calc(sv6,"&","02000000") != "00000000" then
+		puts " Power Err1 ON"
+	end
+	if Rrh.calc(sv6,"&","04000000") != "00000000" then
+		puts " Power Err2 ON"
+	end
+	if Rrh.calc(sv6,"&","10000000") != "00000000" then
+		puts " SFP Power Down ON"
+    end
+end
+
+puts "SV07 State a0000168:0x#{sv7}"
+if Rrh.calc(sv7,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv7,"&","00000001") != "00000000" then
+		puts " LLB SYS PLL Unlock ON"
+	end
+	if Rrh.calc(sv7,"&","00000002") != "00000000" then
+		puts " LLB ICPLL Unlock ON"
+	end
+	if Rrh.calc(sv7,"&","00000004") != "00000000" then
+		puts " LLB ETHPLL Unlock ON"
+	end
+	if Rrh.calc(sv7,"&","00000008") != "00000000" then
+		puts " LLB_TRX PCIE Root Error ON"
+	end
+	if Rrh.calc(sv7,"&","00000010") != "00000000" then
+		puts " LLB_TRX PCIE EndPoint Error ON"
+	end
+	if Rrh.calc(sv7,"&","00000020") != "00000000" then
+		puts " LLB_TRX SV bus failure ON"
+	end
+	if Rrh.calc(sv7,"&","00000040") != "00000000" then
+		puts " Ether Alm ON"
+	end
+	if Rrh.calc(sv7,"&","00000080") != "00000000" then
+		puts " SRAM Correct Error ON"
+	end
+	if Rrh.calc(sv7,"&","00000100") != "00000000" then
+		puts " SRAM Correct Error ON"
+	end
+	if Rrh.calc(sv7,"&","00000200") != "00000000" then
+		puts " LLB_TRX IC TX ERR ON"
+	end
+	if Rrh.calc(sv7,"&","00000400") != "00000000" then
+		puts " LLB_TRX IC RX ERR ON"
+	end
+	if Rrh.calc(sv7,"&","00000800") != "00000000" then
+		puts " TRX_LLB IC TX ERR ON"
+	end
+	if Rrh.calc(sv7,"&","00001000") != "00000000" then
+		puts " TRX_LLB IC RX ERR ON"
+	end
+	if Rrh.calc(sv7,"&","00008000") != "00000000" then
+		puts " Auto Cruise HC ERR ON"
+	end
+	if Rrh.calc(sv7,"&","00010000") != "00000000" then
+		puts " TRX SYS PLL Unlock ON"
+	end
+	if Rrh.calc(sv7,"&","00020000") != "00000000" then
+		puts " TRX ICPLL Unlock ON"
+	end
+	if Rrh.calc(sv7,"&","00040000") != "00000000" then
+		puts " TRX PHYICPLLULCK1 ON"
+	end
+	if Rrh.calc(sv7,"&","00080000") != "00000000" then
+		puts " TRX PHYICPLLULCK2 ON"
+	end
+	if Rrh.calc(sv7,"&","00100000") != "00000000" then
+		puts " TRX PHYPOWALM ON"
+	end
+	if Rrh.calc(sv7,"&","00200000") != "00000000" then
+		puts " TRX PHYJS1PLLULCK ON"
+	end
+	if Rrh.calc(sv7,"&","00400000") != "00000000" then
+		puts " TRX PHYJS2PLLULCK ON"
+	end
+	if Rrh.calc(sv7,"&","00800000") != "00000000" then
+		puts " TRX SV bus failure ON"
+	end
+	if Rrh.calc(sv7,"&","01000000") != "00000000" then
+		puts " TRX/RFIC#1 TX_JESD IF ERR ON"
+	end
+	if Rrh.calc(sv7,"&","02000000") != "00000000" then
+		puts " TRX/RFIC#1 FB_JESD IF ERR ON"
+	end
+	if Rrh.calc(sv7,"&","04000000") != "00000000" then
+		puts " TRX/RFIC#1 RX_JESD IF ERR ON"
+	end
+	if Rrh.calc(sv7,"&","08000000") != "00000000" then
+		puts " TRX/RFIC#2 TX_JESD IF ERR ON"
+	end
+	if Rrh.calc(sv7,"&","10000000") != "00000000" then
+		puts " TRX/RFIC#2 FB_JESD IF ERR ON"
+	end
+	if Rrh.calc(sv7,"&","20000000") != "00000000" then
+		puts " TRX/RFIC#2 RX_JESD IF ERR ON"
+	end
+	if Rrh.calc(sv7,"&","40000000") != "00000000" then
+		puts " LMB Correct Error ON"
+	end
+	if Rrh.calc(sv7,"&","80000000") != "00000000" then
+		puts " LMB UnCorrect Error ON"
+	end
+end
+
+puts "SV08 State a000016c:0x#{sv8}"
+if Rrh.calc(sv8,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv8,"&","00010000") != "00000000" then
+		puts " RFIC#1 ALM ON"
+	end
+	if Rrh.calc(sv8,"&","00020000") != "00000000" then
+		puts " RFIC#2 ALM ON"
+	end
+end
+
+puts "SV09 State a0000170:0x#{sv9}"
+if Rrh.calc(sv9,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv9,"&","00000001") != "00000000" then
+		puts " ANTA-TX Gain ALM ON"
+	end
+	if Rrh.calc(sv9,"&","00000002") != "00000000" then
+		puts " ANTA-TOVER ALM ON"
+	end
+	if Rrh.calc(sv9,"&","00000008") != "00000000" then
+		puts " ANTA-Tx Cal failed ON"
+	end
+	if Rrh.calc(sv9,"&","00000100") != "00000000" then
+		puts " ANTA-Rx Gain ALM ON"
+	end
+	if Rrh.calc(sv9,"&","00000200") != "00000000" then
+		puts " ANTA-Rx Cal failed"
+	end
+	if Rrh.calc(sv9,"&","00000400") != "00000000" then
+		puts " ANTA-LNA Gain abnormal"
+	end
+	if Rrh.calc(sv9,"&","00001000") != "00000000" then
+		puts " ANTA-VSWR ALM"
+	end
+
+	if Rrh.calc(sv9,"&","00010000") != "00000000" then
+		puts " ANTB-TX Gain ALM ON"
+	end
+	if Rrh.calc(sv9,"&","00020000") != "00000000" then
+		puts " ANTB-TOVER ALM ON"
+	end
+	if Rrh.calc(sv9,"&","00080000") != "00000000" then
+		puts " ANTB-Tx Cal failed ON"
+	end
+	if Rrh.calc(sv9,"&","01000000") != "00000000" then
+		puts " ANTB-Rx Gain ALM ON"
+	end
+	if Rrh.calc(sv9,"&","02000000") != "00000000" then
+		puts " ANTB-Rx Cal failed"
+	end
+	if Rrh.calc(sv9,"&","04000000") != "00000000" then
+		puts " ANTB-LNA Gain abnormal"
+	end
+	if Rrh.calc(sv9,"&","10000000") != "00000000" then
+		puts " ANTB-VSWR ALM"
+	end
+end
+
+puts "SV10 State a0000174:0x#{sv10}"
+if Rrh.calc(sv10,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv10,"&","00000001") != "00000000" then
+		puts " ANTC-TX Gain ALM ON"
+	end
+	if Rrh.calc(sv10,"&","00000002") != "00000000" then
+		puts " ANTC-TOVER ALM ON"
+	end
+	if Rrh.calc(sv10,"&","00000008") != "00000000" then
+		puts " ANTC-Tx Cal failed ON"
+	end
+	if Rrh.calc(sv10,"&","00000100") != "00000000" then
+		puts " ANTC-Rx Gain ALM ON"
+	end
+	if Rrh.calc(sv10,"&","00000200") != "00000000" then
+		puts " ANTC-Rx Cal failed"
+	end
+	if Rrh.calc(sv10,"&","00000400") != "00000000" then
+		puts " ANTC-LNA Gain abnormal"
+	end
+	if Rrh.calc(sv10,"&","00001000") != "00000000" then
+		puts " ANTC-VSWR ALM"
+	end
+
+	if Rrh.calc(sv10,"&","00010000") != "00000000" then
+		puts " ANTD-TX Gain ALM ON"
+	end
+	if Rrh.calc(sv10,"&","00020000") != "00000000" then
+		puts " ANTD-TOVER ALM ON"
+	end
+	if Rrh.calc(sv10,"&","00080000") != "00000000" then
+		puts " ANTD-Tx Cal failed ON"
+	end
+	if Rrh.calc(sv10,"&","01000000") != "00000000" then
+		puts " ANTD-Rx Gain ALM ON"
+	end
+	if Rrh.calc(sv10,"&","02000000") != "00000000" then
+		puts " ANTD-Rx Cal failed"
+	end
+	if Rrh.calc(sv10,"&","04000000") != "00000000" then
+		puts " ANTD-LNA Gain abnormal"
+	end
+	if Rrh.calc(sv10,"&","10000000") != "00000000" then
+		puts " ANTD-VSWR ALM"
+	end
+end
+
+puts "SV11 State a0000178:0x#{sv11}"
+if Rrh.calc(sv11,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv11,"&","00000001") != "00000000" then
+		puts " tx power detector ALM V#01 ON"
+	end
+	if Rrh.calc(sv11,"&","00000002") != "00000000" then
+		puts " tx power detector ALM V#02 ON"
+	end
+	if Rrh.calc(sv11,"&","00000004") != "00000000" then
+		puts " tx power detector ALM V#03 ON"
+	end
+	if Rrh.calc(sv11,"&","00000008") != "00000000" then
+		puts " tx power detector ALM V#04 ON"
+	end
+	if Rrh.calc(sv11,"&","00000010") != "00000000" then
+		puts " tx power detector ALM V#05 ON"
+	end
+	if Rrh.calc(sv11,"&","00000020") != "00000000" then
+		puts " tx power detector ALM V#06 ON"
+	end
+	if Rrh.calc(sv11,"&","00000040") != "00000000" then
+		puts " tx power detector ALM V#07 ON"
+	end
+	if Rrh.calc(sv11,"&","00000080") != "00000000" then
+		puts " tx power detector ALM V#08 ON"
+	end
+	if Rrh.calc(sv11,"&","00000100") != "00000000" then
+		puts " tx power detector ALM V#09 ON"
+	end
+	if Rrh.calc(sv11,"&","00000200") != "00000000" then
+		puts " tx power detector ALM V#10 ON"
+	end
+	if Rrh.calc(sv11,"&","00000400") != "00000000" then
+		puts " tx power detector ALM V#11 ON"
+	end
+	if Rrh.calc(sv11,"&","00000800") != "00000000" then
+		puts " tx power detector ALM V#12 ON"
+	end
+	if Rrh.calc(sv11,"&","00001000") != "00000000" then
+		puts " tx power detector ALM V#13 ON"
+	end
+	if Rrh.calc(sv11,"&","00002000") != "00000000" then
+		puts " tx power detector ALM V#14 ON"
+	end
+	if Rrh.calc(sv11,"&","00004000") != "00000000" then
+		puts " tx power detector ALM V#15 ON"
+	end
+	if Rrh.calc(sv11,"&","00008000") != "00000000" then
+		puts " tx power detector ALM V#16 ON"
+	end
+	if Rrh.calc(sv11,"&","00010000") != "00000000" then
+		puts " tx power detector ALM H#01 ON"
+	end
+	if Rrh.calc(sv11,"&","00020000") != "00000000" then
+		puts " tx power detector ALM H#02 ON"
+	end
+	if Rrh.calc(sv11,"&","00040000") != "00000000" then
+		puts " tx power detector ALM H#03 ON"
+	end
+	if Rrh.calc(sv11,"&","00080000") != "00000000" then
+		puts " tx power detector ALM H#04 ON"
+	end
+	if Rrh.calc(sv11,"&","00100000") != "00000000" then
+		puts " tx power detector ALM H#05 ON"
+	end
+	if Rrh.calc(sv11,"&","00200000") != "00000000" then
+		puts " tx power detector ALM H#06 ON"
+	end
+	if Rrh.calc(sv11,"&","00400000") != "00000000" then
+		puts " tx power detector ALM H#07 ON"
+	end
+	if Rrh.calc(sv11,"&","00800000") != "00000000" then
+		puts " tx power detector ALM H#08 ON"
+	end
+	if Rrh.calc(sv11,"&","01000000") != "00000000" then
+		puts " tx power detector ALM H#09 ON"
+	end
+	if Rrh.calc(sv11,"&","02000000") != "00000000" then
+		puts " tx power detector ALM H#10 ON"
+	end
+	if Rrh.calc(sv11,"&","04000000") != "00000000" then
+		puts " tx power detector ALM H#11 ON"
+	end
+	if Rrh.calc(sv11,"&","08000000") != "00000000" then
+		puts " tx power detector ALM H#12 ON"
+	end
+	if Rrh.calc(sv11,"&","10000000") != "00000000" then
+		puts " tx power detector ALM H#13 ON"
+	end
+	if Rrh.calc(sv11,"&","20000000") != "00000000" then
+		puts " tx power detector ALM H#14 ON"
+	end
+	if Rrh.calc(sv11,"&","40000000") != "00000000" then
+		puts " tx power detector ALM H#15 ON"
+	end
+	if Rrh.calc(sv11,"&","80000000") != "00000000" then
+		puts " tx power detector ALM H#16 ON"
+	end
+end
+
+puts "SV13 State a0000180:0x#{sv13}"
+if Rrh.calc(sv13,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv13,"&","00000001") != "00000000" then
+		puts " Temp ALM(low) ON"
+	end
+	if Rrh.calc(sv13,"&","00000100") != "00000000" then
+		puts " Temp ALM(high) ON"
+	end
+
+	if Rrh.calc(sv13,"&","00010000") != "00000000" then
+		puts " No fan detected ON"
+	end
+	if Rrh.calc(sv13,"&","00100000") != "00000000" then
+		puts " FAN PS ALM"
+	end
+	if Rrh.calc(sv13,"&","00400000") != "00000000" then
+		puts " Cooling fan#1 broken"
+	end
+	if Rrh.calc(sv13,"&","01000000") != "00000000" then
+		puts " Cooling fan#2 broken"
+	end
+	if Rrh.calc(sv13,"&","04000000") != "00000000" then
+		puts " Cooling fan#3 broken"
+	end
+
+	if Rrh.calc(sv13,"&","10000000") != "00000000" then
+		puts " SFP Type Error"
+	end
+	if Rrh.calc(sv13,"&","20000000") != "00000000" then
+		puts " SFP Access Error"
+	end
+	if Rrh.calc(sv13,"&","40000000") != "00000000" then
+		puts " SFP Fail Safe No Notify"
+	end
+	if Rrh.calc(sv13,"&","80000000") != "00000000" then
+		puts " SFP Fail Safe Notify"
+	end
+end
+
+puts "SV14 State a0000184:0x#{sv14}"
+if Rrh.calc(sv14,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv14,"&","00010000") != "00000000" then
+		puts " Tx  Sleep ON"
+	end
+	if Rrh.calc(sv14,"&","00020000") != "00000000" then
+		puts " Tx OFF ON"
+	end
+	if Rrh.calc(sv14,"&","00040000") != "00000000" then
+		puts " BaemID TEST Mode ON"
+	end
+	if Rrh.calc(sv14,"&","80000000") != "00000000" then
+		puts " Forced alarm ON"
+	end
+end
+
+puts "SV15 State a0000188:0x#{sv15}"
+if Rrh.calc(sv15,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv15,"&","00000001") != "00000000" then
+		puts " DownLoad ON"
+	end
+end
+
+puts "SV16 State a000018c:0x#{sv16}"
+if Rrh.calc(sv16,"&","FFFFFFFF") != "00000000" then
+	if Rrh.calc(sv16,"&","00000001") != "00000000" then
+		puts " all ANT Stop wave for SyncE ON"
+	end
+	if Rrh.calc(sv16,"&","00000002") != "00000000" then
+		puts " all ANT Stop wave for PTP ON"
+	end
+	if Rrh.calc(sv16,"&","00000004") != "00000000" then
+		puts " all ANT Stop wave for PTP Unlock"
+	end
+	if Rrh.calc(sv16,"&","000F0000") != "00000000" then
+		print " SyncE Status :"
+		syncE = Rrh.calc(sv16,"&","000F0000")
+		if Rrh.calc(syncE,"&","00010000") != "00000000" then
+			print "Disable "
+		end
+		if Rrh.calc(syncE,"&","00020000") != "00000000" then
+			print "Parent "
+		end
+		if Rrh.calc(syncE,"&","00040000") != "00000000" then
+			print "OK "
+		end
+		if Rrh.calc(syncE,"&","00080000") != "00000000" then
+			print "NOK "
+		end
+		puts ""
+	end
+	if Rrh.calc(sv16,"&","01000000") != "00000000" then
+		puts " SyncE Locked"
+	else
+		puts " SyncE UnLocked"
+	end
+	if Rrh.calc(sv16,"&","02000000") != "00000000" then
+		puts " PTP Locked"
+	else
+		puts " PTP UnLocked"
+	end
+	if Rrh.calc(sv16,"&","70000000") != "00000000" then
+		print " Sync Locked Status :"
+		syncS = Rrh.calc(sv16,"&","70000000")
+		if Rrh.calc(syncS,"&","10000000") != "00000000" then
+			print "Freerun "
+		end
+		if Rrh.calc(syncS,"&","20000000") != "00000000" then
+			print "Locked "
+		end
+		if Rrh.calc(syncS,"&","40000000") != "00000000" then
+			print "Holdover "
+		end
+		puts ""
+	end
+end
+
+Rrh.unassign()

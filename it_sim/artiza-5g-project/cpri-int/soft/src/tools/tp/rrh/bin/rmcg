@@ -1,0 +1,50 @@
+#
+# MCGAIN reg read
+# rrh -rmcg <ant/all>
+#
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh.require("./z_global")
+
+# usage
+if ARGV.length < 1 then
+	puts "usage:"+$0+" <ant/all>",
+	"(m):<ant/all>    is ant num"
+	exit(1)
+end
+
+ant_s  = ARGV[0]
+ant_i  = ant_s.to_i(16)
+
+if (ant_i<0 or ant_i>3) and (ant_s != "all")then
+ puts "Input value is incorrect((0:AntA~3:AntD) or all) : <ant>"
+ exit(1)
+end
+
+
+Rrh.assign()
+# reg read
+if ant_s == "all" then
+
+	for cnt in 0..3 do
+		addr_i = 0x400 * cnt
+		addr_s = Rrh.calc(addr_i.to_s(16),"+","B12000D0")
+		data_s = Rrh.regread(addr_s)
+		printf("%08x : ant%d\n",data_s.to_i(16),cnt)
+	end
+
+
+else
+
+
+		addr_i = 0x400 * ant_i
+		addr_s = Rrh.calc(addr_i.to_s(16),"+","B12000D0")
+
+	data_s = Rrh.regread(addr_s)
+	printf("%08x\n",data_s.to_i(16))
+
+
+end
+
+Rrh.unassign()
+

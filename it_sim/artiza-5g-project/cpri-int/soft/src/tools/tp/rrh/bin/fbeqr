@@ -1,0 +1,16 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+
+Rrh.assign()
+puts "ANT.A:"
+Rrh.system("rrh -r b1213000 38")
+puts "ANT.B:"
+Rrh.system("rrh -r b1213040 38")
+puts "ANT.C:"
+Rrh.system("rrh -r b1213080 38")
+puts "ANT.D:"
+Rrh.system("rrh -r b12130C0 38")
+Rrh.unassign()
+

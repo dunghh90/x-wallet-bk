@@ -1,0 +1,55 @@
+#
+# DEMGAIN reg write
+# rrh -sdemg <ant/all> <dat>
+#
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+# usage
+if ARGV.length < 2 then
+	puts "usage:"+$0+" <ant/all> <dat>",
+	"(m):<ant/all>    is ant num(0:AntA~3:AntD) or all",
+	"(m):<dat>        is write data"
+	exit(1)
+end
+
+ant_s  = ARGV[0]
+ant_i  = ant_s.to_i(16)
+data_s = ARGV[1]
+data_i = data_s.to_i(16)
+data_s =data_s
+
+if (ant_i<0 or ant_i>3) and (ant_s != "all") then
+ puts "Input value is incorrect((0:AntA~3:AntD) or all) : <ant>"
+ exit(1)
+end
+if !Rrh.input_check(data_s,8) then
+ puts "Input value is incorrect : <data>"
+ exit(1)
+end
+
+Rrh.assign()
+# reg write
+if ant_s == "all" then
+
+	for cnt in 0..3 do
+		addr_i = 0x400 * cnt
+		addr_s = Rrh.calc(addr_i.to_s(16),"+","B1203048")
+		Rrh.regwrite(addr_s,data_s)
+	end
+
+else
+
+	if ant_i > 3 then
+		puts "antnum error"
+		exit(1)
+	end
+
+		addr_i = 0x400 * ant_i
+		addr_s = Rrh.calc(addr_i.to_s(16),"+","B1203048")
+
+	Rrh.regwrite(addr_s,data_s)
+
+end
+
+Rrh.unassign()

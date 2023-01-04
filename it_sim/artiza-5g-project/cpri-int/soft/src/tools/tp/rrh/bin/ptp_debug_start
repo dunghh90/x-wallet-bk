@@ -1,0 +1,90 @@
+Rrh.require("./verbose")
+
+Rrh.assign()
+
+mode = ARGV[0]
+case mode.to_i(16)
+	when 1 then
+		puts "PTP DEBUG Mode Start(#{mode})..."
+		puts "Start PTP device Initialize ..."
+		Rrh.fflush()
+		Rrh.system("rrh -ptpconf")
+		Rrh.fflush()
+		puts "Start JCPLL device Initialize ..."
+		Rrh.fflush()
+		devkind = Rrh.eepread(0x40)
+		case devkind
+			when "13"
+				if Rrh.system("rrh -jcpllinit_sub6") != 0 then
+					puts "ERROR"
+					exit(1)
+				end
+			when "14"
+				if Rrh.system("rrh -jcpllinit_mmw") != 0 then
+					puts "ERROR"
+					exit(1)
+				end
+			else
+				puts "Not support device #{devkind}"
+				exit(1)
+		end
+		Rrh.fflush()
+		puts "Start LLB TRX Checking ..."
+		Rrh.fflush()
+		if Rrh.system("rrh -chkllbreset") != 0 then
+			puts "ERROR"
+			exit(1)
+		end
+		Rrh.fflush()
+		puts "Start ICBICX Initialize ..."
+		Rrh.fflush()
+		if Rrh.system("rrh -icbicxinit") != 0 then
+			puts "ERROR"
+			exit(1)
+		end
+		Rrh.fflush()
+		puts "Start FrontHaul Ether Link Initialize ..."
+		Rrh.fflush()
+		if Rrh.system("rrh -etherinit") != 0 then
+			puts "ERROR"
+			exit(1)
+		end
+		Rrh.fflush()
+		if Rrh.system("insmod /opt/lkm/fheth.ko") != 0 then
+			puts "ERROR"
+			exit(1)
+		end
+		Rrh.fflush()
+		if Rrh.system("rrh -ifup fheth0") != 0 then
+			puts "ERROR"
+			exit(1)
+		end
+		Rrh.fflush()
+		if Rrh.system("rrh -ifup fhethS0") != 0 then
+			puts "ERROR"
+			exit(1)
+		end
+		Rrh.fflush()
+		if Rrh.system("rrh -etherup") != 0 then
+			puts "ERROR"
+			exit(1)
+		end
+
+	when 2 then
+		puts "PTP DEBUG Mode Start(#{mode})..."
+		Rrh.fflush()
+		ptpmode = Rrh.eepread(0x3c3)
+		if ptpmode == "01" then
+			puts "Start PTP Process Master(#{ptpmode}) ..."
+			Rrh.fflush()
+			Rrh.system("DU_pf -m &")
+		else
+			puts "Start PTP Process Slave(#{ptpmode}) ..."
+			Rrh.fflush()
+			Rrh.system("DU_pf -p &")
+		end
+	else
+		puts "PTP DEBUG Mode Skip(#{mode})..."
+		Rrh.fflush()
+end
+Rrh.unassign()

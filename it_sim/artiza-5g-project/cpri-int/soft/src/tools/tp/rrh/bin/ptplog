@@ -1,0 +1,90 @@
+Rrh.require("./verbose")
+
+def cmd_help ( )
+    puts "usage:"+$0+" <dbgLevel>",
+    "(m):<traffic>      is Traffic Log  Disply Request (Ptp GetTrafficLog Request)",
+    "(m):<DevState>     is Device State Disply Request (Ptp GetDevState Request)",
+    "(m):<PtpClock>     is Ptp Clock Disply Request    (Ptp GetPtpClock Request)"
+    exit(1)
+end
+
+if ARGV.length < 3 then
+    cmd_help()
+    exit(1)
+end
+
+if Rrh.psalive("DU_pf -p") == false then
+   puts "PTP software was not start yet or dead."
+   exit(1)
+end
+
+Msghead = Struct.new( :evtid, :sigkind, :dstpqid, :dsttqid, :srcpqid, :srctqid )
+
+bufsize = 4096
+head = Msghead.new
+head.evtid = 0x00000001
+head.sigkind = 0
+head.dstpqid = 0x10FD000E
+head.dsttqid = 1
+head.srcpqid = 0x10FD000E
+head.srctqid = 2
+
+rbuf = Rrh.malloc(bufsize)
+
+qid      = 0x10FD000E
+traffic  = ARGV[0]
+DevState = ARGV[1]
+PtpClock = ARGV[2]
+
+wtime = 3000
+bufkind = 3 # E_BPF_RU_IPCM_BUFF_KIND_TASK
+
+Rrh.assign()
+if (traffic.to_i==1) then
+    puts "GetTrafficLog..."
+    if ( rtn = Rrh.api("duApi_Ptp_Mqr_GetTrafficLog", qid, 0, 0) ) != 0 then
+        printf("=>ERROR_R %d \n",rtn)
+    else
+        if ! Rrh.msgrecv(qid,wtime,head,rbuf,bufsize) then
+            result = 1
+        else
+            result = 0
+            Rrh.system("cat /var/log/PtpDbgDisp.log")
+            puts ""
+        end
+    end
+end
+
+if (DevState.to_i==1) then
+    puts "GetDevState..."
+    if ( rtn = Rrh.api("duApi_Ptp_Mqr_GetDevState", qid, 0, 0) ) != 0 then
+        printf("=>ERROR_R api=%d \n",rtn)
+    else
+        if ! Rrh.msgrecv(qid,wtime,head,rbuf,bufsize) then
+            result = 1
+        else
+            result = 0
+            Rrh.system("cat /var/log/PtpDbgDisp.log")
+            puts ""
+        end
+    end
+end
+
+if (PtpClock.to_i==1) then
+    puts "GetPtpClock..."
+    if ( rtn = Rrh.api("duApi_Ptp_Mqr_GetPtpClock", qid, 0, 0) ) != 0 then
+        printf("=>ERROR_R api=%d \n",rtn)
+    else
+        if ! Rrh.msgrecv(qid,wtime,head,rbuf,bufsize) then
+            result = 1
+        else
+            result = 0
+            Rrh.system("cat /var/log/PtpDbgDisp.log")
+            puts ""
+        end
+    end
+end
+
+Rrh.free(rbuf)
+Rrh.unassign()
+exit(result.to_i)

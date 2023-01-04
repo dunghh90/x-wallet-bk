@@ -1,0 +1,20 @@
+Rrh.require("./verbose")
+Rrh.require("./udpmsg")
+
+socket =  Rrh.usocket()
+
+msg = Msg.new
+head = Head.new
+head.ip = @hostip
+head.port = @hostport
+msg.name = "loopback"
+
+num = 0
+while num < 10  do
+ Rrh.usend(socket,msg,head)
+ Rrh.urecv(socket,msg,head)
+ print "No.",num,":",msg.name,":",head.ip,":",head.port,"\n"
+ num = num + 1
+end
+Rrh.uclose(socket)
+

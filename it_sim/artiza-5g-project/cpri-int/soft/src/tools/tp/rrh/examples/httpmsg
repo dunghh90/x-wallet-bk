@@ -1,0 +1,20 @@
+Head = Struct.new(
+:ip,:port
+)
+
+Hftp = Struct.new(
+:cmd,:host
+)
+
+Hftp_s = Struct.new(
+:cmd,:len,:keep,:con,:type,:dummy
+)
+
+Hftp_d = Struct.new(
+:text
+)
+
+@hostip = "0.0.0.0"
+@hostport = 80
+@listennum = 1
+

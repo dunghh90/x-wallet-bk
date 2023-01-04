@@ -1,0 +1,46 @@
+
+#RFPLL(LMX2594)レジスタ書き込み
+#第1引数(hex): アドレス
+#第2引数(hex): 設定データ
+#20180730新規作成 若水
+
+
+
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+
+
+if ARGV.length < 2 then
+ puts "usage:"+$0+" <addr> <data>",
+ "(m):<addr> is address",
+ "(m):<data> is written data"
+ raise 
+end
+
+addr_s = ARGV[0]
+data_s = ARGV[1]
+
+#アドレスチェック
+
+if !Rrh.input_check(addr_s,4) then
+ puts "Input value is incorrect : <addr>"
+ raise 
+end
+
+if !Rrh.input_check(data_s,4) then
+ puts "Input value is incorrect : <data>"
+ raise 
+end
+
+Rrh.assign()
+
+if !res = Rrh.rfpllwrite( addr_s.to_i(16) , data_s.to_i(16) ) then
+ puts "error"
+else
+ puts "complete"
+end
+
+Rrh.unassign()

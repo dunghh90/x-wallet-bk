@@ -1,0 +1,47 @@
+Rrh.require("./verbose")
+Rrh.require("./tcpmsg")
+
+
+socket =  Rrh.tsocket()
+if Rrh.tbind(socket,@hostip,@hostport) != 0 then
+ puts "Bind NG"
+ Rrh.tclose(socket)
+ exit
+end
+
+if Rrh.tlisten(socket,@listennum) != 0 then
+ puts "Listen NG"
+ Rrh.tclose(socket)
+ exit
+end
+
+msg = Msg.new
+head = Head.new
+
+while 1 do
+ acceptsocket = Rrh.taccept(socket,head)
+ if acceptsocket <= 0 then
+   puts "Accept NG"
+   break
+ end
+ printf("Accept client IP:%s , Port:%d \n",head.ip,head.port)
+ while 1 do
+   if Rrh.trecv(acceptsocket,msg) == 0 then
+      Rrh.tclose(acceptsocket)
+      break
+   end
+  case msg.name
+   when "loopback"
+    Rrh.tsend(acceptsocket,msg)
+   when "exit"
+    Rrh.tclose(acceptsocket)
+    Rrh.tclose(socket)
+    puts "Server Exit"
+    exit
+   else
+    print "MSG:",msg.name,"\n"
+  end
+ end
+end
+
+Rrh.tclose(socket)

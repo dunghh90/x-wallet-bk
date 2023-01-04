@@ -1,0 +1,47 @@
+# 
+# Eeprom write
+# rrh -pser <addr> <data>
+# 
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+# usage
+if ARGV.length < 2 then
+ puts "usage:"+$0+" <addr> <data>",
+ "(m):<addr> is eeprom address(000~7FF)",
+ "(m):<data> is written data(00~FF)"
+ exit(1)
+end
+
+addr_s = ARGV[0]
+data_s = ARGV[1]
+
+#引数の整合性確認
+if (!Rrh.input_check(addr_s,8)) && (addr_s != "all") then
+ puts "Input value is incorrect : <addr>"
+ exit(1)
+end
+if !Rrh.input_check(data_s,8) then
+ puts "Input value is incorrect : <data>"
+ exit(1)
+end
+
+Rrh.assign()
+#EEPROM書き込み
+#EEPROMのみ引数が数値であることに注意
+if addr_s != "all" then
+ if !res = Rrh.eepwrite( addr_s.to_i(16), data_s.to_i(16)) then
+  puts "eeprom write error"
+ else
+  puts "eeprom write complete"
+ end
+else
+ for addr_s in 0..2047 do
+  if !res = Rrh.eepwrite( addr_s.to_i(16), data_s.to_i(16)) then
+   puts "eeprom write error"
+   Rrh.unassign()
+   raise
+  end
+ end
+ puts "eeprom write complete"
+end
+Rrh.unassign()

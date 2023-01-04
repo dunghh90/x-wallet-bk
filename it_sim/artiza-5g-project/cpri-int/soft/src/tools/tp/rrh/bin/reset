@@ -1,0 +1,19 @@
+# 
+# soft reset
+# rrh -reset
+# 
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+
+ if (ARGV.length > 0) && ( ARGV[0].to_s.downcase == "help" ) then
+  puts "usage:"+$0+" <ps>",
+  "(o): ps is zynqU ps reset"
+  exit(0)
+ end
+ 
+Rrh.assign()
+Rrh.regwrite("a0000fa0","00000000")
+Rrh.regwrite("a0000100","0000a55a")
+Rrh.unassign()
+exit 0

@@ -1,0 +1,10 @@
+Msg = Struct.new(
+:name,:value
+)
+
+Head = Struct.new(
+:ip,:port
+)
+
+@hostip = "127.0.0.1"
+@hostport = 9999

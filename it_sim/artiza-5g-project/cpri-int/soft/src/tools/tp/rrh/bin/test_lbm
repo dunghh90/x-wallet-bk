@@ -1,0 +1,66 @@
+Rrh.require("./verbose")
+
+if ARGV.length < 1 then
+	puts "Usage:"+$0+" <send> <ethname> <dst macaddr> <vid> <pcp> <level> <ope> <transid> <value>",
+		 " <send> Send message mode ",
+		 "   <ethname>     is fronthaul interface name e.g.)fheth0 ",
+		 "   <dst macaddr> is sender mac address       e.g.)00:00:00:00:00:01 ",
+		 "   <vid>         is 1~4095 ",
+		 "   <pcp>         is 0~7 ",
+		 "   <level>       is 1~7 ",
+		 "   <ope>         is 0~255 ",
+		 "   <transid>     is 0~ ",
+		 "   <value>       is text string(free text)   e.g.)testlbm "
+
+	puts "Usage:"+$0+" <recv> <ethname> <vid> <pcp> <level>",
+		 " <recv> Recv message mode ",
+		 "   <ethname> e.g.)fheth0 ",
+		 "   <vid> is 1~4095 ",
+		 "   <pcp> is 0~7 ",
+		 "   <level> is 1~7 "
+	exit
+end
+
+case ARGV[0].to_s.downcase
+	when "s","send" then
+		if ARGV.length < 9 then
+			puts "Usage:"+$0+" <send> <ethname> <dst macaddr> <vid> <pcp> <level> <ope> <transid> <value>"
+			exit
+		end
+		if Rrh.lbmsend(ARGV[1].to_s,ARGV[2].to_s,ARGV[3].to_i(16),ARGV[4].to_i(16),ARGV[5].to_i(16),ARGV[6].to_i(16),ARGV[7].to_i(16),ARGV[8].to_s) == false then
+			puts "LBM Send ERROR"
+		else
+			puts "LBM Send OK"
+		end
+	when "r","recv" then
+		if ARGV.length < 5 then
+			puts "Usage:"+$0+" <recv> <ethname> <vid> <pcp> <level>"
+			exit
+		end
+
+		preval1 = Rrh.regread("A1000494")
+		preval2 = Rrh.regread("A1000300")
+
+		Rrh.regwrite("A1000300","00000000")
+		Rrh.regwrite("A1000494","00000000")
+	
+		vid = sprintf("%08x",ARGV[2].to_i(16))
+		vidval = Rrh.calc(vid,"|","00010000")
+		pcp = sprintf("%08x",(ARGV[3].to_i(16) << 16) & 0xFFFF0000 )
+		pcpvidval = Rrh.calc(pcp,"|",vid)
+
+		Rrh.regwrite("A1000494",pcpvidval)
+		Rrh.regwrite("A1000300",vidval)
+
+		if Rrh.lbmrecv(ARGV[1].to_s,ARGV[4].to_s) == false then
+			puts "LBM recv ERROR"
+		else
+			puts "LBM recv OK"
+		end
+
+		Rrh.regwrite("A1000494",preval1)
+		Rrh.regwrite("A1000300",preval2)
+
+	else
+		puts "Unknown option"
+end

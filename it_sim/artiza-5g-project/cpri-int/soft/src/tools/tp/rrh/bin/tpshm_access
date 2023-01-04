@@ -1,0 +1,166 @@
+# share memory access
+
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+Rrh.require("./z_global")
+
+Apdivc_param = Struct.new(
+:addr_str, :kind_str, :data_str
+)
+
+def apdivc_param(rstr)
+ list=rstr.split(",")
+ apara=Apdivc_param.new
+ apara.addr_str=list[0]
+ apara.kind_str=list[1]
+ apara.data_str=list[2]
+ return apara
+end
+
+
+#/* APDIVC MAP write */
+def tpshmwrite(kind_str, memb_str, addr_str, data_str )
+
+ filename="./tpshm_parameter"
+
+ if kind_str=="apde2pTX" then
+  return Rrh.bpfshmwrite("E_RRH_SHMID_APL_TRAINING_DATA","",addr_str,data_str)
+ end
+
+ if kind_str=="apde2pRX" then
+  rx_addr_s = Rrh.calc(addr_str,"+",APDE2P_TXLEN)
+  return Rrh.bpfshmwrite("E_RRH_SHMID_APL_TRAINING_DATA","",rx_addr_s,data_str)
+ end
+
+ if kind_str=="apde2pTX_vt" then
+  return Rrh.bpfshmwrite("E_RRH_SHMID_APL_TRAINING_DATA_VT","",addr_str,data_str)
+ end
+
+ if kind_str=="apde2pRX_vt" then
+  rx_addr_s = Rrh.calc(addr_str,"+",APDE2P_TXLEN)
+  return Rrh.bpfshmwrite("E_RRH_SHMID_APL_TRAINING_DATA_VT","",rx_addr_s,data_str)
+ end
+
+ if kind_str=="apde2pRX_vt_mmw" then
+  rx_addr_s = Rrh.calc(addr_str,"+",APDE2P_TXLEN_MMW)
+  return Rrh.bpfshmwrite("E_RRH_SHMID_APL_TRAINING_DATA_VT","",rx_addr_s,data_str)
+ end
+
+ if kind_str!="apdivc" then
+  puts "kind is not apdivc"
+  raise
+  exit(1)
+ end
+
+ if addr_str.to_i(16)>=0x200 then
+  puts "index overflow"
+  raise
+  exit(1)
+ end
+
+ if !fp=Rrh.fopen(filename,"r+") then
+  puts "file open error when get apdivc info"
+  raise
+  exit(1)
+ end
+
+ if !Rrh.fseekline(fp,addr_str.to_i(16)) then
+  puts "file seek error"
+  raise
+  exit(1)
+ end
+
+ #update apdivc info
+ wstr=sprintf("%03x,%06s,%08s", addr_str.to_i(16), kind_str, data_str)
+
+ if !Rrh.fwritestr(wstr,wstr.length,fp) then
+  puts "file write error"
+  exit(1)
+ end
+
+ if !Rrh.fclose(fp) then
+  puts "file close error"
+  raise
+  exit(1)
+ end
+end
+
+
+#/* APDIVC MAP read */
+def tpshmread(kind_str, memb_str, addr_str )
+
+ filename="./tpshm_parameter"
+
+ if kind_str=="apde2pTX" then
+  return Rrh.bpfshmread("E_RRH_SHMID_APL_TRAINING_DATA","",addr_str)
+ end
+
+ if kind_str=="apde2pRX" then
+  rx_addr_s = Rrh.calc(addr_str,"+",APDE2P_TXLEN)
+  return Rrh.bpfshmread("E_RRH_SHMID_APL_TRAINING_DATA","",rx_addr_s)
+ end
+
+ if kind_str=="apde2pTX_vt" then
+  return Rrh.bpfshmread("E_RRH_SHMID_APL_TRAINING_DATA_VT","",addr_str)
+ end
+
+ if kind_str=="apde2pRX_vt" then
+  rx_addr_s = Rrh.calc(addr_str,"+",APDE2P_TXLEN)
+  return Rrh.bpfshmread("E_RRH_SHMID_APL_TRAINING_DATA_VT","",rx_addr_s)
+ end
+
+ if kind_str=="apde2pTX_vt_mmw" then
+  return Rrh.bpfshmread("E_RRH_SHMID_APL_TRAINING_DATA_VT","",addr_str)
+ end
+
+ if kind_str=="apde2pRX_vt_mmw" then
+  rx_addr_s = Rrh.calc(addr_str,"+",APDE2P_TXLEN_MMW)
+  return Rrh.bpfshmread("E_RRH_SHMID_APL_TRAINING_DATA_VT","",rx_addr_s)
+ end
+
+
+ if kind_str!="apdivc" then
+  puts "kind is not apdivc"
+  raise
+  exit(1)
+ end
+
+ if addr_str.to_i(16)>=0x200 then
+  puts "index overflow"
+  raise
+  exit(1)
+ end
+
+ if !fp=Rrh.fopen(filename,"r") then
+  puts "file open error when get apdivc info"
+  raise
+  exit(1)
+ end
+
+ if !Rrh.fseekline(fp,addr_str.to_i(16)) then
+  puts "file seek error"
+  raise
+  exit(1)
+ end
+
+ if !rstr=Rrh.fgetline(fp) then
+  puts "file read error"
+  raise
+  exit(1)
+ end
+
+ apara=apdivc_param(rstr)
+
+ if !Rrh.fclose(fp) then
+  puts "file close error"
+  raise
+  exit(1)
+ end
+
+ return apara.data_str
+end
+
+
+
+

@@ -1,0 +1,14 @@
+Rrh.require("./verbose")
+
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <sec> <nsec>",
+ "(m):<sec> is second counts",
+ "(o):<nsec>is nano second counts"
+ exit(1)
+end
+
+if ARGV.length == 1 then
+Rrh.sleep(ARGV[0].to_i)
+else 
+Rrh.sleep(ARGV[0].to_i,ARGV[1].to_i)
+end

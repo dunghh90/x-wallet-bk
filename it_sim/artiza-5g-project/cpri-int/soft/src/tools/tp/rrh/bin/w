@@ -1,0 +1,45 @@
+# 
+# Register write
+# rrh -w <addr> <data>
+# 
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+# usage
+if ARGV.length < 2 then
+ puts "usage:"+$0+" <addr> <data>",
+ "(m):<addr> is register address",
+ "(m):<data> is written data"
+ exit(1)
+end
+
+addr_s = ARGV[0]
+data_s = ARGV[1]
+
+#引数の整合性確認
+if !Rrh.input_check(addr_s,8) then
+ puts "Input value is incorrect : <addr>"
+ exit(1)
+end
+if !Rrh.input_check(data_s,8) then
+ puts "Input value is incorrect : <data>"
+ exit(1)
+end
+
+
+if Rrh.calc(addr_s,"&","0000000F") != "00000000" then
+	if Rrh.calc(addr_s,"%","00000004") != "00000000" then
+		puts "Input value is not 4byte alignment : <addr>"
+		exit(1)
+	end
+end
+
+
+Rrh.assign()
+#レジスタ書込み
+if !res = Rrh.regwrite( addr_s, data_s) then
+ puts "register write error"
+else
+ puts "register write complete"
+end
+
+Rrh.unassign()

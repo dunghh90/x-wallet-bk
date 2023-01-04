@@ -1,0 +1,122 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+Rrh.require("./sveep")
+
+# usage
+
+if ARGV.length < 1 then
+    puts "usage:"+$0+" <ant/all> ",
+    "(m):<ant/all> is ant num (all)"
+    exit(1)
+end
+
+
+ant_s = ARGV[0]
+if ant_s.downcase != "all" then
+   puts "input ant error"
+   exit(1)
+end
+
+Rrh.assign()
+
+#装置構成
+addr_eep = 64
+if !res = Rrh.eepread(addr_eep.to_i(16)) then
+    puts "eep read error 1"
+else
+    puts "0x#{res} "
+    case res
+        when "13"
+            kind = "BPF_HM_DEVC_SUB6"
+            MAX = 3
+        when "14"
+            kind = "BPF_HM_DEVC_MMW"
+            MAX = 1
+    else
+        puts "kind num error"
+        raise
+    end
+end
+
+
+ANT = 0x0
+TFLAG = 0x0
+EEPW1 = 0x0
+EEPW2 = 0x0
+EEPW  = 0x0
+EEP_OFFSET          = 0x400
+CMN_SUB6_ADDR       = 0x012
+CMN_MMW_ADDR        = 0x034
+EEP_MMW_FLAG_ADDR   = 0x036
+
+for ant in 0..MAX
+    if kind == "BPF_HM_DEVC_SUB6" then
+        ANT = CMN_SUB6_ADDR + (ant*0x80)
+        if (EEPW1 = Rrh.tpshmread("apde2pTX_vt","",ANT.to_s(16))) == false then
+            puts "Shard Memory Read error No.1"
+            exit(1)
+        end
+        ANT = ANT + EEP_OFFSET
+        EEPW1 = EEPW1.to_i(16)
+        if !res = Rrh.eepwrite(ANT, EEPW1) then
+            puts "eep read error 2"
+        end
+        
+        ANT = CMN_SUB6_ADDR + (ant*0x80) + 0x01
+        if (EEPW2 = Rrh.tpshmread("apde2pTX_vt","",ANT.to_s(16))) == false then
+            puts "Shard Memory Read error No.2"
+            exit(1)
+        end
+        ANT = ANT + EEP_OFFSET
+        EEPW2 = EEPW2.to_i(16)
+        if !res = Rrh.eepwrite(ANT, EEPW2) then
+            puts "eep read error 3"
+        end
+    else
+        ANT = CMN_MMW_ADDR + (ant*2)
+        if (EEPW1 = Rrh.tpshmread("apde2pTX_vt","",ANT.to_s(16))) == false then
+            puts "Shard Memory Read error No.3"
+            exit(1)
+        end
+        ANT = ANT + EEP_OFFSET
+        EEPW1 = EEPW1.to_i(16)
+        if !res = Rrh.rfewrite(ANT, EEPW1) then
+            puts "eep read error 4"
+        end
+        
+        ANT = CMN_MMW_ADDR + (ant*2)
+        if (EEPW2 = Rrh.tpshmread("apde2pTX_vt","",ANT.to_s(16))) == false then
+            puts "Shard Memory Read error No.4"
+            exit(1)
+        end
+        ANT = ANT + EEP_OFFSET
+        EEPW2 = EEPW2.to_i(16)
+        if !res = Rrh.rfewrite(ANT, EEPW2) then
+            puts "eep read error 5"
+        end
+        TFLAG = EEP_MMW_FLAG_ADDR + ant
+        if !res = Rrh.rfewrite(TFLAG, 0x01) then
+            puts "eep read error 6"
+        end
+    end
+end
+ printf("Save Complete ant:all\n")
+
+
+if kind == "BPF_HM_DEVC_SUB6" then
+    if Rrh.svvstx() == false then
+        puts "EEP update error "
+        exit(1)
+    end
+    printf("CRC saved \n")
+else
+    if Rrh.svvstx_rf_n() == false then
+        puts "EEP update error "
+        exit(1)
+     end
+    printf("CRC saved \n")
+end
+
+Rrh.unassign()

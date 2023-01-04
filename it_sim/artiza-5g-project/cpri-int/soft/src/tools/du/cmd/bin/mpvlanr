@@ -1,0 +1,16 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+	low_vlan = Rrh.get_shmcm("low_vlan")
+	high_vlan = Rrh.get_shmcm("high_vlan")
+	last_vlan = Rrh.get_shmcm("last_vlan")
+	mp_pcp = Rrh.get_shmcm("pcp")
+
+	printf(" M-plane Vlan \n")
+	printf("   Vlan-scan range \n")
+	printf("      Lowest-vlan-id   : 0x#{low_vlan[4,4]}(#{low_vlan.to_i(16)})\n");
+	printf("      Highest-vlan-id  : 0x#{high_vlan[4,4]}(#{high_vlan.to_i(16)})\n");
+	printf("   Last vlan-id        : 0x#{last_vlan[4,4]}(#{last_vlan.to_i(16)})\n");
+	printf("   PCP                 : 0x#{mp_pcp[6,2]}(#{mp_pcp.to_i(16)})\n");
+

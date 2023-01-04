@@ -1,0 +1,13 @@
+# if (ARGV.length > 0 ) && ( ARGV[ ARGV.length - 1 ].to_s == "-v") then
+#  Rrh.dmsg(1)
+# end
+
+if @global_logcounter == nil then
+ cmd_params = ""
+  ARGV.length.times { | count |
+   cmd_params << ARGV[count]
+   cmd_params << " "
+ }
+ Rrh.logger("LV_INFO","du",$0,cmd_params)
+ @global_logcounter = "entry"
+end

@@ -1,0 +1,21 @@
+Rrh.assign()
+
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <set time>",
+ "(m):<set time> is \"YYYY-MM-DD TT:mm:ss\"",
+ "    YYYY is 2000~2099",
+ "    MM is 01~12",
+ "    DD is 01~31",
+ "    TT is 01~12",
+ "    mm is 00~59",
+ "    ss is 00~59"
+ exit(1)
+end
+
+rtctimes = Rrh.getrtc()
+puts "Current RTC TIME: #{rtctimes}"
+Rrh.setrtc(ARGV[0].to_s)
+rtctimes = Rrh.getrtc()
+puts "Set RTC TIME: #{rtctimes}"
+
+Rrh.unassign()

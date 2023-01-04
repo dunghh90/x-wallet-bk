@@ -1,0 +1,47 @@
+Rrh.require("./verbose")
+
+def cmd_help()
+ puts "usage:"+$0+" <dev> <addr> <data>",
+ "(m):<dev>  is 0:SFP1_A0 / 1:SFP1_A2",
+ "(m):<addr> is 00~FF ",
+ "(m):<data> is 00~FF "
+ return
+end
+
+# usage
+if ARGV.length < 3 then
+ cmd_help()
+ exit(1)
+end
+
+dev = ARGV[0].to_i(16)
+
+addr = ARGV[1].to_i(16)
+
+data = ARGV[2].to_i(16)
+
+if(dev>1)
+   puts "dev error"
+   cmd_help()
+   exit(1)
+ end
+
+ if addr > 0xFF then
+   puts "addr Error"
+   cmd_help()
+   exit(1)
+ end
+
+ if data > 0xFF then
+   puts "data Error"
+   cmd_help()
+   exit(1)
+ end
+
+Rrh.assign()
+  if !str = Rrh.sfpwrite(dev,addr,data) then
+   puts "Write Error"
+  else
+   puts "Write Complete"
+  end
+Rrh.unassign()

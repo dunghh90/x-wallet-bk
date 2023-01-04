@@ -1,0 +1,48 @@
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+
+Rrh.assign()
+if ARGV.length < 4 then
+        puts "usage:"+$0+" <Ant.A> <Ant.B> <Ant.C> <Ant.D>",
+        exit(1)
+end
+
+phase = [ARGV[0].to_f(10), ARGV[1].to_f(10), ARGV[2].to_f(10), ARGV[3].to_f(10)]
+CALcoef =["0" , "0", "0", "0"]
+
+for antnum in 0..3 do
+	I=0x4000 * Math.cos(phase[antnum].to_i(10) *  (Math::PI) / 180 )
+	In=I.round
+	if In < 0 then
+		In = In + 0x10000
+	end
+	Q=0x4000 * Math.sin(phase[antnum].to_i(10) *  (Math::PI) / 180 )
+	Qn=Q.round
+	if Qn < 0 then
+		Qn = Qn + 0x10000
+	end
+	coef = In * 0x10000 + Qn
+	CALcoef[antnum] = coef.to_s(16)
+	antcrnum = antnum
+	Rrh.regwrite("A2204184",antcrnum.to_s(16))
+	Rrh.regwrite("A2204800",CALcoef[antnum])
+	Rrh.regwrite("A2204804",CALcoef[antnum])
+	Rrh.regwrite("A2204808",CALcoef[antnum])
+	Rrh.regwrite("A220480C",CALcoef[antnum])
+
+	antcrnum = antnum + 8
+	Rrh.regwrite("A2204184",antcrnum.to_s(16))
+	Rrh.regwrite("A2204800",CALcoef[antnum])
+	Rrh.regwrite("A2204804",CALcoef[antnum])
+	Rrh.regwrite("A2204808",CALcoef[antnum])
+	Rrh.regwrite("A220480C",CALcoef[antnum])
+end
+Rrh.regwrite("A2204180","00000001")
+puts "Ant.A : #{phase[0]}  #{CALcoef[0]}"
+puts "Ant.B : #{phase[1]}  #{CALcoef[1]}"
+puts "Ant.C : #{phase[2]}  #{CALcoef[2]}"
+puts "Ant.D : #{phase[3]}  #{CALcoef[3]}"
+Rrh.unassign()

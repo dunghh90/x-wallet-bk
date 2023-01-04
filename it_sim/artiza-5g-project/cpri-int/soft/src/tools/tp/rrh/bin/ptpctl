@@ -1,0 +1,76 @@
+Rrh.require("./verbose")
+
+if ARGV.length < 2 then
+	puts "usage:"+$0+" <mode>",
+		"(m):<mode>        is ctl mode (read or write).",
+		"(m):<addr>        is ctl address.",
+		"(o):<val or len>  is ctl value or length..",
+		""
+	exit(1)
+end
+
+if Rrh.psalive("DU_pf -p") == false then
+	puts "PTP software was not start yet or dead."
+	exit(1)
+end
+
+
+case ARGV[0].to_s.downcase
+	when "r","read" then
+		mode = 1
+		addr = ARGV[1].to_i(16)
+		value = 0
+	when "w","write" then
+		if ARGV.length < 3 then
+			puts "Not INPUT value"
+			exit(1)
+		end
+		mode = 2
+		addr = ARGV[1].to_i(16)
+		value = ARGV[2].to_i(16)
+	else
+		puts "Not supported mode"
+		exit(1)
+end
+
+MsgData = Struct.new( :evtid, :sigkind, :dstpqid, :dsttqid, :srcpqid, :srctqid, :len, :keyid, :result , :mode, :addr, :value )
+bufsize = 4096
+msg = MsgData.new
+msg.evtid = 0
+msg.sigkind = 0
+msg.dstpqid = 0
+msg.dsttqid = 0
+msg.srcpqid = 0
+msg.srctqid = 0
+msg.len = 0
+msg.keyid = 0
+msg.result = 0
+msg.mode = 0
+msg.addr = 0
+msg.value = 0
+
+qid   = 0x10FD000E
+wtime = 5000
+
+Rrh.assign()
+	rbuf = Rrh.malloc(bufsize)
+	if ( rtn = Rrh.api("duApi_Ptp_Mqr_CtlPtpDevice", qid, wtime, rbuf , mode , addr,value) ) != 0 then
+		printf("=>ERROR_R %d \n",rtn)
+	else
+		Rrh.msgget_b(msg,rbuf,48)
+		if mode == 1 then
+			if msg.result == 0 then
+			printf("0x%x:0x%x\n",msg.addr,msg.value)
+			else
+			printf("=>Read ERROR 0x%x\n",msg.result)
+			end
+		else
+			if msg.result == 0 then
+				printf("=>Write OK\n")
+			else
+				printf("=>Write ERROR 0x%x\n",msg.result)
+			end
+		end
+	end
+	Rrh.free(rbuf)
+Rrh.unassign()

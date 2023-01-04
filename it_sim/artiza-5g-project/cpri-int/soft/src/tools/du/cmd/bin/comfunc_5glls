@@ -1,0 +1,90 @@
+module Rrh
+	def self.hex_check(str)
+		check_values_dec = ['1','2','3','4','5','6','7','8','9','0']
+		check_values_hex = ['1','2','3','4','5','6','7','8','9','0','a','b','c','d','e','f','A','B','C','D','E','F']
+
+		first = str[0]
+		if first == "-" then
+			if str.length > 11 then
+				return false
+			end
+			for cnt in 1...str.length do
+				if !check_values_dec.include?(str[cnt]) then
+					return false
+				end
+			end
+			value = str.to_i(10)
+		else
+			hex = str[0..1]
+			if hex == "0x" then
+				# 0xFFFFFFFF
+				if str.length > 10 then
+					return false
+				end
+				for cnt in 2...str.length do
+					if !check_values_hex.include?(str[cnt]) then
+						return false
+					end
+				end	
+				value = str.to_i(16)
+			else
+				# -2147483648
+				if str.length > 11 then
+					return false
+				end
+				for cnt in 0...str.length do
+					if !check_values_dec.include?(str[cnt]) then
+						return false
+					end
+				end
+				value = str.to_i(10)
+			end
+		end
+		if ( value > 4294967295 ) || ( value < -2147483648 ) then
+			return false
+		end
+		return value
+	end
+
+	def self.input_check(str,num)
+		values = ['1','2','3','4','5','6','7','8','9','0','a','b','c','d','e','f','A','B','C','D','E','F']
+		
+		if str.length>num then
+			return false
+		end
+		
+		for cnt in 0...str.length do
+			if !values.include?(str[cnt]) then
+			return false
+			end
+		end
+		return true
+	end
+
+	def self.input_check_max(str,num,max)
+		values = ['1','2','3','4','5','6','7','8','9','0','a','b','c','d','e','f','A','B','C','D','E','F']
+		
+		if str.length>num then
+			return false
+		end
+		
+		for cnt in 0...str.length do
+			if !values.include?(str[cnt]) then
+				return false
+			end
+		end
+		
+		if str.to_i(16) > max.to_i(16) then
+			puts "<str> over max value(#{max.to_i(16)}) : #{str.to_i(16)}"
+			return false
+		end
+		return true
+	end
+	def self.proc_check()
+		check_pid = Rrh.get_shmcm("pid")
+		if check_pid == "00000000" then
+			return false
+		end
+		return true
+	end
+end

@@ -1,0 +1,115 @@
+Rrh.require("./verbose")
+
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <portname>",
+ "(m):<portname> is below. ",
+ " port0   : Front Haul interface port0",
+ " hw      : Front Haul interface for HW",
+ " all     : ALL interface "
+  exit(1)
+end
+
+Rrh.assign()
+portname = ARGV[0].to_s
+case portname
+ when "port0" then
+   Rrh.regwrite("A1000800","00000001")
+   Rrh.sleep(0,100000000)
+   puts "<Front Haul #{ARGV[0].to_s} interface>"
+   puts "<SW M-plane packet statistics>"
+   Rrh.system("ifconfig fheth0")
+   puts "<SW S-plane packet statistics>"
+   Rrh.system("ifconfig fhethS0")
+   puts "<HW statistics(snapshot)>"
+   printf("RXUPLANE          :0x%s\n",Rrh.regread("a1000810"))
+   printf("RXMPLANE          :0x%s\n",Rrh.regread("a1000814"))
+   printf("RXSPLANE          :0x%s\n",Rrh.regread("a1000818"))
+   printf("RXDAERR           :0x%s\n",Rrh.regread("a100081C"))
+   printf("RXETYPEERR        :0x%s\n",Rrh.regread("a1000820"))
+   printf("RXVERERR          :0x%s\n",Rrh.regread("a1000824"))
+   printf("STATRXFRERR       :0x%s\n",Rrh.regread("a1000828"))
+   printf("STATRXSMALL       :0x%s\n",Rrh.regread("a100082C"))
+   printf("STATRXJABER       :0x%s\n",Rrh.regread("a1000830"))
+   printf("STATRXLARGE       :0x%s\n",Rrh.regread("a1000834"))
+   printf("STATRXOVRSIZE     :0x%s\n",Rrh.regread("a1000838"))
+   printf("STATRXUDRSIZE     :0x%s\n",Rrh.regread("a100083C"))
+   printf("STATRXTOOLONG     :0x%s\n",Rrh.regread("a1000840"))
+   printf("STATRXFRAGMNT     :0x%s\n",Rrh.regread("a1000844"))
+   printf("STATRXBADCODE     :0x%s\n",Rrh.regread("a1000848"))
+   printf("STATRXTOTALPACKET :0x%s\n",Rrh.regread("a100084C"))
+   printf("STATRXBADFCS      :0x%s\n",Rrh.regread("a1000850"))
+   printf("STATRXSTOMPEDFCS  :0x%s\n",Rrh.regread("a1000854"))
+   printf("STATRXUNICAST     :0x%s\n",Rrh.regread("a1000858"))
+   printf("STATRXMULTICAST   :0x%s\n",Rrh.regread("a100085C"))
+   printf("STATRXBROADCAST   :0x%s\n",Rrh.regread("a1000860"))
+   printf("STATRXPAUSE       :0x%s\n",Rrh.regread("a1000864"))
+   printf("OVFFRAMES         :0x%s\n",Rrh.regread("a1000868"))
+   printf("AXIERRFRAMES      :0x%s\n",Rrh.regread("a100086C"))
+   printf("OVFFRAMEM         :0x%s\n",Rrh.regread("a1000870"))
+   printf("AXIERRFRAMEM      :0x%s\n",Rrh.regread("a1000874"))
+   printf("TXUPLANE          :0x%s\n",Rrh.regread("a1000878"))
+   printf("TXMPLANE          :0x%s\n",Rrh.regread("a100087C"))
+   printf("TXSPLANE          :0x%s\n",Rrh.regread("a1000880"))
+   printf("STATTXPACKETS     :0x%s\n",Rrh.regread("a1000884"))
+   printf("STATTXBADFCS      :0x%s\n",Rrh.regread("a1000888"))
+   printf("STATTXFRAMEERROR  :0x%s\n",Rrh.regread("a100088C"))
+   printf("FECCOR            :0x%s\n",Rrh.regread("a1000890"))
+   printf("FECCANTCOR        :0x%s\n",Rrh.regread("a1000894"))
+   printf("RSFECCOR          :0x%s\n",Rrh.regread("a1000898"))
+   printf("RSFECUNCOR        :0x%s\n",Rrh.regread("a100089C"))
+   printf("RSFECERR          :0x%s\n",Rrh.regread("a10008A0"))
+   Rrh.regwrite("A1000800","00000001")
+ when "all" ,"hw" then
+   Rrh.regwrite("A1000800","00000001")
+   Rrh.sleep(0,100000000)
+   puts "<ALL interface>"
+   if portname == "all" then
+   puts "<SW ALL packet statistics>"
+   Rrh.system("ifconfig")
+   end
+   puts "<HW statistics(snapshot)>"
+     puts "                   Port0"
+   printf("RXUPLANE          :0x%s \n",Rrh.regread("a1000810"))
+   printf("RXMPLANE          :0x%s \n",Rrh.regread("a1000814"))
+   printf("RXSPLANE          :0x%s \n",Rrh.regread("a1000818"))
+   printf("RXDAERR           :0x%s \n",Rrh.regread("a100081C"))
+   printf("RXETYPEERR        :0x%s \n",Rrh.regread("a1000820"))
+   printf("RXVERERR          :0x%s \n",Rrh.regread("a1000824"))
+   printf("STATRXFRERR       :0x%s \n",Rrh.regread("a1000828"))
+   printf("STATRXSMALL       :0x%s \n",Rrh.regread("a100082C"))
+   printf("STATRXJABER       :0x%s \n",Rrh.regread("a1000830"))
+   printf("STATRXLARGE       :0x%s \n",Rrh.regread("a1000834"))
+   printf("STATRXOVRSIZE     :0x%s \n",Rrh.regread("a1000838"))
+   printf("STATRXUDRSIZE     :0x%s \n",Rrh.regread("a100083C"))
+   printf("STATRXTOOLONG     :0x%s \n",Rrh.regread("a1000840"))
+   printf("STATRXFRAGMNT     :0x%s \n",Rrh.regread("a1000844"))
+   printf("STATRXBADCODE     :0x%s \n",Rrh.regread("a1000848"))
+   printf("STATRXTOTALPACKET :0x%s \n",Rrh.regread("a100084C"))
+   printf("STATRXBADFCS      :0x%s \n",Rrh.regread("a1000850"))
+   printf("STATRXSTOMPEDFCS  :0x%s \n",Rrh.regread("a1000854"))
+   printf("STATRXUNICAST     :0x%s \n",Rrh.regread("a1000858"))
+   printf("STATRXMULTICAST   :0x%s \n",Rrh.regread("a100085C"))
+   printf("STATRXBROADCAST   :0x%s \n",Rrh.regread("a1000860"))
+   printf("STATRXPAUSE       :0x%s \n",Rrh.regread("a1000864"))
+   printf("OVFFRAMES         :0x%s \n",Rrh.regread("a1000868"))
+   printf("AXIERRFRAMES      :0x%s \n",Rrh.regread("a100086C"))
+   printf("OVFFRAMEM         :0x%s \n",Rrh.regread("a1000870"))
+   printf("AXIERRFRAMEM      :0x%s \n",Rrh.regread("a1000874"))
+   printf("TXUPLANE          :0x%s \n",Rrh.regread("a1000878"))
+   printf("TXMPLANE          :0x%s \n",Rrh.regread("a100087C"))
+   printf("TXSPLANE          :0x%s \n",Rrh.regread("a1000880"))
+   printf("STATTXPACKETS     :0x%s \n",Rrh.regread("a1000884"))
+   printf("STATTXBADFCS      :0x%s \n",Rrh.regread("a1000888"))
+   printf("STATTXFRAMEERROR  :0x%s \n",Rrh.regread("a100088C"))
+   printf("FECCOR            :0x%s \n",Rrh.regread("a1000890"))
+   printf("FECCANTCOR        :0x%s \n",Rrh.regread("a1000894"))
+   printf("RSFECCOR          :0x%s \n",Rrh.regread("a1000898"))
+   printf("RSFECUNCOR        :0x%s \n",Rrh.regread("a100089C"))
+   printf("RSFECERR          :0x%s \n",Rrh.regread("a10008A0"))
+   Rrh.regwrite("A1000800","00000001")
+ else
+   puts "Not supported option"
+end
+Rrh.unassign()
+exit(0)
+

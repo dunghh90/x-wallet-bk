@@ -1,0 +1,84 @@
+/*!
+ * @skip  $ld:$
+ * @file  f_sys_inc.h
+ * @brief System共通定鄒? * @date  2013/11/11 ALPHA) yokoyama Create RRH-007 共騾? *
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2013-2015
+ */
+
+/*!
+ * @addtogroup RRH_RRH
+ * @{
+ */
+#ifndef F_SYS_INC_H
+#define F_SYS_INC_H
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <time.h>
+#include "f_rrh_inc.h"
+#include "f_sys_def.h"							/*!< 定数定義				*/
+#include "f_sys_type.h"							/*!< 構造体タグ宣言			*/
+#include "f_rrh_reg_catxpll.h"					/*!< レジスタアドレス定義	*/
+/* 2020/12/28 M&C) Merge 4G FHM src (start add) */
+#include "f_rrh_reg_cc.h"
+#include "f_rrh_reg_cm.h"
+#include "f_rrh_reg_cnt.h"
+#include "f_rrh_reg_cpld.h"
+#include "f_rrh_reg_cpri.h"
+#include "f_rrh_reg_dis.h"
+/* 2020/12/28 M&C) Merge 4G FHM src (end add) */
+#include "f_rrh_reg_eep.h"
+#include "f_rrh_reg_flash.h"
+/* 2020/12/28 M&C) Merge 4G FHM src (start add) */
+#include "f_rrh_reg_mix.h"
+#include "f_rrh_reg_pll.h"
+#include "f_rrh_reg_rx.h"
+#include "f_rrh_reg_soc.h"
+#include "f_rrh_reg_td.h"
+#include "f_rrh_reg_up.h"
+#include "f_rrh_reg_ddr.h"
+#include "f_rrh_reg_pci.h"
+#include "f_rrh_reg_gpio.h"
+#include "f_rrh_reg_slcr.h"
+#include "f_rrh_reg_tim.h"
+#include "f_rrh_reg.h"
+/* 2020/12/28 M&C) Merge 4G FHM src (end add) */
+
+#include "f_rrh_reg_slcr.h"
+
+/* 5G DU 向け */
+#include "f_du_reg.h"
+#include "f_du_reg_ca.h"
+#include "f_du_reg_cc.h"
+#include "f_du_reg_ccb.h"
+#include "f_du_reg_ctb.h"
+#include "f_du_reg_ctx.h"
+#include "f_du_reg_cpi.h"
+#include "f_du_reg_cpr.h"
+#include "f_du_reg_dlf.h"
+#include "f_du_reg_dlp.h"
+#include "f_du_reg_eep.h"
+#include "f_du_reg_eth.h"
+#include "f_du_reg_fbant.h"
+#include "f_du_reg_fbatc.h"
+#include "f_du_reg_fbmod.h"
+#include "f_du_reg_jsfb.h"
+#include "f_du_reg_jsfw.h"
+#include "f_du_reg_jsrx.h"
+#include "f_du_reg_pd.h"
+#include "f_du_reg_rafft.h"
+#include "f_du_reg_rafir.h"
+#include "f_du_reg_rapkt.h"
+#include "f_du_reg_rfeep.h"
+#include "f_du_reg_rx.h"
+#include "f_du_reg_rxb.h"
+#include "f_du_reg_tcb.h"
+#include "f_du_reg_tcx.h"
+#include "f_du_reg_ulf.h"
+#include "f_du_reg_ulp.h"
+#include "f_du_reg_oth.h"
+#include "f_du_reg_sfp.h"
+#endif
+/* @} */

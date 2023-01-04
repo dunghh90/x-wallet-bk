@@ -1,0 +1,30 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+	Rrh.assign()
+	value = Rrh.eepread( 0x3f6 )
+	if value == "01" then
+		freq1 = Rrh.eepread( 0x3f7)
+		freq2 = Rrh.eepread( 0x3f8)
+		freq3 = Rrh.eepread( 0x3f9)
+		freq4 = Rrh.eepread( 0x3fA)
+		mode = "ON"
+		freq = freq1 + freq2 + freq3 + freq4
+	else
+		kind = Rrh.eepread( 0x41 )
+		case kind
+			when "10" then
+				freq = "0044AAB6"
+			when "11" then
+				freq = "0036EF16"
+			else
+				freq = "01A52480"
+		end
+		mode = "OFF(default)"
+	end
+	Rrh.unassign()
+
+	printf("EEP Flag(0x3f6)        :%s\n",mode)
+	printf("Center Frequency(kHz)  :%d(0x%s)\n",freq.to_i(16),freq)
+
+

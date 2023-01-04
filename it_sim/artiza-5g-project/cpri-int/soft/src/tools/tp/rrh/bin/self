@@ -1,0 +1,13 @@
+Rrh.assign()
+type = Rrh.eepread(0x41)
+case type
+ when "10" then
+  puts "I'm 5G-LLS(4.5G)."  
+ when "11" then
+  puts "I'm 5G-LLS(3.7G)."  
+ when "12" then
+  puts "I'm 5G-LLS(28G)."  
+ else
+  puts "Who am I !!!!!!"
+end
+Rrh.unassign()

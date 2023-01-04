@@ -1,0 +1,376 @@
+# Save the tx_memory_data to EEPROM
+
+module Rrh
+
+CRCPOLY1 = 0x1021	# x^{16}+x^{12}+x^5+1
+
+#-------------------------------------------------------------
+#  CRC16 by byte
+#-------------------------------------------------------------
+	def self.get_crc16(data, p_crc)
+		p_crc[0] ^= (data << 8)
+		bit = 8
+		for cnt in 1..bit do
+			if ((p_crc[0] & 0x8000) != 0) then
+				p_crc[0] = (p_crc[0] << 1) ^ CRCPOLY1
+			else
+				p_crc[0] <<= 1
+			end
+		end
+	end
+
+#-------------------------------------------------------------
+#  CRC16 by 2byte
+#-------------------------------------------------------------
+	def self.Get_AddCrc(data, p_crc)
+		p_crc[0] ^= data
+	    bit = 16
+		for cnt in 1..bit do
+			if ((p_crc[0] & 0x8000) != 0) then
+				p_crc[0] = (p_crc[0] << 1) ^ CRCPOLY1
+			else
+				p_crc[0] <<= 1
+			end
+		end
+	end
+
+#-------------------------------------------------------------
+# svvs
+#-------------------------------------------------------------
+def self.svvstx()
+		apde2pTX = Array.new(APDE2P_TXLEN.to_i(16))
+		crc16 = Array.new(1)
+
+		for addr_i in 0..(APDE2P_TXLEN.to_i(16) - 1) do
+			if (data_s = Rrh.tpshmread("apde2pTX_vt","",addr_i.to_s(16))) == false then
+				printf("apde2pTX read NG.\n")
+				return false
+			end
+			apde2pTX[addr_i] = data_s.to_i(16)
+		end
+
+	    apdeepadd = 0x400	# TX
+	    len = APDE2P_TXLEN.to_i(16)
+	    paramlen = SAVE_TXPARAM_LENGTH.to_i(16)
+		crcadd = APDE2P_TXCRC16.to_i(16)
+
+	    crc16[0] = 0
+	    cnt = paramlen
+	    stadd = 0
+		for tim in 0..cnt do
+	        dat16  = apde2pTX[stadd]
+	        stadd += 1
+	        get_crc16(dat16 , crc16)
+			# printf(" crc: dat=%08x crc=%d\n",dat16,crc16[0])
+		end
+		data = (crc16[0] >> 8)
+	    apde2pTX[crcadd] = (data & 0x000000FF)
+	    crcadd += 1
+		data = (crc16[0] & 0x000000FF)
+	    apde2pTX[crcadd] = data
+
+		for addr_i in 0..(APDE2P_TXLEN.to_i(16) - 1) do
+			if Rrh.tpshmwrite("apde2pTX_vt","",addr_i.to_s(16),apde2pTX[addr_i].to_s(16)) == false then
+				printf("apde2pTX write NG.\n")
+				return false
+			end
+		end
+		for cnt in 0..(len-1) do
+			if (res = Rrh.eepwrite( apdeepadd + cnt, apde2pTX[cnt] )) == false then
+				puts "eeprom write error"
+				return false
+			end
+		end
+		return true
+	end
+
+#-------------------------------------------------------------
+# svvstx_rf_n
+#-------------------------------------------------------------
+	def self.svvstx_rf_n()
+
+		FLGs  =    [ "39" , "3B" , "3D" , "3A" ,"3C" ,"3E" ]
+		BASEs =    [ "10" , "18" , "20" , "12" ,"19" ,"22" ]
+		extBASEs = [ "11" , "00" , "21" , "13" ,"00" ,"23" ]
+
+		apde2pTX = Array.new(APDE2P_TXLEN_RF_N.to_i(16))
+		crc16 = Array.new(1)
+		for addr_i in 0..(APDE2P_TXLEN_RF_N.to_i(16) - 1) do
+			if (data_s = Rrh.tpshmread("apde2pTX_vt_mmw","",addr_i.to_s(16))) == false then
+				printf("apde2pTX read NG.\n")
+				return false
+			end
+			apde2pTX[addr_i] = data_s.to_i(16)
+		end
+
+		len = APDE2P_TXLEN_RF_N.to_i(16)
+		paramlen = SAVE_TXPARAM_LENGTH_MMW.to_i(16)
+		crcadd = APDE2P_TXCRC16_RF.to_i(16)
+		crc16[0] = 0
+		cnt = paramlen
+		stadd = 0
+		for tim in 0..cnt do
+		    dat16  = apde2pTX[stadd]
+		    stadd += 1
+		    get_crc16(dat16 , crc16)
+			# printf(" crc: dat=%08x crc=%x\n",dat16,crc16[0])
+		end
+		data = (crc16[0] >> 8)
+		apde2pTX[crcadd] = (data & 0x000000FF)
+		crcadd += 1
+		data = (crc16[0] & 0x000000FF)
+		apde2pTX[crcadd] = data
+		rfeepadd = 0x400	# TX
+		for cnt in 0..(len-1) do
+			if (res = Rrh.rfewrite( rfeepadd + cnt, apde2pTX[cnt] )) == false then
+				puts "eeprom write error"
+				return false
+			end
+		end
+		return true
+	end
+
+#-------------------------------------------------------------
+# svvstx_rf_l
+#-------------------------------------------------------------
+	def self.svvstx_rf_l()
+
+		FLGs  =    [ "49" ,  "4B" , "4D" ,  "4A"  ,"4C" , "4E"  ]
+		BASEs =    [ "110" , "118" ,"120" , "112" ,"119" ,"122" ]
+		extBASEs = [ "111" , "00" , "121" , "113" ,"00" , "123" ]
+
+		apde2pTX = Array.new(APDE2P_TXLEN_RF_L.to_i(16))
+		crc16 = Array.new(1)
+		
+		for addr_i in 0..(APDE2P_TXLEN_RF_L.to_i(16) - 1) do
+			add_l_i = addr_i + 0x100
+			if (data_s = Rrh.tpshmread("apde2pTX_vt_mmw","",add_l_i.to_s(16))) == false then
+				printf("apde2pRX read NG.\n")
+				return false
+			end
+			apde2pTX[addr_i] = data_s.to_i(16)
+		end
+
+		len = APDE2P_TXLEN_RF_L.to_i(16)
+		paramlen = SAVE_TXPARAM_LENGTH_MMW.to_i(16)
+		crcadd = APDE2P_TXCRC16_RF.to_i(16)
+		crc16[0] = 0
+		cnt = paramlen
+		stadd = 0
+		for tim in 0..cnt do
+		    dat16  = apde2pTX[stadd]
+		    stadd += 1
+		    get_crc16(dat16 , crc16)
+			# printf(" crc: dat=%08x crc=%x\n",dat16,crc16[0])
+		end
+		data = (crc16[0] >> 8)
+		apde2pTX[crcadd] = (data & 0x000000FF)
+		crcadd += 1
+		data = (crc16[0] & 0x000000FF)
+		apde2pTX[crcadd] = data
+		rfeepadd = 0x500	# TX
+		for cnt in 0..(len-1) do
+			if (res = Rrh.rfewrite( rfeepadd + cnt, apde2pTX[cnt] )) == false then
+				puts "eeprom write error"
+				return false
+			end
+		end
+		return true
+	end
+
+
+#-------------------------------------------------------------
+# svvsrx
+#-------------------------------------------------------------
+	def self.svvsrx()
+
+		apde2pRX = Array.new(APDE2P_RXLEN.to_i(16))
+		crc16 = Array.new(1)
+		for addr_i in 0..(APDE2P_RXLEN.to_i(16) - 1) do
+			if (data_s = Rrh.tpshmread("apde2pRX","",addr_i.to_s(16))) == false then
+				printf("apde2pRX read NG.\n")
+				return false
+			end
+			apde2pRX[addr_i] = data_s.to_i(16)
+		end
+
+		apdeepadd = 0x700	# RX
+		len = APDE2P_RXLEN.to_i(16)
+		paramlen = SAVE_RXPARAM_LENGTH.to_i(16)
+		crcadd = APDE2P_RXCRC16.to_i(16)
+		crc16[0] = 0
+		cnt = paramlen
+		stadd = 0
+		for tim in 0..cnt do
+		    dat16  = apde2pRX[stadd]
+		    stadd += 1
+		    get_crc16(dat16 , crc16)
+			# printf(" crc: dat=%08x crc=%x\n",dat16,crc16[0])
+		end
+		data = (crc16[0] >> 8)
+		apde2pRX[crcadd] = (data & 0x000000FF)
+		crcadd += 1
+		data = (crc16[0] & 0x000000FF)
+		apde2pRX[crcadd] = data
+
+		for addr_i in 0..(APDE2P_RXLEN.to_i(16) - 1) do
+			if Rrh.tpshmwrite("apde2pRX","",addr_i.to_s(16),apde2pRX[addr_i].to_s(16)) == false then
+				printf("apde2pRX write NG.\n")
+				return false
+			end
+		end
+
+		for cnt in 0..(len-1) do
+			if (res = Rrh.eepwrite( apdeepadd + cnt, apde2pRX[cnt] )) == false then
+				puts "eeprom write error"
+				return false
+			end
+		end
+		return true
+	end
+
+#-------------------------------------------------------------
+# svvsrx
+#-------------------------------------------------------------
+	def self.svvsrx_rf_n()
+
+		FLGs  =    [ "39" , "3B" , "3D" , "3A" ,"3C" ,"3E" ]
+		BASEs =    [ "10" , "18" , "20" , "12" ,"19" ,"22" ]
+		extBASEs = [ "11" , "00" , "21" , "13" ,"00" ,"23" ]
+
+		apde2pRX = Array.new(APDE2P_RXLEN_RF_N.to_i(16))
+		crc16 = Array.new(1)
+		for addr_i in 0..(APDE2P_RXLEN_RF_N.to_i(16) - 1) do
+			if (data_s = Rrh.tpshmread("apde2pRX_vt_mmw","",addr_i.to_s(16))) == false then
+				printf("apde2pRX read NG.\n")
+				return false
+			end
+			apde2pRX[addr_i] = data_s.to_i(16)
+		end
+
+		for addr_i in 0..5 do
+			if (flg = Rrh.rferead(FLGs[addr_i].to_i(16))) == false then
+				printf("rferead read NG.0x%x\n",FLGs[addr_i].to_i(16))
+				return false
+			end
+			if flg == "01" then
+				base = BASEs[addr_i].to_i(16) + 0x600
+				apde2pRX[BASEs[addr_i].to_i(16)] = Rrh.rferead(base)
+				if ( extBASEs[addr_i].to_i(16) != 0) then
+					base = extBASEs[addr_i].to_i(16) + 0x600
+					apde2pRX[extBASEs[addr_i].to_i(16)] = Rrh.rferead(base)
+				end
+			end
+		end
+
+		len = APDE2P_RXLEN_RF_N.to_i(16)
+		paramlen = SAVE_RXPARAM_LENGTH.to_i(16)
+		crcadd = APDE2P_RXCRC16.to_i(16)
+		crc16[0] = 0
+		cnt = paramlen
+		stadd = 0
+		for tim in 0..cnt do
+		    dat16  = apde2pRX[stadd]
+		    stadd += 1
+		    get_crc16(dat16 , crc16)
+			# printf(" crc: dat=%08x crc=%x\n",dat16,crc16[0])
+		end
+		data = (crc16[0] >> 8)
+		apde2pRX[crcadd] = (data & 0x000000FF)
+		crcadd += 1
+		data = (crc16[0] & 0x000000FF)
+		apde2pRX[crcadd] = data
+		rfeepadd = 0x600	# RX
+		for cnt in 0..(len-1) do
+			if (res = Rrh.rfewrite( rfeepadd + cnt, apde2pRX[cnt] )) == false then
+				puts "eeprom write error"
+				return false
+			end
+		end
+		return true
+	end
+
+#-------------------------------------------------------------
+# svvsrx
+#-------------------------------------------------------------
+	def self.svvsrx_rf_l()
+
+		FLGs  =    [ "49" ,  "4B" , "4D" ,  "4A"  ,"4C" , "4E"  ]
+		BASEs =    [ "110" , "118" ,"120" , "112" ,"119" ,"122" ]
+		extBASEs = [ "111" , "00" , "121" , "113" ,"00" , "123" ]
+
+		apde2pRX = Array.new(APDE2P_RXLEN_RF_L.to_i(16))
+		crc16 = Array.new(1)
+		
+		for addr_i in 0..(APDE2P_RXLEN_RF_L.to_i(16) - 1) do
+			add_l_i = addr_i + 0x100
+			if (data_s = Rrh.tpshmread("apde2pRX_vt_mmw","",add_l_i.to_s(16))) == false then
+				printf("apde2pRX read NG.\n")
+				return false
+			end
+			apde2pRX[addr_i] = data_s.to_i(16)
+		end
+
+		for addr_i in 0..5 do
+			if (flg = Rrh.rferead(FLGs[addr_i].to_i(16))) == false then
+				printf("rferead read NG.0x%x\n",FLGs[addr_i].to_i(16))
+				return false
+			end
+			if(flg == "01") then
+				base = BASEs[addr_i].to_i(16) + 0x700
+				apde2pRX[BASEs[addr_i].to_i(16)] = Rrh.rferead(base)
+				if ( extBASEs[addr_i].to_i(16) != 0) then
+					base = extBASEs[addr_i].to_i(16) + 0x700
+					apde2pRX[extBASEs[addr_i].to_i(16)] = Rrh.rferead(base)
+				end
+			end
+		end
+
+		len = APDE2P_RXLEN_RF_L.to_i(16)
+		paramlen = SAVE_RXPARAM_LENGTH.to_i(16)
+		crcadd = APDE2P_RXCRC16.to_i(16)
+		crc16[0] = 0
+		cnt = paramlen
+		stadd = 0
+		for tim in 0..cnt do
+		    dat16  = apde2pRX[stadd]
+		    stadd += 1
+		    get_crc16(dat16 , crc16)
+			# printf(" crc: dat=%08x crc=%x\n",dat16,crc16[0])
+		end
+		data = (crc16[0] >> 8)
+		apde2pRX[crcadd] = (data & 0x000000FF)
+		crcadd += 1
+		data = (crc16[0] & 0x000000FF)
+		apde2pRX[crcadd] = data
+		rfeepadd = 0x700	# RX
+		for cnt in 0..(len-1) do
+			if (res = Rrh.rfewrite( rfeepadd + cnt, apde2pRX[cnt] )) == false then
+				puts "eeprom write error"
+				return false
+			end
+		end
+		return true
+	end
+
+
+#-------------------------------------------------------------
+# rx param update
+#-------------------------------------------------------------
+	def self.update_RXparam(antnum, param0)
+		apde2pRX = Array.new(APDE2P_RXLEN.to_i(16))
+		for addr_i in 0..(APDE2P_RXLEN.to_i(16) - 1) do
+			data_s = Rrh.tpshmread("apde2pRX","",addr_i.to_s(16))
+			apde2pRX[addr_i] = data_s.to_i(16)
+		end
+		eep_offset = 0x0040
+		apde2pRX[APDE2P_RXGAIN_INDEX_A.to_i(16)         + (eep_offset * antnum)] = param0
+		for addr_i in 0..(APDE2P_RXLEN.to_i(16) - 1) do
+			if Rrh.tpshmwrite("apde2pRX","",addr_i.to_s(16),apde2pRX[addr_i].to_s(16)) == false then
+				printf("apde2pRX write NG.\n")
+				return false
+			end
+		end
+		return true
+	end
+end

@@ -1,0 +1,46 @@
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+
+Rrh.assign()
+	devkind = Rrh.eepread(Register::EEP_BOARD_TYPE.to_i(16))
+	if devkind == "14" then
+	 puts "device type error"
+	 exit(1)
+	end
+
+	powrvsswA = Rrh.regread("B12030F0")
+	powrvsswB = Rrh.regread("B12034F0")
+	powrvsswC = Rrh.regread("B12038F0")
+	powrvsswD = Rrh.regread("B1203CF0")
+	
+	powrrefvsswA = Rrh.regread("B12030F8")
+	powrrefvsswB = Rrh.regread("B12034F8")
+	powrrefvsswC = Rrh.regread("B12038F8")
+	powrrefvsswD = Rrh.regread("B1203CF8")
+
+	if powrrefvsswA == "00000000" then
+		printf("AntA VSWR : -- (0xB12030F0:0x%s / 0xB12030F8:0x%s)\n",powrvsswA,powrrefvsswA)
+	else
+		vswr = (10.0 * Math::log10( powrvsswA.to_i(16) / powrrefvsswA.to_i(16) )) - 3.0
+		printf("AntA VSWR : %f (0xB12030F0:0x%s / 0xB12030F8:0x%s)\n",vswr.round(1),powrvsswA,powrrefvsswA)
+	end
+	if powrrefvsswB == "00000000" then
+		printf("AntB VSWR : -- (0xB12034F0:0x%s / 0xB12034F8:0x%s)\n",powrvsswB,powrrefvsswB)
+	else
+		vswr = (10.0 * Math::log10( powrvsswB.to_i(16) / powrrefvsswB.to_i(16) )) - 3.0
+		printf("AntB VSWR : %f (0xB12034F0:0x%s / 0xB12034F8:0x%s)\n",vswr.round(1),powrvsswB,powrrefvsswB)
+	end
+	if powrrefvsswC == "00000000" then
+		printf("AntC VSWR : -- (0xB12038F0:0x%s / 0xB12038F8:0x%s)\n",powrvsswC,powrrefvsswC)
+	else
+		vswr = (10.0 * Math::log10( powrvsswC.to_i(16) / powrrefvsswC.to_i(16) )) - 3.0
+		printf("AntC VSWR : %f (0xB12038F0:0x%s / 0xB12038F8:0x%s)\n",vswr.round(1),powrvsswC,powrrefvsswC)
+	end
+	if powrrefvsswD == "00000000" then
+		printf("AntD VSWR : -- (0xB1203CF0:0x%s / 0xB1203CF8:0x%s)\n",powrvsswD,powrrefvsswD)
+	else
+		vswr = (10.0 * Math::log10( powrvsswD.to_i(16) / powrrefvsswD.to_i(16) )) - 3.0
+		printf("AntD VSWR : %f (0xB1203CF0:0x%s / 0xB1203CF8:0x%s)\n",vswr.round(1),powrvsswD,powrrefvsswD)
+	end
+
+Rrh.unassign()

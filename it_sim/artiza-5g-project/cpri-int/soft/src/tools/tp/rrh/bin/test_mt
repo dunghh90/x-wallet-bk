@@ -1,0 +1,294 @@
+Rrh.require("./verbose")
+
+Hostip = "192.168.1.131"
+TestMsgId = 0 
+TestCount = 1
+TestParam = 0 
+TestParam2 = ""
+
+if ARGV.length < 1 then
+	puts "Usage:"+$0+" <ipaddr> <COUNT> <ID> <data> ..."
+	puts ""
+	puts "  NAME                   : ID"
+	puts "  OPT_CONNECT_STT_REQ    : 3001"
+	puts "  OPT_CONNECT_STP_REQ    : 3004"
+	puts "  EEPROM_REG_READ_REQ    : 3011"
+	puts "  DUSTATUS_GET_REQ       : 3021"
+	puts "  FORCEALM_REQ           : 3031"
+	puts "  CARDBLK_REQ            : 3041"
+	puts "  CARDRST_REQ            : 3051"
+	puts "  PAONOFF_REQ            : 3061"
+	puts "  NETCONF_AUTH_RESET_REQ : 3071"
+	puts "  POWADJ_WRITE_REQ       : 3081"
+	puts "  BEAMID_SET_REQ         : 3091"
+	puts "  SW_INSTALL_REQ         : 30A1"
+	exit
+else
+	Hostip = ARGV[0]
+	if ARGV.length > 1 then
+		TestCount = ARGV[1].to_i(10)
+		if ARGV.length > 2 then
+			TestMsgId = ARGV[2].to_i(16)
+			if ARGV.length > 3 then
+				TestParam = ARGV[3].to_i(16)
+				if ARGV.length > 4 then
+					TestParam2 = ARGV[4].to_s
+				end
+			end
+		end
+	end
+
+end
+Hostport = 60029
+
+socket =  Rrh.tsocket()
+if Rrh.tconnect(socket,Hostip,Hostport).to_i != 0 then
+	Rrh.tclose(socket)
+	exit
+end
+
+Msg_OPT_CONNECT_STT_REQ = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo,
+:uiConnType,:uiCPRILinkNo,:uiCarrierNo,:uiSectorNo
+)
+
+Msg_OPT_CONNECT_STP_REQ = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo,
+:uiCauseCode
+)
+
+Msg_EEPROM_REG_READ_REQ = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo,
+:uiFuncID,:uiSeqNo
+)
+
+Msg_DUSTATUS_GET_REQ = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo,
+:uiFuncID,:uiSeqNo
+)
+
+Msg_FORCEALM_REQ = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo,
+:uiFuncID,:uiSeqNo
+)
+
+Msg_CARDBLK_REQ = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo,
+:uiFuncID,:uiSeqNo,:uiState
+)
+
+Msg_CARDRST_REQ = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo,
+:uiFuncID,:uiSeqNo,:uiExchange
+)
+
+Msg_PAONOFF_REQ = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo,
+:uiFuncID,:uiSeqNo,:uiBranch,:uiOnOff
+)
+
+Msg_NETCONF_AUTH_RESET_REQ = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo,
+:uiFuncID,:uiSeqNo
+)
+
+Msg_POWADJ_WRITE_REQ = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo,
+:uiFuncID,:uiSeqNo,:uiSetVal
+)
+
+Msg_BEAMID_SET_REQ = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo,
+:uiFuncID,:uiSeqNo,:uiBeamId
+)
+
+Msg_SW_INSTALL_REQ = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo,
+:uiFuncID,:uiSeqNo,:ucFileName,:uiFileSize
+)
+
+
+Msg_RSP = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo
+)
+
+OPT_CONNECT_STT_REQ      = Msg_OPT_CONNECT_STT_REQ.new
+OPT_CONNECT_STP_REQ      = Msg_OPT_CONNECT_STP_REQ.new
+EEPROM_REG_READ_REQ      = Msg_EEPROM_REG_READ_REQ.new
+DUSTATUS_GET_REQ         = Msg_DUSTATUS_GET_REQ.new
+FORCEALM_REQ             = Msg_FORCEALM_REQ.new
+CARDBLK_REQ              = Msg_CARDBLK_REQ.new
+CARDRST_REQ              = Msg_CARDRST_REQ.new
+PAONOFF_REQ              = Msg_PAONOFF_REQ.new
+NETCONF_AUTH_RESET_REQ   = Msg_NETCONF_AUTH_RESET_REQ.new
+POWADJ_WRITE_REQ         = Msg_POWADJ_WRITE_REQ.new
+BEAMID_SET_REQ           = Msg_BEAMID_SET_REQ.new
+SW_INSTALL_REQ           = Msg_SW_INSTALL_REQ.new
+RSP = Msg_RSP.new
+
+funcId = 1
+seqNo = 0x101
+
+
+OPT_CONNECT_STT_REQ.msgid = 0x3001
+Rrh.tsend2(socket,OPT_CONNECT_STT_REQ)
+Rrh.trecv2(socket,RSP)
+if RSP.msgid == 0x3002 then
+	printf("OPT_CONNECT_STT_REQ OK\n")
+else
+	printf("OPT_CONNECT_STT_REQ NG(0x%x)\n",RSP.msgid)
+	Rrh.tclose(socket)
+	exit
+end
+
+for cnt in 1..TestCount do
+	MsgName = ""
+	case TestMsgId
+		when 0x3001 then
+			OPT_CONNECT_STT_REQ.msgid = TestMsgId
+			Rrh.tsend2(socket,OPT_CONNECT_STT_REQ)
+			MsgName = "OPT_CONNECT_STT_REQ"
+	
+		when 0x3004 then
+			OPT_CONNECT_STP_REQ.msgid = TestMsgId
+			if ARGV.length > 3 then
+				OPT_CONNECT_STP_REQ.uiCauseCode = TestParam
+			else
+				OPT_CONNECT_STP_REQ.uiCauseCode = 1111
+			end
+			Rrh.tsend2(socket,OPT_CONNECT_STP_REQ)
+			MsgName = "OPT_CONNECT_STP_REQ"
+	
+		when 0x3011 then
+			EEPROM_REG_READ_REQ.msgid = TestMsgId
+			EEPROM_REG_READ_REQ.uiFuncID = funcId
+			EEPROM_REG_READ_REQ.uiSeqNo = seqNo
+			Rrh.tsend2(socket,EEPROM_REG_READ_REQ)
+			MsgName = "EEPROM_REG_READ_REQ"
+	
+		when 0x3021 then
+			DUSTATUS_GET_REQ.msgid = TestMsgId
+			DUSTATUS_GET_REQ.uiFuncID = funcId
+			DUSTATUS_GET_REQ.uiSeqNo = seqNo
+			Rrh.tsend2(socket,DUSTATUS_GET_REQ)
+			MsgName = "DUSTATUS_GET_REQ"
+	
+		when 0x3031 then
+			FORCEALM_REQ.msgid = TestMsgId
+			FORCEALM_REQ.uiFuncID = funcId
+			FORCEALM_REQ.uiSeqNo = seqNo
+			Rrh.tsend2(socket,FORCEALM_REQ)
+			MsgName = "FORCEALM_REQ"
+	
+		when 0x3041 then
+			CARDBLK_REQ.msgid = TestMsgId
+			CARDBLK_REQ.uiFuncID = funcId
+			CARDBLK_REQ.uiSeqNo = seqNo
+			if ARGV.length > 3 then
+				CARDBLK_REQ.uiState = TestParam
+			else
+				CARDBLK_REQ.uiState = 0
+			end
+			Rrh.tsend2(socket,CARDBLK_REQ)
+			MsgName = "CARDBLK_REQ"
+	
+		when 0x3051 then
+			CARDRST_REQ.msgid = TestMsgId
+			CARDRST_REQ.uiFuncID = funcId
+			CARDRST_REQ.uiSeqNo = seqNo
+			if ARGV.length > 3 then
+				CARDRST_REQ.uiExchange = TestParam
+			else
+				CARDRST_REQ.uiExchange = 0
+			end
+			Rrh.tsend2(socket,CARDRST_REQ)
+			MsgName = "CARDRST_REQ"
+	
+		when 0x3061 then
+			PAONOFF_REQ.msgid = TestMsgId
+			PAONOFF_REQ.uiFuncID = funcId
+			PAONOFF_REQ.uiSeqNo = seqNo
+			PAONOFF_REQ.uiBranch = 0xFF
+			if ARGV.length > 3 then
+				PAONOFF_REQ.uiOnOff = TestParam
+			else
+				PAONOFF_REQ.uiOnOff = 1
+			end
+			Rrh.tsend2(socket,PAONOFF_REQ)
+			MsgName = "PAONOFF_REQ"
+	
+		when 0x3071 then
+			NETCONF_AUTH_RESET_REQ.msgid = TestMsgId
+			NETCONF_AUTH_RESET_REQ.uiFuncID = funcId
+			NETCONF_AUTH_RESET_REQ.uiSeqNo = seqNo
+			Rrh.tsend2(socket,NETCONF_AUTH_RESET_REQ)
+			MsgName = "NETCONF_AUTH_RESET_REQ"
+	
+		when 0x3081 then
+			POWADJ_WRITE_REQ.msgid = TestMsgId
+			POWADJ_WRITE_REQ.uiFuncID = funcId
+			POWADJ_WRITE_REQ.uiSeqNo = seqNo
+			if ARGV.length > 3 then
+				POWADJ_WRITE_REQ.uiSetVal = TestParam
+			else
+				POWADJ_WRITE_REQ.uiSetVal = 0
+			end
+			Rrh.tsend2(socket,POWADJ_WRITE_REQ)
+			MsgName = "POWADJ_WRITE_REQ"
+	
+		when 0x3091 then
+			BEAMID_SET_REQ.msgid = TestMsgId
+			BEAMID_SET_REQ.uiFuncID = funcId
+			BEAMID_SET_REQ.uiSeqNo = seqNo
+			if ARGV.length > 3 then
+				BEAMID_SET_REQ.uiBeamId = TestParam
+			else
+				BEAMID_SET_REQ.uiBeamId = 1
+			end
+			Rrh.tsend2(socket,BEAMID_SET_REQ)
+			MsgName = "BEAMID_SET_REQ"
+		when 0x30A1 then
+			SW_INSTALL_REQ.msgid = TestMsgId
+			SW_INSTALL_REQ.uiFuncID = funcId
+			SW_INSTALL_REQ.uiSeqNo = seqNo
+			if ARGV.length > 3 then
+				SW_INSTALL_REQ.uiFileSize = TestParam
+				if ARGV.length > 4 then
+					SW_INSTALL_REQ.ucFileName = TestParam2
+				else
+					SW_INSTALL_REQ.ucFileName = "                               "
+				end
+			else
+				SW_INSTALL_REQ.uiFileSize = 0
+			end
+			Rrh.tsend2(socket,SW_INSTALL_REQ)
+			MsgName = "SW_INSTALL_REQ"
+		else
+	end
+
+	CheckMsgId = TestMsgId + 1
+	RSP.msgid = 0
+	Rrh.trecv2(socket,RSP)
+	if RSP.msgid == CheckMsgId then
+		printf("%s OK 0x%08x \n",MsgName.to_s,CheckMsgId)
+	else
+		printf("%s NG expected 0x%08x rsp 0x%08x\n",MsgName.to_s,CheckMsgId,RSP.msgid )
+	end
+	
+	Rrh.sleep(1,0)
+end
+
+OPT_CONNECT_STP_REQ.msgid = 0x3004
+OPT_CONNECT_STP_REQ.uiCauseCode = 0x12345678
+
+Rrh.tsend2(socket,OPT_CONNECT_STP_REQ)
+Rrh.trecv2(socket,RSP)
+
+if RSP.msgid == 0x3005 then
+	printf("OPT_CONNECT_STP_REQ OK\n")
+else
+	printf("OPT_CONNECT_STP_REQ NG(0x%x)\n",RSP.msgid)
+end
+
+Rrh.tclose(socket)
+

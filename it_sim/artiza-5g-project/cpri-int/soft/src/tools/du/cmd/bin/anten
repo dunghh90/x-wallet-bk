@@ -1,0 +1,31 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+if ARGV.length < 1 then
+	puts "usage:"+$0+" <on/off>",
+		"(m):<on/off> is below.",
+		"off: 0",
+		"on : 1"
+	Rrh.exit(1)
+end
+
+chk_res = Rrh.proc_check()
+if chk_res == false then
+	puts DuCode::ERR_DESCRIPTION[12]
+	Rrh.exit(1)
+end
+
+
+onoff = ARGV[0]
+case onoff.downcase
+	when "0","off" then
+		Rrh.system("/opt/tp/rrh -svctl 41 1 1 1>/dev/null 2>/dev/null")
+	when "1","on" then
+		Rrh.system("/opt/tp/rrh -svctl 41 0 1 1>/dev/null 2>/dev/null")
+	else
+		puts DuCode::ERR_DESCRIPTION[1]
+		Rrh.exit(1)
+end
+Rrh.sleep(1)
+puts DuCode::ERR_DESCRIPTION[0]

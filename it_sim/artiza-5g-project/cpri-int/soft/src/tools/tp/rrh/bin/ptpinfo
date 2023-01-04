@@ -1,0 +1,55 @@
+@global_logcounter = "entry"	# -> log history mask
+Rrh.require("./verbose")
+
+Msghead = Struct.new( :evtid, :sigkind, :dstpqid, :dsttqid, :srcpqid, :srctqid )
+bufsize = 4096
+head = Msghead.new
+head.evtid = 0x00000001
+head.sigkind = 0
+head.dstpqid = 0x10FD000E
+head.dsttqid = 1
+head.srcpqid = 0x10FD000E
+head.srctqid = 2
+qid   = 0x10FD000E
+wtime = 5000
+
+if Rrh.psalive("DU_pf -p") == false then
+   puts "PTP software was not start yet or dead."
+   exit(1)
+end
+
+if ARGV.length > 0 then
+	if ARGV[0].to_s.downcase == "help" then
+		puts "usage:"+$0+" <mode>",
+			"(o):<mode> is display mode.",
+			"   001  : zl303xx_DebugAllDataSet",
+			"   002  : zl303xx_DebugGetAllAprStatistics",
+			"   004  : zl303xx_GetAprDeviceStatus",
+			"   008  : zl303xx_DebugPllStatus77x",
+			"   010  : zl303xx_DebugDpllConfig77x",
+			"   020  : zl303xx_DebugHwRefCfg77x",
+			"   040  : zl303xx_DebugHwRefStatus77x",
+			"   080  : zl303xx_Params.pllParams",
+			"   100  : getPtpStatus",
+			"   200  : zl303xx_FJ_AprGetPrint",
+			""
+			exit(1)
+	else
+		mode = ARGV[0].to_i(16)
+	end
+else
+	mode = 0
+end
+
+Rrh.assign()
+	if ( rtn = Rrh.api("duApi_Ptp_Mpr_SubscribeSyncInfo", qid, 0, 0,mode) ) != 0 then
+		printf("=>ERROR_R %d \n",rtn)
+	else
+		if ! Rrh.msgrecv(qid,wtime,head) then
+			result = 1
+		else
+			result = 0
+			Rrh.system("cat /var/log/PtpDbgDisp.log")
+		end
+	end
+Rrh.unassign()

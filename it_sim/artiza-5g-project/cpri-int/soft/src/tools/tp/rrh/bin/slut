@@ -1,0 +1,30 @@
+#
+# DEMGAIN reg write
+# rrh -slut <ant>
+#
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+# usage
+if ARGV.length < 1 then
+	puts "usage:"+$0+" <ant>",
+	"(m):<ant>    is ant num(0:AntA~3:AntD)"
+	exit(1)
+end
+
+ant_s  = ARGV[0]
+ant_i  = ant_s.to_i(16)
+
+if (ant_i<0 or ant_i>3)then
+ puts "Input value is incorrect((0:AntA~3:AntD)) : <ant>"
+ exit(1)
+end
+
+Rrh.assign()
+# reg write
+
+val = Rrh.regread("B1202000")
+data_s = Rrh.calc(val,"|","00000F00")
+Rrh.regwrite("B1202000",data_s)
+
+Rrh.unassign()

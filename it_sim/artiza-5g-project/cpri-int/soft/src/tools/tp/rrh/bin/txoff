@@ -1,0 +1,154 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+device_type = Rrh.get_shmcm("device_type")
+if device_type == "00000013" then
+	if ARGV.length < 2 then
+		puts "usage:"+$0+" <p1> <p2>",
+			"(m):<p1> is below .",
+			"        Bit[3]=AntD",
+			"        Bit[2]=AntC",
+			"        Bit[1]=AntB",
+			"        Bit[0]=AntA",
+			"(m):<p2> is below .",
+			"        0 : Cr0",
+			"        1 : Cr1"
+		Rrh.exit(1)
+	end
+elsif device_type == "00000014"then
+	if ARGV.length < 2 then
+		puts "usage:"+$0+" <p1> <p2>",
+			"(m):<p1> is below .",
+			"        Bit[1]=AntB",
+			"        Bit[0]=AntA",
+			"(m):<p2> is below .",
+			"        0 : Cr0",
+			"        1 : Cr1",
+			"        2 : Cr2",
+			"        3 : Cr3"
+		Rrh.exit(1)
+	end
+else
+	puts DuCode::ERR_DESCRIPTION[3]
+	Rrh.exit(1)
+end
+
+
+ant = ARGV[0]
+ant_i = Rrh.hex_check(ant)
+
+if ant_i == false then
+	puts DuCode::ERR_DESCRIPTION[1]
+	Rrh.exit(1)
+else
+	if device_type == "00000013" then
+		if ant_i > 0xFF || ant_i < 1 then
+			puts DuCode::ERR_DESCRIPTION[2]
+			Rrh.exit(1)
+		end
+	else
+		if ant_i > 0x03 || ant_i < 1 then
+			puts DuCode::ERR_DESCRIPTION[2]
+			Rrh.exit(1)
+		end
+	end
+end
+
+
+cr = ARGV[1]
+cr_i = Rrh.hex_check(cr)
+
+if cr_i == false then
+	puts DuCode::ERR_DESCRIPTION[1]
+	Rrh.exit(1)
+else
+	if device_type == "00000013" then
+		case cr_i
+			when 0 then
+			when 1 then
+			else
+				puts DuCode::ERR_DESCRIPTION[2]
+				Rrh.exit(1)
+		end
+	else
+		if cr_i > 7 || cr_i < 0 then
+			puts DuCode::ERR_DESCRIPTION[2]
+			Rrh.exit(1)
+		end
+	end
+end
+
+
+mask = ["00000001","00000002","00000004","00000008","00000010","00000020","00000040","00000080"]
+antmask = ["a","b","c","d","e","f","g","h"]
+for cnt in 0..7 do
+	if mask[cnt] == Rrh.calc(mask[cnt],"&",ant) then
+	
+		CC_no = cr_i.to_s(16) + "_cc"
+		ANT_no = antmask[cnt] + "_array"
+		if device_type == "00000013" then
+			
+			# Tx/Rx Exclusion
+			tx_test_onoff = Rrh.get_shmtx(CC_no,ANT_no,"test_onoff")
+			if tx_test_onoff == "00000001" then
+				puts DuCode::ERR_DESCRIPTION[4]
+				next
+			end
+			tx_onoff = Rrh.get_shmtx(CC_no,ANT_no,"onoff")
+			if tx_onoff == "00000000" then
+				puts DuCode::ERR_DESCRIPTION[4]
+				next
+			end
+			
+			array_nr_freq	= Rrh.get_shmtx(CC_no,ANT_no,"nr_freq")
+			#The setting is judged
+			#array_nr_freq != "00000000"
+			if array_nr_freq == "00000000" then
+				puts DuCode::ERR_DESCRIPTION[8]
+				Rrh.exit(1)
+			end
+			
+			# On/Off is set
+			Rrh.set_shmtx(CC_no,ANT_no,"onoff","00000000")
+			
+			#Call main Process
+			Rrh.txoff(cnt.to_i(16), cr_i.to_i(16), array_nr_freq.to_i(16), 0x1, 0x0 )
+			
+		else
+			if cnt > 1 then
+				break
+			else
+			
+				# Tx/Rx Exclusion
+				tx_test_onoff = Rrh.get_shmtx(CC_no,ANT_no,"test_onoff")
+				if tx_test_onoff == "00000001" then
+					puts DuCode::ERR_DESCRIPTION[4]
+					next
+				end
+				tx_onoff = Rrh.get_shmtx(CC_no,ANT_no,"onoff")
+				if tx_onoff == "00000000" then
+					puts DuCode::ERR_DESCRIPTION[4]
+					next
+				end
+				
+				array_nr_freq	= Rrh.get_shmtx(CC_no,ANT_no,"nr_freq")
+				#The setting is judged
+				if array_nr_freq == "00000000" then
+					puts DuCode::ERR_DESCRIPTION[8]
+					Rrh.exit(1)
+				end
+				
+				# On/Off is set
+				Rrh.set_shmtx(CC_no,ANT_no,"onoff","00000000")
+				
+				#Call main Process
+				Rrh.txoff(cnt.to_i(16), cr_i.to_i(16), array_nr_freq.to_i(16), 0x1, 0x0 )
+				
+			end
+		end
+	end
+end
+
+
+puts DuCode::ERR_DESCRIPTION[0]

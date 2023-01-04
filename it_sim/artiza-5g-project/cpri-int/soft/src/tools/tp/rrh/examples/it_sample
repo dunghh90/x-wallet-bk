@@ -1,0 +1,153 @@
+#
+# This is IT1 sample scenario
+#
+
+Rrh.require("./verbose")
+Rrh.assign()
+
+# log clean
+Rrh.system("rrh -clean ram ")
+
+evtid = 0x10010007
+tpqid = 0x10FE000E # TP qid
+pfqid = 0x10010002 # PF qid
+wtime = 1000 # 1sec
+bufkind = 3 # E_BPF_RU_IPCM_BUFF_KIND_TASK
+evtid = 0x100F0003
+tpqid = 0x10FE000E # TP qid
+pfqid = 0x10010002 # PF qid
+l3qid = 0x10030006 # L3 qid
+
+
+Msghead = Struct.new(
+:evtid,:sigkind,:dstpqid,:dsttqid,:srcpqid,:srctqid
+)
+
+
+puts "************************************************"
+puts "TEST1)T_SYS_ALL_TASK_INIT_COMP_NTC send from TP to PF"
+puts "************************************************"
+head = Msghead.new
+head.evtid = evtid
+head.sigkind = 0
+head.dstpqid = pfqid	# PF
+head.dsttqid = 1
+head.srcpqid = tpqid
+head.srctqid = 0
+
+if !Rrh.msgsend(pfqid,head,bufkind) then
+   puts "msg send error"  
+   break
+end
+
+puts "************************************************"
+puts "TEST2)T_SYS_SYSTEM_PARAM_UPDATE_REQ send from TP to PF"
+puts "************************************************"
+
+head = Msghead.new
+head.evtid = evtid
+head.sigkind = 0
+head.dstpqid = pfqid	# PF
+head.dsttqid = 14
+head.srcpqid = tpqid
+head.srctqid = 0
+
+MsgData = Struct.new(
+:bandwidthlen,:bandwidth,
+:sec_nChip0len,:sec_nChip0,
+:sec_nChip1len,:sec_nChip1,
+:sig_kindlen,:sig_kind,
+:conn_kindlen,:conn_kind,
+:car_work_3Glen,:car_work_3G
+)
+
+bufsize = 4096
+sbuf = Rrh.malloc(bufsize)
+
+msgdata = MsgData.new
+msgdata.bandwidthlen = 2
+msgdata.bandwidth = 0
+msgdata.sec_nChip0len = 2
+msgdata.sec_nChip0 = 1
+msgdata.sec_nChip1len = 2
+msgdata.sec_nChip1 = 1
+msgdata.sig_kindlen = 2
+msgdata.sig_kind = 0
+msgdata.conn_kindlen = 2
+msgdata.conn_kind = 2
+msgdata.car_work_3Glen = 2
+msgdata.car_work_3G = 0
+
+Rrh.msgset(sbuf,msgdata)
+
+if !Rrh.msgsend(pfqid,head,bufkind,sbuf,bufsize) then
+   puts "msg send error"  
+   break
+end
+Rrh.free(sbuf)
+
+
+puts "************************************************"
+puts "TEST3)CMD_CPRID_HCREQ send from TP to L3"
+puts "************************************************"
+
+T_CMT_TSKIF_HEAD = Struct.new(:evtid,:sigkind,:dstpqid,:dsttqid,:srcpqid,:srctqid)
+T_CMT_CPRISIGSND_INF = Struct.new(
+:link_num_len,:link_num,:dummy1_len,:dummy1,:dummy2_len,:dummy2,:i_link_len,:i_link,
+:length_len,:length,:disp_len,:disp,:Padding1_len,:Padding1,:Padding2_len,:Padding2,
+:Address_len,:Address,:Control_len,:Control)
+T_CPRIF_HCREQ = Struct.new(:signal_kind_len,:signal_kind )
+
+# data set 
+CMT_TSKIF_HEAD = T_CMT_TSKIF_HEAD.new
+CMT_TSKIF_HEAD.evtid = 0x301
+CMT_TSKIF_HEAD.sigkind = 0
+CMT_TSKIF_HEAD.dstpqid = l3qid	# L3
+CMT_TSKIF_HEAD.dsttqid = 2
+CMT_TSKIF_HEAD.srcpqid = tpqid
+CMT_TSKIF_HEAD.srctqid = 0
+
+CMT_CPRISIGSND_INF = T_CMT_CPRISIGSND_INF.new
+CMT_CPRISIGSND_INF.link_num_len = 2
+CMT_CPRISIGSND_INF.link_num = 1
+CMT_CPRISIGSND_INF.dummy1_len = 1
+CMT_CPRISIGSND_INF.dummy1 = 0
+CMT_CPRISIGSND_INF.dummy2_len = 1
+CMT_CPRISIGSND_INF.dummy2 = 0
+CMT_CPRISIGSND_INF.i_link_len = 4
+CMT_CPRISIGSND_INF.i_link = 0
+CMT_CPRISIGSND_INF.length_len = 4
+CMT_CPRISIGSND_INF.length = 4
+CMT_CPRISIGSND_INF.disp_len = 4
+CMT_CPRISIGSND_INF.disp = 2
+CMT_CPRISIGSND_INF.Padding1_len = 1
+CMT_CPRISIGSND_INF.Padding1 = 0
+CMT_CPRISIGSND_INF.Padding2_len = 1
+CMT_CPRISIGSND_INF.Padding2 = 0
+CMT_CPRISIGSND_INF.Address_len = 1
+CMT_CPRISIGSND_INF.Address = 0x00
+CMT_CPRISIGSND_INF.Control_len = 1
+CMT_CPRISIGSND_INF.Control = 0x00
+
+CMT_CPRIF_HCREQ = T_CPRIF_HCREQ.new
+CMT_CPRIF_HCREQ.signal_kind_len = 2
+CMT_CPRIF_HCREQ.signal_kind = 0x111
+
+# work buffer get and data set
+msgbuf = Rrh.malloc(4096)
+Rrh.msgset(msgbuf,CMT_CPRISIGSND_INF)
+Rrh.msgset((msgbuf + 20),CMT_CPRIF_HCREQ)
+
+# message send
+if !Rrh.msgsend(l3qid,CMT_TSKIF_HEAD,bufkind,msgbuf,22) then
+   puts "msg send error"  
+   break
+end
+
+Rrh.free(msgbuf)
+Rrh.unassign()
+
+# check logs
+Rrh.system("cmd_rruplogdump if_l3")
+Rrh.system("cmd_rrhdbg dsp ast")
+

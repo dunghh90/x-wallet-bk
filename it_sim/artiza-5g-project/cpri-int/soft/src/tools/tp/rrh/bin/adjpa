@@ -1,0 +1,165 @@
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+
+# usage
+if ARGV.length < 3 then
+        puts "usage:"+$0+" <ant/all> <dev> <data>",
+             "(m):<ant/all> is ant num (0~3 or all)",
+             "(m):<dev> is device num (0:Non Use/1:Non Use/2:PA/3:Non Use)",
+             "(m):<data> is write data (0x000~0x3FF)"
+        exit(1)
+end
+
+ant_s = ARGV[0]
+dev_s = ARGV[1]
+data_s = ARGV[2]
+
+if !Rrh.input_check(data_s,4) then
+ puts "Input value is incorrect : <data>"
+ exit(1)
+end
+
+# データ文字列長を4文字化
+case data_s.length
+   when 1
+     data_s = "000" + data_s
+   when 2
+     data_s = "00" + data_s
+   when 3
+     data_s = "0" + data_s
+   else
+     data_s = data_s
+end
+
+Rrh.assign()
+
+if dev_s != "2" then
+  puts " Device Num Parameter Error!"
+  exit(1)
+end
+
+addr_eep = 64
+if !res = Rrh.eepread(addr_eep.to_i(16)) then
+ puts "eep read error"
+else
+
+ case res
+ 
+ when "13"
+  kind = "BPF_HM_DEVC_SUB6"
+
+ when "14"
+  kind = "BPF_HM_DEVC_MMW"
+ 
+ 
+ else
+  puts "kind num error"
+  exit(1)
+ end
+
+end
+
+#SUB6 0~3 mmW 0~1
+
+MAX = 3
+if kind == "BPF_HM_DEVC_MMW" then
+  MAX = 1
+end
+
+CMN_SUB6_ADDR       = 0x012
+CMN_MMW_ADDR        = 0x034
+
+if ant_s == "all" then
+  # Parameter "all"
+  for ant in 0..MAX
+    if !res = Rrh.adjpawrt( ant , dev_s.to_i(16), data_s.to_i(16) ) then
+      puts "adjpa write error"
+      exit(1)
+    end
+    
+    if kind == "BPF_HM_DEVC_SUB6" then
+      addr = CMN_SUB6_ADDR + (ant*0x80)
+      data1 = data_s[0..1]
+      if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data1) then
+        puts "adjpa Shard Memory Write Error! No.1"
+        exit(1)
+      end
+      
+      addr = addr + 1
+      data2 = data_s[2..3]
+      if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data2) then
+        puts "adjpa Shard Memory Write Error! No.2"
+        exit(1)
+      end
+    else
+      #BPF_HM_DEVC_MMW
+      #モード0
+      addr = CMN_MMW_ADDR + (ant*2)
+      data1 = data_s[0..1]
+      if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data1) then
+        puts "adjpa Shard Memory Write Error! No.1"
+        exit(1)
+      end
+      
+      addr = addr + 1
+      data2 = data_s[2..3]
+      if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data2) then
+        puts "adjpa Shard Memory Write Error! No.2"
+        exit(1)
+      end
+    end
+  end
+  puts "complete"
+else
+  # Parameter "An-A~D"
+
+  if ant_s.to_i > MAX then
+    puts "Input value is incorrect : <ant>"
+    exit(1)
+  end
+
+  if kind == "BPF_HM_DEVC_SUB6" then
+    if !res = Rrh.adjpawrt( ant_s , dev_s.to_i(16) , data_s.to_i(16) ) then
+      puts "adjpa write Error!"
+      exit(1)
+    else
+      addr = CMN_SUB6_ADDR + (ant_s.to_i*0x80)
+      data1 = data_s[0..1]
+      if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data1) then
+        puts "adjpa Shard Memory Write Error! No.1"
+        exit(1)
+      end
+      addr = addr + 1
+      data2 = data_s[2..3]
+      if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data2) then
+        puts "adjpa Shard Memory Write Error! No.2"
+        exit(1)
+      end
+    end
+  else
+    #BPF_HM_DEVC_MMW
+    if !res = Rrh.adjpawrt( ant_s , dev_s.to_i(16) , data_s.to_i(16) ) then
+      puts "adjpa write Error!"
+      exit(1)
+    else
+      addr = CMN_MMW_ADDR + (ant_s.to_i*2)
+      data1 = data_s[0..1]
+      if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data1) then
+        puts "adjpa Shard Memory Write Error! No.1"
+        exit(1)
+      end
+      addr = addr + 1
+      data2 = data_s[2..3]
+      if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data2) then
+        puts "adjpa Shard Memory Write Error! No.2"
+        exit(1)
+      end
+    end
+  end
+  puts "complete"
+end
+Rrh.unassign()

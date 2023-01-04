@@ -1,0 +1,79 @@
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+Rrh.require("./z_global")
+Rrh.require("./apd_delayadjust")
+Rrh.require("./tpshm_access")
+
+Rrh.assign()
+Rrh.regwrite("a2200d10","0003010a")
+Rrh.regwrite("a2200d00","00000001")
+for cnt in 0..50 do	# 5sec wait
+	Rrh.sleep(0,100000000)	# sleep100ms
+#	printf(". ")
+end 
+Rrh.regwrite("a2200d00","00000000")
+
+fp = 0
+fp = Rrh.fopen('/tmp/RXCAP.txt', "w")
+
+ for cnt in 0..71677 do  #4095
+  addr_i = 0x10 * cnt
+  OFFSET = Rrh.calc(addr_i.to_s(16),"+","A3000000")
+  
+  addr_s = OFFSET
+  wstr = Rrh.regread(addr_s)
+  if !Rrh.fwritestr(wstr,wstr.length,fp) then
+   puts "file write error"
+   exit(1)
+  end
+  wstr = " "
+  if !Rrh.fwritestr(wstr,wstr.length,fp) then
+   puts "file write error"
+   exit(1)
+  end
+
+  addr_s = Rrh.calc("00000004","+",OFFSET)
+  wstr = Rrh.regread(addr_s)
+  if !Rrh.fwritestr(wstr,wstr.length,fp) then
+   puts "file write error"
+   exit(1)
+  end
+  wstr = " "
+  if !Rrh.fwritestr(wstr,wstr.length,fp) then
+   puts "file write error"
+   exit(1)
+  end
+	
+  addr_s = Rrh.calc("00000008","+",OFFSET)
+  wstr = Rrh.regread(addr_s)
+  if !Rrh.fwritestr(wstr,wstr.length,fp) then
+   puts "file write error"
+   exit(1)
+  end
+  wstr = " "
+  if !Rrh.fwritestr(wstr,wstr.length,fp) then
+   puts "file write error"
+   exit(1)
+  end
+
+  addr_s = Rrh.calc("0000000C","+",OFFSET)
+  wstr = Rrh.regread(addr_s)
+  if !Rrh.fwritestr(wstr,wstr.length,fp) then
+   puts "file write error"
+   exit(1)
+  end
+  wstr = "\n"
+  if !Rrh.fwritestr(wstr,wstr.length,fp) then
+   puts "file write error"
+   exit(1)
+  end
+ end
+
+ if !Rrh.fclose(fp) then
+  puts "file close error"
+  raise
+  exit(1)
+ end
+Rrh.unassign()
+

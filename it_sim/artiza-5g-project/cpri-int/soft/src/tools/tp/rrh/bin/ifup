@@ -1,0 +1,85 @@
+Rrh.require("./verbose")
+
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <ifname>",
+ "(m):<ifname> is below. ",
+ " eth0    : Debug Lan port ",
+ " fheth0  : Front Haul port0 for M-plane",
+ " fhethS0 : Front Haul port0 for S-plane ",
+  exit(1)
+end
+
+puts "Network interface up ..."
+
+Rrh.assign()
+ifname = ARGV[0].to_s
+ipset = 0
+
+case ifname
+ when "eth0" then
+
+  mac0 = Rrh.eepread(0x200)
+  mac1 = Rrh.eepread(0x201)
+  mac2 = Rrh.eepread(0x202)
+  mac3 = Rrh.eepread(0x203)
+  mac4 = Rrh.eepread(0x204)
+  mac5 = Rrh.eepread(0x205)
+
+  ip1 = Rrh.eepread(0x206)
+  ip2 = Rrh.eepread(0x207)
+  ip3 = Rrh.eepread(0x208)
+  ip4 = Rrh.eepread(0x209)
+
+ ipset = 1
+ dpmode = "00000000"
+
+ when "fheth0","fhethS0" then
+  mac0 = Rrh.eepread(0x220)
+  mac1 = Rrh.eepread(0x221)
+  mac2 = Rrh.eepread(0x222)
+  mac3 = Rrh.eepread(0x223)
+  mac4 = Rrh.eepread(0x224)
+  mac5 = Rrh.eepread(0x225)
+  dpmode = Rrh.regread("a0000c20")
+ else
+  puts "UnKnown interface name"
+  Rrh.unassign()
+  exit(0)
+end
+
+
+ Rrh.system("ifconfig #{ifname} down")
+ if( ((mac0 == "ff") && (mac1 == "ff") && (mac2 == "ff") && (mac3 == "ff") && (mac4 == "ff") && (mac5 == "ff")) || 
+     ((mac0 == "00") && (mac1 == "00") && (mac2 == "00") && (mac3 == "00") && (mac4 == "00") && (mac5 == "00")) ) then
+     puts "EEPROM Mac address default value? #{mac0}:#{mac1}:#{mac2}:#{mac3}:#{mac4}:#{mac5}"
+ else
+     Rrh.system("ifconfig #{ifname} hw ether #{mac0}:#{mac1}:#{mac2}:#{mac3}:#{mac4}:#{mac5}")
+ end
+
+ if ipset == 1 then
+  if(((ip1 == "ff") && (ip2 == "ff") && (ip3 == "ff") && (ip4 == "ff")) || 
+      ((ip1 == "00") && (ip2 == "00") && (ip3 == "00") && (ip4 == "00")) ) then
+      puts "EEPROM IP address default value ? #{ip1.to_i(16)}.#{ip2.to_i(16)}.#{ip3.to_i(16)}.#{ip4.to_i(16)}"
+      Rrh.system("ifconfig #{ifname} 192.168.1.131 up")
+  else
+      Rrh.system("ifconfig #{ifname} #{ip1.to_i(16)}.#{ip2.to_i(16)}.#{ip3.to_i(16)}.#{ip4.to_i(16)} up")
+  end
+ else
+  Rrh.system("ifconfig #{ifname} up")
+ end
+
+case ifname
+	when "fheth0" then
+		if Rrh.calc(dpmode,"&","00000002") == "00000002" then
+			Rrh.system("/opt/debug/cmd_planedump -r -e fheth0 -c mirror &")
+		end
+	when "fhethS0" then
+		if Rrh.calc(dpmode,"&","00000100") == "00000100" then
+			Rrh.system("/opt/debug/cmd_planedump -R -e fhethS0 -c mirror &")
+		end
+	else
+end
+
+Rrh.unassign()
+exit(0)
+

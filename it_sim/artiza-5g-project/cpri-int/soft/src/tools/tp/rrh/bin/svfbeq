@@ -1,0 +1,145 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+Rrh.require("./sveep")
+
+Rrh.assign()
+
+puts "Ant.A ..."
+
+addr_s = "B1213000"
+eep_addr = 0x440
+for cnt in 0..15 do
+	addrval = Rrh.calc(addr_s,"+",(cnt * 4).to_s(16))
+	res = Rrh.regread(addrval)
+
+
+	Rrh.eepwrite(eep_addr,res[0..1])
+	eep_addr = eep_addr + 1
+
+	Rrh.eepwrite(eep_addr,res[2..3])
+	eep_addr = eep_addr + 1
+
+	Rrh.eepwrite(eep_addr,res[4..5])
+	eep_addr = eep_addr + 1
+
+	Rrh.eepwrite(eep_addr,res[6..7])
+	eep_addr = eep_addr + 1
+
+	tran_index = 0x40 + ( cnt * 4)
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[0..1])
+	tran_index = tran_index+ 1
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[2..3])
+	tran_index = tran_index+ 1
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[4..5])
+	tran_index = tran_index+ 1
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[6..7])
+	tran_index = tran_index+ 1
+
+end
+
+puts "Ant.B ..."
+addr_s = "B1213040"
+eep_addr = 0x4C0
+for cnt in 0..15 do
+	addrval = Rrh.calc(addr_s,"+",(cnt * 4).to_s(16))
+	res = Rrh.regread(addrval)
+
+	Rrh.eepwrite(eep_addr,res[0..1])
+	eep_addr = eep_addr + 1
+
+	Rrh.eepwrite(eep_addr,res[2..3])
+	eep_addr = eep_addr + 1
+
+	Rrh.eepwrite(eep_addr,res[4..5])
+	eep_addr = eep_addr + 1
+
+	Rrh.eepwrite(eep_addr,res[6..7])
+	eep_addr = eep_addr + 1
+
+	tran_index = 0xC0 + ( cnt * 4)
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[0..1])
+	tran_index = tran_index+ 1
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[2..3])
+	tran_index = tran_index+ 1
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[4..5])
+	tran_index = tran_index+ 1
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[6..7])
+	tran_index = tran_index+ 1
+
+end
+
+
+puts "Ant.C ..."
+addr_s = "B1213080"
+eep_addr = 0x540
+for cnt in 0..15 do
+	addrval = Rrh.calc(addr_s,"+",(cnt * 4).to_s(16))
+	res = Rrh.regread(addrval)
+
+	Rrh.eepwrite(eep_addr,res[0..1])
+	eep_addr = eep_addr + 1
+
+	Rrh.eepwrite(eep_addr,res[2..3])
+	eep_addr = eep_addr + 1
+
+	Rrh.eepwrite(eep_addr,res[4..5])
+	eep_addr = eep_addr + 1
+
+	Rrh.eepwrite(eep_addr,res[6..7])
+	eep_addr = eep_addr + 1
+
+	tran_index = 0x140 + ( cnt * 4)
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[0..1])
+	tran_index = tran_index+ 1
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[2..3])
+	tran_index = tran_index+ 1
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[4..5])
+	tran_index = tran_index+ 1
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[6..7])
+	tran_index = tran_index+ 1
+
+end
+
+puts "Ant.D ..."
+addr_s = "B12130C0"
+eep_addr = 0x5C0
+for cnt in 0..15 do
+	addrval = Rrh.calc(addr_s,"+",(cnt * 4).to_s(16))
+	res = Rrh.regread(addrval)
+
+	Rrh.eepwrite(eep_addr,res[0..1])
+	eep_addr = eep_addr + 1
+
+	Rrh.eepwrite(eep_addr,res[2..3])
+	eep_addr = eep_addr + 1
+
+	Rrh.eepwrite(eep_addr,res[4..5])
+	eep_addr = eep_addr + 1
+
+	Rrh.eepwrite(eep_addr,res[6..7])
+	eep_addr = eep_addr + 1
+
+	tran_index = 0x1C0 + ( cnt * 4)
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[0..1])
+	tran_index = tran_index+ 1
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[2..3])
+	tran_index = tran_index+ 1
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[4..5])
+	tran_index = tran_index+ 1
+	Rrh.tpshmwrite("apde2pTX_vt","",tran_index.to_s(16),res[6..7])
+	tran_index = tran_index+ 1
+
+end
+
+puts "CRC ...."
+
+if Rrh.svvstx() == false then
+	puts "EEP update error "
+		exit(1)
+end
+ printf("CRC saved \n")
+
+Rrh.unassign()
+

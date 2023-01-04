@@ -1,0 +1,110 @@
+
+
+module dac_module
+
+
+# antnum: A(0),B(0)・・・H(7)
+# setdata_s：文字列
+# ctl: 0:PA Gatebias 1:TXVATT
+def self.dacset(antnum, setdata_s, ctl)
+
+	setdata = setdata_s .to_i(16)
+
+	if (antnum <= 3) then
+		addr_port   = "B0010700"
+		addr_clk    = "B0010704"
+		addr_enable = "B0010708"
+		addr_output = "B001070C"
+
+		addr_data = "B0010710"
+	else
+		addr_port   = "B2010700"
+		addr_clk    = "B2010704"
+		addr_enable = "B2010708"
+		addr_output = "B201070C"
+
+		addr_data = "B2010710"
+	end
+
+	if (antnum == 0) then
+		ordata_s = "00000000"
+	elif (antnum == 1) then
+		ordata_s = "00400000"
+	elif (antnum == 2) then
+		ordata_s = "00800000"
+	elif (antnum == 3) then
+		ordata_s = "00C00000"
+	elif (antnum == 4) then
+		ordata_s = "00000000"
+	elif (antnum == 5) then
+		ordata_s = "00400000"
+	elif (antnum == 6) then
+		ordata_s = "00800000"
+	else then
+		ordata_s = "00C00000"
+	end
+
+
+	cnt = 2
+	flag = 1
+	while cnt > 0 do
+		cnt -= 1
+		dat_s = Rrh.regread(addr_port)
+		dat_s = Rrh.calc(dat_s,"&","00020000")  # 17bit目
+		if dat_s.to_i(16) == 0 then
+			flag = 0
+			break
+		end
+		Rrh.sleep(0,1000000)	# sleep 1ms
+	end
+
+	# NGのとき
+	if(flag == 1) then
+		return false
+	end
+
+	Rrh.regwrite(addr_clk,"00FFFF00")      # クロック
+	Rrh.regwrite(addr_enable,"FF0000FF")   # イネーブル
+	Rrh.regwrite(addr_output,"FFFFFFFF")   # 出力制御設定
+
+
+	setdata_s = (setdata << 10).to_s(16)
+    setdata_s = Rrh.calc(setdata_s,"|","00200000") # 20bit目 ON
+	setdata_s = Rrh.calc(setdata_s,"|",ordata_s) # 23 22bit目 ON
+
+	Rrh.regwrite(addr_data,setdata_s)    # 汎用I/F設定(送信データ)
+	
+	# PA Gatebiasの場合
+	if (ctl == 0) then
+		Rrh.regwrite(addr_port, "00030040")  # 汎用ポート制御
+	else
+		Rrh.regwrite(addr_port, "00030020")  # 汎用ポート制御
+	end
+
+
+	cnt = 2
+	flag = 1
+	while cnt > 0 do
+		cnt -= 1
+		dat_s = Rrh.regread(addr_port)
+		dat_s = Rrh.calc(dat_s,"&","00020000")  # 17bit目
+		if dat_s.to_i(16) == 0 then
+			flag = 0
+			break
+		end
+		Rrh.sleep(0,1000000)	# sleep 1ms
+	end
+
+	# NGのとき
+	if(flag == 1) then
+		return false
+	end
+
+	Rrh.regwrite(addr_output,"0000000F")   # 出力制御設定
+
+	return true
+
+end
+
+end
+

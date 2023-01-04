@@ -1,0 +1,58 @@
+Rrh.require("./verbose")
+
+def cmd_help ( )
+  puts "usage:"+$0+" <local_ipadr> <remote_ipadr>",
+ "(m):<local_ipadr>  is local IP address(dot)",
+ "(m):<remote_ipadr> is remote IP address(dot)"
+ exit(1)
+end
+
+if ARGV.length < 2 then
+ cmd_help()
+ raise
+end
+
+
+Msghead = Struct.new(
+:evtid,:sigkind,:dstpqid,:dsttqid,:srcpqid,:srctqid
+)
+
+# len,data , len,data ....
+MsgData = Struct.new(
+:paralen,:para
+)
+
+bufsize = 4096
+head = Msghead.new
+head.evtid = 0x00000001
+head.sigkind = 0
+head.dstpqid = 0x10FE000E
+head.dsttqid = 1
+head.srcpqid = 0x10FE000E
+head.srctqid = 2
+
+rbuf = Rrh.malloc(bufsize)
+
+
+qid = 0x10FD000E
+local_ipadr = Rrh.aton(ARGV[0],1)
+remote_ipadr = Rrh.aton(ARGV[1],1)
+
+wtime = 1000 # 1sec
+bufkind = 3 # E_BPF_RU_IPCM_BUFF_KIND_TASK
+
+Rrh.assign()
+ puts "Tcp connecting start  ..."
+ if ( rtn = Rrh.api("duApi_Mpn_Mnr_MplaneStart",qid,0,0,local_ipadr.to_i(16),remote_ipadr.to_i(16)) ) != 0 then
+  printf("=>API ERROR_R %d \n",rtn)
+ else
+  if ! Rrh.msgrecv(qid,wtime,head,rbuf,bufsize) then
+   puts "=>ERROR"
+  else
+   puts "=>OK"  
+  end
+ end
+
+Rrh.free(rbuf)
+Rrh.unassign()
+

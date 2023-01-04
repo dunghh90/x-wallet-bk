@@ -1,0 +1,38 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+
+
+if ARGV.length < 5 then
+ puts "usage:"+$0+" <grp> <1/4gain> <2/4gain> <3/4gain> <4/4gain>",
+ "(m):<grp> is device group(1-8)",
+ "(m):<1/4gain>  is 1/4 gain",
+ "(m):<2/4gain>  is 2/4 gain",
+ "(m):<3/4gain>  is 3/4 gain",
+ "(m):<4/4gain>  is 4/4 gain"
+
+ exit(1) 
+end
+
+grp_s     = ARGV[0]
+gain1  = ARGV[1]
+gain2  = ARGV[2]
+gain3  = ARGV[3]
+gain4  = ARGV[4]
+
+#inparaチェック
+
+if grp_s.to_i > 8 or grp_s.to_i < 1 then
+ puts "Input value is incorrect : <grp(1-8)>"
+ exit(1) 
+end
+
+Rrh.assign()
+
+if !res = Rrh.pgcwrite_reg( grp_s.to_i ,gain1.to_i(16),gain2.to_i(16),gain3.to_i(16),gain4.to_i(16) ) then
+ puts "pgc reg write error"
+else
+ puts "pgc reg write complete"
+end
+
+Rrh.unassign()

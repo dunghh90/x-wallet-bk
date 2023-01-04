@@ -1,0 +1,75 @@
+Rrh.assign()
+
+Name = ""
+
+def func_invdump( inputName )
+	Name = ""
+	case inputName.downcase
+		when "cardname" then
+			if (val = Rrh.eepread_txt(0,0xc)) != false then
+				Name = val
+			end
+		when "fignumber" then
+			if (val = Rrh.eepread_txt(0x10,0xc)) != false then
+				Name = val
+			end
+		when "manufactdate" then
+			for index in 0x20..0x23
+				if (val = Rrh.eepread(index)) != false then
+					Name = Name + val
+				end
+			end
+		when "serial" then
+			Name = "0x"
+			for index in 0x24..0x27
+				if (val = Rrh.eepread(index)) != false then
+					Name = Name + val
+				end
+			end
+		when "testdate" then
+			for index in 0x28..0x2B
+				if (val = Rrh.eepread(index)) != false then
+					Name = Name + val
+				end
+			end
+		when "hardver" then
+			Name = "0x"
+			if (val = Rrh.eepread(0x2D)) != false then
+					Name = Name + val
+			end
+			if (val = Rrh.eepread(0x2C)) != false then
+					Name = Name + val
+			end
+		when "totalver" then
+			Name = "0x"
+			if (val = Rrh.eepread(0x2D)) != false then
+					Name = Name + val
+			end
+			if (val = Rrh.eepread(0x2F)) != false then
+					Name = Name + val[1,1]
+			end
+			if (val = Rrh.eepread_txt(0x30,0x2)) != false then
+				Name = Name + val
+			end
+		else
+			Name = "Unknown"
+	end
+	return Name
+end
+
+if ARGV.length > 0 then
+	invname = func_invdump(ARGV[0].to_s)
+	puts "#{invname}"
+else
+	rtctimes = Rrh.getrtc()
+	cardname = func_invdump("cardname")
+	fignumber = func_invdump("fignumber")
+	manufactdate = func_invdump("manufactdate")
+	serial = func_invdump("serial")
+	testdate = func_invdump("testdate")
+	hardver = func_invdump("hardver")
+	totalver = func_invdump("totalver")
+	puts "time,cardname,fignumber,manufactdate,serial,testdate,hardver,totalver"
+	puts "#{rtctimes},#{cardname},#{fignumber},#{manufactdate},#{serial},#{testdate},#{hardver},#{totalver}"
+end
+Rrh.unassign()

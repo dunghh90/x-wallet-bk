@@ -1,0 +1,179 @@
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+
+Carrior_param = Struct.new(
+:carid, :axc, :tdd_config, :ant, :sys, :freq, :gain, :dly, :carno, :onoff
+)
+
+def carrior_param(rstr)
+ list=rstr.split(",")
+ cpara=Carrior_param.new
+ cpara.carid=list[0]
+ cpara.axc=list[1]
+ cpara.tdd_config=list[2]
+ cpara.ant=list[3]
+ cpara.sys=list[4]
+ cpara.freq=list[5]
+ cpara.gain=list[6]
+ cpara.dly=list[7]
+ cpara.carno=list[8]
+ cpara.onoff=list[9]
+ return cpara
+end
+
+
+Axc_param = Struct.new(
+:cpri,:max_br,:max_cr,:bw1,:bw2
+)
+
+def axc_param(rstr)
+ if !cur_line= Rrh.regread(Register::FPGA_CPRI_CPLBR) then
+  puts "reg read error cpri"
+  raise
+ end
+
+ if(cur_line.to_i==1) then
+  cur_cpri = 1
+ elsif(cur_line.to_i==2) then
+  cur_cpri = 2
+ else
+  puts "cur_line ng"
+  raise
+ end
+
+ if !cur_tx_sys_num = Rrh.eepread(Register::TXSYSNUM.to_i(16)) then
+  puts "eeprom read error tx sys num"
+  raise
+ end 
+
+ if(cur_tx_sys_num.to_i==0) then
+  cur_max_br = 2
+ elsif(cur_tx_sys_num.to_i==1) then
+  cur_max_br = 4
+ else
+  puts "tx_sys_num ng"
+  raise
+ end
+
+ axcpara=Axc_param.new
+ if(rstr.to_i==0) then
+  axcpara.cpri = 2
+  axcpara.max_br = 4
+  axcpara.max_cr = 2
+  axcpara.bw1 = 4
+  axcpara.bw2 = 4
+ elsif(rstr.to_i==1) then
+  axcpara.cpri = cur_cpri.to_i()
+  axcpara.max_br = 2
+  axcpara.max_cr = 2
+  axcpara.bw1 = 4
+  axcpara.bw2 = 4
+ elsif(rstr.to_i==2) then
+  axcpara.cpri = cur_cpri.to_i()
+  axcpara.max_br = cur_max_br
+  axcpara.max_cr = 1
+  axcpara.bw1 = 4
+  axcpara.bw2 = 0
+ else
+  axcpara.cpri = cur_cpri.to_i()
+  axcpara.max_br = cur_max_br
+  axcpara.max_cr = 1
+  axcpara.bw1 = 0
+  axcpara.bw2 = 4
+ end
+
+ return axcpara
+end
+
+Tdd_config_param = Struct.new(
+:dl100,:ul100,:uldlconf,:spsubconf,:prefixlen
+)
+
+def tdd_config_param(rstr)
+ tddconfpara=Tdd_config_param.new
+ tddconfpara.dl100 = 0
+ tddconfpara.ul100 = 0
+ tddconfpara.uldlconf = 0
+ tddconfpara.spsubconf = 0
+ tddconfpara.prefixlen = 0
+ if(rstr == "dl100") then
+  tddconfpara.dl100 = 1
+  tddconfpara.uldlconf = 0xffff
+ elsif(rstr == "ul100") then
+  tddconfpara.ul100 = 1
+  tddconfpara.uldlconf = 0xfffe
+ else
+  tddconfpara.uldlconf = rstr[0..0].to_i()
+  tddconfpara.spsubconf = rstr[2..2].to_i()
+  if(rstr[3..4]=="en") then
+   tddconfpara.prefixlen = 1
+  elsif(rstr[3..4]=="nn") then
+   tddconfpara.prefixlen = 0
+  else
+   tddconfpara.prefixlen = 255
+  end
+ end
+ return tddconfpara
+end
+
+
+def getCarState(carno,ant)
+ carstate = 0
+ filename="./carrior_parameter"
+ if !fp=Rrh.fopen(filename,"r") then
+  puts "file open error when get carrier state"
+  raise
+  exit(1)
+ end
+
+ for carid in 0..0xff do
+  if !Rrh.fseekline(fp,carid) then
+   puts "file seek error"
+   raise
+   exit(1)
+  end
+  if !rstr=Rrh.fgetline(fp) then
+   puts "file read error"
+   raise
+   exit(1)
+  end
+
+  cpara=carrior_param(rstr)
+  if((cpara.carno.to_i(16)==carno) && (cpara.onoff.to_i(16)==1) && ( cpara.ant.to_i(16) == ant.to_i(16) )) then
+   carstate=1
+   break
+  end
+ end
+ if !Rrh.fclose(fp) then
+  puts "file close error"
+  raise
+  exit(1)
+ end
+ return carstate
+end
+
+def getEmptyCar(cparam)
+ emptycarno = 0xff
+ axc = cparam.axc.to_i(16)
+ if( (axc==0) || (axc==1) ) then
+  carno_min = 0
+  carno_max = 1
+ elsif(axc==2) then
+  carno_min = 0
+  carno_max = 0
+ else
+  carno_min = 1
+  carno_max = 1
+ end
+
+ for carno in carno_min..carno_max do
+  carstate = getCarState(carno,cparam.ant)
+  if(carstate==0) then
+    emptycarno = carno
+    break
+  end
+ end
+ 
+ return emptycarno
+end

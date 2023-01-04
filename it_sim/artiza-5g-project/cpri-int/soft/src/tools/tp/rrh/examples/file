@@ -1,0 +1,39 @@
+Rrh.require("./verbose")
+filename =  "samplefile"
+fp = Rrh.fopen(filename,"r")
+puts Rrh.fwritestr("aaaaa",5,fp)
+puts Rrh.fread(buf,1,-1)
+
+fp = Rrh.fopen(filename,"w")
+ptr = Rrh.malloc(256)
+Rrh.fwrite(ptr, 256, fp)
+Rrh.fclose(fp)
+
+
+Rrh.fopen(filename,"r")
+rstr = Rrh.fread(ptr, 256,fp)
+puts rstr
+puts ptr
+Rrh.fclose(fp)
+
+Rrh.free(ptr)
+
+
+
+fp = Rrh.fopen(filename,"w")
+str = "script1\n"
+Rrh.fwritestr(str,str.length,fp)
+str = "script2\n"
+Rrh.fwritestr(str,str.length,fp)
+Rrh.fclose(fp)
+
+fp=Rrh.fopen(filename,"r")
+Rrh.fseekline(fp,1)
+rstr=Rrh.fgetline(fp)
+puts rstr
+rtn = Rrh.ftell(fp)
+puts rtn
+Rrh.fclose(fp)
+
+rtn = Rrh.fsizeget(filename)
+puts rtn

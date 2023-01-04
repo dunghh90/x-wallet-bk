@@ -1,0 +1,10 @@
+Rrh.assign()
+
+flag = Rrh.bpfshmread("E_RRH_SHMID_APL_BF_MODE_TBL", "", "")
+if flag.to_i == 0 then
+	printf("soft operation mode : beamforming \n")
+else
+	printf("soft operation mode : non-beamforming \n")
+end
+
+Rrh.unassign()

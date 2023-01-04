@@ -1,0 +1,63 @@
+Rrh.require("./verbose")
+
+def cmd_help()
+ puts "usage:"+$0+" <dev> <addr> <size>",
+ "(m):<dev>  is 0:SFP1_A0 / 1:SFP1_A2",
+ "(m):<addr> is 00~FF ",
+ "(o):<size> is 01~100 "
+ return
+end
+
+# usage
+if ARGV.length < 2 then
+ cmd_help()
+ exit(1)
+end
+
+dev = ARGV[0].to_i(16)
+
+addr = ARGV[1].to_i(16)
+
+if ARGV.length > 2 && ARGV[2].to_i(16) >= 0 && ARGV[2].to_i(16) <= 256 then
+	size = ARGV[2].to_i(16)
+else
+	size = 1
+end
+
+if(dev>1)
+   puts "dev error"
+   cmd_help()
+   exit(1)
+ end
+
+ if ( addr + size ) > 0x100 then
+   puts "size or addr Error"
+   cmd_help()
+   exit(1)
+ end
+
+Rrh.assign()
+  if !str = Rrh.sfpread(dev,addr,size,"bin") then
+   puts "Other Error"
+   Rrh.unassign()
+   exit(1)
+  end
+  
+  if  size > 1 then
+    printf("AD:00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n")
+    printf("--------------------------------------------------\n")
+  end
+   printf("%02X:",addr)
+ (str.length/2).times { |count|
+   printf("%s ",str[count*2,2])
+   if ((count + 1) % 16) == 0 then
+    puts ""
+    if (str.length/2) > count+1 then
+     printf("%02X:",addr+1+count )
+    end
+   end
+ }
+ if (str.length % 32) > 0 then
+   puts ""
+ end
+Rrh.unassign()

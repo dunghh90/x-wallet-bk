@@ -1,0 +1,44 @@
+Rrh.require("./verbose")
+
+puts "TrainingData RF Gain Start ..."
+
+Rrh.assign()
+#EEPからREAD
+  txanta0 = Rrh.eepread(0x400)
+  txanta1 = Rrh.eepread(0x401)
+  txantb0 = Rrh.eepread(0x460)
+  txantb1 = Rrh.eepread(0x461)
+  txantc0 = Rrh.eepread(0x4C0)
+  txantc1 = Rrh.eepread(0x4C1)
+  txantd0 = Rrh.eepread(0x520)
+  txantd1 = Rrh.eepread(0x521)
+  txante0 = Rrh.eepread(0x580)
+  txante1 = Rrh.eepread(0x581)
+  txantf0 = Rrh.eepread(0x5E0)
+  txantf1 = Rrh.eepread(0x5E1)
+  txantg0 = Rrh.eepread(0x640)
+  txantg1 = Rrh.eepread(0x641)
+  txanth0 = Rrh.eepread(0x6A0)
+  txanth1 = Rrh.eepread(0x6A1)
+
+#txant*0を上位、txant*1を下位としてレジスタにWRITE
+  txanta_s = txanta0.to_s(16) + txanta1.to_s(16)
+  Rrh.regwrite("B12000E0",txanta_s)
+  txantb_s = txantb0.to_s(16) + txantb1.to_s(16)
+  Rrh.regwrite("B12004E0",txantb_s)
+  txantc_s = txantc0.to_s(16) + txantc1.to_s(16)
+  Rrh.regwrite("B12008E0",txantc_s)
+  txantd_s = txantd0.to_s(16) + txantd1.to_s(16)
+  Rrh.regwrite("B1200CE0",txantd_s)
+  txante_s = txante0.to_s(16) + txante1.to_s(16)
+  Rrh.regwrite("B12010E0",txante_s)
+  txantf_s = txantf0.to_s(16) + txantf1.to_s(16)
+  Rrh.regwrite("B12014E0",txantf_s)
+  txantg_s = txantg0.to_s(16) + txantg1.to_s(16)
+  Rrh.regwrite("B12018E0",txantg_s)
+  txanth_s = txanth0.to_s(16) + txanth1.to_s(16)
+  Rrh.regwrite("B1201CE0",txanth_s)
+
+Rrh.unassign()
+exit(0)
+

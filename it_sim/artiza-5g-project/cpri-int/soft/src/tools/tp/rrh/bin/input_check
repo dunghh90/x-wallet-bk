@@ -1,0 +1,41 @@
+module Rrh
+ def self.input_check(str,num)
+  values = ['1','2','3','4','5','6','7','8','9','0','a','b','c','d','e','f','A','B','C','D','E','F']
+
+  #引数の整合性確認
+  if str.length>num then
+   return false
+  end
+  
+  for cnt in 0...str.length do
+   if !values.include?(str[cnt]) then
+    return false
+   end
+  end
+  
+  return true
+ end
+
+ def self.input_check_max(str,num,max)
+  values = ['1','2','3','4','5','6','7','8','9','0','a','b','c','d','e','f','A','B','C','D','E','F']
+
+  #引数の整合性確認
+  if str.length>num then
+   return false
+  end
+  
+  for cnt in 0...str.length do
+   if !values.include?(str[cnt]) then
+    return false
+   end
+  end
+  
+  if str.to_i(16) > max.to_i(16) then
+   puts "<str> over max value(#{max.to_i(16)}) : #{str.to_i(16)}"
+   return false
+  end
+  
+  return true
+ end
+
+end

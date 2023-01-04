@@ -1,0 +1,60 @@
+Rrh.require("./verbose")
+Rrh.assign()
+
+Msghead = Struct.new(
+:evtid,:sigkind,:dstpqid,:dsttqid,:srcpqid,:srctqid
+)
+
+# len,data , len,data ....
+MsgData = Struct.new(
+:paralen,:para
+)
+
+
+bufsize = 4096
+sbuf = Rrh.malloc(bufsize)
+
+head = Msghead.new
+head.evtid = 0x00000001
+head.sigkind = 0
+head.dstpqid = 0x10FE000E
+head.dsttqid = 1
+head.srcpqid = 0x10FE000E
+head.srctqid = 2
+
+data = MsgData.new
+data.paralen = 4
+data.para = 0x01020304
+
+# buffer setting
+Rrh.msgset(sbuf,data)
+
+rbuf = Rrh.malloc(bufsize)
+
+qid = 0x10FE000E # TP qid
+wtime = 1000 # 1sec
+bufkind = 3 # E_BPF_RU_IPCM_BUFF_KIND_TASK
+
+while 1
+# msgq send 
+ if !Rrh.msgsend(qid,head,bufkind,sbuf,bufsize) then
+   puts "send error"  
+   break
+ end
+ puts "msg send OK"  
+
+ 
+# msgq recv 
+ if ! Rrh.msgrecv(qid,wtime,head,rbuf,bufsize) then
+   puts "recv error"
+   break
+ end
+ puts "msg recv OK"  
+
+ break
+end
+
+Rrh.free(sbuf)
+Rrh.free(rbuf)
+
+Rrh.unassign()

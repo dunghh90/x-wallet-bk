@@ -1,0 +1,125 @@
+
+#QMOD IM補正設定
+#第1引数:(hex):アンテナ番号(0:Ant.A ～ 1:Ant.B)
+#第2引数(char):iまたはq
+#第3引数(hex):設定値
+#20180815 新規作成 藤田
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./tpshm_access")
+
+
+#パラメータ確認
+if ARGV.length < 3 then
+ puts "usage:"+$0+" <ant> <correction> <data>",
+ "(m):<ant>  is 0:AntA / 1:AntB",
+ "(m):<correction> is i / q",
+ "(m):<data> is written data"
+ exit(1)
+end
+
+ant_s  = ARGV[0]
+correc_s = ARGV[1]
+
+tmp_data_s = ARGV[2]
+case tmp_data_s.length
+   when 1
+     data_s = "000" + tmp_data_s
+   when 2
+     data_s = "00" + tmp_data_s
+   when 3
+     data_s = "0" + tmp_data_s
+   else
+     data_s = tmp_data_s
+end
+
+#想定外の値NGを追記
+if ant_s.to_i > 1 then
+ puts "Input value is incorrect : <ant>"
+ exit(1)
+end
+
+if correc_s != "i" && correc_s != "I" && correc_s != "q" && correc_s != "Q" then
+ puts "Input value is incorrect : <correction>"
+ exit(1) 
+end
+
+#データチェック
+if !Rrh.input_check(data_s,4) then
+ puts "Input value is incorrect : <data>"
+ exit(1) 
+end
+
+Rrh.assign()
+
+#「rrh -qmodw」の第3引数の設定
+if correc_s == "i" || correc_s == "I" then
+  #iのとき 0x0005
+  addr_s = "0005"
+else
+  #qのとき 0x0006
+  addr_s = "0006"
+end
+
+#「rrh -qmodw」の第2引数は0x02固定(0,1でそれぞれ実行)
+if !res = Rrh.qmodwrite( ant_s , 0 , addr_s.to_i(16) ,  data_s.to_i(16) ) then
+  puts "error qmodwrite 1"
+  exit(1)
+else
+  #puts "complete"
+end
+
+
+#★仮想レジスタ設定(mmW)
+# 仮想レジスタを「設定値」に書き換える
+# Ant.AのI: QMOD_IM_I_A → (通常)N_QMOD_IM_I_V：0x410、(低電力)L_QMOD_IM_I_V：0x510
+# Ant.AのQ: QMOD_IM_Q_A → (通常)N_QMOD_IM_Q_V：0x412、(低電力)L_QMOD_IM_Q_V：0x512
+# Ant.BのI: QMOD_IM_I_B → (通常)N_QMOD_IM_I_H：0x418、(低電力)L_QMOD_IM_I_H：0x518
+# Ant.BのQ: QMOD_IM_Q_B → (通常)N_QMOD_IM_Q_H：0x41A、(低電力)L_QMOD_IM_Q_H：0x51A
+
+#Ant.Aの場合
+if ant_s.to_i == 0 then
+  #補正種別=i(addr_s = "0005")の場合
+  if addr_s.to_i == 5 then
+    ## Ant.AのI: QMOD_IM_I_A
+    addr1 = 0x010
+  #補正種別=q(addr_s = "0006")の場合
+  else
+    ## Ant.AのQ: QMOD_IM_Q_A
+    addr1 = 0x012
+  end
+
+#Ant.Bの場合
+else
+  #補正種別=i(addr_s = "0005")の場合
+  if addr_s.to_i == 5 then
+    ## Ant.BのI: QMOD_IM_I_B
+    addr1 = 0x018
+  #補正種別=q(addr_s = "0006")の場合
+  else
+    ## Ant.BのQ: QMOD_IM_Q_B
+    addr1 = 0x01A
+  end
+
+end
+
+data1 = data_s[0..1]
+data2 = data_s[2..3]
+puts" #{data1}#{data2} "
+
+if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr1.to_s(16),data1) then
+  puts "error tpshmwrite 1"
+  exit(1)
+end
+
+addr1 = addr1 + 1
+if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr1.to_s(16),data2) then
+   puts "error tpshmwrite 2"
+   exit(1)
+end
+
+puts "complete"
+
+Rrh.unassign()

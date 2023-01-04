@@ -1,0 +1,54 @@
+#
+# pcp  write
+# rrh -pcpw <fh>
+#
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+# usage
+if ARGV.length < 2 then
+	puts "usage:"+$0+" <fh><pcp>",
+	"(m):<fh>    is FH(1-3)",
+	"(m):<pcp>    is PCP(0x0-7)"
+	exit(1)
+end
+
+fh_s  = ARGV[0]
+fh_i  = fh_s.to_i(10)
+pcp_s  = ARGV[1]
+pcp_i  = pcp_s.to_i(16)
+
+if (fh_i<1 or fh_i>3)then
+ puts "Input value is incorrect((1-3)) : <fh>"
+ exit(1)
+end
+if (pcp_i<0 or pcp_i>7)then
+ puts "Input value is incorrect((0x0-7)) : <pcp>"
+ exit(1)
+end
+
+Rrh.assign()
+# reg  write
+data_e = 0x00010000
+mask = 0xfff8ffff
+
+val1 = Rrh.regread("A1000494")
+val1 = Rrh.calc(val1,"&",mask.to_s(16))
+val2 = Rrh.regread("A1001494")
+val2 = Rrh.calc(val2,"&",mask.to_s(16))
+data_1 = Rrh.calc(pcp_s.to_s(16),"<","10".to_s(16))
+data_2 = Rrh.calc(pcp_s.to_s(16),"<","10".to_s(16))
+data_1 = Rrh.calc(val1,"|",data_1)
+data_2 = Rrh.calc(val2,"|",data_2)
+
+if fh_i == 1 then
+	Rrh.regwrite("A1000494",data_1)
+elsif fh_i == 2 then
+	Rrh.regwrite("A1001494",data_2)
+else
+	Rrh.regwrite("A1000494",data_1)
+	Rrh.regwrite("A1001494",data_2)
+end
+
+
+Rrh.unassign()

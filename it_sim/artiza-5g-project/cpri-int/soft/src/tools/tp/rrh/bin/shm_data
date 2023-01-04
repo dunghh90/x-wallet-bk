@@ -1,0 +1,11 @@
+
+@shm_MNGTBL_FLAG	=	11
+@shm_MNGTBL_TRAINING	=	12
+
+DPDAFlg = Struct.new(
+:dbgMode,:tempature
+)
+
+DPDAtraining = Struct.new(
+:training
+)

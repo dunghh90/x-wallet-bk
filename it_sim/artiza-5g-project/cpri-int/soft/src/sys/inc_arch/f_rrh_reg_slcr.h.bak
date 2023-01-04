@@ -1,0 +1,98 @@
+/*!
+ * @skip  $ld:$
+ * @file  f_rrh_reg_slcr.h
+ * @brief レジスタアドレス定義ヘッダ(SLCR)
+ * @date  2015/06/09 ALPHA)tomioka TDD-Zynq対応
+ *
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2015
+ */
+
+/*!
+ * @addtogroup RRH_RRH
+ * @{
+ */
+#ifndef F_RRH_REG_SLCR_H
+#define F_RRH_REG_SLCR_H
+
+/*==================================================================================================*/
+/*!
+ * @name System Level Control Registers(SLCR)アドレスオフセット
+ * @note System Level Control Registers(SLCR)アクセス用のアドレスオフセット
+ * @{
+ */
+#define D_RRH_REG_SLCR_LOCK							0xF8000004			/* SLCRアクセスのロック設定				*/
+#define D_RRH_REG_SLCR_UNLOCK						0xF8000008			/* SLCRアクセスのロック解除				*/
+#define D_RRH_REG_SLCR_ZYNQ_PSS_RST_CTRL			0xF8000200			/* ZYNQ_PSS_RST_CTRL					*/
+#define D_RRH_REG_SLCR_ZYNQ_FPGA_RST_CTRL			0xF8000240			/* PLのSYSリセット解除レジスタ			*/
+#define D_RRH_REG_SLCR_ZYNQ_REBOOT_STATUS			0xF8000258			/* REBOOT_STATUS						*/
+#define D_RRH_BIT_SLCR_ZYNQ_FPGA_RST_CTRL_DEAST_RST	0x00000008			/* PLのSYSリセット解除(ALL)				*/
+#define D_RRH_BIT_SLCR_ZYNQ_FPGA_RST_CTRL_XRSTCNTS	0x0000000C			/* PLのSYSリセット解除(スレーブFPGA)	*/
+#define D_RRH_BIT_SLCR_ZYNQ_PSS_RST_CTRL			0x00000001			/* ソフトリセット制御					*/
+/* @} */
+
+/* 2020/12/28 M&C) Merge 4G FHM src (start modify) */
+
+/*!
+ * @name リセット要因詳細内容(REBOOT_STATUS)
+ * @note リセット要因bit定義
+ * @date 2015/10/13 TDI)satou ハソ-QA-004 「Local-RST発生後のリセット起動」を追加
+ * @date 2015/12/17 TDI)enoki  「FHM ALM検出による自律リセット(ソフト)」を追加
+ * @{
+ */
+#define D_RRH_SLCR_RST_FACT_CPYL1RST		D_RRH_VAL_SHIFT_L(1 , 31)  /* L1-RST発生後のリセット起動（copy）	*/
+																	   /* ft_mainにてBit29からコピーし、l3_cpr  */
+																	   /* で配下REのInbandReset有無判定する		*/
+#define D_RRH_SLCR_RST_FACT_SWRST2			D_RRH_VAL_SHIFT_L(1 , 30)  /* FHM ALM検出による自律リセット(ソフト) */
+#define D_RRH_SLCR_RST_FACT_L1RST1			D_RRH_VAL_SHIFT_L(1 , 29)  /* L1-RST発生後のリセット起動			*/
+#define D_RRH_SLCR_RST_FACT_LOCAL_RST       D_RRH_VAL_SHIFT_L(1 , 28)  /* Local-RST発生後のリセット起動         */
+#define D_RRH_SLCR_RST_FACT_SWRST			D_RRH_VAL_SHIFT_L(1 , 27)  /* Soft RST発生後のリセット起動			*/
+#define D_RRH_SLCR_RST_FACT_WDT				D_RRH_VAL_SHIFT_L(1 , 26)  /* WDT T.O発生後のリセット起動			*/
+#define D_RRH_SLCR_RST_FACT_RLBK			D_RRH_VAL_SHIFT_L(1 , 25)  /* ロールバック発生後のリセット起動		*/
+#define D_RRH_SLCR_RST_FACT_BTBUSY			D_RRH_VAL_SHIFT_L(1 , 24)  /* 起動BUSY								*/
+#define D_RRH_SLCR_RST_FACT_POR				D_RRH_VAL_SHIFT_L(1 , 22)  /* パワーON RST起動						*/
+#define D_RRH_SLCR_RST_FACT_SRST_B			D_RRH_VAL_SHIFT_L(1 , 21)  /* L1-RST起動							*/
+#define D_RRH_SLCR_RST_FACT_SLC_RST			D_RRH_VAL_SHIFT_L(1 , 19)  /* SLC RST実行(ソフトリセット制御)		*/
+#define D_RRH_SLCR_RST_FACT_SWDT_RST		D_RRH_VAL_SHIFT_L(1 , 16)  /* System WDT T.O発生					*/
+/* @} */
+
+/*!
+ * @name リセット要因詳細内容(REBOOT_STATUS)
+ * @note リセット要因bit定義
+ * @{
+ */
+// #define D_RRH_SLCR_RST_FACT_L1RST1			D_DU_VAL_SHIFT_L(1 , 29)	/* L1-RST発生後のリセット起動			*/
+// #define D_RRH_SLCR_RST_FACT_SWRST			D_DU_VAL_SHIFT_L(1 , 27)	/* Soft RST発生後のリセット起動			*/
+// #define D_RRH_SLCR_RST_FACT_WDT				D_DU_VAL_SHIFT_L(1 , 26)	/* WDT T.O発生後のリセット起動			*/
+// #define D_RRH_SLCR_RST_FACT_RLBK			D_DU_VAL_SHIFT_L(1 , 25)	/* ロールバック発生後のリセット起動		*/
+// #define D_RRH_SLCR_RST_FACT_BTBUSY			D_DU_VAL_SHIFT_L(1 , 24)	/* 起動BUSY								*/
+// #define D_RRH_SLCR_RST_FACT_POR				D_DU_VAL_SHIFT_L(1 , 22)	/* パワーON RST起動						*/
+// #define D_RRH_SLCR_RST_FACT_SRST_B			D_DU_VAL_SHIFT_L(1 , 21)	/* L1-RST起動							*/
+// #define D_RRH_SLCR_RST_FACT_SLC_RST			D_DU_VAL_SHIFT_L(1 , 19)	/* SLC RST実行(ソフトリセット制御)		*/
+// #define D_RRH_SLCR_RST_FACT_SWDT_RST		D_DU_VAL_SHIFT_L(1 , 16)	/* System WDT T.O発生					*/
+
+/* 2020/12/28 M&C) Merge 4G FHM src (end modify) */
+
+#define D_RRH_SLCR_RST_FACT_L1_S_RST	(	D_RRH_SLCR_RST_FACT_L1RST1		| \
+											D_RRH_SLCR_RST_FACT_SWRST		)   /* L1-RST(SOFT強制リセット)起動	*/
+ 	/* @} */
+
+/*!
+ * @name リセット要因取得用マスク値(REBOOT_STATUS)
+ * @note 
+ * @date 2020/12/28 M&C) Merge 4G FHM src (add 'D_RRH_SLCR_RST_FACT_LOCAL_RST')
+ * @{
+ */
+#define D_RRH_SLCR_RST_FACT_MASK		(	D_RRH_SLCR_RST_FACT_L1RST1		| \
+											D_RRH_SLCR_RST_FACT_LOCAL_RST   | \
+											D_RRH_SLCR_RST_FACT_SWRST		| \
+											D_RRH_SLCR_RST_FACT_WDT			| \
+											D_RRH_SLCR_RST_FACT_RLBK		| \
+											D_RRH_SLCR_RST_FACT_BTBUSY		| \
+											D_RRH_SLCR_RST_FACT_POR			| \
+											D_RRH_SLCR_RST_FACT_SRST_B		| \
+											D_RRH_SLCR_RST_FACT_SLC_RST		| \
+											D_RRH_SLCR_RST_FACT_SWDT_RST	)
+/* @} */
+
+#endif
+/* @} */

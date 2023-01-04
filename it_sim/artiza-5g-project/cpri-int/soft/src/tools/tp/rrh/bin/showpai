@@ -1,0 +1,77 @@
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+
+Rrh.assign()
+
+addr_eep = 64
+if !res = Rrh.eepread(addr_eep.to_i(16)) then
+ puts "eep read error"
+else
+ case res
+ when "13"
+  kind = "BPF_HM_DEVC_SUB6"
+
+ when "14"
+  kind = "BPF_HM_DEVC_MMW"
+
+ else
+  puts "kind num error"
+  exit(1)
+ end
+
+end
+
+CMN_SUB6_ADDR       = 0x012
+CMN_MMW_ADDR        = 0x034
+
+#SUB6 0~3 mmW 0~1
+if kind == "BPF_HM_DEVC_SUB6" then
+  for ant in 0..3
+    addr = CMN_SUB6_ADDR + (ant*0x80)
+    if (data1_s = Rrh.tpshmread("apde2pTX_vt","",addr.to_s(16))) == false then
+      puts "Shard Memory Read Error No.1 ant No. #{ant}"
+      exit(1)
+    end
+    addr = addr + 1
+    if (data2_s = Rrh.tpshmread("apde2pTX_vt","",addr.to_s(16))) == false then
+      puts "Shard Memory Read Error No.2 ant No. #{ant}"
+      exit(1)
+    end
+    data = (data1_s.to_i(16) * 256) + data2_s.to_i(16)
+    case ant
+      when 0
+        ant_X = "Ant-A"
+      when 1
+        ant_X = "Ant-B"
+      when 2
+        ant_X = "Ant-C"
+	  else
+        ant_X = "Ant-D"
+    end
+    puts "#{ant_X} = #{data.to_s(16)}"
+  end
+else
+  for ant in 0..1
+    addr = CMN_MMW_ADDR + (ant*2)
+    if (data1_s = Rrh.tpshmread("apde2pTX_vt","",addr.to_s(16))) == false then
+      puts "Shard Memory Read Error No.1 ant No. #{ant}"
+      exit(1)
+    end
+    addr = addr + 1
+    if (data2_s = Rrh.tpshmread("apde2pTX_vt","",addr.to_s(16))) == false then
+      puts "Shard Memory Read Error No.2 ant No. #{ant}"
+      exit(1)
+    end
+    data = (data1_s.to_i(16) * 256) + data2_s.to_i(16)
+    if ant == 0 then
+      ant_X = "Mode:Normal, Ant-A"
+    else
+      ant_X = "Mode:Normal, Ant-B"
+    end
+    puts "#{ant_X} = #{data.to_s(16)}"
+  end
+end

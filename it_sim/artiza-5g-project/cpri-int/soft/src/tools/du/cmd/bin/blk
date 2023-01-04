@@ -1,0 +1,65 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+if ARGV.length < 1 then
+	puts "usage:"+$0+" <on/off>",
+		"(m):<on/off> is below.",
+		"off: 0",
+		"on : 1"
+	Rrh.exit(1)
+end
+
+chk_res = Rrh.proc_check()
+if chk_res == false then
+	puts DuCode::ERR_DESCRIPTION[12]
+	Rrh.exit(1)
+end
+
+onoff = ARGV[0]
+blkonoff = 0
+case onoff.downcase
+	when "0","off" then
+		blkonoff = 0
+	when "1","on" then
+		blkonoff = 1
+	else
+		puts DuCode::ERR_DESCRIPTION[1]
+		Rrh.exit(1)
+end
+
+socket =  Rrh.tsocket()
+if Rrh.tconnect(socket,"192.168.1.131",60029).to_i != 0 then
+	Rrh.tclose(socket)
+	puts DuCode::ERR_DESCRIPTION[13]
+	Rrh.exit(1)
+end
+
+
+Msg_CARDBLK_REQ = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo,
+:uiFuncID,:uiSeqNo,:uiState
+)
+
+Msg_RSP = Struct.new(
+:msgid,:srcFbNo,:dstFbNo,:allMsgLen,:replyId,:headSeqNo,:flg,:nowSeqNo
+)
+
+CARDBLK_REQ              = Msg_CARDBLK_REQ.new
+CARDBLK_REQ.msgid = 0x3041
+CARDBLK_REQ.uiFuncID = 1
+CARDBLK_REQ.uiSeqNo = 1
+CARDBLK_REQ.uiState = blkonoff
+
+RSP = Msg_RSP.new
+
+Rrh.tsend2(socket,CARDBLK_REQ)
+Rrh.trecv2(socket,RSP)
+if RSP.msgid == 0x3042 then
+	puts DuCode::ERR_DESCRIPTION[0]
+else
+	puts DuCode::ERR_DESCRIPTION[14]
+end
+
+Rrh.tclose(socket)
+Rrh.sleep(1)

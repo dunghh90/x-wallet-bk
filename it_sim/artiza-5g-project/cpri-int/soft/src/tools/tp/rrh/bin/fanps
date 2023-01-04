@@ -1,0 +1,54 @@
+# 
+# FAN power ctrl(5G-è§ópDU)
+# rrh -fanps <kind> <data>
+# 
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <kind> <data>",
+      "(m):<kind>    is ctl kind(0:FANPower 1:FETSW)",
+      "(m):<dat>     is write data",
+      "(o):<flag>    is FETSW auto clear flag(0:manual, 1:auto)"
+ exit(1)
+end
+
+kind_s = ARGV[0]
+data_s = ARGV[1]
+
+Rrh.assign()
+if(kind_s.to_i == 0) then
+  if((data_s.to_i<0) || (data_s.to_i>1)) then
+    puts "Input kind is FANPower(0), but input data is incorrect : <data>=#{data_s}",
+         "write data is 0 or 1"
+  else
+    Rrh.regwrite("A0000030", data_s)
+    puts "FAN Power ctrl complete"
+  end
+elsif(kind_s.to_i == 1) then
+  if((data_s.to_i<0) || (data_s.to_i>7)) then
+    puts "Input kind is FETSW(1), but input data is incorrect : <data>=#{data_s}"
+         "write data is bit[0]:FAN#1, bit[1]:FAN#2, bit[2]:FAN#3"
+  else
+    if ARGV.length > 2 then
+      flag_s = ARGV[2]
+    else
+      flag_s = "0"
+    end
+	# Reset ON
+    Rrh.regwrite("A0000034", data_s)
+    
+    if(flag_s.to_i>0) then
+      puts "FETSW auto clear"
+	  # sleep 2ms
+	  Rrh.sleep(0,2000000)
+	  # Reset OFF
+      Rrh.regwrite("A0000034", "00000000")
+    end
+    puts "FETSW ctrl complete"
+  end
+else
+  puts "Input kind is incorrect : <kind>=#{kind_s}"
+       "write kind is 0:FANPower, 1:FETSW"
+end
+Rrh.unassign()

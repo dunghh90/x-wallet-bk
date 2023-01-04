@@ -1,0 +1,3 @@
+cmd_sfp_log_disp.c:73:7:cnvSfpInfo	64	static
+cmd_sfp_log_disp.c:98:6:cmd_sfp_log_checkData	48	static
+cmd_sfp_log_disp.c:137:5:cmd_sfp_log_disp_main	21248	static

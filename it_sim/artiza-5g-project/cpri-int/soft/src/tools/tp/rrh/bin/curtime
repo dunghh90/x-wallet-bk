@@ -1,0 +1,12 @@
+Rrh.assign()
+
+rtctimes = Rrh.getrtc()
+
+if ARGV.length > 0 then
+	puts "#{rtctimes}"
+else
+	Rrh.system("echo -n \"Current OS  TIME:\";/bin/date +\"%Y/%m/%d %H:%M:%S\"")
+	puts "Current RTC TIME:#{rtctimes}"
+end
+
+Rrh.unassign()

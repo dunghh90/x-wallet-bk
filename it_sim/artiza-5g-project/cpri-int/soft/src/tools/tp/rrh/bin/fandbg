@@ -1,0 +1,11 @@
+# 
+# FAN debug mode set(5G-è§ópDU)
+# rrh -fanmon
+# 
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+Rrh.assign()
+Rrh.api("rrhApi_Ext_Mnt_FanDbgModeChgNtc", 0x10FD000E, 0, 0)
+puts "fanmon complete"
+Rrh.unassign()

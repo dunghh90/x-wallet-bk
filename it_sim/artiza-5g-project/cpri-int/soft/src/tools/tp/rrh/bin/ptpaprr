@@ -1,0 +1,262 @@
+Rrh.require("./verbose")
+
+
+if Rrh.psalive("DU_pf -p") == false then
+   puts "PTP software was not start yet or dead."
+   exit(1)
+end
+
+Rrh.assign()
+default1HzRealignmentType                        = Rrh.get_ptpapr("default1HzRealignmentType"                        )
+defaultPerPacketAdjType                          = Rrh.get_ptpapr("defaultPerPacketAdjType"                          )
+default1HzRealignmentInterval                    = Rrh.get_ptpapr("default1HzRealignmentInterval"                    )
+defaultStaticOffset                              = Rrh.get_ptpapr("defaultStaticOffset"                              )
+default1HzFilterBandwidth                        = Rrh.get_ptpapr("default1HzFilterBandwidth"                        )
+default1HzFilterWriteInterval                    = Rrh.get_ptpapr("default1HzFilterWriteInterval"                    )
+defaultDeviceOptMode                             = Rrh.get_ptpapr("defaultDeviceOptMode"                             )
+defaultDeviceHybridAdjMode                       = Rrh.get_ptpapr("defaultDeviceHybridAdjMode"                       )
+zl303xx_AprDcs                                   = Rrh.get_ptpapr("zl303xx_AprDcs"                                   )
+defaultHwDcoResolutionInPpt                      = Rrh.get_ptpapr("defaultHwDcoResolutionInPpt"                      )
+defaultEnterPhaseLockStatusThreshold             = Rrh.get_ptpapr("defaultEnterPhaseLockStatusThreshold"             )
+defaultExitPhaseLockStatusThreshold              = Rrh.get_ptpapr("defaultExitPhaseLockStatusThreshold"              )
+defaultWarmStartFlag                             = Rrh.get_ptpapr("defaultWarmStartFlag"                             )
+defaultWsInitFreqOffset                          = Rrh.get_ptpapr("defaultWsInitFreqOffset"                          )
+defaultAPRFrequencyLockedPhaseSlopeLimit         = Rrh.get_ptpapr("defaultAPRFrequencyLockedPhaseSlopeLimit"         )
+defaultAPRFrequencyNotLockedPhaseSlopeLimit      = Rrh.get_ptpapr("defaultAPRFrequencyNotLockedPhaseSlopeLimit"      )
+defaultAPRFrequencyFastPhaseSlopeLimit           = Rrh.get_ptpapr("defaultAPRFrequencyFastPhaseSlopeLimit"           )
+defaultAPRFrequencyLockedFrequencyChangeLimit    = Rrh.get_ptpapr("defaultAPRFrequencyLockedFrequencyChangeLimit"    )
+defaultAPRFrequencyNotLockedFrequencyChangeLimit = Rrh.get_ptpapr("defaultAPRFrequencyNotLockedFrequencyChangeLimit" )
+defaultAPRFrequencyFastFrequencyChangeLimit      = Rrh.get_ptpapr("defaultAPRFrequencyFastFrequencyChangeLimit"      )
+defaultAdjSize1HzPSL_0                           = Rrh.get_ptpapr("defaultAdjSize1HzPSL[0]"                          )
+defaultAdjSize1HzPSL_1                           = Rrh.get_ptpapr("defaultAdjSize1HzPSL[1]"                          )
+defaultAdjSize1HzPSL_2                           = Rrh.get_ptpapr("defaultAdjSize1HzPSL[2]"                          )
+defaultAdjSize1HzPSL_3                           = Rrh.get_ptpapr("defaultAdjSize1HzPSL[3]"                          )
+defaultAdjSize1HzPSL_4                           = Rrh.get_ptpapr("defaultAdjSize1HzPSL[4]"                          )
+defaultPSL_1Hz_0                                 = Rrh.get_ptpapr("defaultPSL_1Hz[0]"                                )
+defaultPSL_1Hz_1                                 = Rrh.get_ptpapr("defaultPSL_1Hz[1]"                                )
+defaultPSL_1Hz_2                                 = Rrh.get_ptpapr("defaultPSL_1Hz[2]"                                )
+defaultPSL_1Hz_3                                 = Rrh.get_ptpapr("defaultPSL_1Hz[3]"                                )
+defaultPSL_1Hz_4                                 = Rrh.get_ptpapr("defaultPSL_1Hz[4]"                                )
+defaultAdjSize1HzFCL_0                           = Rrh.get_ptpapr("defaultAdjSize1HzFCL[0]"                          )
+defaultAdjSize1HzFCL_1                           = Rrh.get_ptpapr("defaultAdjSize1HzFCL[1]"                          )
+defaultAdjSize1HzFCL_2                           = Rrh.get_ptpapr("defaultAdjSize1HzFCL[2]"                          )
+defaultAdjSize1HzFCL_3                           = Rrh.get_ptpapr("defaultAdjSize1HzFCL[3]"                          )
+defaultAdjSize1HzFCL_4                           = Rrh.get_ptpapr("defaultAdjSize1HzFCL[4]"                          )
+defaultFCL_1Hz_0                                 = Rrh.get_ptpapr("defaultFCL_1Hz[0]"                                )
+defaultFCL_1Hz_1                                 = Rrh.get_ptpapr("defaultFCL_1Hz[1]"                                )
+defaultFCL_1Hz_2                                 = Rrh.get_ptpapr("defaultFCL_1Hz[2]"                                )
+defaultFCL_1Hz_3                                 = Rrh.get_ptpapr("defaultFCL_1Hz[3]"                                )
+defaultFCL_1Hz_4                                 = Rrh.get_ptpapr("defaultFCL_1Hz[4]"                                )
+defaultAdjSize1HzAdjScaling_0                    = Rrh.get_ptpapr("defaultAdjSize1HzAdjScaling[0]"                   )
+defaultAdjSize1HzAdjScaling_1                    = Rrh.get_ptpapr("defaultAdjSize1HzAdjScaling[1]"                   )
+defaultAdjSize1HzAdjScaling_2                    = Rrh.get_ptpapr("defaultAdjSize1HzAdjScaling[2]"                   )
+defaultAdjSize1HzAdjScaling_3                    = Rrh.get_ptpapr("defaultAdjSize1HzAdjScaling[3]"                   )
+defaultAdjSize1HzAdjScaling_4                    = Rrh.get_ptpapr("defaultAdjSize1HzAdjScaling[4]"                   )
+defaultAdjScaling_1Hz_0                          = Rrh.get_ptpapr("defaultAdjScaling_1Hz[0]"                         )
+defaultAdjScaling_1Hz_1                          = Rrh.get_ptpapr("defaultAdjScaling_1Hz[1]"                         )
+defaultAdjScaling_1Hz_2                          = Rrh.get_ptpapr("defaultAdjScaling_1Hz[2]"                         )
+defaultAdjScaling_1Hz_3                          = Rrh.get_ptpapr("defaultAdjScaling_1Hz[3]"                         )
+defaultAdjScaling_1Hz_4                          = Rrh.get_ptpapr("defaultAdjScaling_1Hz[4]"                         )
+defaultPFLockInThreshold                         = Rrh.get_ptpapr("defaultPFLockInThreshold"                         )
+defaultPFLockInCount                             = Rrh.get_ptpapr("defaultPFLockInCount"                             )
+defaultPFLockOutThreshold                        = Rrh.get_ptpapr("defaultPFLockOutThreshold"                        )
+defaultMaxAdjFreqTime                            = Rrh.get_ptpapr("defaultMaxAdjFreqTime"                            )
+defaultPFAdjustFreqMinPhase                      = Rrh.get_ptpapr("defaultPFAdjustFreqMinPhase"                      )
+defaultThresholdForFlagV                         = Rrh.get_ptpapr("defaultThresholdForFlagV"                         )
+defaultSetTimePacketTreatment                    = Rrh.get_ptpapr("defaultSetTimePacketTreatment"                    )
+defaultStepTimePacketTreatment                   = Rrh.get_ptpapr("defaultStepTimePacketTreatment"                   )
+defaultAdjustTimePacketTreatment                 = Rrh.get_ptpapr("defaultAdjustTimePacketTreatment"                 )
+defaultLegacyTreatment                           = Rrh.get_ptpapr("defaultLegacyTreatment"                           )
+exampleUseLegacyStreamStartUp                    = Rrh.get_ptpapr("exampleUseLegacyStreamStartUp"                    )
+exampleAllow1HzAdjustmentsInHoldover             = Rrh.get_ptpapr("exampleAllow1HzAdjustmentsInHoldover"             )
+defaultPFStepTimeResolution                      = Rrh.get_ptpapr("defaultPFStepTimeResolution"                      )
+defaultPFLockedPhaseOutlierThreshold             = Rrh.get_ptpapr("defaultPFLockedPhaseOutlierThreshold"             )
+defaultPFInitialFrequencyOffset                  = Rrh.get_ptpapr("defaultPFInitialFrequencyOffset"                  )
+exampleOnlyAllowSteps                            = Rrh.get_ptpapr("exampleOnlyAllowSteps"                            )
+defaultAlgTypeMode                               = Rrh.get_ptpapr("defaultAlgTypeMode"                               )
+defaultbUseT2PLL                                 = Rrh.get_ptpapr("defaultbUseT2PLL"                                 )
+defaultenableXOComp                              = Rrh.get_ptpapr("defaultenableXOComp"                              )
+defaultbT2PLLFLEnb                               = Rrh.get_ptpapr("defaultbT2PLLFLEnb"                               )
+T2FLMinPhaseNs                                   = Rrh.get_ptpapr("T2FLMinPhaseNs"                                   )
+defaultOscillatorFilter                          = Rrh.get_ptpapr("defaultOscillatorFilter"                          )
+defaultOscHoldoverStability                      = Rrh.get_ptpapr("defaultOscHoldoverStability"                      )
+defaultXOsModeTimeout                            = Rrh.get_ptpapr("defaultXOsModeTimeout"                            )
+defaultSModeAgeOut                               = Rrh.get_ptpapr("defaultSModeAgeOut"                               )
+defaultReRouteHoldover2                          = Rrh.get_ptpapr("defaultReRouteHoldover2"                          )
+defaultFilter                                    = Rrh.get_ptpapr("defaultFilter"                                    )
+defaultXdslHpFlag                                = Rrh.get_ptpapr("defaultXdslHpFlag"                                )
+defaultFwdPPS                                    = Rrh.get_ptpapr("defaultFwdPPS"                                    )
+defaultRevPPS                                    = Rrh.get_ptpapr("defaultRevPPS"                                    )
+defaultTsFormat                                  = Rrh.get_ptpapr("defaultTsFormat"                                  )
+defaultTs32BitFlag                               = Rrh.get_ptpapr("defaultTs32BitFlag"                               )
+zl303xx_AprUseReversePath                        = Rrh.get_ptpapr("zl303xx_AprUseReversePath"                        )
+defaultHybridServerFlag                          = Rrh.get_ptpapr("defaultHybridServerFlag"                          )
+defaultPacketDiscardDurationInSecFlag            = Rrh.get_ptpapr("defaultPacketDiscardDurationInSecFlag"            )
+defaultPullInRange                               = Rrh.get_ptpapr("defaultPullInRange"                               )
+defaultEnterHoldeverGST                          = Rrh.get_ptpapr("defaultEnterHoldeverGST"                          )
+defaultExitValidGST                              = Rrh.get_ptpapr("defaultExitValidGST"                              )
+defaultExitLockGST                               = Rrh.get_ptpapr("defaultExitLockGST"                               )
+defaultExitPhaseAlignGST                         = Rrh.get_ptpapr("defaultExitPhaseAlignGST"                         )
+defaultLockMasks                                 = Rrh.get_ptpapr("defaultLockMasks"                                 )
+FastLockTotalTimeInSecs                          = Rrh.get_ptpapr("FastLockTotalTimeInSecs"                          )
+HoldoverFreezeValue                              = Rrh.get_ptpapr("HoldoverFreezeValue"                              )
+AprTaskBasePeriodMs                              = Rrh.get_ptpapr("AprTaskBasePeriodMs"                              )
+PslFclTaskBasePeriodMs                           = Rrh.get_ptpapr("PslFclTaskBasePeriodMs"                           )
+DFSeedValue                                      = Rrh.get_ptpapr("DFSeedValue"                                      )
+Type2BFastlockStartupIt                          = Rrh.get_ptpapr("Type2BFastlockStartupIt"                          )
+Type2BFastlockThreshold                          = Rrh.get_ptpapr("Type2BFastlockThreshold"                          )
+OutlierTimerValue                                = Rrh.get_ptpapr("OutlierTimerValue"                                )
+ClkInvalidCntrValue                              = Rrh.get_ptpapr("ClkInvalidCntrValue"                              )
+FastLockPktSelWindowSize                         = Rrh.get_ptpapr("FastLockPktSelWindowSize"                         )
+L2phase_varLimitValue                            = Rrh.get_ptpapr("L2phase_varLimitValue"                            )
+L4Threshold                                      = Rrh.get_ptpapr("L4Threshold"                                      )
+DefaultUseOFM                                    = Rrh.get_ptpapr("DefaultUseOFM"                                    )
+FastLockBW                                       = Rrh.get_ptpapr("FastLockBW"                                       )
+exampleAprFCL                                    = Rrh.get_ptpapr("exampleAprFCL"                                    )
+fastLock1HzEnable                                = Rrh.get_ptpapr("fastLock1HzEnable"                                )
+fastLock1HzInterval                              = Rrh.get_ptpapr("fastLock1HzInterval"                              )
+fastLock1HzTotalPeriod                           = Rrh.get_ptpapr("fastLock1HzTotalPeriod"                           )
+fastLock1HzDelay                                 = Rrh.get_ptpapr("fastLock1HzDelay"                                 )
+stepTimeAdjustTimeThreshold                      = Rrh.get_ptpapr("stepTimeAdjustTimeThreshold"                      )
+stepTimeAdjustFreqThreshold                      = Rrh.get_ptpapr("stepTimeAdjustFreqThreshold"                      )
+defaultAdjustTimeMinThreshold                    = Rrh.get_ptpapr("defaultAdjustTimeMinThreshold"                    )
+defaultUseAdjustTimeHybrid                       = Rrh.get_ptpapr("defaultUseAdjustTimeHybrid"                       )
+defaultUseAdjustTimePacket                       = Rrh.get_ptpapr("defaultUseAdjustTimePacket"                       )
+defaultStepTimeDetectableThr                     = Rrh.get_ptpapr("defaultStepTimeDetectableThr"                     )
+defaultAprDynamicPhaseCorrectionEnabled          = Rrh.get_ptpapr("defaultAprDynamicPhaseCorrectionEnabled"          )
+defaultAdjFreqDynamicAdjustmentEnable            = Rrh.get_ptpapr("defaultAdjFreqDynamicAdjustmentEnable"            )
+defaultAprDynamicPhaseCorrectionThr              = Rrh.get_ptpapr("defaultAprDynamicPhaseCorrectionThr"              )
+DefaultUseNCOAssistDpll                          = Rrh.get_ptpapr("DefaultUseNCOAssistDpll"                          )
+defaultHybridLockTimeTarget                      = Rrh.get_ptpapr("defaultHybridLockTimeTarget"                      )
+clkStabDelayIter                                 = Rrh.get_ptpapr("clkStabDelayIter"                                 )
+default1HzEnabledFlag                            = Rrh.get_ptpapr("default1HzEnabledFlag"                            )
+startupTimeInit                                  = Rrh.get_ptpapr("startupTimeInit"                                  )
+saveflg                                          = Rrh.get_ptpapr("saveflg"                                          )
+
+puts "NAME                                              Hex value"
+puts "default1HzRealignmentType                         #{default1HzRealignmentType}"
+puts "defaultPerPacketAdjType                           #{defaultPerPacketAdjType}"
+puts "default1HzRealignmentInterval                     #{default1HzRealignmentInterval}"
+puts "defaultStaticOffset                               #{defaultStaticOffset}"
+puts "default1HzFilterBandwidth                         #{default1HzFilterBandwidth}"
+puts "default1HzFilterWriteInterval                     #{default1HzFilterWriteInterval}"
+puts "defaultDeviceOptMode                              #{defaultDeviceOptMode}"
+puts "defaultDeviceHybridAdjMode                        #{defaultDeviceHybridAdjMode}"
+puts "zl303xx_AprDcs                                    #{zl303xx_AprDcs}"
+puts "defaultHwDcoResolutionInPpt                       #{defaultHwDcoResolutionInPpt}"
+puts "defaultEnterPhaseLockStatusThreshold              #{defaultEnterPhaseLockStatusThreshold}"
+puts "defaultExitPhaseLockStatusThreshold               #{defaultExitPhaseLockStatusThreshold}"
+puts "defaultWarmStartFlag                              #{defaultWarmStartFlag}"
+puts "defaultWsInitFreqOffset                           #{defaultWsInitFreqOffset}"
+puts "defaultAPRFrequencyLockedPhaseSlopeLimit          #{defaultAPRFrequencyLockedPhaseSlopeLimit}"
+puts "defaultAPRFrequencyNotLockedPhaseSlopeLimit       #{defaultAPRFrequencyNotLockedPhaseSlopeLimit}"
+puts "defaultAPRFrequencyFastPhaseSlopeLimit            #{defaultAPRFrequencyFastPhaseSlopeLimit}"
+puts "defaultAPRFrequencyLockedFrequencyChangeLimit     #{defaultAPRFrequencyLockedFrequencyChangeLimit}"
+puts "defaultAPRFrequencyNotLockedFrequencyChangeLimit  #{defaultAPRFrequencyNotLockedFrequencyChangeLimit}"
+puts "defaultAPRFrequencyFastFrequencyChangeLimit       #{defaultAPRFrequencyFastFrequencyChangeLimit}"
+puts "defaultAdjSize1HzPSL[0]                           #{defaultAdjSize1HzPSL_0}"
+puts "defaultAdjSize1HzPSL[1]                           #{defaultAdjSize1HzPSL_1}"
+puts "defaultAdjSize1HzPSL[2]                           #{defaultAdjSize1HzPSL_2}"
+puts "defaultAdjSize1HzPSL[3]                           #{defaultAdjSize1HzPSL_3}"
+puts "defaultAdjSize1HzPSL[4]                           #{defaultAdjSize1HzPSL_4}"
+puts "defaultPSL_1Hz[0]                                 #{defaultPSL_1Hz_0}"
+puts "defaultPSL_1Hz[1]                                 #{defaultPSL_1Hz_1}"
+puts "defaultPSL_1Hz[2]                                 #{defaultPSL_1Hz_2}"
+puts "defaultPSL_1Hz[3]                                 #{defaultPSL_1Hz_3}"
+puts "defaultPSL_1Hz[4]                                 #{defaultPSL_1Hz_4}"
+puts "defaultAdjSize1HzFCL[0]                           #{defaultAdjSize1HzFCL_0}"
+puts "defaultAdjSize1HzFCL[1]                           #{defaultAdjSize1HzFCL_1}"
+puts "defaultAdjSize1HzFCL[2]                           #{defaultAdjSize1HzFCL_2}"
+puts "defaultAdjSize1HzFCL[3]                           #{defaultAdjSize1HzFCL_3}"
+puts "defaultAdjSize1HzFCL[4]                           #{defaultAdjSize1HzFCL_4}"
+puts "defaultFCL_1Hz[0]                                 #{defaultFCL_1Hz_0}"
+puts "defaultFCL_1Hz[1]                                 #{defaultFCL_1Hz_1}"
+puts "defaultFCL_1Hz[2]                                 #{defaultFCL_1Hz_2}"
+puts "defaultFCL_1Hz[3]                                 #{defaultFCL_1Hz_3}"
+puts "defaultFCL_1Hz[4]                                 #{defaultFCL_1Hz_4}"
+puts "defaultAdjSize1HzAdjScaling[0]                    #{defaultAdjSize1HzAdjScaling_0}"
+puts "defaultAdjSize1HzAdjScaling[1]                    #{defaultAdjSize1HzAdjScaling_1}"
+puts "defaultAdjSize1HzAdjScaling[2]                    #{defaultAdjSize1HzAdjScaling_2}"
+puts "defaultAdjSize1HzAdjScaling[3]                    #{defaultAdjSize1HzAdjScaling_3}"
+puts "defaultAdjSize1HzAdjScaling[4]                    #{defaultAdjSize1HzAdjScaling_4}"
+puts "defaultAdjScaling_1Hz[0]                          #{defaultAdjScaling_1Hz_0}"
+puts "defaultAdjScaling_1Hz[1]                          #{defaultAdjScaling_1Hz_1}"
+puts "defaultAdjScaling_1Hz[2]                          #{defaultAdjScaling_1Hz_2}"
+puts "defaultAdjScaling_1Hz[3]                          #{defaultAdjScaling_1Hz_3}"
+puts "defaultAdjScaling_1Hz[4]                          #{defaultAdjScaling_1Hz_4}"
+puts "defaultPFLockInThreshold                          #{defaultPFLockInThreshold}"
+puts "defaultPFLockInCount                              #{defaultPFLockInCount}"
+puts "defaultPFLockOutThreshold                         #{defaultPFLockOutThreshold}"
+puts "defaultMaxAdjFreqTime                             #{defaultMaxAdjFreqTime}"
+puts "defaultPFAdjustFreqMinPhase                       #{defaultPFAdjustFreqMinPhase}"
+puts "defaultThresholdForFlagV                          #{defaultThresholdForFlagV}"
+puts "defaultSetTimePacketTreatment                     #{defaultSetTimePacketTreatment}"
+puts "defaultStepTimePacketTreatment                    #{defaultStepTimePacketTreatment}"
+puts "defaultAdjustTimePacketTreatment                  #{defaultAdjustTimePacketTreatment}"
+puts "defaultLegacyTreatment                            #{defaultLegacyTreatment}"
+puts "exampleUseLegacyStreamStartUp                     #{exampleUseLegacyStreamStartUp}"
+puts "exampleAllow1HzAdjustmentsInHoldover              #{exampleAllow1HzAdjustmentsInHoldover}"
+puts "defaultPFStepTimeResolution                       #{defaultPFStepTimeResolution}"
+puts "defaultPFLockedPhaseOutlierThreshold              #{defaultPFLockedPhaseOutlierThreshold}"
+puts "defaultPFInitialFrequencyOffset                   #{defaultPFInitialFrequencyOffset}"
+puts "exampleOnlyAllowSteps                             #{exampleOnlyAllowSteps}"
+puts "defaultAlgTypeMode                                #{defaultAlgTypeMode}"
+puts "defaultbUseT2PLL                                  #{defaultbUseT2PLL}"
+puts "defaultenableXOComp                               #{defaultenableXOComp}"
+puts "defaultbT2PLLFLEnb                                #{defaultbT2PLLFLEnb}"
+puts "T2FLMinPhaseNs                                    #{T2FLMinPhaseNs}"
+puts "defaultOscillatorFilter                           #{defaultOscillatorFilter}"
+puts "defaultOscHoldoverStability                       #{defaultOscHoldoverStability}"
+puts "defaultXOsModeTimeout                             #{defaultXOsModeTimeout}"
+puts "defaultSModeAgeOut                                #{defaultSModeAgeOut}"
+puts "defaultReRouteHoldover2                           #{defaultReRouteHoldover2}"
+puts "defaultFilter                                     #{defaultFilter}"
+puts "defaultXdslHpFlag                                 #{defaultXdslHpFlag}"
+puts "defaultFwdPPS                                     #{defaultFwdPPS}"
+puts "defaultRevPPS                                     #{defaultRevPPS}"
+puts "defaultTsFormat                                   #{defaultTsFormat}"
+puts "defaultTs32BitFlag                                #{defaultTs32BitFlag}"
+puts "zl303xx_AprUseReversePath                         #{zl303xx_AprUseReversePath}"
+puts "defaultHybridServerFlag                           #{defaultHybridServerFlag}"
+puts "defaultPacketDiscardDurationInSecFlag             #{defaultPacketDiscardDurationInSecFlag}"
+puts "defaultPullInRange                                #{defaultPullInRange}"
+puts "defaultEnterHoldeverGST                           #{defaultEnterHoldeverGST}"
+puts "defaultExitValidGST                               #{defaultExitValidGST}"
+puts "defaultExitLockGST                                #{defaultExitLockGST}"
+puts "defaultExitPhaseAlignGST                          #{defaultExitPhaseAlignGST}"
+puts "defaultLockMasks                                  #{defaultLockMasks}"
+puts "FastLockTotalTimeInSecs                           #{FastLockTotalTimeInSecs}"
+puts "HoldoverFreezeValue                               #{HoldoverFreezeValue}"
+puts "AprTaskBasePeriodMs                               #{AprTaskBasePeriodMs}"
+puts "PslFclTaskBasePeriodMs                            #{PslFclTaskBasePeriodMs}"
+puts "DFSeedValue                                       #{DFSeedValue}"
+puts "Type2BFastlockStartupIt                           #{Type2BFastlockStartupIt}"
+puts "Type2BFastlockThreshold                           #{Type2BFastlockThreshold}"
+puts "OutlierTimerValue                                 #{OutlierTimerValue}"
+puts "ClkInvalidCntrValue                               #{ClkInvalidCntrValue}"
+puts "FastLockPktSelWindowSize                          #{FastLockPktSelWindowSize}"
+puts "L2phase_varLimitValue                             #{L2phase_varLimitValue}"
+puts "L4Threshold                                       #{L4Threshold}"
+puts "DefaultUseOFM                                     #{DefaultUseOFM}"
+puts "FastLockBW                                        #{FastLockBW}"
+puts "exampleAprFCL                                     #{exampleAprFCL}"
+puts "fastLock1HzEnable                                 #{fastLock1HzEnable}"
+puts "fastLock1HzInterval                               #{fastLock1HzInterval}"
+puts "fastLock1HzTotalPeriod                            #{fastLock1HzTotalPeriod}"
+puts "fastLock1HzDelay                                  #{fastLock1HzDelay}"
+puts "stepTimeAdjustTimeThreshold                       #{stepTimeAdjustTimeThreshold}"
+puts "stepTimeAdjustFreqThreshold                       #{stepTimeAdjustFreqThreshold}"
+puts "defaultAdjustTimeMinThreshold                     #{defaultAdjustTimeMinThreshold}"
+puts "defaultUseAdjustTimeHybrid                        #{defaultUseAdjustTimeHybrid}"
+puts "defaultUseAdjustTimePacket                        #{defaultUseAdjustTimePacket}"
+puts "defaultStepTimeDetectableThr                      #{defaultStepTimeDetectableThr}"
+puts "defaultAprDynamicPhaseCorrectionEnabled           #{defaultAprDynamicPhaseCorrectionEnabled}"
+puts "defaultAdjFreqDynamicAdjustmentEnable             #{defaultAdjFreqDynamicAdjustmentEnable}"
+puts "defaultAprDynamicPhaseCorrectionThr               #{defaultAprDynamicPhaseCorrectionThr}"
+puts "DefaultUseNCOAssistDpll                           #{DefaultUseNCOAssistDpll}"
+puts "defaultHybridLockTimeTarget                       #{defaultHybridLockTimeTarget}"
+puts "clkStabDelayIter                                  #{clkStabDelayIter}"
+puts "default1HzEnabledFlag                             #{default1HzEnabledFlag}"
+puts "startupTimeInit                                   #{startupTimeInit}"
+puts "saveflg                                           #{saveflg}"
+Rrh.unassign()

@@ -1,0 +1,75 @@
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+
+
+# usage
+if ARGV.length < 2 then
+	puts "usage:"+$0+" <ant/all> <dat>",
+	"(m):<ant/all> is ant num (0:Ant.A 1:Ant.B or all)",
+	"(m):<dat>     is write data(0x00~0x3F)"
+	exit(1)
+end
+
+ant_s = ARGV[0]
+tmp_data_s = ARGV[1]
+case tmp_data_s.length 
+	when 1 then
+		data_s = "0" + tmp_data_s
+	else
+		data_s = tmp_data_s
+end
+
+if !Rrh.input_check(data_s,2) then
+	puts "Input value is incorrect : #{data_s}"
+	exit(1)
+end
+
+if data_s.to_i(16) > 0x3F  then
+	puts "Input value is range over : #{data_s}"
+	exit(1)
+end
+
+
+Rrh.assign()
+def self.fn_srxvwrite(antnum , data_val)
+	if !res = Rrh.srxvwrite( antnum , data_val ) then
+		puts "ant#{antnum} error"
+		return false
+	end
+	rx_att_addr = 0x18 + antnum
+	if !res = Rrh.tpshmwrite("apde2pRX_vt_mmw","",rx_att_addr.to_s(16),data_val.to_s(16)) then
+		puts " Shard Memory Write Error!! No.#{addrofs}"
+		return false
+	end
+	return true
+end
+
+if ant_s == "all" then
+	# antA
+	res = fn_srxvwrite(0,data_s.to_i(16))
+	if (res = fn_srxvwrite(0,data_s.to_i(16))) == false then
+		exit(1)
+	end
+	# antB
+	res = fn_srxvwrite(1,data_s.to_i(16))
+	if (res = fn_srxvwrite(1,data_s.to_i(16))) == false then
+		exit(1)
+	end
+	puts "complete"
+else
+	case ant_s.to_i 
+		when 0..1 then
+			if (res = fn_srxvwrite(ant_s.to_i(16),data_s.to_i(16))) == false then
+				exit(1)
+			end
+		else
+			puts "Input value is incorrect : <ant>"
+			exit(1) 
+	end
+	puts "complete"
+end
+Rrh.unassign()

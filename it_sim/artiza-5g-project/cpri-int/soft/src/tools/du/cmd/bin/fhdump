@@ -1,0 +1,183 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+def func_usage()
+	puts "usage:"+$0+" <opt>",
+	"(o):<opt> is below.",
+	"start spl2   : Start S-plane(PTP/SyncE) packet dump.",
+	"start mpl2   : Start M-plane L2(ALL ethernet frame for M-plane, Not included vlan-tag) packet dump.",
+	"start mpl3   : Start M-plane L3(Only decoded NETCONF RPC message) packet dump.",
+	"start event  : Start RU Event packet dump.",
+	"stop         : Stop Packet dump."
+	Rrh.exit(0)
+end
+
+def func_packetdump( mode )
+	if mode == "00000001" then
+
+		puts "Starting M-palne L3(Only decoded NETCONF RPC message) packet dump..."
+		Rrh.regbiton("a0000C20","00000001")
+
+	elsif mode == "00000002" then
+
+		puts "Starting M-palne L2(ALL ethernet frame for M-plane, Not included vlan-tag) packet dump..."
+		Rrh.system("/opt/debug/cmd_planedump -r -e fheth0 -c mirror &")
+		Rrh.regbiton("a0000C20","00000002")
+
+	elsif mode == "00000003" then
+
+		puts "Starting S-palne packet(PTP/SyncE) dump..."
+		Rrh.system("/opt/debug/cmd_planedump -R -e fhethS0 -c mirror &")
+		Rrh.regbiton("a0000C20","00000100")
+
+	elsif mode == "00000004" then
+
+		puts "Starting RU Event packet dump..."
+		Rrh.regbiton("a0000C20","00010000")
+
+	elsif mode == "valsaved" then
+
+		puts "Saving All dump state ..."
+
+		regval = Rrh.regread("a0000C20")
+		if  Rrh.calc(regval,"&","00000003") == "00000003" then
+			Rrh.eepwrite(0x03e8,0x3)
+		elsif Rrh.calc(regval,"&","00000001") == "00000001" then
+			Rrh.eepwrite(0x03e8,0x1)
+		elsif Rrh.calc(regval,"&","00000002") == "00000002" then
+			Rrh.eepwrite(0x03e8,0x2)
+		else
+			Rrh.eepwrite(0x03e8,0xff)
+		end
+
+		if  Rrh.calc(regval,"&","00000100") == "00000100" then
+			Rrh.eepwrite(0x03e9,0x1)
+		else
+			Rrh.eepwrite(0x03e9,0xff)
+		end
+
+		if  Rrh.calc(regval,"&","00010000") == "00010000" then
+			Rrh.eepwrite(0x03ea,0x1)
+		else
+			Rrh.eepwrite(0x03ea,0xff)
+		end
+
+	else
+		puts "Stoping packet dump ..."
+		Rrh.regwrite("a0000C20","00000000")
+		Rrh.eepwrite(0x03e8,0xff)
+		Rrh.eepwrite(0x03e9,0xff)
+		Rrh.eepwrite(0x03ea,0xff)
+		Rrh.system("/bin/su -c \"/opt/debug/cmd_planedump -k -e fheth0 -c mirror\" 2>/dev/null")
+		Rrh.system("/bin/su -c \"/opt/debug/cmd_planedump -K -e fhethS0 -c mirror\" 2>/dev/null")
+	end
+
+end
+
+chk_res = Rrh.proc_check()
+if chk_res == false then
+	puts DuCode::ERR_DESCRIPTION[12]
+	Rrh.exit(1)
+end
+
+if ARGV.length > 0 then
+	case ARGV[0].to_s.downcase
+		when "start" then
+			if ARGV.length > 1 then
+				case ARGV[1].to_s
+					when "mpl3" then
+						mode = "00000001"
+						eventmsg =  Rrh.getrtc() + "(UTC) M-palne L3 dump state was ENABLED"
+					when "mpl2" then
+						mode = "00000002"
+						eventmsg =  Rrh.getrtc() + "(UTC) M-plane L2 dump state was ENABLED"
+					when "spl2" then
+						mode = "00000003"
+						eventmsg =  Rrh.getrtc() + "(UTC) S-plane(PTP/SyncE) dump state was ENABLED"
+					when "event" then
+						mode = "00000004"
+						eventmsg =  Rrh.getrtc() + "(UTC) RU Event dump state was ENABLED"
+					else
+						func_usage()
+				end
+			else
+				func_usage()
+			end
+		when "stop" then
+			mode = "00000000"
+			eventmsg =  Rrh.getrtc() + "(UTC) All dump state was DISABLED"
+		when "save" then
+			mode = "valsaved"
+			eventmsg =  Rrh.getrtc() + "(UTC) All dump state was SAVED"
+		else
+			func_usage()
+	end
+	func_packetdump(mode)
+	Rrh.event(eventmsg.to_s)
+else
+	regval = Rrh.regread("a0000C20")
+
+	mpl3_dump_on = "DISABLED"
+	mpl2_dump_on = "DISABLED"
+	spl2_dump_on = "DISABLED"
+	event_dump_on = "DISABLED"
+
+	if  Rrh.calc(regval,"&","00000001") == "00000001" then
+		mpl3_dump_on = "ENABLED"
+	end
+	if  Rrh.calc(regval,"&","00000002") == "00000002" then
+		mpl2_dump_on = "ENABLED"
+	end
+	if  Rrh.calc(regval,"&","00000100") == "00000100" then
+		spl2_dump_on = "ENABLED"
+	end
+	if  Rrh.calc(regval,"&","00010000") == "00010000" then
+		event_dump_on = "ENABLED"
+	end
+
+	savevalue = Rrh.eepread(0x03e8)
+	if savevalue == "01" then
+		mpl3_dump_on_s = "ENABLED"
+		mpl2_dump_on_s = "DISABLED"	
+	elsif savevalue == "02" then
+		mpl3_dump_on_s = "DISABLED"
+		mpl2_dump_on_s = "ENABLED"
+	elsif savevalue == "03" then
+		mpl3_dump_on_s = "ENABLED"
+		mpl2_dump_on_s = "ENABLED"
+	else
+		mpl3_dump_on_s = "DISABLED"
+		mpl2_dump_on_s = "DISABLED"
+	end
+
+	savevalue = Rrh.eepread(0x03e9)
+	if savevalue == "01" then
+		spl2_dump_on_s = "ENABLED"
+	else
+		spl2_dump_on_s = "DISABLED"
+	end
+
+	savevalue = Rrh.eepread(0x03ea)
+	if savevalue == "01" then
+		event_dump_on_s = "ENABLED"
+	else
+		event_dump_on_s = "DISABLED"
+	end
+
+	puts "Current dump mode"
+	puts ""
+	puts "   M-plane L3 :#{mpl3_dump_on}"
+	puts "   M-plane L2 :#{mpl2_dump_on}"
+	puts "   S-plane L2 :#{spl2_dump_on}"
+	puts "   RU Event   :#{event_dump_on}"
+	puts ""
+	puts "Saved dump mode"
+	puts ""
+	puts "   M-plane L3 :#{mpl3_dump_on_s}"
+	puts "   M-plane L2 :#{mpl2_dump_on_s}"
+	puts "   S-plane L2 :#{spl2_dump_on_s}"
+	puts "   RU Event   :#{event_dump_on_s}"
+	puts ""
+
+end

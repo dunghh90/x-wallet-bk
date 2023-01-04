@@ -1,0 +1,17 @@
+module DuCode
+	ERR_DESCRIPTION = [
+							"OK",											# [0]
+							"Input parameter error",						# [1]
+							"Input parameter range error",					# [2]
+							"Not supported by this device",					# [3]
+							"Already set up",								# [4]
+							"StartUp side error.It should be 0 or 1",		# [5]
+							"StartUp side status error.It should be VALID",	# [6]
+							"Parameter set error",							# [7]
+							"Parameter get error",							# [8]
+							"Already TestTx or TestRx is executed",			# [9]
+							"Not StandAlone TX mode",						# [10]
+							"Already Tx or Rx is executed"					# [11]
+						]
+end
+

@@ -1,0 +1,28 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+if ARGV.length < 1 then
+	puts "usage:"+$0+" <p1>",
+		"(m):<p1> is radio-frame-offset value(0~12288000) ."
+	Rrh.exit(1)
+end
+
+offset = ARGV[0]
+offset_i = Rrh.hex_check(offset)
+
+if offset_i == false then
+	puts DuCode::ERR_DESCRIPTION[1]
+	Rrh.exit(1)
+else
+	if  offset_i < 0  ||  offset_i > 12288000  then
+		puts DuCode::ERR_DESCRIPTION[2]
+		Rrh.exit(1)
+	end
+end
+
+Rrh.eepwrite(0x3F1,offset_i/65536)
+Rrh.eepwrite(0x3F2,(offset_i%65536)/256)
+Rrh.eepwrite(0x3F3,((offset_i%65536)%256))
+puts DuCode::ERR_DESCRIPTION[0]
+

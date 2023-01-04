@@ -1,0 +1,59 @@
+
+#QMOD(ADMV1014)レジスタ書き込み
+#第1引数(hex): 0: Tx1(Ant.A ) 1: Tx2(Ant.B)
+#第2引数(hex): アドレス
+#第3引数(hex): 設定データ
+#selector = 2
+#20180730新規作成 若水
+
+
+
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+#パラメータ確認
+
+if ARGV.length < 3 then
+ puts "usage:"+$0+" <Ant.A/Ant.B> <addr> <data>",
+ "(m):<Ant.A/Ant.B> is ant num(0=A 1=B)",
+ "(m):<addr> is address",
+ "(m):<data> is written data"
+ raise 
+end
+
+ant_s = ARGV[0]
+addr_s = ARGV[1]
+data_s = ARGV[2]
+sel = 2
+
+#想定外の値NGを追記
+
+if ant_s.to_i > 1 then
+ puts "Input value is incorrect : <ant>"
+ raise 
+end
+
+#アドレスチェック
+
+if !Rrh.input_check(addr_s,4) then
+ puts "Input value is incorrect : <addr>"
+ raise 
+end
+
+if !Rrh.input_check(data_s,4) then
+ puts "Input value is incorrect : <data>"
+ raise 
+end
+
+Rrh.assign()
+
+
+if !res = Rrh.qdemwrite( ant_s.to_i , sel.to_i , addr_s.to_i(16) , data_s.to_i(16) ) then
+ puts "error"
+else
+ puts "complete"
+end
+
+Rrh.unassign()

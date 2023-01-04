@@ -1,0 +1,18 @@
+Rrh.require("./verbose")
+Rrh.require("./tcpmsg")
+
+socket =  Rrh.tsocket()
+if Rrh.tconnect(socket,@hostip,@hostport).to_i != 0 then
+Rrh.tclose(socket)
+exit
+end
+
+msg = Msg.new
+
+msg.name = "loopback"
+Rrh.tsend(socket,msg)
+Rrh.trecv(socket,msg)
+puts msg.name
+
+Rrh.tclose(socket)
+

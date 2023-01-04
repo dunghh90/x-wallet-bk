@@ -1,0 +1,10 @@
+Rrh.require("./verbose")
+str0=Object.methods
+str1=Rrh.methods
+str = str1 - str0
+str = str.sort
+puts "Number of module : #{str.length}"
+for cnt in 0...str.length do
+	puts "Rrh.#{str[cnt]}"
+end
+

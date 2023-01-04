@@ -1,0 +1,55 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+if ARGV.length < 1 then
+	puts "usage:"+$0+" <value>",
+		"(m):<value> is 0~10.",
+		"               0: 0.0dB ",
+		"               1:-0.1dB ",
+		"               2:-0.2dB ",
+		"               3:-0.3dB ",
+		"               4:-0.4dB ",
+		"               5:-0.5dB ",
+		"               6:-0.6dB ",
+		"               7:-0.7dB ",
+		"               8:-0.8dB ",
+		"               9:-0.9dB ",
+		"              10:-1.0dB "
+	Rrh.exit(1)
+end
+
+
+chk_res = Rrh.proc_check()
+if chk_res == false then
+	puts DuCode::ERR_DESCRIPTION[12]
+	Rrh.exit(1)
+end
+
+
+txgain   = ARGV[0]
+txgain_i = Rrh.hex_check(txgain)
+
+if txgain_i == false then
+	puts DuCode::ERR_DESCRIPTION[1]
+	Rrh.exit(1)
+end
+
+if txgain_i < 0 || txgain_i > 10 then
+	puts DuCode::ERR_DESCRIPTION[2]
+	Rrh.exit(1)
+end
+
+if !Rrh.txgain(0xff,txgain_i) then
+	puts "ERROR Internal setting NG"
+	Rrh.exit(1)
+end
+
+ printf("Starting TX output adjustment ...")
+ for cnt in 0..9 do
+	Rrh.sleep(0,200000000)
+	printf(".")
+ end
+ puts ""
+
+puts DuCode::ERR_DESCRIPTION[0]

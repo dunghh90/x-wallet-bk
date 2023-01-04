@@ -1,0 +1,48 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+if ARGV.length < 2 then
+ puts "usage:"+$0+" <addr> <len>",
+ "(m):<addr> is address(0x0-0x7FF)",
+ "(m):<len> is length(0x1-0x10)"
+ exit(1) 
+end
+
+addr_s = ARGV[0]
+addr_i  = addr_s.to_i(16)
+len_s = ARGV[1]
+len_i  = len_s.to_i(16)
+
+if !Rrh.input_check(addr_s,4) then
+ puts "Input value is incorrect(0x0-0x7FF) : <addr>"
+ exit(1) 
+end
+if (addr_s.to_i(16)>0x7ff) then
+ puts "Input value is incorrect(0x0-0x7FF) : <addr>"
+ exit(1)
+end
+if ((len_s.to_i(16)<0x1) or (len_s.to_i(16)>0x10)) then
+ puts "Input value is incorrect(0x1-0x10) : <len>"
+ exit(1)
+end
+
+Rrh.assign()
+if !res = Rrh.ptpread2( addr_i, len_i ) then
+ puts "read error"
+else
+ puts "0x#{res} "
+
+#	if 0xFF != ((addr_i & 0x00000F80) >> 7) then 
+#		BPF_HM_DEVC_PTP_WRITE( 0x007F, (addr_i & 0x00000F80) >> 7)
+#	end
+
+
+#for cnt in 0..len_i do
+# if !res = Rrh.ptpread( (addr & 0x007F + len_i).to_i(16)) then
+#  puts "read error"
+# else
+#  puts "0x#{res} "
+# end
+end
+
+Rrh.unassign()

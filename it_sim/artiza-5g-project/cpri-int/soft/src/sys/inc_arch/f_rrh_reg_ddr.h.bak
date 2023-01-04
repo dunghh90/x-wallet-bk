@@ -1,0 +1,72 @@
+/*!
+ * @skip  $ld:$
+ * @file  f_rrh_ddr.h
+ * @brief レジスタアドレス定義ヘッダ(DDR)
+ * @date  2015/06/18 ALPHA)ueda
+ * @date  2015/11/12 ALPHA)ueda modify for TDD-RRE(zynq)
+ *
+ * All Rights Reserved, Copyright (C) FUJITSU LIMITED 2015
+ */
+
+/*!
+ * @addtogroup RRH_RRH
+ * @{
+ */
+#ifndef F_RRH_REG_DDR_H
+#define F_RRH_REG_DDR_H
+
+/*!
+ * @name レジスタアドレス(DDR)
+ * @note レジスタアドレス(DDR)
+ * @{
+ */
+#define D_RRH_REG_DDR_RXFLG0						0x1FC18000
+#define D_RRH_REG_DDR_RXFLG1						0x1FC18008
+#define D_RRH_REG_DDR_RXFLG2						0x1FC18010
+#define D_RRH_REG_DDR_RXFLG3						0x1FC18018
+#define D_RRH_REG_DDR_RXFLG4						0x1FC18020
+#define D_RRH_REG_DDR_RXFLG5						0x1FC18028
+#define D_RRH_REG_DDR_RXFLG6						0x1FC18030
+#define D_RRH_REG_DDR_RXFLG7						0x1FC18038
+
+#define D_RRH_REG_DDRS_RXFLG0						0x1FC38000
+#define D_RRH_REG_DDRS_RXFLG1						0x1FC38008
+#define D_RRH_REG_DDRS_RXFLG2						0x1FC38010
+#define D_RRH_REG_DDRS_RXFLG3						0x1FC38018
+#define D_RRH_REG_DDRS_RXFLG4						0x1FC38020
+#define D_RRH_REG_DDRS_RXFLG5						0x1FC38028
+#define D_RRH_REG_DDRS_RXFLG6						0x1FC38030
+#define D_RRH_REG_DDRS_RXFLG7						0x1FC38038
+
+/** @} */
+
+/*!
+ * @name DDRレジスタアドレス算出マクロ
+ * @note D_RRH_CPRINO_REC, D_RRH_CPRINO_RE1 ... のマクロを引数に渡してください
+ * @date 2020/12/28 M&C) Merge 4G FHM src
+ * @{
+ */
+#define M_RRH_REG_DDR_GETADR(cprino, ofs) (UINT)(ofs+(0x20000*cprino))
+#define M_RRH_REG_DDR_RXFLG0(cprino) M_RRH_REG_DDR_GETADR(cprino, D_RRH_REG_DDR_RXFLG0)
+#define M_RRH_REG_DDR_RXFLG1(cprino) M_RRH_REG_DDR_GETADR(cprino, D_RRH_REG_DDR_RXFLG1)
+#define M_RRH_REG_DDR_RXFLG2(cprino) M_RRH_REG_DDR_GETADR(cprino, D_RRH_REG_DDR_RXFLG2)
+#define M_RRH_REG_DDR_RXFLG3(cprino) M_RRH_REG_DDR_GETADR(cprino, D_RRH_REG_DDR_RXFLG3)
+#define M_RRH_REG_DDR_RXFLG4(cprino) M_RRH_REG_DDR_GETADR(cprino, D_RRH_REG_DDR_RXFLG4)
+#define M_RRH_REG_DDR_RXFLG5(cprino) M_RRH_REG_DDR_GETADR(cprino, D_RRH_REG_DDR_RXFLG5)
+#define M_RRH_REG_DDR_RXFLG6(cprino) M_RRH_REG_DDR_GETADR(cprino, D_RRH_REG_DDR_RXFLG6)
+#define M_RRH_REG_DDR_RXFLG7(cprino) M_RRH_REG_DDR_GETADR(cprino, D_RRH_REG_DDR_RXFLG7)
+#define M_RRH_REG_DDR_RXFLG(suffix, cprino) (M_RRH_REG_DDR_GETADR(cprino, D_RRH_REG_DDR_RXFLG0) + (0x08*suffix))
+
+/* @} */
+
+/*!
+ * @name レジスタ値
+ * @note レジスタ値
+ * @{
+ */
+/* RXFLG */
+#define D_RRH_RXFLG_INITIALIZE						0x00000000
+/* @} */
+ 
+#endif
+/* @} */

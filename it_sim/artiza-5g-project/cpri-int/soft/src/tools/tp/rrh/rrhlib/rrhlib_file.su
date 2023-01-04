@@ -1,0 +1,15 @@
+value.h:419:1:mrb_fixnum_value	64	static
+value.h:467:1:mrb_false_value	48	static
+value.h:485:1:mrb_true_value	48	static
+rrhlib_file.c:34:11:rrhlib_file_open	128	static
+rrhlib_file.c:72:11:rrhlib_file_close	80	static
+rrhlib_file.c:104:11:rrhlib_file_seek	80	static
+rrhlib_file.c:142:11:rrhlib_file_seek_line	96	static
+rrhlib_file.c:196:11:rrhlib_file_write	96	static
+rrhlib_file.c:232:11:rrhlib_file_read	96	static
+rrhlib_file.c:268:11:rrhlib_file_get_line	112	static
+rrhlib_file.c:309:11:rrhlib_file_tell	80	static
+rrhlib_file.c:346:11:rrhlib_file_size_get	112	static
+rrhlib_file.c:409:11:rrhlib_file_write_string	112	static
+rrhlib_file.c:445:11:rrhlib_file_read_string	352	static
+rrhlib_file.c:483:6:rrhlib_file_install	48	static

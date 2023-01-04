@@ -1,0 +1,17 @@
+#
+# Setup PA Gate Baias Output DAC(PADAC)
+# 1st Parameter : (Sub6)Antena No. 0:AntA - 7:AntH
+#                 (mmW) Antena No. 0:AntA - 1:AntB
+# 2nd Parameter : Device No. 0:Non Use 1: Non Use 2:PA3 3:Non Use
+# 3rd Parameter : data (0x0 - 0x3FF)
+# 2018.08.14 KCN)Kamimoto
+
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+#Rrh.require("./z_global")
+
+
+# usage
+if ARGV.length < 

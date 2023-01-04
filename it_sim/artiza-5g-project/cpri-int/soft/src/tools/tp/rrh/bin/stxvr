@@ -1,0 +1,146 @@
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+
+# usage
+if ARGV.length < 1 then
+	puts "usage:"+$0+" <ant/all> ",
+	"(m):<ant/all> is ant num (0~3 or all)"
+	exit(1)
+end
+
+ant_s = ARGV[0]
+
+
+Rrh.assign()
+
+addr_eep = 64
+if !res = Rrh.eepread(addr_eep.to_i(16)) then
+ puts "eep read error"
+else
+
+
+ case res
+ 
+ when "13"
+  kind = "BPF_HM_DEVC_SUB6"
+
+ when "14"
+  kind = "BPF_HM_DEVC_MMW"
+ 
+ 
+ else
+  puts "kind num error"
+  exit(1)
+ end
+
+end
+
+#mmW 0~1 sub6 0~7
+
+MAX = 3
+
+if kind == "BPF_HM_DEVC_MMW" then
+	MAX = 1
+end
+
+
+if kind == "BPF_HM_DEVC_SUB6" then
+	#SUB6
+	if ant_s == "all" then
+		for ant in 0..MAX
+			addr = 0x00E + ( ant * 0x080 )
+			if (data1_s = Rrh.tpshmread("apde2pTX_vt","",addr.to_s(16))) == false then
+				puts "Shard Memory Read error No.1"
+				exit(1)
+			end
+			addr = addr + 1
+			if (data2_s = Rrh.tpshmread("apde2pTX_vt","",addr.to_s(16))) == false then
+				puts "Shard Memory Read error No.2"
+				exit(1)
+			else
+				data = (data1_s.to_i(16) * 256) + data2_s.to_i(16)
+				case ant
+					when 0
+						ant_X = "Ant-A"
+					when 1
+						ant_X = "Ant-B"
+					when 2
+						ant_X = "Ant-C"
+					else
+						ant_X = "Ant-D"
+				end
+				puts "#{ant_X} = #{data.to_s(16)}"
+			end
+		end
+	else
+		if ant_s.to_i > MAX then
+			puts "Input value is incorrect : <ant>"
+			exit(1)
+		end
+		addr = 0x00E + ant_s.to_i(16) * 0x080
+		if (data1_s = Rrh.tpshmread("apde2pTX_vt","",addr.to_s(16))) == false then
+			puts "Shard Memory Read error No.1"
+		end
+		addr = addr + 1
+		if (data2_s = Rrh.tpshmread("apde2pTX_vt","",addr.to_s(16))) == false then
+			puts "Shard Memory Read error No.2"
+		else
+			data = (data1_s.to_i(16) * 256) + data2_s.to_i(16)
+			case ant_s
+				when "0"
+					ant_X = "Ant-A"
+				when "1"
+					ant_X = "Ant-B"
+				when "2"
+					ant_X = "Ant-C"
+				else
+					ant_X = "Ant-D"
+			end
+		end
+		puts "#{ant_X} = #{data.to_s(16)}"
+	end
+
+else
+	#MMW
+	if ant_s == "all" then
+		addr = 0x024
+		for ant in 0..MAX
+			if (data = Rrh.tpshmread("apde2pTX_vt","",addr.to_s(16))) == false then
+				puts "Shard Memory Read error No.1"
+				exit(1)
+			else
+				case ant
+					when 0
+						ant_X = "Ant-A"
+					else
+						ant_X = "Ant-B"
+				end
+				puts "#{ant_X} = #{data.to_s(16)}"
+			end
+			addr = addr + 0x001
+		end
+	else
+		if ant_s.to_i > MAX then
+			puts "Input value is incorrect : <ant>"
+			exit(1)
+		end
+		addr = 0x024 + ant_s.to_i(16) * 0x001
+		if (data = Rrh.tpshmread("apde2pTX_vt","",addr.to_s(16))) == false then
+			puts "Shard Memory Read error No.1"
+		else
+			case ant_s
+				when "0"
+					ant_X = "Ant-A"
+				else
+					ant_X = "Ant-B"
+			end
+			puts "#{ant_X} = #{data.to_s(16)}"
+		end
+	end
+end
+
+
+Rrh.unassign()

@@ -1,0 +1,33 @@
+# 
+# Print method list
+# 
+
+# usage
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <class>",
+ "(m):<class> is Class name",
+ "    ex) Array String Math"
+ exit(1)
+end
+
+name = ARGV[0]
+
+# judge Class? or Module?
+flgc = eval("#{name}.kind_of?(Class)")
+flgm = eval("#{name}.kind_of?(Module)")
+
+# get method list
+if flgm then
+	puts "mod"
+	list = eval("#{name}.methods")
+elsif flgc then
+	eval("Obj = #{name}.new")
+	list = Obj.methods
+end
+
+puts "#{name} has #{list.length} methods."
+list = list.sort
+for cnt in 0...list.length do
+	puts list[cnt]
+end
+

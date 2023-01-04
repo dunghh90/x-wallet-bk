@@ -1,0 +1,95 @@
+#
+# PL QSPI FLASH read
+# rrh -frpl <cs> <addr> <size>
+#
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+#Rrh.dmsg(1)
+
+# usage
+if ARGV.length < 3 then
+ puts "usage"+$0+" <cs> <addr> <size>",
+ "(m):<cs>   FLASH CS INFO(0)",
+ "(m):<addr> PL QSPI FLASH Address(00000000~07FFFFFF)",
+ "(m):<size> Read Size"
+ exit(1)
+end
+
+cs_s   = ARGV[0]
+addr_s = ARGV[1]
+size_s = ARGV[2]
+addr_i = addr_s.to_i(16)
+size_i = size_s.to_i(16)
+
+if( (cs_s.to_i(16)<0) || (cs_s.to_i(16)>0) ) then
+	puts "Input value is incorrect : <cs>"
+	exit(1)
+end
+
+if !Rrh.input_check(addr_s,8) then
+	puts "Input value is incorrect : <addr>"
+	exit(1)
+end
+
+if !Rrh.input_check(size_s,8) then
+	puts "Input value is incorrect : <size>"
+	exit(1)
+end
+
+if( (size_i < 1) || (size_i> 0x08000000) ) then
+	puts "Input value is incorrect : <size>"
+	exit(1)
+end
+
+if (size_i % 4) != 0 then
+	size_i += (4 - (size_i % 4))	# make 4byte
+end
+line = (size_i / 16).to_i
+
+Rrh.assign()
+
+printf("ADDRESS    +0       +4       +8       +C        \n")
+printf("--------   -------------------------------------\n")
+
+outstr=""
+lineno = 0
+while(lineno<line) do
+	buffer = Rrh.flashread(2,addr_i+lineno*16,16)
+	if !buffer then
+		puts "flash read error"
+		Rrh.unassign()
+		exit(1)
+	end
+	nextstr=sprintf("%08X : %s%s%s%s %s%s%s%s %s%s%s%s %s%s%s%s\n",addr_i+lineno*16, 
+			buffer[   3*2,2],buffer[   2*2,2],buffer[   1*2,2],buffer[   0*2,2],
+			buffer[ 8+3*2,2],buffer[ 8+2*2,2],buffer[ 8+1*2,2],buffer[ 8+0*2,2],
+			buffer[16+3*2,2],buffer[16+2*2,2],buffer[16+1*2,2],buffer[16+0*2,2],
+			buffer[24+3*2,2],buffer[24+2*2,2],buffer[24+1*2,2],buffer[24+0*2,2])
+	outstr << nextstr
+	if( ((lineno+1)%128)==0 ) then
+		printf("%s",outstr)
+		Rrh.fflush()
+		outstr = ""
+	end
+	lineno = lineno+1
+end
+printf("%s",outstr)
+remain = size_i - line*16
+if(remain > 0) then
+	buffer = Rrh.flashread(2,addr_i+line*16,remain)
+	if !buffer then
+		puts "flash read error"
+		Rrh.unassign()
+		exit(1)
+	end
+	printf( "%08X : ", addr_i+line*16)
+	for count in 0..remain do
+		printf("%s",buffer[(count+3-2*(count % 4))*2,2])
+		if((count+1)%4==0) then
+			printf(" ")
+		end
+	end
+	printf("\n")
+end
+
+Rrh.unassign()

@@ -1,0 +1,8 @@
+rrupfdump_if.c:197:5:func_ptif_dummy_if	64	static
+rrupfdump_if.c:390:5:func_ptif_msi_if	96	static
+rrupfdump_if.c:620:6:func_ptif_header_if	112	dynamic,bounded
+rrupfdump_if.c:637:7:func_com_prc_name_if	48	static
+rrupfdump_if.c:649:7:func_com_thrd_name_if	48	static
+rrupfdump_if.c:707:14:func_com_thrd_index_if	48	static
+rrupfdump_if.c:766:5:func_userdata_dsp_if	80	static
+rrupfdump_if.c:834:14:func_iphead_dsp_if	208	dynamic,bounded

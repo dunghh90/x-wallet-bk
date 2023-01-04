@@ -1,0 +1,111 @@
+Rrh.require("./verbose")
+Rrh.require("./dac_module")
+
+puts "TXVATT DAC set Start ..."
+
+Rrh.assign()
+
+	# TXVATT
+	# TXVATT_A
+	txanth0 = Rrh.eepread(0x40E)
+	txanth1 = Rrh.eepread(0x40F)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(0, txanth_s, 0) == false then
+		printf(" Timeout TXVATT_A \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+	# TXVATT_B
+	txanth0 = Rrh.eepread(0x46E)
+	txanth1 = Rrh.eepread(0x46F)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(1, txanth_s, 0) == false then
+		printf(" Timeout TXVATT_B \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+	# TXVATT_C
+	txanth0 = Rrh.eepread(0x4CE)
+	txanth1 = Rrh.eepread(0x4CF)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(2, txanth_s, 0) == false then
+		printf(" Timeout TXVATT_C \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+
+	# TXVATT_D
+	txanth0 = Rrh.eepread(0x52E)
+	txanth1 = Rrh.eepread(0x52F)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(3, txanth_s, 0) == false then
+		printf(" Timeout TXVATT_D \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+
+	# TXVATT_E
+	txanth0 = Rrh.eepread(0x58E)
+	txanth1 = Rrh.eepread(0x58F)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(4, txanth_s, 1) == false then
+		printf(" Timeout TXVATT_E \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+	# TXVATT_F
+	txanth0 = Rrh.eepread(0x5EE)
+	txanth1 = Rrh.eepread(0x5EF)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(5, txanth_s, 1) == false then
+		printf(" Timeout TXVATT_F \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+	# TXVATT_G
+	txanth0 = Rrh.eepread(0x64E)
+	txanth1 = Rrh.eepread(0x64F)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(6, txanth_s, 1) == false then
+		printf(" Timeout TXVATT_G \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+
+	# TXVATT_H
+	txanth0 = Rrh.eepread(0x6AE)
+	txanth1 = Rrh.eepread(0x6AF)
+
+	txanth_s = Rrh.calc((txanth0 << 8),"+",txanth1)
+
+	if Rrh.dacset(7, txanth_s, 1) == false then
+		printf(" Timeout TXVATT_H \n")
+		Rrh.unassign()
+		exit(1)
+	end
+
+
+Rrh.unassign()
+exit(0)
+

@@ -1,0 +1,131 @@
+
+#QDEM IM補正読み出し
+#第1引数(hex/char):アンテナ番号(0:Ant.A ～ 1:Ant.B)またはall
+#selector = 2
+#20180815 新規作成 藤田
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./tpshm_access")
+
+
+
+#パラメータ確認
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <ant>",
+ "(m):<ant> is 0:AntA / 1:AntB / all:All Ant "
+ exit(1) 
+end
+
+
+ant_s = ARGV[0]
+sel = 2
+
+#想定外の値NGを追記
+#<ant>を文字列観点でチェック
+if ant_s != "0" && ant_s != "1" && ant_s != "all" then
+  puts "Input value is incorrect : <ant>"
+  exit(1) 
+end
+
+if ant_s == "all" then
+  # ant_sに2を設定
+  ant_s = "2"
+end
+
+Rrh.assign()
+
+#「rrh -qdemr」の第2引数は0x0005固定
+addr_s = "0005"
+res = "0000"
+
+
+#<ant>=0(Ant.A)、もしくは<ant>=2(AB両方)の場合
+if ant_s.to_i == 0 || ant_s.to_i == 2 then
+
+  if !res = Rrh.qdemread(0 , sel , addr_s.to_i(16) ) then
+    puts "error qdemread A 1"
+  else
+    puts "0x#{res} "
+  end
+
+tmp_res = res
+case tmp_res.length
+   when 1
+     data = "000" + tmp_res
+   when 2
+     data = "00" + tmp_res
+   when 3
+     data = "0" + tmp_res
+   else
+     data = tmp_res
+end
+
+  #★仮想レジスタ設定
+  # 仮想レジスタをリード値に書き換える
+  # Ant.A: QDEM_IM_A → (通常)N_QDEM_IM_V：0x610、(低電力)L_QDEM_IM_V：0x710
+  addr = 0x010
+  data1 = data[0..1]
+  data2 = data[2..3]
+  #puts" #{data1}#{data2} "
+
+  if !res = Rrh.tpshmwrite("apde2pRX_vt_mmw","",addr.to_s(16),data1) then
+    puts "error tpshmwrite A 1"
+    exit(1)
+  end
+
+  addr = addr + 1
+  if !res = Rrh.tpshmwrite("apde2pRX_vt_mmw","",addr.to_s(16),data2) then
+     puts "error tpshmwrite A 2"
+     exit(1)
+  end
+
+  puts "complete Ant.A"
+end
+
+#<ant>=1(Ant.B)、もしくは<ant>=2(AB両方)の場合
+if ant_s.to_i == 1 || ant_s.to_i == 2 then
+
+  if !res = Rrh.qdemread(1 , sel , addr_s.to_i(16) ) then
+    puts "error qdemread B 1"
+  else
+    puts "0x#{res} "
+  end
+
+tmp_res = res
+case tmp_res.length
+   when 1
+     data = "000" + tmp_res
+   when 2
+     data = "00" + tmp_res
+   when 3
+     data = "0" + tmp_res
+   else
+     data = tmp_res
+end
+
+  #★仮想レジスタ設定
+  # 仮想レジスタをリード値に書き換える
+  # Ant.B: QDEM_IM_B → (通常)N_QDEM_IM_H：0x612、(低電力)L_QDEM_IM_H：0x712
+  addr = 0x012
+  data1 = data[0..1]
+  data2 = data[2..3]
+  #puts" #{data1}#{data2} "
+
+  if !res = Rrh.tpshmwrite("apde2pRX_vt_mmw","",addr.to_s(16),data1) then
+    puts "error tpshmwrite B 1"
+    exit(1)
+  end
+
+  addr = addr + 1
+  if !res = Rrh.tpshmwrite("apde2pRX_vt_mmw","",addr.to_s(16),data2) then
+     puts "error tpshmwrite B 2"
+     exit(1)
+  end
+
+  puts "complete Ant.B"
+end
+
+
+Rrh.unassign()

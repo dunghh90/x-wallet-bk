@@ -1,0 +1,55 @@
+
+#QMOD(ADMV1013)レジスタ読み込み
+#第1引数(hex): 0: Tx1(Ant.A ) 1: Tx2(Ant.B)
+#第2引数(hex): 0: Mixer(SEL[0]) 1: VGA(SEL[1] 2: Both(SEL[0] & SEL[1])
+#第3引数(hex): アドレス
+
+#20180727新規作成 若水
+#20180807装置構成確認追記
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+
+#パラメータ確認
+if ARGV.length < 3 then
+ puts "usage:"+$0+" <Ant.A/Ant.B> <Mixer/VGA> <addr>",
+ "(m):<Ant.A/Ant.B> is ant num(0=A 1=B)",
+ "(m):<Mixer/VGA> is selecter(2=Both)",
+ "(m):<addr> is address"
+ raise 
+end
+
+
+ant_s = ARGV[0]
+sel_s = ARGV[1]
+addr_s = ARGV[2]
+
+#想定外の値NGを追記
+
+if ant_s.to_i > 1 then
+ puts "Input value is incorrect : <ant>"
+ raise 
+end
+
+if sel_s.to_i != 2 then
+ puts "Input value is incorrect : <selecter>"
+ raise 
+end
+
+#アドレスチェック
+
+if !Rrh.input_check(addr_s,4) then
+ puts "Input value is incorrect : <addr>"
+ raise 
+end
+
+Rrh.assign()
+
+if !res = Rrh.qmodread( ant_s.to_i , 0 , addr_s.to_i(16) ) then
+	puts "error"
+else
+	puts "0x#{res} "
+end
+Rrh.unassign()
+

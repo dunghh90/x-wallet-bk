@@ -1,0 +1,45 @@
+# ToDo , all user process kill
+#500.times { | count |
+#print "... now standby \r"
+#Rrh.sleep(0,1000000)
+#}
+his = ""
+rpcmd = ""
+puts "+++++++++++++++++++++++++++++++++++++++++++++++++++++++",
+     "",
+     " RRH Command Online Debugger ",
+     "",
+     " All Rights Reserved, Copyright (C) FUJITSU LIMITED ",
+     "+++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+while true
+ print "#rrh -"
+ cond = Rrh.getline()
+ case cond.downcase
+  when "q","quit","bye","exit","logout" then
+   puts "quit online debugger "
+   exit
+  when "l","list","?" then
+   puts "l,list"
+   puts "q,quit,bye"
+   Rrh.system("ls | grep -v rrh | grep -v online | grep -v verbose | grep -v wiki_ | grep -v z_global ")
+  when "","online","verbose","rrh","-rrh" then
+  when "h" then
+   if his.length > 0 then
+    puts his
+   end
+  when "p" then
+    Rrh.system(rpcmd)
+  else
+   # linux command 
+   if cond[0].to_s == "-" then
+     cmd = cond[1]
+   # rrh command
+   else
+     cmd = "./rrh -" + cond
+   end
+     if Rrh.system(cmd.to_s) == 0 then
+       his << cond + "\n"
+       rpcmd = cmd.to_s
+     end
+ end
+end

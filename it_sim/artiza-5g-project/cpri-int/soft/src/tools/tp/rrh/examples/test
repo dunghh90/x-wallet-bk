@@ -1,0 +1,41 @@
+Rrh.require("./verbose")
+stime = Time.now.localtime
+result_ok = 0
+result_ng = 0
+
+# test result check
+def f_test_result ( rtn  , ok , ng)
+ if rtn == 0 then
+  ok += 1
+ else
+  ng += 1
+ end
+ return ok , ng
+end
+
+
+# test execute 
+def f_test_exe (test , result_ok ,result_ng)
+ puts "TEST:" +  test.to_s
+ ok, ng = f_test_result(Rrh.system(test.to_s), result_ok ,result_ng )
+ puts "... complete "
+ return ok, ng
+end
+
+# test start 
+result_ok, result_ng = f_test_exe("./rrh -help" , result_ok ,result_ng )
+result_ok, result_ng = f_test_exe("./rrh -time" , result_ok ,result_ng )
+result_ok, result_ng = f_test_exe("./rrh -sleep 1" , result_ok ,result_ng )
+result_ok, result_ng = f_test_exe("./rrh -ver" , result_ok ,result_ng )
+
+etime = Time.now.localtime
+
+puts "",
+"** TEST result summary **************************",
+"    + start :" + stime.to_s,
+"    + end   :" + etime.to_s,
+"    + OK counts    :" + result_ok.to_s,
+"    + NG counts    :" + result_ng.to_s,
+"    + Total counts :" + (result_ok + result_ng).to_s,
+"**************************************************"
+puts ""

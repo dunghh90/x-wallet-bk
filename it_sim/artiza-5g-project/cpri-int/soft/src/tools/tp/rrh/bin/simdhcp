@@ -1,0 +1,101 @@
+Rrh.require("./verbose")
+
+def cmd_help ( )
+  puts "usage:"+$0+" <Interface> <Flags> <lowVid> <highVid> <lastVid>",
+ "(m):<Interface>    is Port (0:fheth0, 1:fheth1, 2:eth0)",
+ "(m):<Flag>         is used DHCP(D0=ON) or/and VLAN(D1=ON)",
+ "(m):<lowVid>       is lowVid",
+ "(m):<highVid>      is highVid",
+ "(m):<lastVid>      is lastVid"
+ exit(1)
+end
+
+if ARGV.length < 5 then
+ cmd_help()
+ raise
+end
+
+
+Msghead = Struct.new(
+:evtid,:sigkind,:dstpqid,:dsttqid,:srcpqid,:srctqid
+)
+
+# len,data , len,data ....
+MsgData = Struct.new(
+:paralen,:para
+)
+
+bufsize = 4096
+head = Msghead.new
+head.evtid = 0x00000001
+head.sigkind = 0
+head.dstpqid = 0x10FD0011
+head.dsttqid = 1
+head.srcpqid = 0x10FD0011
+head.srctqid = 2
+
+rbuf = Rrh.malloc(bufsize)
+
+
+qid = 0x10FD0011
+Interface = ARGV[0]
+Flag      = ARGV[1]
+lowVid    = ARGV[2]
+highVid   = ARGV[3]
+lastVid   = ARGV[4]
+
+wtime = 0 # 1sec
+bufkind = 3 # E_BPF_RU_IPCM_BUFF_KIND_TASK
+
+Rrh.assign()
+
+result = 0
+ puts "DHCP scan ...."
+ if ( rtn = Rrh.api("duApi_Mpn_Mnr_MplaneReady",qid,0,0,Interface.to_i,Flag.to_i,lowVid.to_i,highVid.to_i,lastVid.to_i) ) != 0 then
+   printf("=>API ERROR_R %d \n",rtn)
+ else
+  if ! Rrh.msgrecv(qid,wtime,head,rbuf,bufsize) then
+   puts "=>ERROR"
+   result = 1
+  else
+    Dhcp = Struct.new(:flg )
+    dhcpflg = Dhcp.new
+    Rrh.msgget_b(dhcpflg,rbuf,2);
+
+    Vid = Struct.new(:vidacq )
+    vidAcquiringMethod = Vid.new
+    Rrh.msgget_b(vidAcquiringMethod,rbuf+2,2);
+
+    Mac = Struct.new(:mac0,:mac1,:mac2,:mac3,:mac4,:mac5)
+    rmac = Mac.new
+    Rrh.msgget_b(rmac,rbuf + 4,1);
+
+    Vinfo = Struct.new(:vid,:pcp)
+    vinfo = Vinfo.new
+    Rrh.msgget_b(vinfo,rbuf + 10 ,2);
+
+    Ipaddrinfo = Struct.new(:localIpAddress,:remoteIpAdress,:defaultGateway,:subnetMask)
+    ipaddrinfo = Vinfo.new
+    Rrh.msgget_b(ipaddrinfo,rbuf + 14 ,4);
+
+    puts "*** Scan Summury ***"
+    if dhcpflg.flg.to_i(16) == 1 then
+     result = 0
+     printf("preVID curVID PCP          :0x%04x 0x%04x 0x%04x\n",vidAcquiringMethod.vidacq.to_i(16),vinfo.vid.to_i(16),vinfo.pcp.to_i(16))
+#    printf("CU MACAddress              :%02x-%02x-%02x-%02x-%02x-%02x\n",rmac.mac0.to_i(16),rmac.mac1.to_i(16),rmac.mac2.to_i(16),rmac.mac3.to_i(16),rmac.mac4.to_i(16),rmac.mac5.to_i(16))
+     printf("CU ipaddress               :%s(0x%08x)\n",Rrh.ntoa(ipaddrinfo.remoteIpAdress.to_i(16),1),ipaddrinfo.remoteIpAdress.to_i(16))
+     printf("DU ipaddress               :%s(0x%08x)\n",Rrh.ntoa(ipaddrinfo.localIpAddress.to_i(16),1),ipaddrinfo.localIpAddress.to_i(16))
+     printf("Gateway                    :%s(0x%08x)\n",Rrh.ntoa(ipaddrinfo.defaultGateway.to_i(16),1),ipaddrinfo.defaultGateway.to_i(16))
+     printf("SubnetMsk                  :%s(0x%08x)\n",Rrh.ntoa(ipaddrinfo.subnetMask.to_i(16),1)    ,ipaddrinfo.subnetMask.to_i(16))
+    else
+     puts "Not match VID"
+     result = 1
+    end
+  end
+ end
+
+
+Rrh.free(rbuf)
+Rrh.unassign()
+exit(result)
+

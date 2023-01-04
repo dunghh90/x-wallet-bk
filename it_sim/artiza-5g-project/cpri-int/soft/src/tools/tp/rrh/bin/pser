@@ -1,0 +1,30 @@
+# 
+# Eeprom read
+# rrh -pser <addr>
+# 
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+# usage
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <addr>",
+ "(m):<addr> is eeprom address(000~7FF)"
+ exit(1)
+end
+
+addr_s = ARGV[0]
+
+#引数の整合性確認
+if !Rrh.input_check(addr_s,8) then
+ puts "Input value is incorrect : <addr>"
+ exit(1)
+end
+
+Rrh.assign()
+#EEPROM読み取り
+#EEPROMのみ引数が数値であることに注意
+if !res = Rrh.eepread(addr_s.to_i(16)) then
+ puts "eeprom read error"
+else
+ puts "0x#{res} "
+end 
+Rrh.unassign()

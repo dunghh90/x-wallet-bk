@@ -1,0 +1,249 @@
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+Rrh.require("./reg_define")
+Rrh.require("./nco_define")
+
+
+# usage
+if ARGV.length < 2 then
+	puts "usage:"+$0+" <carrier> <frequency>",
+	"(m):<carrier>   is carrier num (0:#1 1:#2)",
+	"(m):<frequency> is write Center frequency(kHz)"
+	exit(1)
+end
+
+car_d = ARGV[0]
+data_d = ARGV[1]
+
+#NCO value
+fn   = 0
+#calc Real NCO
+Rnco = 0
+R    = 0
+#calc Imaginarry NCO
+Inco = 0
+I    = 0
+#filter num
+fil  = 0
+#written Real NCO
+Rn   = 0
+#written Imaginarry NCO
+In   = 0
+#memory addr
+maddrAD = 0
+maddrEH = 0
+#register addr
+raddr = 0
+#Ant addr (0¥4:CFR 1¥5:ICFRB 2¥6:ICFRA 3¥7:ECFR)
+aaddr0 = 0
+aaddr1 = 0
+aaddr2 = 0
+aaddr3 = 0
+aaddr4 = 0
+aaddr5 = 0
+aaddr6 = 0
+aaddr7 = 0
+#Ant count (Ant.A ~ Ant.H)
+antc = 0
+#update command
+updcAE   = 0x00030101
+updcBF   = 0x00030201
+updcCG   = 0x00030401
+updcDH   = 0x00030801
+updcICFR = 0x02000C0F
+updcECFR = 0x00000C0F
+
+#default impulse
+Rd  = 1
+Id  = 0
+
+Rrh.assign()
+
+
+if car_d.to_i > 1 then
+ puts "Input value is incorrect : <carrier>"
+ raise 
+end
+
+
+#sub6 only
+addr_eep = 64
+if !res = Rrh.eepread(addr_eep.to_i(16)) then
+ puts "eep read error"
+else
+
+ case res
+ 
+ when "13"
+  kind = "BPF_HM_DEVC_SUB6"
+ else
+  puts "kind error"
+  exit(1)
+ end
+end
+#check frequency
+
+addr_eep = 65
+if !res = Rrh.eepread(addr_eep.to_i(16)) then
+ puts "eep read error"
+else
+ puts "0x#{res} "
+
+# f10 = (input kHz - 4,800,000 kHz)/15
+# f11 = (input kHz - 3,700.000 kHz)/15
+
+ case res
+ 
+ when "10"
+  puts "frequency is 4.5G"
+  fn = (data_d.to_i - 4800000) / 15
+
+ when "11"
+  puts "frequency is 3.7G"
+  fn = (data_d.to_i - 3700000) / 15
+  
+ else
+  puts "frequency kind error"
+  raise
+ end
+end
+
+
+
+# n = -127~127
+# n = fil - 127
+
+for fil in 0..254
+
+ case car_d
+ when "0"
+  Rd = Rd1[fil]
+  Rnco = Math.cos(((fil - 127) * 2 * Math::PI * fn) / 32768)
+  Inco = Math.sin(((fil - 127) * 2 * Math::PI * fn) / 32768)
+  
+  R = (Rnco * Rd.to_f - Inco * Id.to_f).to_f
+  Rn = R.round(0)
+  I = (Rnco * Id.to_f + Inco * Rd.to_f).to_f
+  In = I.round(0)
+  
+  
+ when "1"
+  Rn = Rd2[fil]
+  In = 0
+ else
+  puts"carrier num error"
+ end
+ 
+ maddrAD = (0xB1117000 + fil * 0x00000004).to_s(16)
+ maddrEH = (0xB3117000 + fil * 0x00000004).to_s(16)
+ 
+ data1 = Rn.to_s(16) + "0000"
+ data2 = In.to_s(16)
+ data = data1.to_i(16) | data2.to_i(16)
+ 
+ if !res = Rrh.regwrite( maddrAD , data.to_s(16) ) then
+  puts "error"
+  exit(1)
+ else
+  puts "complete"
+ end
+ if !res = Rrh.regwrite( maddrEH , data.to_s(16) ) then
+  puts "error"
+  exit(1)
+ else
+  puts "complete"
+ end
+end
+
+
+for antc in 0..3
+ 
+ case antc
+ when 0
+  updc = updcAE
+ when 1
+  updc = updcBF
+ when 2
+  updc = updcCG
+ when 3
+  updc = updcDH
+ else 
+  exit(1)
+ end
+ 
+ aaddr0 = 0xB1100248
+ aaddr1 = (0xB1100240 + (antc * 0x00000400)).to_s(16)
+ aaddr2 = (0xB1100244 + (antc * 0x00000400)).to_s(16)
+ aaddr3 = (0xB1100280 + (antc * 0x00000400)).to_s(16)
+
+ if !res = Rrh.regwrite( aaddr0.to_s(16) , updc.to_s(16) ) then
+  puts "error"
+  exit(1)
+ else
+  puts "complete"
+ end
+ Rrh.sleep(0.5)
+ if !res = Rrh.regwrite( aaddr1 , updcICFR.to_s(16) ) then
+  puts "error"
+  exit(1)
+ else
+  puts "complete"
+ end
+ Rrh.sleep(0.5)
+ if !res = Rrh.regwrite( aaddr2 , updcICFR.to_s(16) ) then
+  puts "error"
+  exit(1)
+ else
+  puts "complete"
+ end
+ Rrh.sleep(0.5)
+ if !res = Rrh.regwrite( aaddr3 , updcECFR.to_s(16) ) then
+  puts "error"
+  exit(1)
+ else
+  puts "complete"
+ end
+ Rrh.sleep(0.5)
+
+ 
+ aaddr4 = 0xB3100248
+ aaddr5 = (0xB3100240 + (antc * 0x00000400)).to_s(16)
+ aaddr6 = (0xB3100244 + (antc * 0x00000400)).to_s(16)
+ aaddr7 = (0xB3100280 + (antc * 0x00000400)).to_s(16)
+
+ if !res = Rrh.regwrite( aaddr4.to_s(16) , updc.to_s(16) ) then
+  puts "error"
+  exit(1)
+ else
+  puts "complete"
+ end
+ Rrh.sleep(0.5)
+ if !res = Rrh.regwrite( aaddr5 , updcICFR.to_s(16) ) then
+  puts "error"
+  exit(1)
+ else
+  puts "complete"
+ end
+ Rrh.sleep(0.5)
+ if !res = Rrh.regwrite( aaddr6 , updcICFR.to_s(16) ) then
+  puts "error"
+  exit(1)
+ else
+  puts "complete"
+ end
+ Rrh.sleep(0.5)
+ if !res = Rrh.regwrite( aaddr7 , updcECFR.to_s(16) ) then
+  puts "error"
+  exit(1)
+ else
+  puts "complete"
+ end
+ Rrh.sleep(0.5)
+end
+
+
+Rrh.unassign()

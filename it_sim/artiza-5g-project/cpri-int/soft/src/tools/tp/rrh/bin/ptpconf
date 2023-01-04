@@ -1,0 +1,18 @@
+Rrh.require("./verbose")
+
+Rrh.assign()
+puts "PTP device reset enable"
+Rrh.regbitoff("a0000040","00000001")
+Rrh.sleep(1,100000000)
+puts "PTP configuration ..."
+Rrh.ptpconf_set("/etc/ptp/PTP_reg_set.txt");
+puts "PTP 10s Wait ..."
+Rrh.sleep(10,0)
+puts "PTP init setting 2..."
+Rrh.ptpwrite2(0x237,0x02)
+Rrh.ptpwrite2(0x238,0x01)
+Rrh.ptpwrite2(0x230,0x03)
+Rrh.sleep(0,510000000)
+Rrh.ptpwrite2(0x230,0x00)
+puts "OK"
+Rrh.unassign()

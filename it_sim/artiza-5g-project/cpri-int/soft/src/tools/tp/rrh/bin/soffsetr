@@ -1,0 +1,13 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+
+offset_i = Rrh.get_shmcm("sfn_ofs")
+offset_s = Rrh.v_to_v("h","d",offset_i)
+if offset_i != false then
+	puts "sfn-offset  : #{offset_s}"
+else
+	puts DuCode::ERR_DESCRIPTION[8]
+end
+

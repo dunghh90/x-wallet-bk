@@ -1,0 +1,14 @@
+#
+#  Makefile Include 
+
+MRUBY_PATH			= ./mruby
+
+ifndef CROSS_COMPILE
+GCC_DIR				= /usr/lib/gcc
+CFLAGS				+= -DOPT_RRH_CT -DRRHLIB_MEM_CHK
+LDLIBS				+= -lm  -L../lib_pc -lmruby
+else
+LDLIBS				+= -lm -L../lib -lmruby
+CFLAGS				+= -DRRHLIB_MEM_CHK
+endif
+

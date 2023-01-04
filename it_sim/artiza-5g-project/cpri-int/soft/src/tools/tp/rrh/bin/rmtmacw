@@ -1,0 +1,53 @@
+#
+# remoteMacAddress  write
+# rrh -rmtmacw <fh>
+#
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+# usage
+if ARGV.length < 2 then
+	puts "usage:"+$0+" <fh><macadd>",
+	"(m):<fh>    is FH(1-2)",
+	"(m):<macadd>    is remoteMacAddress(12 digits)"
+	exit(1)
+end
+
+fh_s  = ARGV[0]
+fh_i  = fh_s.to_i(16)
+macadd_s  = ARGV[1]
+macadd_i  = macadd_s.to_i(16)
+
+if (fh_i<1 or fh_i>2)then
+ puts "Input value is incorrect((1-2)) : <fh>"
+ exit(1)
+end
+if !Rrh.input_check(macadd_s,12) then
+ puts "Input value is incorrect(12 digits) : <macadd>"
+ exit(1)
+end
+
+Rrh.assign()
+# remoteMacAddress  write
+# macadd_s 前の2つをアドレス1に後ろの4つアドレス2に
+strAry = Array.new(12)
+strAry = macadd_s.split("")
+data_s1 = ""
+data_s2 = ""
+for cnt in 0..11 do
+	if cnt < 4 then
+		data_s1 = data_s1.to_s(16) + strAry[cnt].to_s(16)
+	else
+		data_s2 = data_s2.to_s(16) + strAry[cnt].to_s(16)
+	end
+end
+
+if fh_i == 1 then
+	Rrh.regwrite("A1000480",data_s1)
+	Rrh.regwrite("A1000484",data_s2)
+else
+	Rrh.regwrite("A1001480",data_s1)
+	Rrh.regwrite("A1001484",data_s2)
+end
+
+Rrh.unassign()

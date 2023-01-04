@@ -1,0 +1,12 @@
+Rrh.require("./verbose")
+print "FTP server "
+ if Rrh.system("ps -ef | grep -v grep | grep \"inetd /etc/re_inetd.conf\" 1>/dev/null 2>/dev/null") == 0 then
+    puts "already started ..."
+ else
+    puts "start ..."
+    if Rrh.system("su -c \"inetd /etc/re_inetd.conf 1>/dev/null 2>/dev/null\"") != 0 then
+      puts "=>ERROR"
+     exit(1)
+    end
+    puts "=>OK"
+ end

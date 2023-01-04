@@ -1,0 +1,2 @@
+Rrh.require("./verbose")
+Rrh.system("/sbin/ifconfig")

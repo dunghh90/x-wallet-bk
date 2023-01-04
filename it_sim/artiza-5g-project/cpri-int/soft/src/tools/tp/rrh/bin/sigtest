@@ -1,0 +1,17 @@
+Rrh.require("./verbose")
+
+if ARGV.length < 2 then
+ puts "usage:"+$0+" <name> <pid or tid> <value>",
+ "(m):<name>       is signal name(SIGXXX)",
+ "(m):<pid or tid> is PID or TID",
+ "(o):<value>      is optional"
+ Rrh.system("rrh -wiki ps")
+ exit(1)
+end
+
+ print "Signal Send ... "
+ if ( ret = Rrh.sigqueue(ARGV[0].to_s,ARGV[1].to_i,ARGV[2].to_i)) != 0 then
+   print "Error:",ret,"\n"
+ else
+   puts "OK"
+ end

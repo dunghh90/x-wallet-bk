@@ -1,0 +1,251 @@
+# global data
+@global_result
+
+# EEPROMのMAXアドレス定義
+EEPROM_MAX_STR = "7FF"
+
+# キャリア数
+CarLimit = 2
+# アンテナ数
+ANTNUM   = 4
+# rfic-related define
+LENGTH_UNIRX_TRGPARAM_A		= 0x00000900	# 32 * 18 * 4(byte) = 2304(0x0900)
+LENGTH_UNIRX_TRGPARAM_B		= 0x00000900	# 32 * 18 * 4(byte) = 2304(0x0900)
+LENGTH_UNIRX_TRGPARAM_C		= 0x00000900	# 32 * 18 * 4(byte) = 2304(0x0900)
+LENGTH_UNIRX_TRGPARAM_D		= 0x00000900	# 32 * 18 * 4(byte) = 2304(0x0900)
+LENGTH_UNIRX_TRGPARAM_ALL	= 0x00010000	# antA-D flash capa
+FLASH_LENGTH_BYTE_PARAM		= 20			# /* parameter file  lengthのbyte数 */
+FLASH_LENGTH_VAL_PARAM_OFFSET	= 0x6C		# /* parameter file  data offset */
+LENGTH_UNIRX_GAINTABLETEMP	= 0x00003000	# flash capa for gain table
+FLASH_LENGTH_VAL_OFFSET		= 0x7C			# /* img,config file  data offset */
+FLASH_LENGTH_BYTE			= 4				# /* img,config file  lengthのbyte数 */
+FLASH_RRE_UNIRX_CONFIG_FILE_OFFSET = 0x8000 # /* RRE用 Config fileの格納位置オフセット */
+
+#######################################################
+#	/* TP情報(APDIVC) */                              #
+#######################################################
+APDIVC_LEN		= "0200"
+#/* APDIVC MAP */
+#/* 0x0000 - 0x00FF : 汎用情報 */
+#   // 制御情報
+APDIVC_DBGMODE		= "0001" #    // デバッグモード表示  1:ﾃﾞﾊﾞｯｸﾞﾓｰﾄﾞ
+APDIVC_TEMP_POWADJ	= "0002" #    // 温度補償停止ﾌﾗｸﾞ。0:補償実行、1:停止
+APDIVC_IRQSTOP		= "0003"
+APDIVC_RXLOGPRINT	= "0004"
+APDIVC_LOGPRINT		= "0005"
+APDIVC_RXCHKMAXPROC	= "0006"
+#/* -------------------------------------------------- */
+#/*  Rx fail det func                                  */
+#/* -------------------------------------------------- */
+APDIVC_RXFAILDET_STMA	= "0020" #	// ant0Rx故障検出ステートマシン。ステート表示
+APDIVC_RXFAILDET_STMB	= "0021" #	// ant1Rx故障検出ステートマシン。ステート表示
+APDIVC_RXFAILDET_STMC	= "0022" #	// ant2Rx故障検出ステートマシン。ステート表示
+APDIVC_RXFAILDET_STMD	= "0023" #	// ant3Rx故障検出ステートマシン。ステート表示
+APDIVC_RXFAILCNTA_A		= "0024" #	// ant0 NGカウンタA
+APDIVC_RXFAILCNTA_B		= "0025" #	// ant1 NGカウンタA
+APDIVC_RXFAILCNTA_C		= "0026" #	// ant2 NGカウンタA
+APDIVC_RXFAILCNTA_D		= "0027" #	// ant3 NGカウンタA
+APDIVC_RXFAILCNTB_A		= "0028" #	// ant0 NGカウンタB
+APDIVC_RXFAILCNTB_B		= "0029" #	// ant1 NGカウンタB
+APDIVC_RXFAILCNTB_C		= "002A" #	// ant2 NGカウンタB
+APDIVC_RXFAILCNTB_D		= "002B" #	// ant3 NGカウンタB
+APDIVC_RXFAILCNTC_A		= "002C" #	// ant0 NGカウンタC
+APDIVC_RXFAILCNTC_B		= "002D" #	// ant1 NGカウンタC
+APDIVC_RXFAILCNTC_C		= "002E" #	// ant2 NGカウンタC
+APDIVC_RXFAILCNTC_D		= "002F" #	// ant3 NGカウンタC
+#/* -------------------------------------------------- */
+#/*  Power calc                                        */
+#/* -------------------------------------------------- */
+APDIVC_REFPFRMA			= "0030" #	// REFPFRMA
+APDIVC_REFPFRMB			= "0031" #	// REFPFRMB
+APDIVC_REFPFRMC			= "0032" #	// REFPFRMC
+APDIVC_REFPFRMD			= "0033" #	// REFPFRMD
+APDIVC_POWREFPFRMA		= "0034" #	// REFPFRMA power [x10dBm]
+APDIVC_POWREFPFRMB		= "0035" #	// REFPFRMB power [x10dBm]
+APDIVC_POWREFPFRMC		= "0036" #	// REFPFRMC power [x10dBm]
+APDIVC_POWREFPFRMD		= "0037" #	// REFPFRMD power [x10dBm]
+APDIVC_PSWREFA			= "0038" #	// PSWREFA
+APDIVC_PSWREFB			= "0039" #	// PSWREFB
+APDIVC_PSWREFC			= "003A" #	// PSWREFC
+APDIVC_PSWREFD			= "003B" #	// PSWREFD
+APDIVC_PSWFBA			= "003C" #	// PSWFBA
+APDIVC_PSWFBB			= "003D" #	// PSWFBB
+APDIVC_PSWFBC			= "003E" #	// PSWFBC
+APDIVC_PSWFBD			= "003F" #	// PSWFBD
+APDIVC_POWPSWFBA		= "0040" #	// PSWFBA power [x10dBm]
+APDIVC_POWPSWFBB		= "0041" #	// PSWFBB power [x10dBm]
+APDIVC_POWPSWFBC		= "0042" #	// PSWFBC power [x10dBm]
+APDIVC_POWPSWFBD		= "0043" #	// PSWFBD power [x10dBm]
+APDIVC_RXDLPOWREPA		= "0044" #	// RXDLPOWREPA
+APDIVC_RXDLPOWREPB		= "0045" #	// RXDLPOWREPB
+APDIVC_RXDLPOWREPC		= "0046" #	// RXDLPOWREPC
+APDIVC_RXDLPOWREPD		= "0047" #	// RXDLPOWREPD
+APDIVC_POWRXDLPOWREPA	= "0048" #	// RXDLPOWREPA power [x10dB]
+APDIVC_POWRXDLPOWREPB	= "0049" #	// RXDLPOWREPB power [x10dB]
+APDIVC_POWRXDLPOWREPC	= "004A" #	// RXDLPOWREPC power [x10dB]
+APDIVC_POWRXDLPOWREPD	= "004B" #	// RXDLPOWREPD power [x10dB]
+APDIVC_RXPOWREPA		= "0050" #	// RXPOWREPA
+APDIVC_RXPOWREPB		= "0051" #	// RXPOWREPB
+APDIVC_RXPOWREPC		= "0052" #	// RXPOWREPC
+APDIVC_RXPOWREPD		= "0053" #	// RXPOWREPD
+APDIVC_RGMMONA			= "0054" #	// RGMMONA
+APDIVC_RGMMONB			= "0055" #	// RGMMONB
+APDIVC_RGMMONC			= "0056" #	// RGMMONC
+APDIVC_RGMMOND			= "0057" #	// RGMMOND
+APDIVC_POWRXPOWREPA		= "0058" #	// POWRXPOWREPA power [x100dB]
+APDIVC_POWRXPOWREPB		= "0059" #	// POWRXPOWREPB power [x100dB]
+APDIVC_POWRXPOWREPC		= "005A" #	// POWRXPOWREPC power [x100dB]
+APDIVC_POWRXPOWREPD		= "005B" #	// POWRXPOWREPD power [x100dB]
+#/* -------------------------------------------------- */
+#/*  PAVG virtual register                             */
+#/* -------------------------------------------------- */
+APDIVC_PAYA0_A		= "0100" #    // PAYA0用予備
+APDIVC_PAYA_A		= "0101" #    // PAYA
+APDIVC_PAPA_A		= "0102" #    // PAPA
+APDIVC_PACA_A		= "0103" #    // PACA
+APDIVC_PAYA0_B		= "0104" #    // PAYA0用予備
+APDIVC_PAYA_B		= "0105" #    // PAYA
+APDIVC_PAPA_B		= "0106" #    // PAPA
+APDIVC_PACA_B		= "0107" #    // PACA
+APDIVC_PAYA0_C		= "0108" #    // PAYA0用予備
+APDIVC_PAYA_C		= "0109" #    // PAYA
+APDIVC_PAPA_C		= "010A" #    // PAPA
+APDIVC_PACA_C		= "010B" #    // PACA
+APDIVC_PAYA0_D		= "010C" #    // PAYA0用予備
+APDIVC_PAYA_D		= "010D" #    // PAYA
+APDIVC_PAPA_D		= "010E" #    // PAPA
+APDIVC_PACA_D		= "010F" #    // PACA
+#/* -------------------------------------------------- */
+#/*  TXVGA virtual register                            */
+#/* -------------------------------------------------- */
+APDIVC_TXVGA_A		= "0110" #    // antA用
+APDIVC_TXVGA_B		= "0111" #    // antB用
+APDIVC_TXVGA_C		= "0112" #    // antC用
+APDIVC_TXVGA_D		= "0113" #    // antD用
+#若水追加ここから
+APDIVC_TXVGA_E		= "0114" #    // antE用
+APDIVC_TXVGA_F		= "0115" #    // antF用
+APDIVC_TXVGA_G		= "0116" #    // antG用
+APDIVC_TXVGA_H		= "0117" #    // antH用
+#ここまで
+#/* -------------------------------------------------- */
+#/*   TRX setting                                      */
+#/* -------------------------------------------------- */
+#    // car set info
+APDIVC_A0TXCARNOW	= "0120"
+APDIVC_A1TXCARNOW	= "0121"
+APDIVC_A2TXCARNOW	= "0122"
+APDIVC_A3TXCARNOW	= "0123"
+#    // car ID set info
+APDIVC_A0LTXCARID	= "0128"
+APDIVC_A0HTXCARID	= "0129"
+APDIVC_A1LTXCARID	= "012A"
+APDIVC_A1HTXCARID	= "012B"
+APDIVC_A2LTXCARID	= "012C"
+APDIVC_A2HTXCARID	= "012D"
+APDIVC_A3LTXCARID	= "012E"
+APDIVC_A3HTXCARID	= "012F"
+#/* -------------------------------------------------- */
+#/*  apd debug                                         */
+#/* -------------------------------------------------- */
+APDIVC_APDLOGPRINT	= "01F0" #    // apd部logの画面出力制御 b0:dly_adj
+APDIVC_TIMCNT_TTC01	= "01F1" #    // ttc timer counter for debug
+
+
+#######################################################
+#	/* EEPROM 情報 */                                 #
+#######################################################
+APDE2P_TXLEN		= "0300"	# EEPﾃﾞｰﾀ格納データ数
+APDE2P_TXLEN_MMW	= "0200"	# EEPﾃﾞｰﾀ格納データ数
+APDE2P_TXLEN_RF_N	= "0100"	# RF-EEPﾃﾞｰﾀ格納データ数
+APDE2P_TXLEN_RF_L	= "0100"	# RF-EEPﾃﾞｰﾀ格納データ数
+SAVE_TXPARAM_LENGTH	= "02FD"	# TXパラメータデータ数
+SAVE_TXPARAM_LENGTH_MMW = "00FD"	# TXパラメータデータ数
+APDE2P_RXLEN		= "0100"	# EEPﾃﾞｰﾀ格納データ数
+APDE2P_RXLEN_MMW	= "0200"	# EEPﾃﾞｰﾀ格納データ数
+SAVE_RXPARAM_LENGTH	= "00FD"	# TXパラメータデータ数
+APDE2P_RXLEN_RF_N	= "0100"	# RF-EEPﾃﾞｰﾀ格納データ数
+APDE2P_RXLEN_RF_L	= "0100"	# RF-EEPﾃﾞｰﾀ格納データ数
+
+# EEPMAP #
+# TX          #
+APDE2P_TXDATLEN		= "0000"
+# TX_PathAB共通パラメータ
+APDE2P_PADRAIN_AB	= "0002"
+# TX_PathAパラメータ
+APDE2P_RFGAIN_A		= "0004"
+APDE2P_MCGAIN_A		= "0006"
+APDE2P_DEMGAINQ_A	= "0008"
+APDE2P_DEMGAINI_A	= "000A"
+APDE2P_FBDLYCLK_A	= "000C"
+APDE2P_FBDLYFIL_A	= "000E"
+APDE2P_TXVGA_A		= "0014"
+APDE2P_PAYA0_A		= "001A"
+APDE2P_PAYA_A		= "001C"
+APDE2P_PAPA_A		= "001E"
+APDE2P_PACA_A		= "0020"
+APDE2P_EPS_2_A		= "0028"
+APDE2P_PHI_2_A		= "002A"
+APDE2P_OFFSETI_A	= "002C"
+APDE2P_OFFSETQ_A	= "002E"
+# TX_PathBパラメータ
+APDE2P_RFGAIN_B		= "0044"
+APDE2P_MCGAIN_B		= "0046"
+APDE2P_DEMGAINQ_B	= "0048"
+APDE2P_DEMGAINI_B	= "004A"
+APDE2P_FBDLYCLK_B	= "004C"
+APDE2P_FBDLYFIL_B	= "004E"
+APDE2P_TXVGA_B		= "0054"
+APDE2P_PAYA0_B		= "005A"
+APDE2P_PAYA_B		= "005C"
+APDE2P_PAPA_B		= "005E"
+APDE2P_PACA_B		= "0060"
+APDE2P_EPS_2_B		= "0068"
+APDE2P_PHI_2_B		= "006A"
+APDE2P_OFFSETI_B	= "006C"
+APDE2P_OFFSETQ_B	= "006E"
+# TX_PathCパラメータ
+APDE2P_RFGAIN_C		= "0084"
+APDE2P_MCGAIN_C		= "0086"
+APDE2P_DEMGAINQ_C	= "0088"
+APDE2P_DEMGAINI_C	= "008A"
+APDE2P_FBDLYCLK_C	= "008C"
+APDE2P_FBDLYFIL_C	= "008E"
+APDE2P_TXVGA_C		= "0094"
+APDE2P_PAYA0_C		= "009A"
+APDE2P_PAYA_C		= "009C"
+APDE2P_PAPA_C		= "009E"
+APDE2P_PACA_C		= "00A0"
+APDE2P_EPS_2_C		= "00A8"
+APDE2P_PHI_2_C		= "00AA"
+APDE2P_OFFSETI_C	= "00AC"
+APDE2P_OFFSETQ_C	= "00AE"
+# TX_PathDパラメータ
+APDE2P_RFGAIN_D		= "00C4"
+APDE2P_MCGAIN_D		= "00C6"
+APDE2P_DEMGAINQ_D	= "00C8"
+APDE2P_DEMGAINI_D	= "00CA"
+APDE2P_FBDLYCLK_D	= "00CC"
+APDE2P_FBDLYFIL_D	= "00CE"
+APDE2P_TXVGA_D		= "00D4"
+APDE2P_PAYA0_D		= "00DA"
+APDE2P_PAYA_D		= "00DC"
+APDE2P_PAPA_D		= "00DE"
+APDE2P_PACA_D		= "00E0"
+APDE2P_EPS_2_D		= "00E8"
+APDE2P_PHI_2_D		= "00EA"
+APDE2P_OFFSETI_D	= "00EC"
+APDE2P_OFFSETQ_D	= "00EE"
+# その他
+APDE2P_TXCRC16		= "02FE"
+APDE2P_TXCRC16_RF       = "00FE"
+# RX          #
+APDE2P_RXDATLEN		= "x0000"
+# RXパラメータ ---------------------------
+APDE2P_RXGAIN_INDEX_A			= "0000"
+APDE2P_RXGAIN_INDEX_B			= "0040"
+APDE2P_RXGAIN_INDEX_C			= "0080"
+APDE2P_RXGAIN_INDEX_D			= "0100"
+# その他
+APDE2P_RXCRC16					= "00FE"
+

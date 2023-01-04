@@ -1,0 +1,85 @@
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <mode>",
+ "(m):<mode> is below. ",
+ " log : mirror log. from \"/var/log\" to \"/tmp/\".",
+ " lm  : mirror lm. from \"/opt\",\"/lib\" to \"/tmp\".",
+ " fm  : mirror flash to \"/tmp\""
+ exit(1)
+end
+
+puts "mirror start ...."
+case ARGV[0].to_s.downcase
+ when "log" then
+  Rrh.system("rm -rf /tmp/log 2>/dev/null")
+  puts "mirror log ..."
+  Rrh.system("cp -rf /var/log /tmp/log 2>/dev/null")
+  puts "... finish"
+
+ when "lm" then
+  Rrh.system("rm -rf /tmp/opt 2>/dev/null")
+  Rrh.system("rm -rf /tmp/lib 2>/dev/null")
+  puts "mirror opt ..."
+  Rrh.system("cp -rf /opt /tmp/ 2>/dev/null")
+  puts "... finish"
+  puts "mirror lib ..."
+  Rrh.system("cp -rf /lib /tmp/ 2>/dev/null")
+  puts "... finish"
+
+ when "fm" then
+  puts "mirror flash log ..."
+  Flash = Struct.new(:face,:rsize,:addr,:buf,:size)
+  flash = Flash.new
+  flash.buf = Rrh.malloc(0x400000)
+  Rrh.assign()
+  10.times { |count|
+   case count
+     when 0 then
+       print " side0 mirror troble 0..."
+     when 1 then 
+       print " side0 mirror troble 1..."
+     when 2 then 
+       print " side0 mirror cycle "
+     when 3 then
+       print " side1 mirror troble 0..."
+     when 4 then 
+       print " side1 mirror health ..."
+     when 5 then 
+       print " side1 mirror cycle ..."
+     when 6 then 
+       print " side0 mirror wdt ..."
+     when 7 then 
+       print " side1 mirror wdt ..."
+     when 8 then 
+       print " side0 mirror ecc ..."
+     when 9 then 
+       print " side1 mirror ecc ..."
+     else
+       puts " error "
+       break
+     end
+      flash.face = Register::LOG_AREA[count][0]
+      flash.rsize = Register::LOG_AREA[count][1]
+      flash.addr = Register::LOG_AREA[count][2]
+      flash.size = 0
+      filename = Register::LOG_AREA[count][3]
+      if Rrh.flashread_b(flash) == true then
+       fp = Rrh.fopen(filename,"w")
+       Rrh.fwrite(flash.buf, flash.rsize, fp)
+       Rrh.fclose(fp)
+       print "finish ",flash.size.to_s,"byte \n"
+      else
+       print "error \n"
+      end
+  }
+  Rrh.unassign()
+  Rrh.free(flash.buf)
+ else
+  puts "not entry "
+  exit(0)
+end
+puts "... all finish"
+Rrh.system("ls -l /tmp")

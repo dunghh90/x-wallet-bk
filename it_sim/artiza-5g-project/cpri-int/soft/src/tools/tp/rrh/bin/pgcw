@@ -1,0 +1,54 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+
+
+if ARGV.length < 10 then
+ puts "usage:"+$0+" <grp> <tx,rx> <1/4gain> <1/4phase> <2/4gain> <2/4phase> <3/4gain> <3/4phase> <4/4gain> <4/4phase>",
+ "(m):<grp> is device group(1-8)",
+ "(m):<tx,rx> is tx,rx(tx:1,rx:2)",
+ "(m):<1/4gain>  is 1/4 gain",
+ "(m):<1/4phase> is 1/4 phase",
+ "(m):<2/4gain>  is 2/4 gain",
+ "(m):<2/4phase> is 2/4 phase",
+ "(m):<3/4gain>  is 3/4 gain",
+ "(m):<3/4phase> is 3/4 phase",
+ "(m):<4/4gain>  is 4/4 gain",
+ "(m):<4/4phase> is 4/4 phase"
+
+ exit(1) 
+end
+
+grp_s     = ARGV[0]
+txrx_s    = ARGV[1]
+gain1  = ARGV[2]
+phase1 = ARGV[3]
+gain2  = ARGV[4]
+phase2 = ARGV[5]
+gain3  = ARGV[6]
+phase3 = ARGV[7]
+gain4  = ARGV[8]
+phase4 = ARGV[9]
+
+#inparaチェック
+
+if grp_s.to_i > 8 or grp_s.to_i < 1 then
+ puts "Input value is incorrect : <grp(1-8)>"
+ exit(1) 
+end
+
+if txrx_s.to_i > 2 or txrx_s.to_i < 1 then
+ puts "Input value is incorrect : <txrx(1-2)>"
+ exit(1) 
+end
+
+
+Rrh.assign()
+
+if !res = Rrh.pgcwrite( grp_s.to_i , txrx_s.to_i ,gain1.to_i(16), phase1.to_i(16),gain2.to_i(16), phase2.to_i(16),gain3.to_i(16), phase3.to_i(16),gain4.to_i(16), phase4.to_i(16) ) then
+ puts "pgc write error"
+else
+ puts "pgc write complete"
+end
+
+Rrh.unassign()

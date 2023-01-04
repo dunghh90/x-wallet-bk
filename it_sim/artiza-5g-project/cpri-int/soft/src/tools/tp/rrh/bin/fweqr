@@ -1,0 +1,106 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+
+Rrh.assign()
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","40")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","41")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","42")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","43")[6..7]
+	puts "FW_EQF_TAP_A_0 : #{fweqftap}"
+
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","44")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","45")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","46")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","47")[6..7]
+	puts "FW_EQF_TAP_A_1 : #{fweqftap}"
+
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","48")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","49")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","4A")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","4B")[6..7]
+	puts "FW_EQF_TAP_A_2 : #{fweqftap}"
+
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","4C")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","4D")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","4E")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","4F")[6..7]
+	puts "FW_EQF_TAP_A_3 : #{fweqftap}"
+
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","50")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","51")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","52")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","53")[6..7]
+	puts "FW_EQF_TAP_A_4 : #{fweqftap}"
+
+	fweqftap = ""
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","54")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","55")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","56")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","57")[6..7]
+	puts "FW_EQF_TAP_A_5 : #{fweqftap}"
+
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","58")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","59")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","5A")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","5B")[6..7]
+	puts "FW_EQF_TAP_A_6 : #{fweqftap}"
+
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","5C")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","5D")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","5E")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","5F")[6..7]
+	puts "FW_EQF_TAP_A_7 : #{fweqftap}"
+
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","60")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","61")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","62")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","63")[6..7]
+	puts "FW_EQF_TAP_B_0 : #{fweqftap}"
+
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","64")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","65")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","66")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","67")[6..7]
+	puts "FW_EQF_TAP_B_1 : #{fweqftap}"
+
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","68")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","69")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","6A")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","6B")[6..7]
+	puts "FW_EQF_TAP_B_2 : #{fweqftap}"
+
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","6C")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","6D")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","6E")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","6F")[6..7]
+	puts "FW_EQF_TAP_B_3 : #{fweqftap}"
+
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","70")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","71")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","72")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","73")[6..7]
+	puts "FW_EQF_TAP_B_4 : #{fweqftap}"
+
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","74")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","75")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","76")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","77")[6..7]
+	puts "FW_EQF_TAP_B_5 : #{fweqftap}"
+
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","78")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","79")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","7A")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","7B")[6..7]
+	puts "FW_EQF_TAP_B_6 : #{fweqftap}"
+
+
+	fweqftap =            Rrh.tpshmread("apde2pTX_vt","","7C")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","7D")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","7E")[6..7]
+	fweqftap = fweqftap + Rrh.tpshmread("apde2pTX_vt","","7F")[6..7]
+	puts "FW_EQF_TAP_B_7 : #{fweqftap}"
+
+Rrh.unassign()
+

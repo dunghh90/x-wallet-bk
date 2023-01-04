@@ -1,0 +1,21 @@
+# 
+# PTP setup
+# 
+Rrh.require("./verbose")
+Rrh.assign()
+
+puts "RFIC power on reset unmask"
+Rrh.regbitoff("A0000040","000003C0")
+Rrh.sleep(0,400000000)
+Rrh.rficwrite(0x0,0x0,0x18)
+Rrh.rficwrite(0x1,0x0,0x18)
+Rrh.rficwrite(0x2,0x0,0x18)
+Rrh.rficwrite(0x3,0x0,0x18)
+val1 = Rrh.rficread(0x0,0x0)
+val2 = Rrh.rficread(0x1,0x0)
+val3 = Rrh.rficread(0x2,0x0)
+val4 = Rrh.rficread(0x3,0x0)
+puts "RFIC1:0x#{val1} RFIC2:0x#{val2} RFIC3:0x#{val3} RFIC4:0x#{val4}"
+puts "Completed"
+Rrh.unassign()
+exit(0)

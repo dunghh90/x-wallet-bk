@@ -1,0 +1,16 @@
+value.h:467:1:mrb_false_value	48	static
+value.h:485:1:mrb_true_value	48	static
+dulib_device_access.c:35:11:rrhlib_device_register_read	176	static
+dulib_device_access.c:96:11:rrhlib_device_register_write	112	static
+dulib_device_access.c:147:11:rrhlib_device_register_biton	112	static
+dulib_device_access.c:196:11:rrhlib_device_register_bitoff	112	static
+dulib_device_access.c:246:11:rrhlib_device_eeprom_read	176	static
+dulib_device_access.c:307:11:rrhlib_device_eeprom_write	80	static
+dulib_device_access.c:362:11:rrhlib_device_eeprom_write_txt	128	static
+dulib_device_access.c:433:11:rrhlib_device_sfp_read	1536	static
+dulib_device_access.c:532:11:rrhlib_device_eeprom_read_txt	6256	static
+dulib_device_access.c:597:11:rrhlib_device_temp_read	144	static
+dulib_device_access.c:636:11:rrhlib_bpfshm_write	176	static
+dulib_device_access.c:818:11:rrhlib_event	1184	static
+dulib_device_access.c:883:11:rrhlib_device_getrtc	192	dynamic,bounded
+dulib_device_access.c:925:6:rrhlib_device_access_install	48	static

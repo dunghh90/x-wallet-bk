@@ -1,0 +1,2 @@
+cmd_spi_access.c:29:6:cmd_spi_access_print_usage	48	static
+cmd_spi_access.c:58:5:cmd_spi_access_main	112	static

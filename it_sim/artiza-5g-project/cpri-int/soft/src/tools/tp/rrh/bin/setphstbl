@@ -1,0 +1,251 @@
+
+#setphstbl
+#第1引数(dec): 0 (Tx),  1 (Rx)
+#第2引数(hex): キャリア番号
+#              SUB6: 0～1
+#              mmW: 0～7
+#第3引数(dec): キャリア中心周波数(kHz)
+#第4引数(dec): SCS
+#              SUB6: 1 (30kHz)
+#              mmW:  1 (120kHz)
+
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+Rrh.require("./reg_define")
+Rrh.require("./nco_define")
+
+
+# usage
+if ARGV.length < 4 then
+	puts "usage:"+$0+" <Tx/Rx> <carrier> <frequency> <SCS>",
+	"(m):<Tx/Rx>  (0:Tx 1:Rx)",
+	"(m):<carrier> is carrier num (SUB6: 0~1 mmW: 0~7)",
+	"(m):<frequency>     is write Center frequency(kHz)",
+	"(m):<SCS>   (SUB6: 1(30kHz) mmW: 1(120kHz))"
+	exit(1)
+end
+
+txrx_s = ARGV[0]
+car_s = ARGV[1]
+data_s = ARGV[2]
+scs_s = ARGV[3]
+
+#想定外の値NGを追記
+
+if txrx_s.to_i > 1 then
+ puts "Input value is incorrect : <Tx/Rx>"
+ raise
+end
+
+if car_s.to_i > 7 then
+ puts "Input value is incorrect : <carrier>"
+ raise
+end
+
+if scs_s.to_i != 1 then
+ puts "Input value is incorrect : <SCS>"
+ raise
+end
+
+
+#各種定数
+SUB6_BASE0 = 88
+SUB6_BASE1 = 15448
+SUB6_INC   = 1096
+MMW_BASE   = 34
+MMW_INC    = 274
+NCO_TABLE_SIZE_SUB6 = 196608
+NCO_TABLE_SIZE_MMW  = 24576
+ENB = 0x1
+
+TX_DPHASFTSEL_OFFSET            = 0xa2014280
+TX_DPHASFTENB_OFFSET            = 0xa2014284
+TX_DPCCOEF30KS0_OFFSET_SUB6     = 0xa2015080
+TX_DPCCOEF30KS1_OFFSET_SUB6     = 0xa20150c0
+TX_DPCCOEF30KS0_OFFSET_MMW_120K = 0xa2015100
+TX_DPCCOEF30KS1_OFFSET_MMW_120K = 0xa2015140
+TX_DPCCOEF30KS2_OFFSET_MMW_120K = 0xa2015180
+TX_DPCCOEF30KS3_OFFSET_MMW_120K = 0xa20151c0
+RX_DPHASFTSEL_OFFSET            = 0xa2204280
+RX_DPHASFTENB_OFFSET            = 0xa2204284
+RX_DPCCOEF30KS0_OFFSET_SUB6     = 0xa2205080
+RX_DPCCOEF30KS1_OFFSET_SUB6     = 0xa22050c0
+RX_DPCCOEF30KS0_OFFSET_MMW_120K = 0xa2205100
+RX_DPCCOEF30KS1_OFFSET_MMW_120K = 0xa2205140
+RX_DPCCOEF30KS2_OFFSET_MMW_120K = 0xa2205180
+RX_DPCCOEF30KS3_OFFSET_MMW_120K = 0xa22051c0
+
+#各種変数
+offset_sel     = TX_DPHASFTSEL_OFFSET           
+offset_enb     = TX_DPHASFTENB_OFFSET           
+offset_sub6_s0 = TX_DPCCOEF30KS0_OFFSET_SUB6    
+offset_sub6_s1 = TX_DPCCOEF30KS1_OFFSET_SUB6    
+offset_mmw_s0  = TX_DPCCOEF30KS0_OFFSET_MMW_120K
+offset_mmw_s1  = TX_DPCCOEF30KS1_OFFSET_MMW_120K
+offset_mmw_s2  = TX_DPCCOEF30KS2_OFFSET_MMW_120K
+offset_mmw_s3  = TX_DPCCOEF30KS3_OFFSET_MMW_120K
+change_flg = 0
+
+
+
+Rrh.assign()
+
+
+#装置構成確認
+addr_eep = 64
+if !res = Rrh.eepread(addr_eep.to_i(16)) then
+ puts "eep read error"
+else
+ puts "0x#{res} "
+ 
+ case res
+ 
+ when "13"
+  kind = "BPF_HM_DEVC_SUB6"
+  #n_max set
+  n_max = 27
+
+ when "14"
+  kind = "BPF_HM_DEVC_MMW"
+  #n_max set
+  n_max = 55
+ 
+ else
+  puts "kind num error"
+  raise
+ end
+end
+
+#Tx or Rx setting
+
+if txrx_s == "1" then
+ offset_sel     = RX_DPHASFTSEL_OFFSET           
+ offset_enb     = RX_DPHASFTENB_OFFSET           
+ offset_sub6_s0 = RX_DPCCOEF30KS0_OFFSET_SUB6    
+ offset_sub6_s1 = RX_DPCCOEF30KS1_OFFSET_SUB6    
+ offset_mmw_s0  = RX_DPCCOEF30KS0_OFFSET_MMW_120K
+ offset_mmw_s1  = RX_DPCCOEF30KS1_OFFSET_MMW_120K
+ offset_mmw_s2  = RX_DPCCOEF30KS2_OFFSET_MMW_120K
+ offset_mmw_s3  = RX_DPCCOEF30KS3_OFFSET_MMW_120K
+ change_flg = 1
+end
+
+
+
+
+for n in 0..n_max do
+ if kind == "BPF_HM_DEVC_SUB6" then
+
+#sampleNum set
+# n = 0~13
+  if n < 14 then
+   sampleNum = SUB6_BASE0 + ( n * SUB6_INC )
+# n = 14~27
+  else
+   sampleNum = SUB6_BASE1 + ( ( n - 14 ) * SUB6_INC )
+  end
+
+#nco addr set
+  ncoSet = (( data_s.to_i * sampleNum * 6400 ) / 1000) % NCO_TABLE_SIZE_SUB6
+
+#IQ data set
+  I = Math.cos( 2 * Math::PI * ncoSet / NCO_TABLE_SIZE_SUB6 ) * 16384
+  Q = Math.sin( 2 * Math::PI * ncoSet / NCO_TABLE_SIZE_SUB6 ) * 16384
+  Idata = I.round(0)
+  if change_flg == 1 then
+   Qdata = 0 - Q.round(0)
+  else
+   Qdata = Q.round(0)
+  end
+  
+  
+#data write
+#carrier num
+  Rrh.regwrite(offset_sel.to_s(16), car_s.to_s(16))
+  
+#I[b31:b16]、Q[b15:b0]
+  IQdata = Idata & 0xff << 16
+  IQdata = IQdata | (Qdata & 0xFF)
+  
+#slot:0
+  
+  if n < 14 then
+   faddr = offset_sub6_s0 + n * 0x4
+   Rrh.regwrite(faddr.to_s(16), IQdata.to_s(16))
+  
+#slot:1
+
+  else 
+   faddr = offset_sub6_s1 + (n - 14) * 0x4
+   Rrh.regwrite(faddr.to_s(16), IQdata.to_s(16))
+   
+  end
+  
+#Enable
+  Rrh.regwrite(offset_enb.to_s(16), ENB.to_s(16))
+  
+#SUB6 setend
+  
+ elsif kind = "BPF_HM_DEVC_MMW" then
+ 
+#sampleNum set
+  sampleNum = MMW_BASE + ( n * MMW_INC )
+
+#nco addr set
+  ncoSet = (( data_s.to_i * sampleNum * 800 ) / 1000) % NCO_TABLE_SIZE_MMW
+
+#IQ data set
+  I = Math.cos( 2 * Math::PI * ncoSet / NCO_TABLE_SIZE_MMW ) * 16384
+  Q = Math.sin( 2 * Math::PI * ncoSet / NCO_TABLE_SIZE_MMW ) * 16384
+  Idata = I.round(0)
+  if change_flg == 1 then
+   Qdata = 0 - Q.round(0)
+  else
+   Qdata = Q.round(0)
+  end
+  
+#data write
+#carrier num
+  Rrh.regwrite(offset_sel.to_s(16), car_s.to_s(16))
+  
+#slot no calc
+  slot_no = n / 14
+  slot_no = slot_no.floor
+  
+#I[b31:b16]、Q[b15:b0]
+  IQdata = Idata & 0xff << 16
+  IQdata = IQdata | (Qdata & 0xFF)
+
+#faddr set
+  case slot_no
+  
+#slot:0
+  when 0
+   faddr = offset_mmw_s0 + (n - slot_no * 14) * 0x4
+#slot:1
+  when 1
+   faddr = offset_mmw_s1 + (n - slot_no * 14) * 0x4
+#slot:2
+  when 2
+   faddr = offset_mmw_s2 + (n - slot_no * 14) * 0x4
+#slot:3
+  when 3
+   faddr = offset_mmw_s3 + (n - slot_no * 14) * 0x4
+  end
+
+  Rrh.regwrite(faddr.to_s(16), IQdata.to_s(16))
+  
+#Enable
+  Rrh.regwrite(offset_enb.to_s(16), ENB.to_s(16))
+  
+#mmW setend
+  
+ end
+end
+
+
+Rrh.unassign()

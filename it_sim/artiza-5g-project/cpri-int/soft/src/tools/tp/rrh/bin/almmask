@@ -1,0 +1,38 @@
+# 
+# debug mode on
+# rrh -dbgon
+# 
+
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+#Rrh.dmsg(1)
+
+if ARGV.length < 1 then
+	puts "usage:"+$0+" <mask value>",
+	"(m):<mask value> is  on or off"
+	exit(1)
+end
+
+mask = ARGV[0]
+
+case mask.downcase
+	when "on" then
+		maskval = 1
+	when "off" then
+		maskval = 0
+	else
+		puts "Input ERROR on of off"
+		exit(1)
+end
+
+Rrh.assign()
+
+
+if !res = Rrh.shmflgwrite("almmsk",maskval) then
+ puts "shm write error"
+ exit(1)
+end
+
+Rrh.unassign()
+puts "ALM Mask is #{mask}"

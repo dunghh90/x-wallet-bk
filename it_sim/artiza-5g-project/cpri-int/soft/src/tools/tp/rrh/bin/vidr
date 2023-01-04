@@ -1,0 +1,54 @@
+#
+# vid  read
+# rrh -vidr <fh>
+#
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+# usage
+
+
+Rrh.assign()
+# reg  read
+
+	printf("FH1DL ADDR  +0       +4       +8       +C       +10       +14       +18 \n")
+	printf("FH1DL ADDR  +0       +4       +8       +C       +10       +14       +18 \n")
+	printf("-------- -------- -------- -------- -------- -------- -------- --------\n")
+	for cnt in 0..13 do
+		addr_s = Rrh.calc("A1000300","+",(cnt * 0x4).to_s(16))
+		if (cnt % 7) == 0 then 
+			printf("%s ",addr_s)
+		end
+		data_s = Rrh.regread(addr_s)
+		if cnt == 6 or cnt == 13 then
+			printf("%s \n",data_s)
+		else
+			printf("%s ",data_s)
+		end
+
+	end
+
+	data_s = Rrh.regread("A1000494")
+	printf("FH1UL ADDR: %s vid: %s\n\n","A1000494",Rrh.calc(data_s,"&",0x00000fff.to_s(16)))
+
+	printf("FH2DL ADDR  +0       +4       +8       +C       +10       +14       +18 \n")
+	printf("FH2DL ADDR  +0       +4       +8       +C       +10       +14       +18 \n")
+	printf("-------- -------- -------- -------- -------- -------- -------- --------\n")
+	for cnt in 0..13 do
+		addr_s = Rrh.calc("A1001300","+",(cnt * 0x4).to_s(16))
+		if (cnt % 7) == 0 then 
+			printf("%s ",addr_s)
+		end
+		data_s = Rrh.regread(addr_s)
+		if cnt == 6 or cnt == 13 then
+			printf("%s \n",data_s)
+		else
+			printf("%s ",data_s)
+		end
+	end
+
+	data_s = Rrh.regread("A1001494")
+	printf("FH2UL ADDR: %s vid: %s\n","A1001494",Rrh.calc(data_s,"&",0x00000fff.to_s(16)))
+
+
+Rrh.unassign()

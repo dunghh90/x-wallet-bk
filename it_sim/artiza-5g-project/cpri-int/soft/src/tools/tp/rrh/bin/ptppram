@@ -1,0 +1,36 @@
+Rrh.require("./verbose")
+
+if Rrh.psalive("DU_pf -p") == false then
+   puts "PTP software was not start yet or dead."
+   exit(1)
+end
+
+
+Msghead = Struct.new( :evtid, :sigkind, :dstpqid, :dsttqid, :srcpqid, :srctqid )
+
+bufsize = 4096
+head = Msghead.new
+
+rbuf = Rrh.malloc(bufsize)
+
+qid      = 0x10FD000E
+
+wtime = 3000
+bufkind = 3 # E_BPF_RU_IPCM_BUFF_KIND_TASK
+
+Rrh.assign()
+puts "GetPtpPram..."
+if ( rtn = Rrh.api("duApi_Ptp_Mqr_GetPtpPram", qid, 0, 0) ) != 0 then
+    printf("=>ERROR_R %d \n",rtn)
+else
+    if ! Rrh.msgrecv(qid,wtime,head,rbuf,bufsize) then
+        result = 1
+    else
+        result = 0
+        Rrh.system("cat /var/log/PtpDbgDisp.log")
+    end
+end
+
+Rrh.free(rbuf)
+Rrh.unassign()
+exit(result.to_i)

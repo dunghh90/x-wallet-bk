@@ -1,0 +1,134 @@
+@global_logcounter = "entry"	# -> log history mask
+	
+Rrh.require("./verbose")
+Rrh.system("cat /home/f_5g_du/version")
+# Rrh.system("cmd_version 2>/dev/null")
+
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+#Rrh.dmsg(1)
+
+Rrh.assign()
+#装置種別
+if !devkind = Rrh.eepread(Register::EEP_BOARD_TYPE.to_i(16)) then
+ puts "eeprom read error"
+else
+	if devkind == "13" then
+		printf("DU Device type      : sub6(%s)\n", devkind)
+	elsif devkind == "14" then
+		printf("DU Device type      : mmW(%s)\n", devkind)
+	else
+		printf("DU Device type      : Unknown(%s)\n", devkind)
+	end
+end
+#対応周波数帯
+if !dat = Rrh.eepread(Register::EEP_BOARD_FREQ.to_i(16)) then
+ puts "eeprom read error"
+else
+	if dat == "10" then
+		printf("Supported Bandwidth : 4.5G(%s)\n", dat)
+	elsif dat == "11" then
+		printf("Supported Bandwidth : 3.7G(%s)\n", dat)
+	elsif dat == "12" then
+		printf("Supported Bandwidth : 28G(%s)\n", dat)
+	else
+		printf("Supported Bandwidth : Unknown(%s)\n", dat)
+	end
+end
+#起動面
+if !dat = Rrh.eepread(Register::EEP_START_PAGE.to_i(16)) then
+ puts "eeprom read error"
+else
+  printf("Boot Face           : %s\n", dat)
+end
+#ボード
+if !dat = Rrh.eepread(Register::EEP_BOARD_VERSION.to_i(16)) then
+ puts "eeprom read error"
+else
+  printf("Board version       : %s\n", dat)
+end
+#boot
+if !dat = Rrh.regread("a0000c00") then
+ puts "Register read error"
+else
+  printf("boot      ver       : %s\n", dat)
+end
+
+#FPGA
+if !dat = Rrh.regread(Register::FPGA_CTB_FPGAVER) then
+	puts "Register read error"
+else
+	printf("FPGA LLB  ver       : %s\n", dat)
+end
+if !dat = Rrh.regread(Register::FPGA_CTB_FPGAVER_DBG) then
+	puts "Register read error"
+else
+	printf("     DBG  ver       : %s\n", dat)
+end
+
+
+if ((!checkval1 = Rrh.regread(Register::FPGA_CTP_CFG   ))||
+    (!checkval2 = Rrh.regread(Register::ZYNQ_GPIO_DATA5))  )then
+ puts "Register read error"
+else
+ if ((Rrh.calc(checkval1,"&","01000100") != "00000100")||
+     (Rrh.calc(checkval2,"&","00080000") != "00080000")  )then
+  puts "FPGA TRX0 read error"
+ else
+  if !dat = Rrh.regread(Register::FPGA_CTX0_FPGAVER) then
+   puts "Register read error"
+  else
+   printf("FPGA TRX0 ver       : %s\n", dat)
+  end
+  if !dat = Rrh.regread(Register::FPGA_CTX0_FPGAVER_DBG) then
+   puts "Register read error"
+  else
+   printf("      DBG ver       : %s\n", dat)
+  end
+ end
+end
+
+if devkind == "13" then
+	#RFIC
+	if !rpid0 = Rrh.rficread(0, Register::RFIC_PROD_ID0.to_i(16)) then
+	 rpid0 = " -- "
+	end
+	if !rpid1 = Rrh.rficread(0, Register::RFIC_PROD_ID1.to_i(16)) then
+	 rpid1 = " -- "
+	end
+	if !rvid0 = Rrh.rficread(0, Register::RFIC_VEND_ID0.to_i(16)) then
+	 rvid0 = " -- "
+	end
+	if !rvid1 = Rrh.rficread(0, Register::RFIC_VEND_ID1.to_i(16)) then
+	 rvid1 = " -- "
+	end
+	stmjver = Rrh.regread("a0000c10")
+	stmnver = Rrh.regread("a0000c14")
+	ammjver = Rrh.regread("a0000c18")
+	ammnver = Rrh.regread("a0000c1c")
+	   printf("RFIC 0 PRODUCT ID   : %s%s\n", rpid0, rpid1)
+	   printf("       VENDER ID    : %s%s\n", rvid0, rvid1)
+	   printf("       STREAM ver   : %s-%s\n",stmjver,stmnver)
+	   printf("       ARM    ver   : %s-%s\n",ammjver,ammnver)
+
+	if !rpid0 = Rrh.rficread(1, Register::RFIC_PROD_ID0.to_i(16)) then
+	 rpid0 = " -- "
+	end
+	if !rpid1 = Rrh.rficread(1, Register::RFIC_PROD_ID1.to_i(16)) then
+	 rpid1 = " -- "
+	end
+	if !rvid0 = Rrh.rficread(1, Register::RFIC_VEND_ID0.to_i(16)) then
+	 rvid0 = " -- "
+	end
+	if !rvid1 = Rrh.rficread(1, Register::RFIC_VEND_ID1.to_i(16)) then
+	 rvid1 = " -- "
+	end
+	   printf("RFIC 1 PRODUCT ID   : %s%s\n", rpid0, rpid1)
+	   printf("       VENDER ID    : %s%s\n", rvid0, rvid1)
+	   printf("       STREAM ver   : %s-%s\n",stmjver,stmnver)
+	   printf("       ARM    ver   : %s-%s\n",ammjver,ammnver)
+
+
+end
+
+Rrh.unassign()

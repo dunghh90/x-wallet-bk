@@ -1,0 +1,35 @@
+# 
+# cal off
+# rrh -caloff
+# 
+
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+
+Rrh.assign()
+if !res = Rrh.bpfshmread("E_RRH_SHMID_APL_DU_PROCESS_INFO", "", "dbgmode") then
+ puts "shm read error"
+ exit(1)
+end
+
+if res.to_i(16) == 1 then
+ puts "already cal is off"
+ Rrh.unassign()
+ exit(1)
+end
+
+if !res = Rrh.bpfshmwrite("E_RRH_SHMID_APL_DU_PROCESS_INFO", "", "dbgmode","00000001") then
+ puts "shm write error"
+ exit(1)
+end
+
+if !res = Rrh.shmflgwrite("dbgmode",1) then
+ puts "shm write error"
+ exit(1)
+end
+
+Rrh.unassign()
+
+puts "cal off..."
+

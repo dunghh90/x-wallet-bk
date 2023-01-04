@@ -1,0 +1,208 @@
+
+#QMOD LO補正読み出し
+#第1引数(hex/char):アンテナ番号(0:Ant.A ～ 1:Ant.B)またはall
+#20180815 新規作成 藤田
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./tpshm_access")
+
+
+#パラメータ確認
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <ant>",
+ "(m):<ant> is 0:AntA / 1:AntB / all:All Ant "
+ exit(1) 
+end
+
+
+ant_s = ARGV[0]
+
+#想定外の値NGを追記
+#<ant>を文字列観点でチェック
+if ant_s != "0" && ant_s != "1" && ant_s != "all" then
+  puts "Input value is incorrect : <ant>"
+  exit(1) 
+end
+
+if ant_s == "all" then
+  # ant_sに2を設定
+  ant_s = "2"
+end
+
+Rrh.assign()
+
+addr_i = "0007"
+addr_q = "0008"
+res = "0000"
+
+#<ant>=0(Ant.A)、もしくは<ant>=2(AB両方)の場合
+if ant_s.to_i == 0 || ant_s.to_i == 2 then
+
+  #「rrh -qmodr」の第2引数は0x02固定(0,1でそれぞれ実行)
+  ## →Ant.A, Mixer(SEL[0]), アドレス=0x0007(i)
+  if !res = Rrh.qmodread( 0 , 0 , addr_i.to_i(16) ) then
+    puts "error qmodread A 1"
+  else
+    puts "0x#{res} "
+  end
+
+tmp_res = res
+case tmp_res.length
+   when 1
+     data = "000" + tmp_res
+   when 2
+     data = "00" + tmp_res
+   when 3
+     data = "0" + tmp_res
+   else
+     data = tmp_res
+end
+
+  #★仮想レジスタ設定
+  # 仮想レジスタをリード値に書き換える
+  # Ant.AのI: QMOD_LO_I_A → (通常)N_QMOD_LO_I_V：0x414、(低電力)L_QMOD_LO_I_V：0x514
+  addr = 0x014
+  data1 = data[0..1]
+  data2 = data[2..3]
+  #puts" #{data1}#{data2} "
+
+  if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data1) then
+    puts "error tpshmwrite A 1"
+    exit(1)
+  end
+
+  addr = addr + 1
+  if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data2) then
+     puts "error tpshmwrite A 2"
+     exit(1)
+  end
+
+  ## →Ant.A, Mixer(SEL[0]), アドレス=0x0008(q)
+  if !res = Rrh.qmodread( 0 , 0 , addr_q.to_i(16) ) then
+    puts "error  qmodread A 3"
+  else
+    puts "0x#{res} "
+  end
+
+tmp_res = res
+case tmp_res.length
+   when 1
+     data = "000" + tmp_res
+   when 2
+     data = "00" + tmp_res
+   when 3
+     data = "0" + tmp_res
+   else
+     data = tmp_res
+end
+
+  #★仮想レジスタ設定
+  # 仮想レジスタをリード値に書き換える
+  # Ant.AのQ: QMOD_LO_Q_A → (通常)N_QMOD_LO_Q_V：0x416、(低電力)L_QMOD_LO_Q_V：0x516
+  addr = 0x016
+  data1 = data[0..1]
+  data2 = data[2..3]
+  #puts" #{data1}#{data2} "
+
+  if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data1) then
+    puts "error tpshmwrite A 3"
+    exit(1)
+  end
+
+  addr = addr + 1
+  if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data2) then
+     puts "error tpshmwrite A 4"
+     exit(1)
+  end
+
+  puts "complete Ant.A"
+end
+
+#<ant>=1(Ant.B)、もしくは<ant>=2(AB両方)の場合
+if ant_s.to_i == 1 || ant_s.to_i == 2 then
+
+  #「rrh -qmodr」の第2引数は0x02固定(0,1でそれぞれ実行)
+  ## →Ant.B, Mixer(SEL[0]), アドレス=0x0007(i)
+  if !res = Rrh.qmodread( 1 , 0 , addr_i.to_i(16) ) then
+    puts "error qmodread B 1"
+  else
+    puts "0x#{res} "
+  end
+
+tmp_res = res
+case tmp_res.length
+   when 1
+     data = "000" + tmp_res
+   when 2
+     data = "00" + tmp_res
+   when 3
+     data = "0" + tmp_res
+   else
+     data = tmp_res
+end
+
+  #★仮想レジスタ設定
+  # 仮想レジスタをリード値に書き換える
+  # Ant.BのI: QMOD_LO_I_B → (通常)N_QMOD_LO_I_H：0x41C、(低電力)L_QMOD_LO_I_H：0x51C
+  addr = 0x01C
+  data1 = data[0..1]
+  data2 = data[2..3]
+  #puts" #{data1}#{data2} "
+
+  if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data1) then
+    puts "error tpshmwrite B 1"
+    exit(1)
+  end
+
+  addr = addr + 1
+  if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data2) then
+     puts "error tpshmwrite B 2"
+     exit(1)
+  end
+
+  ## →Ant.B, Mixer(SEL[0]), アドレス=0x0008(q)
+  if !res = Rrh.qmodread( 1 , 0 , addr_q.to_i(16) ) then
+    puts "error qmodread B 3"
+  else
+    puts "0x#{res} "
+  end
+
+tmp_res = res
+case tmp_res.length
+   when 1
+     data = "000" + tmp_res
+   when 2
+     data = "00" + tmp_res
+   when 3
+     data = "0" + tmp_res
+   else
+     data = tmp_res
+end
+
+  #★仮想レジスタ設定
+  # 仮想レジスタをリード値に書き換える
+  # Ant.BのQ: QMOD_LO_Q_B → (通常)N_QMOD_LO_Q_H：0x41E、(低電力)L_QMOD_LO_Q_H：0x51E
+  addr = 0x01E
+  data1 = data[0..1]
+  data2 = data[2..3]
+  #puts" #{data1}#{data2} "
+
+  if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data1) then
+    puts "error tpshmwrite B 3"
+    exit(1)
+  end
+
+  addr = addr + 1
+  if !res = Rrh.tpshmwrite("apde2pTX_vt","",addr.to_s(16),data2) then
+     puts "error tpshmwrite B 4"
+     exit(1)
+  end
+
+  puts "complete Ant.B"
+end
+
+
+Rrh.unassign()
+

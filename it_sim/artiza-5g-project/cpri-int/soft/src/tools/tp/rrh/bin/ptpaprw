@@ -1,0 +1,16 @@
+Rrh.require("./verbose")
+
+
+if Rrh.psalive("DU_pf -p") == false then
+   puts "PTP software was not start yet or dead."
+   exit(1)
+end
+
+Rrh.assign()
+rtn = Rrh.set_ptpapr(ARGV[0].to_s,ARGV[1].to_i(16))
+if rtn == false then
+ puts "ERROR"
+else
+ puts "OK"
+end
+Rrh.unassign()

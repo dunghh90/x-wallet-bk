@@ -1,0 +1,160 @@
+# 
+# Flash write
+# rrh -fc <filename> <kind>
+# 
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+
+buffer_size = 1024 * 1024
+
+# usage
+if ARGV.length < 2 then
+ case Register::ARCH
+  when "5G_DU_LLS" then
+    puts "usage:"+$0+" <filename> <kind>",
+    "(m):<filename> is writing filename(/tmp) ",
+    "(m):<kind> is writing kind ",
+    "    0  : boot side0 primary",
+    "    1  : boot side1 primary",
+    "    2  : boot side0 backup",
+    "    3  : boot side1 backup",
+    "    10 : OS+Firm side0",
+    "    11 : OS+Firm side1",
+    "    30 : PL-fpga side0",
+    "    31 : PL-fpga side1",
+    "    70 : Slave-fpga side0",
+    "    71 : Slave-fpga side1",
+    "    80 : RFIC boot side0",
+    "    81 : RFIC boot side1",
+    "    90 : RFIC ARM side0",
+    "    91 : RFIC ARM side1",
+    "   100 : PGC Traning Parameter",
+    "   200 : Soft Parameter side0",
+    "   201 : Soft Parameter side1",
+    "   300 : PTP Parameter side0",
+    "   301 : PTP Parameter side1"
+  else
+   puts "Who am I !!!!!!"
+ end
+ exit(1)
+end
+
+filename = ARGV[0]
+
+#ファイルサイズ取得
+if !fsize = Rrh.fsizeget("/tmp/#{filename}") then
+ puts "file open error "
+ exit(1)
+end
+file_size=fsize
+if (file_size%buffer_size) != 0 then
+ write_numbers = (fsize/buffer_size).to_i+1
+else
+ write_numbers = (fsize/buffer_size).to_i
+end
+#引数の整合性確認
+kind_s = ARGV[1]
+area = Register::FLASH_TBL.find {|item| item[0] == kind_s }
+if area == nil then
+ puts "<kind> is wrong  "
+ exit(1)
+end
+
+#ファイルサイズの確認
+if (fsize > area[3].to_i(16)) || (fsize < 0) then
+ puts "file size over"
+ exit(1)
+end
+
+Rrh.assign()
+#EEPROMイレースフラグ操作
+if !(area[4]==nil) then
+ Rrh.eepwrite(area[4],0)
+end
+
+#フラッシュイレース
+puts "flash erase start "
+case kind_s
+	when "10","11" then
+		if !Rrh.flasherase( area[1] , area[2] , fsize.to_s(16) ) then
+			puts "flash erase error "
+			raise
+		end
+	else
+		if !Rrh.flasherase( area[1] , area[2] , area[3] ) then
+			puts "flash erase error "
+			raise
+		end
+end
+puts "flash erase complete "
+
+#ファイルオープン
+if !fp=Rrh.fopen("/tmp/#{filename}","rb") then
+ puts "file open error "
+ raise
+end
+
+buffer = Rrh.malloc(buffer_size)
+
+#書き込み
+puts "flash write start "
+offset=0
+for cnt in 0..(write_numbers-1) do
+ #ファイルリード
+ if !readsize=Rrh.fread(buffer,buffer_size,fp) then
+  puts "file read error "
+  Rrh.fclose(fp)
+  Rrh.free(buffer)
+  raise
+ end
+ 
+ #フラッシュ書き込み
+  write_area = Rrh.calc( area[2].to_s(16),"+",offset.to_s(16) )
+  if !Rrh.flashwrite(area[1],write_area,readsize.to_s(16),buffer) then
+   puts "flash write error "
+   Rrh.fclose(fp)
+   Rrh.free(buffer)
+   raise
+  end
+
+ printf("*")
+ Rrh.fflush()
+ offset = offset + readsize
+end
+puts ""
+puts "flash write complete "
+
+#EEPROMサイズ書き込み
+if !(area[5]==nil) then
+ Rrh.eepwrite(area[5],   (fsize>>24)&0xFF)
+ Rrh.eepwrite(area[5]+1, (fsize>>16)&0xFF)
+ Rrh.eepwrite(area[5]+2, (fsize>>8)&0xFF)
+ Rrh.eepwrite(area[5]+3, fsize&0xFF)
+end
+
+#Softパラメータ バージョン書込み
+case  ARGV[1]
+  when "200" then
+  when "210" then
+    if !(area[6]==nil) then
+     version = filename.match(/\d+/)
+     v = version.slice(0,2)
+     m = versino.slice(2,2)
+     Rrh.eepwrite(area[6],   v.to_i)
+     Rrh.eepwrite(area[6]+1, m.to_i)
+    end
+    exit(0)
+  else
+end
+
+#書き込みあり
+if !(area[7]==nil) then
+ Rrh.eepwrite(area[7],  1)
+end
+
+#後処理
+Rrh.unassign()
+Rrh.free(buffer)
+Rrh.fclose(fp)
+

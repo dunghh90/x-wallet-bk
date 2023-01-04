@@ -1,0 +1,28 @@
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+
+if ARGV.length > 0 then
+	mode_s = ARGV[0]
+	case mode_s.downcase
+		when "np" then
+			mode = 0
+		else
+			mode = 1
+	end
+else
+	mode = 1
+end
+
+
+Rrh.assign()
+if mode == 1 then
+	sensortemp_p = Rrh.tempread2()
+	sensortemp_d  = sensortemp_p.to_i(10) / 10
+	sensortemp = sensortemp_d.to_s
+else
+	sensortemp = Rrh.tempread()
+end
+Rrh.unassign()
+puts "************* TEMP *****************"
+puts "[SENSOR ] #{sensortemp}"

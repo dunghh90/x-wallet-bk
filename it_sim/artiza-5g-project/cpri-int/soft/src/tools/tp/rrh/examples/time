@@ -1,0 +1,10 @@
+Rrh.require("./verbose")
+if ARGV.length == 0 then
+puts Time.now.localtime
+else
+ if ARGV[0].to_s == "-g" then
+  puts Time.now.gmtime
+ else
+  puts Time.now.localtime
+ end
+end

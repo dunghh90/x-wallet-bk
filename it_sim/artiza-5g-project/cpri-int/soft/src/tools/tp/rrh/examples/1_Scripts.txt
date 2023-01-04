@@ -1,0 +1,179 @@
+スクリプトの書き方について
+
+スクリプト書き方は基本的にruby準拠です。ただし完全なrubyではないので注意してください。
+rubyと違う点
+　・値はint型(整数)で扱われる(Bignumは非対応)
+　・小数点はdouble型で扱われる
+　・正規表現は使えない
+　・使えないクラス、モジュールもいっぱいある
+　・マルチスレッドは無理
+
+スクリプトで使えるモジュールやクラスのサンプルを以下に記載します。
+
+■基本系
+(1)コメント
+ # this is hello world.
+
+(2)変数、モジュール、クラス
+変数              :頭文字は必ず小文字
+モジュール、クラス:頭文字は必ず大文字
+
+(3)予約文字
+いろいろあると思う
+
+(4)文字表示
+ puts "Hello World"
+ print "Hello World\n"
+ p "Hello World"
+ printf("Hello World\n")
+
+(5)演算
+  2 + 2  # -> 4
+  2 / 2　# -> 1
+  2 % 2  # -> 0
+  4 * 2  # -> 8
+
+(6)数学関数
+  10 ** (2) # pow -> 100
+ 他にもいろいろあると思うけど、まだ調べ切れていない...だれか調べて。。
+
+(7)四捨五入
+ 1.5.round    # -> 2
+ 1.5.round(1) # -> 1.5
+
+(8)ループ
+ 5.times { | count |
+
+ } # 5回ループする
+
+ 他にもfor , whileなどもある
+
+(9)引数
+ ARGVが使える
+ ARGV[0] 第一引数
+ ARGV[1] 第ニ引数
+  :
+
+ 例)rrh -help -v -l 
+   ARGV[0] => -v
+   ARGV[1] => -l
+  になる
+
+■rrh独自系
+
+rrh用に独自モジュールを用意してます。モジュールの呼び出し形式はRrh.xxx()になります。
+
+(1)レジスタアクセスモジュール
+・Bignumが使えないので、レジスタアドレス、レジスタ値は文字列で指定する
+・デバイスにアクセスする場合は、アクセスする前にRrh.assign()、アクセスし終わったらRrh.unassign()を必ず呼ぶこと。
+  (スクリプト内で一回ずつ呼べばよい)
+
+ (1-1)FPGA,GPIO系
+   regread,writenの引数は文字列で指定、復帰値は文字列
+
+   Rrh.assign()
+   val = Rrh.regread("40000000")  		#-> 0x40000000番地をリード
+   puts val                       		#-> リード値を表示
+   Rrh.regwrite("40000000","00000001")	#-> 0x40000000番地に1をライト
+   Rrh.unassign()
+
+ (1-2)PLD系
+   spiread,spiwriteの引数は文字列で指定、復帰値は文字列
+    Rrh.assign()
+    val = Rrh.spiread("cpld","0001")			#-> 0001番地をリード
+    puts val                       				#-> リード値を表示
+    val = Rrh.spiwrite("cpld","0001","0001")	#-> 0001番地に0001をライト
+    Rrh.unassign()
+
+ (1-3)EEPROM系
+   eepは引数はintで指定、復帰値は文字列
+    Rrh.assign()
+    val = Rrh.eepread(0x69)  # -> 0x69番地 をリード
+    puts val # リード値を表示
+    Rrh.eepwrite(0x69,1)  # -> 0x69番地に1ライト
+    Rrh.unassign()
+
+    以下は特別にassign,unassignが不要なモジュール
+    val = Rrh.eepdrv("r",0x216,1)		# -> eep read,種別,アドレス、サイズ
+    puts val							# -> eepromリード値を表示
+    Rrh.eepdrv("w",0x216,1)				# -> eep write 種別,アドレス、値
+
+ (1-4)FLASH系
+    Rrh.assign()
+    Rrh.flasherase("0","00100000","00600000")		#-> 種別を文字列で指定してイレース
+    Rrh.flashwrite("0","00100000","00600000")		#-> 面、アドレス、サイズの順で文字列指定してライト
+    Rrh.unassign()
+
+ (1-5)RFIC系
+    Rrh.assign()
+    val=Rrh.spiread("rficrx","0001")					#-> rxのリード
+    puts val
+    Rrh.spiwrite("rficrx","0001")						#-> rxのライト
+    val=Rrh.spiread("rfictx","0001")					#-> txのリード
+    puts val
+    Rrh.spiwrite("rfictx","0001")						#-> txのライト
+    Rrh.unassign()
+
+ (1-6)SFP系
+    Rrh.assign()
+    val = Rrh.sfpread(0,0x28,16,"bin")					#->SFP種別、先頭アドレス、サイズはint,"bin"指定すると数値を文字列で返す
+    puts val
+    val = Rrh.sfpread(0,0x28,16,"txt")					#->SFP種別、先頭アドレス、サイズはint,"txt"指定するとアスキー変換して文字列で返す
+    puts val
+    Rrh.unassign()
+
+(2)メッセージ通信モジュール
+・メッセージ通信する場合は、通信前にRrh.assign()、終わったらRrh.unassign()を必ず呼ぶこと(スクリプト内で一回ずつ呼べばよい)
+ Rrh.assign()
+ Rrh.msgset()
+ Rrh.msgsend()
+ Rrh.msgrecv()
+ Rrh.msgget()
+ Rrh.unassign()
+
+(3)APIモジュール
+・APIをコールする場合は、コール前にRrh.assign()、終わったらRrh.unassign()を必ず呼ぶこと(スクリプト内で一回ずつ呼べばよい)
+ Rrh.assign()
+ Rrh.api("rrhApi_xxx")
+ Rrh.unassign()
+
+(4)ファイル操作モジュール
+ ・基本的にはC言語のfile操作関数のラッパー
+ Rrh.fopen()
+ Rrh.fread()
+ Rrh.fwrite()
+ Rrh.fclose()
+ Rrh.ftell()
+ Rrh.fseek()
+ Rrh.fgetline()
+ Rrh.fseekline()
+
+(5)ネットワーク系
+ ・基本的にはC言語のsocket関数のラッパー
+
+
+
+(6)ユーティリティ系モジュール
+・スクリプトから別のスクリプトをコール
+ Rrh.require()
+・デバッグ文出力
+ Rrh.dmsg()
+・タイマ起動
+ Rrh.timer()
+・スリープ
+ Rrh.sleep()
+・バッファ獲得、開放
+ Rrh.malloc()
+ Rrh.free()
+・メモリ比較
+ Rrh.memcmp()
+
+・シグナルキャッチ
+ Rrh.dcatch()
+・システムコマンド
+ Rrh.system()
+・標準入力待ち
+ Rrh.getline()
+
+(x)その他
+ rrh -help_moduleコマンドでスクリプトで使用可能なモジュール一覧がでます。参考ください。

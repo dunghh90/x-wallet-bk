@@ -1,0 +1,113 @@
+Rrh.require("./verbose")
+
+Rrh.assign()
+
+Msghead = Struct.new(:evtid,:sigkind,:dstpqid,:dsttqid,:srcpqid,:srctqid)
+
+head = Msghead.new
+head.evtid = 0x10010007	# D_SYS_MSGID_ALLTSKININTC
+head.sigkind = 0
+head.dstpqid = 0x10010002	# PF
+head.dsttqid = 1			# pf_main
+head.srcpqid = 0x10000001	# INIT
+head.srctqid = 0			# none
+
+if !Rrh.msgsend(0x10010002,head,0) then
+	puts "ERROR"
+	exit(1)
+end
+
+# max 11min wait
+for cnt in 0 ..660 do
+	if Rrh.psstat("D_RRH_PROCID_PF") == true then
+		break
+	end
+	Rrh.sleep(1,0)
+end
+
+puts "FH Ether init start ..."
+
+Rrh.regbitoff("a0000040","00000010")
+loopnum = 0
+while loopnum < 100 do
+  val = Rrh.regread("a0000200")
+  if  Rrh.calc(val,"&","00000800") == "00000000" then
+    Rrh.regbitoff("a0000040","00000020")
+    Rrh.sleep(0,100000000)
+    puts "PLL OK"
+    break
+  else
+    Rrh.sleep(0,100000000)
+  end
+  loopnum = loopnum + 1
+end
+
+if loopnum >= 100 then
+  puts "Timeout"
+  exit(1)
+end
+
+puts "Ether Setup ..."
+
+Rrh.regbiton("a1000D00","00000001")
+Rrh.regbitoff("a1000000","00000001")
+Rrh.sleep(0,20000000)
+
+val = Rrh.regread("a1000010")
+if Rrh.calc(val,"&","00000001") == "00000000" then
+	printf("TX DONE ERROR(%s) \n",val)
+	exit(2)
+end
+if Rrh.calc(val,"&","00000010") == "00000000" then
+	printf("RX DONE ERROR(%s) \n",val)
+	exit(3)
+end
+
+puts "GT param Setup ..."
+Rrh.regbitoff("a0060248","0000FFFF")
+ Rrh.regbiton("a0060248","0000F81C")
+
+Rrh.regbitoff("a0060044","0000FFFF")
+ Rrh.regbiton("a0060044","00000012")
+
+Rrh.regbitoff("a00604D4","0000FC00")
+ Rrh.regbiton("a00604D4","00004800")
+
+Rrh.regbitoff("a0060294","0000FFFF")
+ Rrh.regbiton("a0060294","00000012")
+
+Rrh.regbitoff("a0060470","0000FFFF")
+ Rrh.regbiton("a0060470","00000012")
+
+Rrh.regbitoff("a00600F4","0000FFFF")
+ Rrh.regbiton("a00600F4","0000FFF0")
+
+Rrh.regbitoff("a0060340","00000070")
+ Rrh.regbiton("a0060340","00000040")
+
+Rrh.regbitoff("a0060148","0000001C")
+ Rrh.regbiton("a0060148","00000008")
+
+Rrh.regbitoff("a0060230","00000010")
+
+Rrh.regbitoff("a0060188","00000078")
+ Rrh.regbiton("a0060188","00000018")
+
+puts "Ether PHY reset ON,OFF."
+Rrh.regbiton("a1000000","00000001")
+Rrh.regbitoff("a1000000","00000001")
+Rrh.sleep(0,20000000)
+
+val = Rrh.regread("a1000010")
+if Rrh.calc(val,"&","00000001") == "00000000" then
+	printf("TX DONE2 ERROR(%s) \n",val)
+	exit(2)
+end
+if Rrh.calc(val,"&","00000010") == "00000000" then
+	printf("RX DONE2 ERROR(%s) \n",val)
+	exit(3)
+end
+
+Rrh.unassign()
+puts "Completed"
+exit(0)

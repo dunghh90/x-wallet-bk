@@ -1,0 +1,48 @@
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+Rrh.require("./z_global")
+Rrh.require("./apd_delayadjust")
+Rrh.require("./tpshm_access")
+Rrh.require("./txcal_regset")
+
+Rrh.assign()
+def cmd_help ( )
+	puts "usage:"+$0+" <antnum> <coef>",
+	"(m):<antnum>       is antenna number (0:A~7:H)",
+	"(m):<coef>         is Tx Calibration coefficient"
+	exit(1)
+end
+
+if ARGV.length < 2 then
+	cmd_help()
+	raise
+end
+
+addr_eep = 64
+res = Rrh.eepread(addr_eep.to_i(16))
+if res != "11" then
+	printf("device kind  : [NG] (devkind = %02x : mmW)\n", res.to_i(16))
+	printf("Calibration coefficient setting NG!!!\n")
+	exit(1)
+end
+
+val = Rrh.regread("A0000150")
+if (val = Rrh.calc(val,"&","00030000")) != "00000000" then
+	printf("usage status : [NG] (usage status = %08x : not idle)\n", val.to_i(16))
+	printf("Calibration coefficient setting NG!!!\n")
+	exit(1)
+end
+
+antnum = ARGV[0]
+coef   = ARGV[1]
+
+if antnum.to_i > 7 then
+	puts "antnum range over!! (antnum = #{antnum})"
+	exit(1)
+end
+
+txcal_regset(antnum, coef)
+Rrh.bpfshmwrite("E_RRH_SHMID_APL_TXCAL_COEF", "", antnum.to_s, coef.to_s)
+
+Rrh.unassign()

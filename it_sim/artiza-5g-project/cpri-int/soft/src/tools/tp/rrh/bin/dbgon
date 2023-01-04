@@ -1,0 +1,59 @@
+# 
+# debug mode on
+# rrh -dbgon
+# 
+
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+#Rrh.dmsg(1)
+
+Rrh.assign()
+if !res = Rrh.bpfshmread("E_RRH_SHMID_APL_DU_PROCESS_INFO", "", "dbgmode") then
+ puts "shm read error"
+ exit(1)
+end
+
+if res.to_i(16) == 1 then
+ puts "already debug mode is on"
+ Rrh.unassign()
+ exit(1)
+end
+
+device_type = Rrh.get_shmcm("device_type")
+if device_type == "00000013" then
+	if !rtn = Rrh.regbitoff( Register::FPGA_FB_SWCNTABCD , "00000001" ) then
+	 puts "Register write error #{rtn}"
+	 Rrh.unassign()
+	 exit(1)
+	end
+end
+	
+
+if !res = Rrh.bpfshmwrite("E_RRH_SHMID_APL_DU_PROCESS_INFO", "", "dbgmode","00000001") then
+ puts "shm write error"
+ exit(1)
+end
+
+if !res = Rrh.shmflgwrite("temperature",1) then
+ puts "shm write error"
+ exit(1)
+end
+
+
+if !res = Rrh.shmflgwrite("almmsk",1) then
+ puts "shm write error"
+ exit(1)
+end
+
+
+if !res = Rrh.shmflgwrite("dbgmode",1) then
+ puts "shm write error"
+ exit(1)
+end
+
+
+Rrh.unassign()
+
+puts "debug mode on..."
+

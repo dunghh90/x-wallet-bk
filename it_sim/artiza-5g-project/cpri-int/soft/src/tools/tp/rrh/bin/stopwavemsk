@@ -1,0 +1,17 @@
+# 
+# Stop wave mask(5G-¤—pDU)
+# rrh -stopwavemsk
+# 
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+if ARGV.length > 0 then
+  dbgF_i = 1;
+else
+  dbgF_i = 0;
+end
+
+Rrh.assign()
+Rrh.api("rrhApi_Svp_Mnt_Inhibit_stpWv_tp", 0x10FD000E, 0, 0)
+puts "stopwavemsk complete"
+Rrh.unassign()

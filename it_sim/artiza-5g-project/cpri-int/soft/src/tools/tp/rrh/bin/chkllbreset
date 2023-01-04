@@ -1,0 +1,101 @@
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+
+Rrh.assign()
+
+puts "LLB-TRX Drive setting "
+devkind = Rrh.eepread(Register::EEP_BOARD_TYPE.to_i(16))
+if devkind == "13" then
+	Rrh.regwrite("a0000910","00100000")
+	Rrh.regwrite("a0000914","00100000")
+	Rrh.regwrite("a0000918","00100000")
+	Rrh.regwrite("a000091C","00100000")
+	Rrh.regwrite("a0000920","00100000")
+	Rrh.regwrite("a0000924","00100000")
+	Rrh.regwrite("a0000928","00100000")
+	Rrh.regwrite("a000092C","00100000")
+
+	Rrh.regwrite("b0000900","00100000")
+	Rrh.regwrite("b0000904","00100000")
+	Rrh.regwrite("b0000908","00100000")
+	Rrh.regwrite("b000090C","00100000")
+	Rrh.regwrite("b0000910","00100000")
+	Rrh.regwrite("b0000914","00100000")
+	Rrh.regwrite("b0000918","00100000")
+	Rrh.regwrite("b000091C","00100000")
+	Rrh.regwrite("b0000920","00100000")
+	Rrh.regwrite("b0000924","00100000")
+	Rrh.regwrite("b0000928","00100000")
+	Rrh.regwrite("b000092C","00100000")
+
+else
+	Rrh.regwrite("a0000910","00100000")
+	Rrh.regwrite("a0000914","00100000")
+	Rrh.regwrite("a0000918","00100000")
+	Rrh.regwrite("a000091C","00100000")
+	Rrh.regwrite("a0000920","00100000")
+	Rrh.regwrite("a0000924","00100000")
+	Rrh.regwrite("a0000928","00100000")
+	Rrh.regwrite("a000092C","00100000")
+
+	Rrh.regwrite("b0000900","00100000")
+	Rrh.regwrite("b0000904","00100000")
+	Rrh.regwrite("b0000908","00100000")
+	Rrh.regwrite("b000090C","00100000")
+	Rrh.regwrite("b0000910","00100000")
+	Rrh.regwrite("b0000914","00100000")
+	Rrh.regwrite("b0000918","00100000")
+	Rrh.regwrite("b000091C","00100000")
+	Rrh.regwrite("b0000920","00100000")
+	Rrh.regwrite("b0000924","00100000")
+	Rrh.regwrite("b0000928","00100000")
+	Rrh.regwrite("b000092C","00100000")
+
+end
+
+puts "LLB-TRX reset unmask "
+
+result=0
+Rrh.regbitoff("A0000040","00000004")
+Rrh.sleep(0,10000000)
+val = Rrh.regread("A0000200")
+val = Rrh.regread("A0000200")
+if  Rrh.calc(val,"&","00000200") != "00000000" then
+  printf("LLB SYS PLL CHK[9] ERROR:0x%s\n",val)
+
+  exit(3)
+  
+else
+  val = Rrh.regread("B0000200")
+  val = Rrh.regread("B0000200")
+  if  Rrh.calc(val,"&","00000001") != "00000000" then
+   printf("TRX1 SYS PLL CHK ERROR:0x%s\n",val)
+
+   exit(4)
+  end
+
+  val = Rrh.regread("A0000200")
+  val = Rrh.regread("A0000200")
+  if  Rrh.calc(val,"&","00000400") != "00000000" then
+   printf("LLB SYS PLL CHK[10] ERROR:0x%s\n",val)
+
+   exit(6)
+  end
+
+  val = Rrh.regread("B0000200")
+  val = Rrh.regread("B0000200")
+  if  Rrh.calc(val,"&","00000002") != "00000000" then
+   printf("TRX1 IC PLL CHK ERROR:0x%s\n",val)
+   
+   exit(7)
+
+  end
+
+  if result == 0 then
+   puts "LLB-TRX SYSLOG reset unmask "
+   Rrh.regbitoff("A0000040","00000008")
+  end
+end
+puts "Completed"
+Rrh.unassign()
+

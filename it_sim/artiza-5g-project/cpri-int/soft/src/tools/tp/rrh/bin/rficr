@@ -1,0 +1,40 @@
+# 
+# Register read
+# rrh -rficr <unit> <addr>
+# 
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh.require("./input_check")
+#Rrh.dmsg(1)
+
+# usage
+if ARGV.length < 2 then
+ puts "usage:"+$0+" <unit> <addr> ",
+ "(m):<unit> is 0-1:RFIC0-RFIC1",
+ "(m):<addr> is rfic register address(hex)"
+ exit(1)
+end
+
+unit_s = ARGV[0]
+addr_s = ARGV[1]
+
+#引数の整合性確認
+if( (unit_s.to_i(16)<0) || (unit_s.to_i(16)>1) ) then
+ puts "Input value is incorrect : <unit>"
+ exit(1)
+end
+
+if !Rrh.input_check(addr_s,8) then
+ puts "Input value is incorrect : <addr>"
+ exit(1)
+end
+
+Rrh.assign()
+#レジスタ読み取り
+if !res = Rrh.rficread(unit_s.to_i(16),addr_s.to_i(16)) then
+ puts "rfic register read error"
+else
+ puts "0x#{res} "
+end
+
+Rrh.unassign()

@@ -1,0 +1,36 @@
+Rrh.require("./verbose")
+
+def cmd_help ( )
+    puts "usage:"+$0+" <Mode>",
+    "(m):<Mode>         is 0 => PtpStart / 1 => PtpShutdown"
+    exit(1)
+end
+
+if ARGV.length < 1 then
+    cmd_help()
+    raise
+end
+
+qid  = 0x10FD000E
+Mode = ARGV[0]
+printf("Mode = %d\n", Mode)
+
+Rrh.assign()
+if (Mode.to_i==0) then
+    puts "Send PtpStartRequest..."
+    if ( rtn = Rrh.api("duApi_Ptp_Mqr_PtpStart", qid, 0, 0) ) != 0 then
+        printf("=>ERROR_R %d \n",rtn)
+    else
+        puts "=>OK "
+    end
+end
+
+if (Mode.to_i==1) then
+    puts "Send PtpShutdownRequest..."
+    if ( rtn = Rrh.api("duApi_Ptp_Mqr_PtpShutdown", qid, 0, 0) ) != 0 then
+        printf("=>ERROR_R %d \n",rtn)
+    else
+        puts "=>OK "
+    end
+end
+Rrh.unassign()

@@ -1,0 +1,25 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+# usage
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <addr>",
+ "(m):<addr> is address"
+ exit(1)
+end
+
+addr_s = ARGV[0]
+
+#ˆø”‚Ì®‡«Šm”F
+if !Rrh.input_check(addr_s,4) then
+ puts "Input value is incorrect : <addr>"
+ exit(1)
+end
+
+Rrh.assign()
+if !res = Rrh.mmiread( addr_s.to_i(16) ) then
+ puts "read error"
+else
+ puts "0x#{res} "
+end
+
+Rrh.unassign()

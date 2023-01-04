@@ -1,0 +1,179 @@
+# device access through apd fpga
+
+module Rrh
+
+#-----------------------------------------------------
+# Busy check
+#-----------------------------------------------------
+	def self.gppo_busyCheck()
+		for cnt in 1..500 do	# 2u*500=1ms
+			Rrh.sleep(0,2000)	# sleep 2us
+			data_s = Rrh.regread(Register::FPGA_CNTM_GPIFSET)
+			busy_s = Rrh.calc(data_s,"&","00020000")
+			if busy_s == "00000000" then
+				return true
+			end
+		end
+
+		return false
+	end
+
+#---------------------------------------------------
+#  PAVG設定
+#---------------------------------------------------
+	def self.fn_PAVGset(devnum, setval)
+
+# BUSYチェックはここでは実施しない
+#		# BUSYチェック
+#		if Rrh.gppo_busyCheck() != true then
+#			printf("NG PAVGset Busy timeout.\n")
+#			return false
+#		end
+
+# レジスタ設定はここでは実施しない
+#		Rrh.regwrite(Register::FPGA_CNTM_GPIFTCK, "00FFFF00")	# クロック
+#		Rrh.regwrite(Register::FPGA_CNTM_GPIFEN,  "FF0000FF")	# イネーブル
+
+		data_s = Rrh.calc(setval.to_s(16),"<","00000008")
+#		Rrh.regwrite(Register::FPGA_CNTM_GPIFTXD, data_s)		# データ
+		seten = (0x00000001 << devnum)
+		seten += 0x00030000
+#		Rrh.regwrite(Register::FPGA_CNTM_GPIFSET, seten.to_s(16))	# イネーブル実行
+
+		seten_s = seten.to_s(16)
+		if Rrh.dataset_fwvatt(data_s, seten_s) == false then	#
+			printf("dataset failed NG PAVGset Retry in a few minutes.\n")
+			return false
+		end
+
+		return true
+	end
+
+#---------------------------------------------------
+#  TXVATT設定
+#---------------------------------------------------
+# VATTデバイスPE4302は1bitのデータ中にクロックの立ち上がりと立下りエッジが必要なので
+# 以下のように1bitデータを2bit分の幅で使用する。
+#           1   0   1   0   1   0   1   0   1   0   1   0
+#           +-+     +-+     +-+     +-+     +-+     +-+
+# ck        | |     | |     | |     | |     | |     | |
+#    -------+ +-----+ +-----+ +-----+ +-----+ +-----+ +--------
+#         +---+---+---+---+---+---+---+---+---+---+---+---+
+# dt      |       |       |       |       |       |       |
+#    -----+---+---+---+---+---+---+---+---+---+---+---+---+----
+#    -----+                                               +----
+# en      |                                               |
+#         +-----------------------------------------------+
+	def self.fn_TxVATTset(antnum, setval)
+		# BUSYチェック
+#		if Rrh.gppo_busyCheck() != true then
+#			printf("NG PAVGset Busy timeout.\n")
+#			return false
+#		end
+
+		if antnum == 0 then
+			seten_s = "A2100184"
+		elsif antnum == 1 then
+			seten_s = "A2100384"
+		elsif antnum == 2 then
+			seten_s = "A2100584"
+		elsif antnum == 3 then
+			seten_s = "A2100784"
+			
+#20180726追加 若水 seten_sは暫定値
+		elsif antnum == 4 then
+			seten_s = "A2100984"
+		elsif antnum == 5 then
+			seten_s = "A2100B84"
+		elsif antnum == 6 then
+			seten_s = "A2100D84"
+		elsif antnum == 7 then
+			seten_s = "A2100F84"
+#ここまで
+			
+		else
+			printf("NG TxVattSet antnum value=%x(0-7).\n", antnum)
+			return false
+		end
+
+		ul_wdat = setval
+		ul_wdat &= 0x0000003F
+		bitsft = 0x00000001
+		ul_mkdat = 0x00000000
+		for cnt in 0..5 do
+			bitval = ul_wdat & (bitsft << cnt)
+			ul_mkdat |= (bitval << cnt)
+		end
+		
+#以下、ミドル利用に変更する可能性あり 若水
+		
+		ul_mkdat |= (ul_mkdat << 1)
+		ul_mkdat <<= 8
+		Rrh.regwrite(Register::FPGA_CNTM_GPIFTCK, "000AAA00")	# クロック
+		Rrh.regwrite(Register::FPGA_CNTM_GPIFEN,  "000000C0")	# イネーブル
+		data_s = Rrh.calc(ul_mkdat.to_s(16),"+","00000000")
+		Rrh.regwrite(Register::FPGA_CNTM_GPIFTXD, data_s)		# データ
+		Rrh.regwrite(Register::FPGA_CNTM_GPIFSET, seten_s)		# イネーブル実行
+
+		return true
+	end
+
+
+
+#---------------------------------------------------
+#  FWVATT設定
+#---------------------------------------------------
+	def self.fn_FwVATTset(antnum, setval)
+
+# BUSYチェックはここでは実施しない
+#		# BUSYチェック
+#		if Rrh.gppo_busyCheck() != true then
+#			printf("NG FwVATTset Busy timeout.\n")
+#			return false
+#		end
+
+		if antnum == 0 then
+			seten_s = "00030010"
+			bitsft  = 0x00
+		elsif antnum == 1 then
+			seten_s = "00030010"
+			bitsft  = 0x01
+		elsif antnum == 2 then
+			seten_s = "00030010"
+			bitsft  = 0x02
+		elsif antnum == 3 then
+			seten_s = "00030010"
+			bitsft  = 0x03
+		else
+			printf("NG FwVattSet antnum value=%x(0-3).\n", antnum)
+			return false
+		end
+
+		ul_wdat = setval
+		ul_wdat &= 0x000003FF  
+		ul_wdat <<= 10          # [bit19:10]
+
+		ul_wdat |= 0x00100000      # [bit21:20]
+		ul_wdat |= (bitsft << 22)  # VOUTA/VOUTB/VOUTC/VOUTD [bit23:22]
+
+# レジスタ設定はここでは実施しない
+#		Rrh.regwrite(Register::FPGA_CNTM_GPIFTCK, "00FFFF00")	# クロック
+#		Rrh.regwrite(Register::FPGA_CNTM_GPIFEN,  "FF0000FF")	# イネーブル
+
+		data_s = Rrh.calc(ul_wdat.to_s(16),"+","00000000")
+
+# レジスタ設定はここでは実施しない
+#		Rrh.regwrite(Register::FPGA_CNTM_GPIFTXD, data_s)		# データ
+#		Rrh.regwrite(Register::FPGA_CNTM_GPIFSET, seten_s)		# イネーブル実行
+
+		if Rrh.dataset_fwvatt(data_s, seten_s) == false then	#
+			printf("dataset failed NG FwVattSet Retry in a few minutes.\n")
+			return false
+		end
+
+		return true
+	end
+
+
+
+end

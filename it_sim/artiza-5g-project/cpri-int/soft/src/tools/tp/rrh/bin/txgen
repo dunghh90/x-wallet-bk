@@ -1,0 +1,38 @@
+Rrh.require("./verbose")
+
+def cmd_help()
+ puts "usage: "+$0+" <GenSW> <Rate> ",
+ "(m):<GenSW>  Data Generation is 0:OFF / 1:ON ",
+ "(m):<Rate> Data Rate is 0:50M / 1:100M / 2:200M / 3:400M "
+ return
+end
+
+#usage
+if ARGV.length < 2 then
+ cmd_help()
+ exit(1)
+end
+
+GenSW_s  = ARGV[0]
+Rate_s  = ARGV[1]
+
+
+Rrh.assign()
+if GenSW_s.to_i > 2 then
+    puts "Input value is incorrect : <GenSW>"
+    exit(1)
+end
+
+if Rate_s.to_i > 4 then
+    puts "Input value is incorrect : <Rate>"
+    exit(1)
+end
+
+
+if !res = Rrh.DataTxGen( GenSW_s , Rate_s ) then
+ puts "error"
+else
+ puts "complete"
+end
+
+Rrh.unassign()

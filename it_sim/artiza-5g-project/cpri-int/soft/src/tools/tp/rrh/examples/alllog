@@ -1,0 +1,74 @@
+@lastcmd = ""
+Rrh.timer(3)
+
+begin
+ def func_docmd(cmd , redirect , outpath , outname )
+  if ( outpath == "" ) then
+   cmdtext = cmd
+  else
+   if ( redirect == " > " ) or ( redirect == " >> ") then
+    cmdtext = cmd + redirect + outpath + outname
+   else
+    cmdtext = cmd
+   end
+  end
+  @lastcmd = cmdtext
+  cmdtext << " 2>/dev/null"
+    Rrh.system(cmdtext)
+  return
+ end
+
+ rlogname       = "syslog_rtiflog.log"
+ klogname       = "syslog_knllog.log"
+ kpslogname     = "syslog_knllog_ps.log"
+
+ func_docmd( "date +\"%Y/%m/%d %H:%M:%S\""             , " > "  , ARGV[0].to_s , rlogname )
+ func_docmd( "echo [ RealTime Log ]"                   , " >> " , ARGV[0].to_s , rlogname )
+ func_docmd( "cmd_rrupfdump -d /var/log/lo.pcap"       , " >> " , ARGV[0].to_s , rlogname )
+ func_docmd( "echo [ RealTime Old Log ]"               , " >> " , ARGV[0].to_s , rlogname )
+ func_docmd( "cmd_rrupfdump -d /var/log/lo.pcap.old0"  , " >> " , ARGV[0].to_s , rlogname )
+ func_docmd( "date +\"%Y/%m/%d %H:%M:%S\""             , " >> " , ARGV[0].to_s , rlogname )
+
+ func_docmd( "date +\"%Y/%m/%d %H:%M:%S\""             , " > "  , ARGV[0].to_s , klogname )
+ func_docmd( "echo [ Kernel interrupts ]"              , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "cat /proc/softirqs"                      , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "cat /proc/interrupts"                    , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "echo [ Kernel timerlist]"                , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "cat /proc/timer_list"                    , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "echo [ Kernel stat ]"                    , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "cat /proc/stat"                          , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "echo [ Kernel vmstat ]"                  , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "cat /proc/vmstat"                        , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "echo [ Kernel cmd vmstat]"               , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "vmstat"                                  , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "echo [ Kernel loadavg ]"                 , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "cat /proc/loadavg"                       , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "echo [ Kernel uptime ]"                  , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "cat /proc/uptime"                        , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "echo [ Kernel memInfo ]"                 , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "cat /proc/meminfo"                       , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "echo [ Kernel dmesg ]"                   , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "dmesg"                                   , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "echo [ Kernel network ]"                 , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "arp -a"                                  , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "ifconfig"                                , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "netstat -a"                              , " >> " , ARGV[0].to_s , klogname )
+ func_docmd( "date +\"%Y/%m/%d %H:%M:%S\""             , " >> " , ARGV[0].to_s , klogname )
+
+ func_docmd( "date +\"%Y/%m/%d %H:%M:%S\""             , " > "  , ARGV[0].to_s , kpslogname )
+ func_docmd( "echo [ Kernel ps ]"                      , " >> " , ARGV[0].to_s , kpslogname )
+ func_docmd( "rrh -wiki ps"                            , " >> " , ARGV[0].to_s , kpslogname )
+ func_docmd( "echo [ Kernel status ]"                  , " >> " , ARGV[0].to_s , kpslogname )
+ func_docmd( "cat /proc/*/task/*/status"               , " >> " , ARGV[0].to_s , kpslogname )
+ func_docmd( "echo [ Kernel maps ]"                    , " >> " , ARGV[0].to_s , kpslogname )
+ func_docmd( "cat /proc/*/task/*/maps"                 , " >> " , ARGV[0].to_s , kpslogname )
+ func_docmd( "echo [ Process version ]"                , " >> " , ARGV[0].to_s , kpslogname )
+ func_docmd( "cmd_srcver"                              , " >> " , ARGV[0].to_s , kpslogname )
+ func_docmd( "date +\"%Y/%m/%d %H:%M:%S\""             , " >> " , ARGV[0].to_s , kpslogname )
+rescue
+ attnlogname     = "syslog_attention.log"
+ result = "echo \"Log Get ERROR !!!! [" + @lastcmd + "] was TIME OUT.\""
+ func_docmd( "date +\"%Y/%m/%d %H:%M:%S\""             , " > "  , ARGV[0].to_s , attnlogname ) 
+ func_docmd( result                                    , " >> " , ARGV[0].to_s , attnlogname ) 
+ exit(0) # need exit
+end

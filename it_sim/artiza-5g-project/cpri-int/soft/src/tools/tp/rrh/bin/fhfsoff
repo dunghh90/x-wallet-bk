@@ -1,0 +1,14 @@
+# 
+# FH フェールセーフOFF
+# rrh -fhfsoff
+# 
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+
+Rrh.assign()
+#共有メモリのFH フェールセーフOFFフラグをON
+
+str_s = Rrh.setFHfsOffFlg(1)
+
+Rrh.unassign()

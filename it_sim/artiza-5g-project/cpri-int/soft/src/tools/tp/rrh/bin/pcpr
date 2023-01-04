@@ -1,0 +1,24 @@
+#
+# pcp  read
+# rrh -pcpr <fh>
+#
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+# usage
+
+
+Rrh.assign()
+# reg  read
+
+	data_s = Rrh.regread("A1000494")
+	pcp1 = Rrh.calc(data_s,"&",0x00070000.to_s(16))
+	pcp1 = Rrh.calc(data_s,">","10".to_s(16))
+	printf("FH1 ADDRESS: %s pcp: %01x\n","A1000494",pcp1.to_s(16))
+	data_s = Rrh.regread("A1001494")
+	pcp2 = Rrh.calc(data_s,"&",0x00070000.to_s(16))
+	pcp2 = Rrh.calc(data_s,">","10".to_s(16))
+	printf("FH2 ADDRESS: %s pcp: %01d\n","A1001494",pcp2)
+
+
+Rrh.unassign()

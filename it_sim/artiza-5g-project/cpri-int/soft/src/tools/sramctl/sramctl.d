@@ -1,0 +1,1 @@
+sramctl.o: sramctl.c

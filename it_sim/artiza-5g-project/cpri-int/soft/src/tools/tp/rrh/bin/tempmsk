@@ -1,0 +1,31 @@
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+
+if ARGV.length < 1 then
+	puts "Input error, please input on or off"
+	exit(1)
+end
+
+Rrh.assign()
+
+case ARGV[0].downcase
+	when "on" then
+		val = 1
+	when "off" then
+		val = 0
+	else
+		val = 0xff
+end
+
+if val == 0 or val == 1 then
+	puts "OK."
+	if !res = Rrh.shmflgwrite("temperature",val) then
+		puts "shm write error"
+	end
+else
+	puts "Input error"
+end
+
+Rrh.unassign()
+

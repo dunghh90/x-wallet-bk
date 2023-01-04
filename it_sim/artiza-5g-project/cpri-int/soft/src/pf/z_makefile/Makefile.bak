@@ -1,0 +1,204 @@
+ifeq ($(BUILD_MODE_DEF), 0)
+all: alllib
+clean: allclean
+
+alllib:
+	#ft_com
+	cd ../ft_com/com;make
+	#ft_hdl
+	cd ../ft_hdl/hdl/makefile;make
+	#ft_dhcp
+	cd ../ft_dhcp/dhcp/Makefile;make
+	#ft_sfp
+	cd ../ft_sfp/sfp/Makefile;make
+	#ft_ptp
+	cd ../ft_ptp/zlptp;make
+	cd ../ft_ptp/ptp/Makefile;make
+	#ft_rfp
+	cd ../ft_rfp/cca/Makefile;make
+	cd ../ft_rfp/rfa/Makefile;make
+	#ft_rfp(debug)
+	cd ../ft_rfp/cca/debug;make
+	#ft_eqs
+	cd ../ft_eqs/eqs/Makefile;make
+	#ft_wdt
+	cd ../ft_wdt/wdt/Makefile;make
+	#ft_nma
+	cd ../ft_nma/nma/makefile;make
+	#ft_lgc
+	cd ../ft_lgc/lgc/makefile;make
+	#ft_fhs
+	cd ../ft_fhs/fhs/Makefile;make
+	#ft_eom
+	cd ../ft_eom/eom/Makefile;make
+	#ft_pfm
+	cd ../ft_pfm/pfm/Makefile;make
+	#ft_nmas
+	cd ../ft_nma/nmas/makefile;make
+	#ft_flm
+	cd ../ft_flm/fdl/Makefile;make
+	cd ../ft_flm/ful/Makefile;make
+	#ft_eio
+	cd ../ft_eio/eio/Makefile;make
+	#ft_mti
+	cd ../ft_mti/mti/Makefile;make
+	#ft_main
+	cd ../ft_main/main/Makefile;make ; mv ./DU_pf ../../../z_makefile
+	#ft_init
+	cd ../ft_init/mw/Makefile;make ; mv ../DU_mw ../../../z_makefile
+	#ft_init
+	cd ../ft_init/init/Makefile;make ; mv ../DU_init ../../../z_makefile
+
+allclean:
+	#ft_com
+	cd ../ft_com/com;make clean
+	#ft_hdl
+	cd ../ft_hdl/hdl/makefile;make clean
+	#ft_dhcp
+	cd ../ft_dhcp/dhcp/Makefile;make clean
+	#ft_sfp
+	cd ../ft_sfp/sfp/Makefile;make clean
+	#ft_ptp
+	cd ../ft_ptp/zlptp;make CLEAN
+	cd ../ft_ptp/ptp/Makefile;make clean
+	#ft_rfp
+	cd ../ft_rfp/cca/Makefile;make clean
+	cd ../ft_rfp/rfa/Makefile;make clean
+	#ft_rfp(debug)
+	cd ../ft_rfp/cca/debug;make clean
+	#ft_eqs
+	cd ../ft_eqs/eqs/Makefile;make clean
+	#ft_wdt
+	cd ../ft_wdt/wdt/Makefile;make clean
+	#ft_nma
+	cd ../ft_nma/nma/makefile;make clean
+	#ft_lgc
+	cd ../ft_lgc/lgc/makefile;make clean
+	#ft_fhs
+	cd ../ft_fhs/fhs/Makefile;make clean
+	#ft_eom
+	cd ../ft_eom/eom/Makefile;make clean
+	#ft_pfm
+	cd ../ft_pfm/pfm/Makefile;make clean
+	#ft_nmas
+	cd ../ft_nma/nmas/makefile;make clean
+	#ft_flm
+	cd ../ft_flm/fdl/Makefile;make clean
+	cd ../ft_flm/ful/Makefile;make clean
+	#ft_eio
+	cd ../ft_eio/eio/Makefile;make clean
+	#ft_mti
+	cd ../ft_mti/mti/Makefile;make clean
+	#ft_main
+	cd ../ft_main/main/Makefile;make clean
+
+	cd ../ft_init/init/Makefile;make clean
+	cd ../ft_init/mw/Makefile;make clean
+
+	rm -rf DU_init
+	rm -rf DU_pf
+	rm -rf DU_mw
+
+endif
+ifeq ($(BUILD_MODE_DEF), 1)
+all: alllib
+clean: allclean
+
+alllib:
+	#ft_com
+	cd ../ft_com/com;make
+	#ft_hdl
+	cd ../ft_hdl/hdl/makefile;make
+	#ft_dhcp
+	cd ../ft_dhcp/dhcp/Makefile;make
+	#ft_sfp
+	cd ../ft_sfp/sfp/Makefile;make
+	#ft_ptp
+	#cd ../ft_ptp/zlptp;make //C9
+	#cd ../ft_ptp/ptp/Makefile;make//C9
+	#ft_rfp
+	cd ../ft_rfp/cca/Makefile;make
+	cd ../ft_rfp/rfa/Makefile;make
+	#ft_rfp(debug)
+	cd ../ft_rfp/cca/debug;make
+	#ft_eqs
+	cd ../ft_eqs/eqs/Makefile;make
+	#ft_wdt
+	cd ../ft_wdt/wdt/Makefile;make
+	#ft_nma
+	cd ../ft_nma/nma/makefile;make
+	#ft_lgc
+	cd ../ft_lgc/lgc/makefile;make
+	#ft_fhs
+	cd ../ft_fhs/fhs/Makefile;make
+	#ft_eom
+	cd ../ft_eom/eom/Makefile;make
+	#ft_pfm
+	cd ../ft_pfm/pfm/Makefile;make
+	#ft_nmas
+	cd ../ft_nma/nmas/makefile;make
+	#ft_flm
+	cd ../ft_flm/fdl/Makefile;make
+	cd ../ft_flm/ful/Makefile;make
+	#ft_eio
+	cd ../ft_eio/eio/Makefile;make
+	#ft_mti
+	cd ../ft_mti/mti/Makefile;make
+	#ft_main
+	cd ../ft_main/main/Makefile;make ; mv ./DU_pf ../../../z_makefile
+	#ft_init
+	cd ../ft_init/mw/Makefile;make ; mv ../DU_mw ../../../z_makefile
+	#ft_init
+	cd ../ft_init/init/Makefile;make ; mv ../DU_init ../../../z_makefile
+
+allclean:
+	#ft_com
+	cd ../ft_com/com;make clean
+	#ft_hdl
+	cd ../ft_hdl/hdl/makefile;make clean
+	#ft_dhcp
+	cd ../ft_dhcp/dhcp/Makefile;make clean
+	#ft_sfp
+	cd ../ft_sfp/sfp/Makefile;make clean
+	#ft_ptp
+	cd ../ft_ptp/zlptp;make CLEAN
+	cd ../ft_ptp/ptp/Makefile;make clean
+	#ft_rfp
+	cd ../ft_rfp/cca/Makefile;make clean
+	cd ../ft_rfp/rfa/Makefile;make clean
+	#ft_rfp(debug)
+	cd ../ft_rfp/cca/debug;make clean
+	#ft_eqs
+	cd ../ft_eqs/eqs/Makefile;make clean
+	#ft_wdt
+	cd ../ft_wdt/wdt/Makefile;make clean
+	#ft_nma
+	cd ../ft_nma/nma/makefile;make clean
+	#ft_lgc
+	cd ../ft_lgc/lgc/makefile;make clean
+	#ft_fhs
+	cd ../ft_fhs/fhs/Makefile;make clean
+	#ft_eom
+	cd ../ft_eom/eom/Makefile;make clean
+	#ft_pfm
+	cd ../ft_pfm/pfm/Makefile;make clean
+	#ft_nmas
+	cd ../ft_nma/nmas/makefile;make clean
+	#ft_flm
+	cd ../ft_flm/fdl/Makefile;make clean
+	cd ../ft_flm/ful/Makefile;make clean
+	#ft_eio
+	cd ../ft_eio/eio/Makefile;make clean
+	#ft_mti
+	cd ../ft_mti/mti/Makefile;make clean
+	#ft_main
+	cd ../ft_main/main/Makefile;make clean
+
+	cd ../ft_init/init/Makefile;make clean
+	cd ../ft_init/mw/Makefile;make clean
+
+	rm -rf DU_init
+	rm -rf DU_pf
+	rm -rf DU_mw
+
+endif

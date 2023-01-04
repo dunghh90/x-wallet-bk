@@ -1,0 +1,1 @@
+jtagEther.o: jtagEther.c

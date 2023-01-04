@@ -1,0 +1,94 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+Rrh.require("./sveep")
+
+
+if ARGV.length < 2 then
+ puts "usage:"+$0+" <ant> <val>",
+ "(m):<ant> is 1:AntB / 2:AntC / 3:AntD",
+ "(m):<val> is Value(0~359)"
+ exit(1)
+end
+
+ant = ARGV[0]
+if  ant.to_i > 3 then
+ puts "input error ant"
+ exit(1)
+end
+
+val = ARGV[1]
+if val.to_i > 359 or val.to_i < 0 then
+ puts "input error value"
+ exit(1)
+end
+
+if !Rrh.input_check(val,4) then
+ puts "input error value"
+ exit(1)
+end
+
+Rrh.assign()
+	val_hex = Rrh.v_to_v( "d" , "h" , val )
+	case val_hex.length 
+		when 1 then
+			val_hex = "000" + val_hex
+		when 2 then
+			val_hex = "00" + val_hex
+		when 3 then
+			val_hex = "0" + val_hex
+		else
+			val_hex = val_hex
+	end
+	if ant.to_i == 0 then
+		addr = 0x18
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), val_hex[0..1]) then
+	        puts "txcaloffset Vertual Shard Memory Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 0x1
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), val_hex[2..3]) then
+	        puts "txcaloffset Vertual Shard Memory Write Error No.2"
+	        exit(1)
+	    end
+	elsif ant.to_i == 1 then
+		addr = 0x18 + 0x80 *1
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), val_hex[0..1]) then
+	        puts "txcaloffset Vertual Shard Memory Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 0x1
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), val_hex[2..3]) then
+	        puts "txcaloffset Vertual Shard Memory Write Error No.2"
+	        exit(1)
+	    end
+	elsif ant.to_i == 2 then
+		addr = 0x18 + 0x80 *2
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), val_hex[0..1]) then
+	        puts "txcaloffset Vertual Shard Memory Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 0x1
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), val_hex[2..3]) then
+	        puts "txcaloffset Vertual Shard Memory Write Error No.2"
+	        exit(1)
+	    end
+	else
+		addr = 0x18 + 0x80 *3
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), val_hex[0..1]) then
+	        puts "txcaloffset#A Vertual Shard Memory Write Error No.1"
+	        exit(1)
+	    end
+	    addr = addr + 0x1
+	    if !res = Rrh.tpshmwrite( "apde2pTX_vt" , "" , addr.to_s(16), val_hex[2..3]) then
+	        puts "txcaloffset#B Vertual Shard Memory Write Error No.2"
+	        exit(1)
+	    end
+	end
+	if Rrh.svvstx() == false then
+		puts "EEP update error "
+	else
+		printf("CRC saved \n")
+	end
+Rrh.unassign()

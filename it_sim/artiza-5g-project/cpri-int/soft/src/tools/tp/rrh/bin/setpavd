@@ -1,0 +1,38 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <on/off>",
+  "(m):<data>     is PAVD OFF/ON(0:OFF 1:ON)"
+ exit(1)
+end
+
+data = ARGV[0]
+if data.to_i > 1 then
+ puts "Input value is incorrect : <data>"
+ exit(1) 
+end
+
+Rrh.assign()
+addr_eep = 0x40
+if !res = Rrh.eepread(addr_eep.to_i(16)) then
+	puts "eep read error"
+else
+	case res
+		when "13"
+			if data.to_i == 0 then
+				Rrh.regbitoff("A0000020","00000001")
+			else
+				Rrh.regbiton("A0000020","00000001")
+			end
+		when "14"
+			if data.to_i == 0 then
+				Rrh.regbitoff("A0000020","00000010")
+			else
+				Rrh.regbiton("A0000020","00000010")
+			end
+		else
+			puts "kind error"
+	end
+end
+Rrh.unassign()

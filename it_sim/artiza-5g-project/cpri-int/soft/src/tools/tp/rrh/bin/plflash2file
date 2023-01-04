@@ -1,0 +1,65 @@
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+
+
+if ARGV.length < 2 then
+	puts "usage:"+$0+" <offset> <length> <output>",
+	"(m):<offset>  is PL QSPI offset 0~",
+	"(m):<length>  is PL QSPI length 0~",
+	"(o):<output>  is file path(full). default) /tmp/plQspiData.bin "
+	exit(1)
+end
+
+	ofs = ARGV[0].to_i(16)
+	len = ARGV[1].to_i(16)
+
+	if ARGV.length > 2 then
+		filename = ARGV[2].to_s
+	else
+		filename = "/tmp/plQspiData.bin"
+	end
+
+	maxcount = len / 4
+	if(( len % 4 ) > 0 ) then
+		maxcount = count + 1
+	end
+
+	MsgData = Struct.new(
+		:paralen,:para
+	)
+
+	readdata = MsgData.new
+	readdata.paralen = 1
+
+	tmpbuf = Rrh.malloc(1024)
+
+
+Rrh.assign()
+
+	printf("Starting PL QSPI read(ofs:0x%08x len:0x%08x) to file (%s) ...\n",ofs,len,filename)
+
+	fp = Rrh.fopen(filename.to_s,"w")
+
+	for count in 0..(maxcount - 1)
+		buffer = Rrh.flashread(2,ofs + (count * 4),4)
+
+		readdata.para = buffer[6..7].to_i(16)
+		Rrh.msgset(tmpbuf,readdata)
+		readdata.para = buffer[4..5].to_i(16)
+		Rrh.msgset(tmpbuf+1,readdata)
+		readdata.para = buffer[2..3].to_i(16)
+		Rrh.msgset(tmpbuf+2,readdata)
+		readdata.para = buffer[0..1].to_i(16)
+		Rrh.msgset(tmpbuf+3,readdata)
+
+		Rrh.fwrite(tmpbuf, 4, fp)
+	end
+
+	Rrh.fflush()
+	Rrh.fclose(fp)
+	Rrh.free(tmpbuf)
+
+	puts "Finish"
+
+Rrh.unassign()

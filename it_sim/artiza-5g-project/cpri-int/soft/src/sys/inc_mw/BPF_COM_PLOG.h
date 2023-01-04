@@ -1,0 +1,455 @@
+/********************************************************************************************************************/
+/**
+ *  @skip   $Id:$
+ *  @file   BPF_COM_PLOG.h
+ *  @brief  Definitions for BPF Internal Common Packet LOG
+ *  @date   $Date:$ $Author:$
+ *
+ *  ALL Rights Reserved, Copyright (C) FUJITSU Limited 2014-
+ */
+/********************************************************************************************************************/
+
+#ifndef _BPF_COM_PLOG_H_
+#define _BPF_COM_PLOG_H_
+
+#define D_BPF_COM_PLOG_IPOFS	0x7F010000				/* packet ip address 127.1.0.0 */
+
+typedef enum{
+	E_DEF_LV			 = 3,						/* when level file read error */
+
+	/* assert log level */
+	E_AST_NO			 = 0x00000001,
+	E_AST_LV_OFS		 = 0x00000100,
+	E_AST_LV_ENTER,
+	E_AST_LV_RETURN,
+	E_AST_LV_INFO,
+	E_AST_LV_WARNING,
+	E_AST_LV_ERROR,
+	E_AST_LV_CRITICAL,
+	E_AST_LV_MAX,
+	
+	/* reg log level */
+	E_REG_NO			 = 0x00000002,
+	E_REG_NO_CPRI		 = (0x00000010 | E_REG_NO),
+	E_REG_LV_OFS		 = 0x00000200,
+	E_REG_LV_READ_HDL,
+	E_REG_LV_WRITE_HDL,
+	E_REG_LV_POLL_READ,
+	E_REG_LV_POLL_WRITE,
+	E_REG_LV_BUF_READ,
+	E_REG_LV_BUF_WRITE,
+	E_REG_LV_READ,
+	E_REG_LV_WRITE,
+	E_REG_LV_MAX,
+
+	/* spi log level */
+	E_SPI_NO			 = 0x00000003,
+	E_SPI_LV_OFS		 = 0x00000300,
+	E_SPI_LV_READ_LOW,
+	E_SPI_LV_WRITE_LOW,	
+	E_SPI_LV_READ,
+	E_SPI_LV_WRITE,
+	E_SPI_LV_MAX,
+
+	/* i2c log level */
+	E_I2C_NO			 = 0x00000004,
+	E_I2C_LV_OFS		 = 0x00000400,	
+	E_I2C_LV_READ,
+	E_I2C_LV_WRITE,
+	E_I2C_LV_MAX,
+
+	/* qspi log level */
+	E_QSPI_NO			 = 0x00000005,
+	E_QSPI_LV_OFS		 = 0x00000500,
+	E_QSPI_LV_READ_S,
+	E_QSPI_LV_READ,
+	E_QSPI_LV_WRITE_S,
+	E_QSPI_LV_WRITE,
+	E_QSPI_LV_ERASE_S,
+	E_QSPI_LV_ERASE,
+	E_QSPI_LV_MAX,
+
+	/* timer log level */
+	E_TIM2_NO			 = 0x00000006,
+	E_TIM2_LV_OFS		 = 0x00000600,
+	E_TIM2_LV_SET_LOW,
+	E_TIM2_LV_CAN_LOW,
+	E_TIM2_LV_TOUT_LOW,
+	E_TIM2_LV_SET,
+	E_TIM2_LV_CAN,
+	E_TIM2_LV_TOUT,
+	E_TIM2_LV_MAX,
+
+	E_THD_NO			 = 0x00000007,
+	
+	/* function trace level */
+	E_TRC_NO			 =               0x00000008,
+	E_TRC_NO_INIT		 = (0x00000010 | E_TRC_NO),
+	E_TRC_NO_PF			 = (0x00000020 | E_TRC_NO),
+/* 2020/12/28 M&C) Merge 4G FHM src (start add) */
+	E_TRC_NO_API		 = (0x00000030 | E_TRC_NO),
+	E_TRC_NO_L2			 = (0x00000040 | E_TRC_NO),
+	E_TRC_NO_L3			 = (0x00000050 | E_TRC_NO),
+	E_TRC_NO_MNT		 = (0x00000060 | E_TRC_NO),
+	E_TRC_NO_CPRI		 = (0x00000070 | E_TRC_NO),
+	E_TRC_NO_RE			 = (0x00000080 | E_TRC_NO),
+	E_TRC_NO_RFIC		 = (0x00000090 | E_TRC_NO),
+/* 2020/12/28 M&C) Merge 4G FHM src (end add) */
+	E_TRC_NO_PTPLOG		 = (0x00000030 | E_TRC_NO),
+	E_TRC_NO_PTP		 = (0x00000040 | E_TRC_NO),
+	E_TRC_NO_PTP_H		 = (0x00000050 | E_TRC_NO),
+	E_TRC_NO_CAL		 = (0x00000070 | E_TRC_NO),
+	E_TRC_NO_PL			 = (0x00000090 | E_TRC_NO),	
+	E_TRC_LV_OFS		 = 0x00000800,
+	E_TRC_LV_DEBUG,
+	E_TRC_LV_INFO,
+	E_TRC_LV_SERIOUS,
+	E_TRC_LV_CRITICAL,
+	E_TRC_LV_BUG,
+	E_TRC_LV_MAX,
+
+	/* function ptpinfo level */
+	E_PTPINFO_NO			 = 0x00000009,
+	E_PTPINFO_LV_OFS		 = 0x00000900,
+	E_PTPINFO_LV_DEBUG,
+	E_PTPINFO_LV_DATA,
+	E_PTPINFO_LV_TXT,
+	E_PTPINFO_LV_ERROR,
+	E_PTPINFO_LV_BUG,
+	E_PTPINFO_LV_MAX,
+
+	/* function aisg2 level */
+	E_AISG2_NO			 = 0x0000000A,
+	E_AISG2_LV_OFS		 = 0x00000A00,
+	E_AISG2_LV_DEBUG,
+	E_AISG2_LV_READ,
+	E_AISG2_LV_WRITE,
+	E_AISG2_LV_SND,
+	E_AISG2_LV_RCV,
+	E_AISG2_LV_TIMER,
+	E_AISG2_LV_ERROR,
+	E_AISG2_LV_BUG,
+	E_AISG2_LV_MAX,
+
+	/* sem log level */
+	E_SEM_NO			 = 0x0000000B,
+	E_SEM_LV_OFS		 = 0x00000B00,
+/* 2020/12/28 M&C) Merge 4G FHM src (start add) */
+	E_SEM_LV_TAKE_LOW,
+	E_SEM_LV_GIVE_LOW,
+	E_SEM_LV_TAKE,
+	E_SEM_LV_GIVE,
+/* 2020/12/28 M&C) Merge 4G FHM src (end add) */
+	E_SEM_LV_DESTROY,
+	E_SEM_LV_INIT,
+	E_SEM_LV_WAIT,
+	E_SEM_LV_POST,
+	E_SEM_LV_MAX,
+
+	/* timer log level */
+	E_TIM_NO			 = 0x0000000C,
+	E_TIM_LV_OFS		 = 0x00000C00,
+	E_TIM_LV_SET_LOW,
+	E_TIM_LV_CAN_LOW,
+	E_TIM_LV_TOUT_LOW,
+	E_TIM_LV_SET,
+	E_TIM_LV_CAN,
+	E_TIM_LV_TOUT,
+	E_TIM_LV_MAX,
+
+	/* Buffer log level */
+	E_BUF_NO			 = 0x0000000D,
+	E_BUF_LV_OFS		 = 0x00000D00,
+	E_BUF_LV_GET_LOW,
+	E_BUF_LV_FREE_LOW,
+	E_BUF_LV_GET,
+	E_BUF_LV_FREE,
+	E_BUF_LV_MAX,
+
+	/* function aisg2 level */
+	E_AISGHC_NO			 = 0x0000000E,
+	E_AISGHC_LV_OFS		 = 0x00000E00,
+	E_AISGHC_LV_DEBUG,
+	E_AISGHC_LV_SND,
+	E_AISGHC_LV_RCV,
+	E_AISGHC_LV_SNDL3,
+	E_AISGHC_LV_RCVL3,
+	E_AISGHC_LV_LNKDWN,
+	E_AISGHC_LV_NORET,
+	E_AISGHC_LV_MAX,
+	
+	E_MAX_NO			 = 0x0000000F,
+
+	E_USER_MAX
+}e_bpf_com_plog_level;
+
+/* Function prototype */
+void bpf_com_plog_trace(
+	char*			 lname,
+	e_bpf_com_plog_level level ,
+	const char*		 file,
+	int				 line,
+	const char*		 format, ...
+);
+
+void bpf_com_plog_device(
+	char*			 lname,
+	e_bpf_com_plog_level level ,
+	unsigned int     addr ,
+	unsigned int     data ,
+	unsigned int     opt1 ,
+	unsigned int     opt2
+);
+
+
+void bpf_com_plog_rsc(
+	char*				 lname,
+	e_bpf_com_plog_level level ,
+	unsigned int		 id ,
+	unsigned int		 opt1 ,
+	unsigned int		 opt2 ,
+	unsigned int		 opt3
+);
+
+void bpf_com_plog_rsc2(
+	char*				 lname,
+	e_bpf_com_plog_level level ,
+	unsigned long		 id ,
+	unsigned int		 opt1 ,
+	unsigned int		 opt2
+);
+
+void bpf_com_plog_com(
+	char*			     lname,
+	e_bpf_com_plog_level level ,
+	int					 len,
+	void*				 data_p,
+	unsigned int		 ipaddr_ofs
+);
+
+void bpf_com_plog_ast(
+	char*			lname,
+	e_bpf_com_plog_level level ,
+	unsigned int	 code ,
+	void*			 text_p );
+
+
+void bpf_com_plog_trace_mp(
+	int				 level ,
+	const char*		 format, ...);
+
+int bpf_com_plog_dp_to_eth0(
+	int				plane_sd,
+	int				dir,
+	void*			dp_header_p,
+	int				dp_type,
+	int				dp_length,
+	char*			dp_payload
+);
+
+int bpf_com_plog_dp_init(
+	unsigned short	ether_type,
+	unsigned char*	src_macaddr,
+	unsigned char*	dst_macaddr,
+	void*			dp_header_p
+);
+
+
+/* ログレベル操作関数 */
+void bpf_com_plog_set_level( char* name , int level );
+int  bpf_com_plog_get_level( char* name );
+
+#define M_BPF_COM_PLOG_LEVEL(level,no) ( level | (((unsigned int)no) << 8))				/* normal mode */
+#define M_BPF_COM_PLOG_LEVEL_H(level,no) ( level | (((unsigned int)no) << 8) | 0x10)	/* high level mode */
+
+/* プロセス用トレースログ取得マクロ */
+#define BPF_COM_PLOG_TRACE(level,...)      bpf_com_plog_trace("/proc/rru/trc"      ,level                                     , __FILE__ , __LINE__ ,__VA_ARGS__ )
+#define BPF_COM_PLOG_TRACE_INIT(level,...) bpf_com_plog_trace("/proc/rru/trc_init" ,M_BPF_COM_PLOG_LEVEL(level,E_TRC_NO_INIT) , __FILE__ , __LINE__ ,__VA_ARGS__ )
+#define BPF_COM_PLOG_TRACE_PF(level,...)   bpf_com_plog_trace("/proc/rru/trc_pf"   ,M_BPF_COM_PLOG_LEVEL(level,E_TRC_NO_PF)   , __FILE__ , __LINE__ ,__VA_ARGS__ )
+
+/* 2020/12/28 M&C) Merge 4G FHM src (start add) */
+#define BPF_COM_PLOG_TRACE_L2(level,...)   bpf_com_plog_trace("/proc/rru/trc_l2"   ,M_BPF_COM_PLOG_LEVEL(level,E_TRC_NO_L2)   , __FILE__ , __LINE__ ,__VA_ARGS__ )
+#define BPF_COM_PLOG_TRACE_L3(level,...)   bpf_com_plog_trace("/proc/rru/trc_l3"   ,M_BPF_COM_PLOG_LEVEL(level,E_TRC_NO_L3)   , __FILE__ , __LINE__ ,__VA_ARGS__ )
+#define BPF_COM_PLOG_TRACE_MNT(level,...)  bpf_com_plog_trace("/proc/rru/trc_mnt"  ,M_BPF_COM_PLOG_LEVEL(level,E_TRC_NO_MNT)  , __FILE__ , __LINE__ ,__VA_ARGS__ )
+#define BPF_COM_PLOG_TRACE_RE(level,...)   bpf_com_plog_trace("/proc/rru/trc_re"   ,M_BPF_COM_PLOG_LEVEL(level,E_TRC_NO_RE)   , __FILE__ , __LINE__ ,__VA_ARGS__ )
+#define BPF_COM_PLOG_TRACE_API(level,...)  bpf_com_plog_trace("/proc/rru/trc_api"  ,M_BPF_COM_PLOG_LEVEL(level,E_TRC_NO_API)  , __FILE__ , __LINE__ ,__VA_ARGS__ )
+#define BPF_COM_PLOG_TRACE_CPRI(level,...) bpf_com_plog_trace("/proc/rru/trc_cpri" ,M_BPF_COM_PLOG_LEVEL(level,E_TRC_NO_CPRI) , __FILE__ , __LINE__ ,__VA_ARGS__ )
+/* 2020/12/28 M&C) Merge 4G FHM src (end add) */
+
+#define BPF_COM_PLOG_TRACE_PTP(level,...)  bpf_com_plog_trace("/proc/rru/trc_ptp"  ,M_BPF_COM_PLOG_LEVEL(level,E_TRC_NO_PTP)  , __FILE__ , __LINE__ ,__VA_ARGS__ )
+#define BPF_COM_PLOG_TRACE_RFIC(level,...)																							\
+do {																																\
+	e_bpf_com_plog_level	ploglevel = 0;																							\
+	if(level == 0){																													\
+		ploglevel = E_TRC_LV_BUG;																									\
+	}																																\
+	else if(																														\
+		((level & D_RRH_LOG_AST_LV_ENTER) != 0) ||																					\
+		((level & D_RRH_LOG_AST_LV_RETURN) != 0)){																					\
+		ploglevel = E_TRC_LV_DEBUG;																									\
+	}																																\
+	else if((level & D_RRH_LOG_AST_LV_INFO) != 0){																					\
+		ploglevel = E_TRC_LV_INFO;																									\
+	}																																\
+	else if(																														\
+		((level & D_RRH_LOG_AST_LV_WARNING) != 0) ||																				\
+		((level & D_RRH_LOG_AST_LV_ERROR) != 0)){																					\
+		ploglevel = E_TRC_LV_SERIOUS;																								\
+	}																																\
+	else if((level & D_RRH_LOG_AST_LV_CRITICAL) != 0){																				\
+		ploglevel = E_TRC_LV_CRITICAL;																								\
+	}																																\
+	else{																															\
+		ploglevel = E_TRC_LV_BUG;																									\
+	}																																\
+	bpf_com_plog_trace("/proc/rru/trc_rfic" ,M_BPF_COM_PLOG_LEVEL(ploglevel,E_TRC_NO_RFIC) , __FILE__ , __LINE__ ,__VA_ARGS__ );	\
+}while(0)
+
+
+#define BPF_COM_PLOG_TRACE_CAL(level,...)																							\
+do {																																\
+	e_bpf_com_plog_level	ploglevel = 0;																							\
+	if(level == 0){																													\
+		ploglevel = E_TRC_LV_BUG;																									\
+	}																																\
+	else if(																														\
+		((level & D_RRH_LOG_AST_LV_ENTER) != 0) ||																					\
+		((level & D_RRH_LOG_AST_LV_RETURN) != 0)){																					\
+		ploglevel = E_TRC_LV_DEBUG;																									\
+	}																																\
+	else if((level & D_RRH_LOG_AST_LV_INFO) != 0){																					\
+		ploglevel = E_TRC_LV_INFO;																									\
+	}																																\
+	else if(																														\
+		((level & D_RRH_LOG_AST_LV_WARNING) != 0) ||																				\
+		((level & D_RRH_LOG_AST_LV_ERROR) != 0)){																					\
+		ploglevel = E_TRC_LV_SERIOUS;																								\
+	}																																\
+	else if((level & D_RRH_LOG_AST_LV_CRITICAL) != 0){																				\
+		ploglevel = E_TRC_LV_CRITICAL;																								\
+	}																																\
+	else{																															\
+		ploglevel = E_TRC_LV_BUG;																									\
+	}																																\
+	bpf_com_plog_trace("/proc/rru/trc_cal" ,M_BPF_COM_PLOG_LEVEL(ploglevel,E_TRC_NO_CAL) , __FILE__ , __LINE__ ,__VA_ARGS__ );		\
+}while(0)
+
+
+#define BPF_COM_PLOG_TRACE_PTPLOG(level,...)  bpf_com_plog_trace("/proc/rru/ptplog"  ,M_BPF_COM_PLOG_LEVEL(level,E_TRC_NO_PTPLOG)  , __FILE__ , __LINE__ ,__VA_ARGS__ )
+
+
+extern unsigned int bpf_com_plog_tracekind;
+#define BPF_COM_PLOG_TRACE_START(process_desc)	bpf_com_plog_tracekind = process_desc
+#define BPF_COM_PLOG_TRACE_STOP()				bpf_com_plog_tracekind = 0xFFFFFFFF
+#define BPF_COM_PLOG_TRACE_PROC(level,...)					\
+do {														\
+	if(bpf_com_plog_tracekind == 0xFFFFFFFF){				\
+		break;												\
+	}														\
+	e_bpf_com_plog_level	ploglevel = 0;					\
+	if(level == 0){											\
+		break;												\
+	}														\
+	else if(												\
+		((level & D_RRH_LOG_AST_LV_ENTER) != 0) ||			\
+		((level & D_RRH_LOG_AST_LV_RETURN) != 0)){			\
+		ploglevel = E_TRC_LV_DEBUG;							\
+	}														\
+	else if((level & D_RRH_LOG_AST_LV_INFO) != 0){			\
+		ploglevel = E_TRC_LV_INFO;							\
+	}														\
+	else if(												\
+		((level & D_RRH_LOG_AST_LV_WARNING) != 0) ||		\
+		((level & D_RRH_LOG_AST_LV_ERROR) != 0)){			\
+		ploglevel = E_TRC_LV_SERIOUS;						\
+	}														\
+	else if((level & D_RRH_LOG_AST_LV_CRITICAL) != 0){		\
+		ploglevel = E_TRC_LV_CRITICAL;						\
+	}														\
+	else{													\
+		ploglevel = E_TRC_LV_BUG;							\
+	}														\
+	switch(bpf_com_plog_tracekind){							\
+		case D_RRH_PROCID_PF:								\
+			BPF_COM_PLOG_TRACE_PF(ploglevel,__VA_ARGS__);	\
+			break;											\
+		case D_RRH_PROCID_PTP:								\
+			BPF_COM_PLOG_TRACE_PTP(ploglevel,__VA_ARGS__);	\
+			break;											\
+		case D_RRH_PROCID_INI:								\
+			BPF_COM_PLOG_TRACE_INIT(ploglevel,__VA_ARGS__);	\
+			break;											\
+		case D_RRH_PROCID_L2:								\
+			BPF_COM_PLOG_TRACE_L2(ploglevel,__VA_ARGS__);	\
+			break;											\
+		case D_RRH_PROCID_L3:								\
+			BPF_COM_PLOG_TRACE_L3(ploglevel,__VA_ARGS__);	\
+			break;											\
+		case D_RRH_PROCID_MT:								\
+			BPF_COM_PLOG_TRACE_MNT(ploglevel,__VA_ARGS__);	\
+			break;											\
+		case D_RRH_PROCID_RE:								\
+			BPF_COM_PLOG_TRACE_RE(ploglevel,__VA_ARGS__);	\
+			break;											\
+		default:											\
+			BPF_COM_PLOG_TRACE(ploglevel,__VA_ARGS__);		\
+			break;											\
+	}														\
+}while(0)
+
+
+/* アサートログ取得マクロ */
+#define BPF_COM_PLOG_ASSERT(level,code,text)			bpf_com_plog_ast(  "/proc/rru/rp1"          ,level,code,text)
+
+/* 2020/12/28 M&C) Merge 4G FHM src (start add) */
+#define BPF_COM_PLOG_REG_CPRI(level,addr,data)			bpf_com_plog_device("/proc/rru/reg_cpri"    , M_BPF_COM_PLOG_LEVEL(level,E_REG_NO_CPRI),addr,data,0,0)	/* ���W�X�^���O�擾�}�N��(CPRI�p) */
+/* 2020/12/28 M&C) Merge 4G FHM src (end add) */
+/* デバイスアクセスログ取得マクロ */
+#define BPF_COM_PLOG_REG(level,addr,data)				bpf_com_plog_device("/proc/rru/reg"         , level,addr,data,0,0)			/* レジスタログ取得マクロ */
+#define BPF_COM_PLOG_SPI(level,addr,data,no,ss)			bpf_com_plog_device("/proc/rru/spi"         , level,addr,data,no,ss)		/* SPIレジスタログ取得マクロ */
+#define BPF_COM_PLOG_I2C(level,addr,data,no,ss)			bpf_com_plog_device("/proc/rru/i2c"         , level,addr,data,no,ss)		/* I2Cレジスタログ取得マクロ */
+#define BPF_COM_PLOG_QSPI(level,ofs,size,no,face)		bpf_com_plog_device("/proc/rru/qspi"        , level,ofs,size,no,face)		/* QSPIレジスタログ取得マクロ */
+/* リソース系ログマクロ */
+
+/* AISGログ取得マクロ */
+#define BPF_COM_PLOG_AISG_SND(len,data_p)				bpf_com_plog_com("/proc/rru/aisg"           , E_AISGHC_LV_SND,len,data_p,D_BPF_COM_PLOG_IPOFS)
+#define BPF_COM_PLOG_AISG_RCV(len,data_p)				bpf_com_plog_com("/proc/rru/aisg"           , E_AISGHC_LV_RCV,len,data_p,D_BPF_COM_PLOG_IPOFS)
+#define BPF_COM_PLOG_AISG_SND_X(len,data_p)				bpf_com_plog_com("/proc/rru/aisg_x"         , E_AISG2_LV_SND,len,data_p,D_BPF_COM_PLOG_IPOFS)
+#define BPF_COM_PLOG_AISG_RCV_X(len,data_p)				bpf_com_plog_com("/proc/rru/aisg_x"         , E_AISG2_LV_RCV,len,data_p,D_BPF_COM_PLOG_IPOFS)
+
+#define BPF_COM_PLOG_RSC_BUF(level,id,shmid,addr,size)		bpf_com_plog_rsc("/proc/rru/rsc_buf"       , level,id,shmid ,addr ,size )
+#define BPF_COM_PLOG_RSC_TIM(level,id,id_bpf,id_os,value)	bpf_com_plog_rsc("/proc/rru/rsc_tim"       , level,id,id_bpf,id_os,value)
+#define BPF_COM_PLOG_RSC_TIM2(level,id,late,peri)			bpf_com_plog_rsc2("/proc/rru/rsc_tim_rp1"   ,level,id,late,peri)
+#define BPF_COM_PLOG_RSC_SEM(level,id,initval)				bpf_com_plog_rsc2("/proc/rru/rsc_sem"       , level,id,     initval,    0)
+
+
+typedef enum{
+	E_BPF_COM_DPLOG_ETHTYPE_MP = 0,
+	E_BPF_COM_DPLOG_ETHTYPE_DBG = 1,
+	E_BPF_COM_DPLOG_ETHTYPE_AISG = 2
+}e_bpf_com_dump_etype;
+
+#define	BPF_COM_DPLOG_ETHTYPE_MP			0x9999
+#define	BPF_COM_DPLOG_ETHTYPE_AISG			0x999A
+#define	BPF_COM_DPLOG_ETHTYPE_DBG			0x999B
+
+#define	BPF_COM_DPLOG_MAC_H_CU				0x00009999
+#define	BPF_COM_DPLOG_MAC_L_CU				0x99990000
+
+#define	BPF_COM_DPLOG_DIR_RX				0x0
+#define	BPF_COM_DPLOG_DIR_TX				0x1
+
+#define	BPF_COM_DPLOG_TYPE_TEXT		1
+#define	BPF_COM_DPLOG_TYPE_HDLC		2
+
+#define BPF_COM_DPLOG_AISG_INT(src,dst,head)					bpf_com_plog_dp_init(BPF_COM_DPLOG_ETHTYPE_AISG,src,dst,head)
+#define BPF_COM_DPLOG_AISG_SND(sd,head,length,value)			bpf_com_plog_dp_to_eth0(sd,BPF_COM_DPLOG_DIR_TX,head,BPF_COM_DPLOG_TYPE_HDLC,length,value)
+#define BPF_COM_DPLOG_AISG_RCV(sd,head,length,value)			bpf_com_plog_dp_to_eth0(sd,BPF_COM_DPLOG_DIR_RX,head,BPF_COM_DPLOG_TYPE_HDLC,length,value)
+#define BPF_COM_DPLOG_AISG_TXT(sd,head,length,value)			bpf_com_plog_dp_to_eth0(sd,BPF_COM_DPLOG_DIR_TX,head,BPF_COM_DPLOG_TYPE_TEXT,length,value)
+
+#define BPF_COM_DPLOG_DBG_INT(src,dst,head)						bpf_com_plog_dp_init(BPF_COM_DPLOG_ETHTYPE_DBG,src,dst,head)
+#define BPF_COM_DPLOG_DBG_TXT(sd,head,length,value)				bpf_com_plog_dp_to_eth0(sd,BPF_COM_DPLOG_DIR_TX,head,BPF_COM_DPLOG_TYPE_TEXT,length,value)
+
+
+/********************************************* EOF ******************************************************************/
+#endif /* _BPF_COM_PLOG_H__ */

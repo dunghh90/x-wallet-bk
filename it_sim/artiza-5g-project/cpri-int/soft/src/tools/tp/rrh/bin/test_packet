@@ -1,0 +1,32 @@
+Rrh.require("./verbose")
+
+if ARGV.length < 1 then
+	puts "Usage:"+$0+" <send> <ethname> <send packet_size> <send packet filepath>"
+	puts "Usage:"+$0+" <recv> <ethname> <recv type> <recv packet filepath>"
+	exit
+end
+
+case ARGV[0].to_s.downcase
+	when "s","send" then
+		if ARGV.length < 4 then
+			puts "Usage:"+$0+" <send> <ethname> <send packet_size> <send packet filepath>"
+			exit
+		end
+		if Rrh.rawsend_f(ARGV[1].to_s,ARGV[2].to_i(10),ARGV[3].to_s) == false then
+			puts "Send error"
+		else
+			puts "Send OK"
+		end
+	when "r","recv" then
+		if ARGV.length < 4 then
+			puts "Usage:"+$0+" <recv> <ethname> <recv type> <recv packet filepath>"
+			exit
+		end
+		if Rrh.rawrecv_f(ARGV[1].to_s,ARGV[2].to_i(16),ARGV[3].to_s) == false then
+			puts "Recv error"
+		else
+			puts "Recv OK,please check #{ARGV[3].to_s}"
+		end		
+	else
+		puts "Unknown option"
+end

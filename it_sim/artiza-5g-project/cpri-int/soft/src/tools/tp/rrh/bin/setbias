@@ -1,0 +1,101 @@
+0
+#PA bias設定値のピンチオフとリライト
+#第1引数(hex/char):アンテナ番号またはall
+#第2引数(hex): PAbias ON/OFF(0:PAbias OFF(pinchOff) 1:PAbias ON(reWrite))
+#20180806 新規 若水
+#入力がONのときは、EEPROMからトレーニング値を読み出し、PAVDDACに書き込む
+#入力がOFFのときは、PAVDDACに直接0x00を書き込む
+#BPF_HM_DEVC_PAVGDAC_WRITE  &  BPF_HM_DEVC_EEPROM_READ
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+
+# usage
+if ARGV.length < 2 then
+	puts "usage:"+$0+" <ant/all> <PAbias OFF/ON>",
+	"(m):<ant/all> is ant num (0~3:Ant.A~Ant.D or all)",
+	"(m):<data>     is PAbias OFF/ON(0:OFF(pinchOff) 1: ON(reWrite))"
+	exit(1)
+end
+
+ant_s = ARGV[0]
+data = ARGV[1]
+
+
+#想定外の値NGを追記
+
+if data.to_i > 1 then
+ puts "Input value is incorrect : <data>"
+ raise 
+end
+
+
+
+Rrh.assign()
+
+#装置構成確認
+addr_eep = 64
+if !res = Rrh.eepread(addr_eep.to_i(16)) then
+ puts "eep read error"
+else
+ puts "0x#{res} "
+ 
+ case res
+ 
+ when "13"
+  kind = "BPF_HM_DEVC_SUB6"
+
+ when "14"
+  kind = "BPF_HM_DEVC_MMW"
+ 
+ 
+ else
+  puts "kind num error"
+  raise
+ end
+
+end
+
+#mmW 0~1 sub6 0~3
+
+MAX = 3
+
+if kind == "BPF_HM_DEVC_MMW" then
+	MAX = 1
+end
+
+if ant_s == "all" then
+
+	for ant in 0..MAX
+		if !res = Rrh.setbias( ant , data) then
+		 puts "error"
+		 exit(1)
+		else
+		 puts "complete"
+		end
+	end
+	
+
+
+else
+
+#想定外の値NGを追記
+
+	if ant_s.to_i > MAX then
+	 puts "Input value is incorrect : <ant>"
+	 raise 
+	end
+
+	
+	if !res = Rrh.setbias( ant_s , data) then
+	 puts "error"
+	else
+	 puts "complete"
+	end
+
+end
+
+Rrh.unassign()
+

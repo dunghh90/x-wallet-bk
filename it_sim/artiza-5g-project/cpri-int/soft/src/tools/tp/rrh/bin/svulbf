@@ -1,0 +1,215 @@
+
+#svdlbf
+#第1引数: アンテナ番号(0～7)
+#第2引数: 0:Cr0, 1:Cr1
+#第3引数: 補正値(hex) (32bit)
+
+
+
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+Rrh.require("./z_global")
+Rrh.require("./sveep")
+Rrh.require("./input_check")
+Rrh.require("./tpshm_access")
+#Rrh.dmsg(1)
+# usage
+if ARGV.length < 3 then
+        puts "usage:"+$0+" <ant> <Cr0/Cr1> <Correction value>",
+        "(m):<ant> is ant num (0~7)",
+        "(m):<Cr0/Cr1> is Parameter (0:Cr0 1:Cr1)",
+        "(m):<Correction value> is Parameter(hex/32bit)"
+    exit(1)
+end
+
+ant_s = ARGV[0]
+cr_s = ARGV[1]
+cv_s = ARGV[2]
+
+Rrh.assign()
+
+#装置種別判別
+addr_eep = 64
+if !res = Rrh.eepread(addr_eep.to_i(16)) then
+    puts "eep read error"
+else
+    case res
+    when "13"
+        kind = "BPF_HM_DEVC_SUB6"
+    when "14"
+        kind = "BPF_HM_DEVC_MMW"
+    else
+        puts "kind num error"
+        exit(1)
+    end
+end
+
+if kind != "BPF_HM_DEVC_SUB6" then
+ puts "kind error "
+ exit(1)
+end
+
+#想定外の値NG
+
+#ant
+if ant_s.to_i > 7 then
+ puts "Input value is incorrect : <ant>"
+ exit(1)
+end
+
+#Cr
+if cr_s.to_i > 1 then
+ puts "Input value is incorrect : <Cr0/Cr1>"
+ exit(1)
+end
+
+check_values_hex = ['1','2','3','4','5','6','7','8','9','0','a','b','c','d','e','f','A','B','C','D','E','F']
+if cv_s[0..1] != "0x" || cv_s.length > 10 then
+ puts "Input value is incorrect : <hex/32bit>"
+ exit(1)
+else
+	# 0xFFFFFFFF
+	for cnt in 2...cv_s.length do
+		if !check_values_hex.include?(cv_s[cnt]) then
+			puts "Input value is incorrect : <hex/32bit>"
+			exit(1)
+		end
+	end	
+	cv_i = cv_s.to_i(16)
+end
+
+#data length set
+#cv = (32bit) -> 0x00000000~0xFFFFFFFF
+
+case cv_i.to_s(16).length 
+	when 1 then
+		data_s = "0000000" + cv_i.to_s(16)
+	when 2 then
+		data_s = "000000" + cv_i.to_s(16)
+	when 3 then
+		data_s = "00000" + cv_i.to_s(16)
+	when 4 then
+		data_s = "0000" + cv_i.to_s(16)
+	when 5 then
+		data_s = "000" + cv_i.to_s(16)
+	when 6 then
+		data_s = "00" + cv_i.to_s(16)
+	when 7 then
+		data_s = "0" + cv_i.to_s(16)
+	else
+		data_s = cv_i.to_s(16)
+end
+
+
+#const set
+EEP_BASE00 = 0x002
+EEP_BASE01 = 0x003
+EEP_BASE02 = 0x004
+EEP_BASE03 = 0x005
+
+EEP_ANT_OFFSET = 0x020
+EEP_CR1_OFFSET = 0x004
+
+#param set
+eep_addr0 = EEP_BASE00
+eep_addr1 = EEP_BASE01
+eep_addr2 = EEP_BASE02
+eep_addr3 = EEP_BASE03
+
+data0 = 0x00
+data1 = 0x00
+data2 = 0x00
+data3 = 0x00
+
+
+#addr set
+
+#if Cr=1
+if cr_s.to_i == 1 then
+ eep_addr0 = EEP_BASE00 + EEP_CR1_OFFSET
+ eep_addr1 = EEP_BASE01 + EEP_CR1_OFFSET
+ eep_addr2 = EEP_BASE02 + EEP_CR1_OFFSET
+ eep_addr3 = EEP_BASE03 + EEP_CR1_OFFSET
+end
+
+#ant
+
+eep_addr0 = eep_addr0 + (ant_s.to_i * EEP_ANT_OFFSET)
+eep_addr1 = eep_addr1 + (ant_s.to_i * EEP_ANT_OFFSET)
+eep_addr2 = eep_addr2 + (ant_s.to_i * EEP_ANT_OFFSET)
+eep_addr3 = eep_addr3 + (ant_s.to_i * EEP_ANT_OFFSET)
+
+
+#data set
+data0 = data_s[0..1]
+data1 = data_s[2..3]
+data2 = data_s[4..5]
+data3 = data_s[6..7]
+
+
+#これを共有メモリに保存
+
+if !res = Rrh.tpshmwrite( "apde2pRX" , "" , eep_addr0.to_s(16), data0) then
+    puts "Correction value Vertual Shard Memory Write Error No.0"
+    exit(1)
+end
+if !res = Rrh.tpshmwrite( "apde2pRX" , "" , eep_addr1.to_s(16), data1) then
+    puts "Correction value Vertual Shard Memory Write Error No.1"
+    exit(1)
+end
+if !res = Rrh.tpshmwrite( "apde2pRX" , "" , eep_addr2.to_s(16), data2) then
+    puts "Correction value Vertual Shard Memory Write Error No.2"
+    exit(1)
+end
+if !res = Rrh.tpshmwrite( "apde2pRX" , "" , eep_addr3.to_s(16), data3) then
+    puts "Correction value Vertual Shard Memory Write Error No.3"
+    exit(1)
+end
+
+puts"Vertual Shard Memory Save Complete [sub6] ant:#{ant_s}, Cr:#{cr_s}, Correction value = #{data_s.to_s(16)}"
+
+#address set
+eep_addr0 = 0x702
+eep_addr1 = 0x703
+eep_addr2 = 0x704
+eep_addr3 = 0x705
+
+#if Cr=1
+if cr_s.to_i == 1 then
+ eep_addr0 = eep_addr0 + EEP_CR1_OFFSET
+ eep_addr1 = eep_addr1 + EEP_CR1_OFFSET
+ eep_addr2 = eep_addr2 + EEP_CR1_OFFSET
+ eep_addr3 = eep_addr3 + EEP_CR1_OFFSET
+end
+
+#ant
+eep_addr0 = eep_addr0 + (ant_s.to_i * EEP_ANT_OFFSET)
+eep_addr1 = eep_addr1 + (ant_s.to_i * EEP_ANT_OFFSET)
+eep_addr2 = eep_addr2 + (ant_s.to_i * EEP_ANT_OFFSET)
+eep_addr3 = eep_addr3 + (ant_s.to_i * EEP_ANT_OFFSET)
+
+if !res = Rrh.eepwrite(eep_addr0.to_i(16), data0.to_i(16)) then
+    puts "eep write error No.0"
+    exit(1)
+end
+if !res = Rrh.eepwrite(eep_addr1.to_i(16), data1.to_i(16)) then
+    puts "eep write error No.1"
+    exit(1)
+end
+if !res = Rrh.eepwrite(eep_addr2.to_i(16), data2.to_i(16)) then
+    puts "eep write error No.2"
+    exit(1)
+end
+if !res = Rrh.eepwrite(eep_addr3.to_i(16), data3.to_i(16)) then
+    puts "eep write error No.3"
+    exit(1)
+end
+
+printf("ulbf saved \n")
+if Rrh.svvsrx() == false then
+	puts "EEP update error "
+else
+	printf("CRC saved \n")
+end
+Rrh.unassign()

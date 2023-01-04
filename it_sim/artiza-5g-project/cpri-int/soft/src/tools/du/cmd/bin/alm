@@ -1,0 +1,13 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+chk_res = Rrh.proc_check()
+if chk_res == false then
+	puts DuCode::ERR_DESCRIPTION[12]
+	Rrh.exit(1)
+end
+
+Rrh.system("/opt/tp/rrh -svctl 42 1 1 1>/dev/null 2>/dev/null")
+Rrh.sleep(1)
+puts DuCode::ERR_DESCRIPTION[0]

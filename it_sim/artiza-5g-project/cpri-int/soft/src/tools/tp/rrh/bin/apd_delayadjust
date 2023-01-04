@@ -1,0 +1,352 @@
+# トレーニング(遅延調整)メソッドの追加
+
+#---------------------------------------------------
+#  define
+#---------------------------------------------------
+DLY_ITG_NUM  = 1	# 加算回数 10?
+DLYST1_LEN   = 1024	# 遅延調整step1ﾃﾞｰﾀ格納数
+DLYST2N2_LEN = 640	# New2遅延調整step2ﾃﾞｰﾀ格納数
+
+module Rrh
+
+#---------------------------------------------------
+#  機能：メモリアクセス完了待ち
+#---------------------------------------------------
+def self.fn_WaitRegZero(reg_s)
+	chk_s = "00000000"
+	wait_TIMOUT = 200000	# タイムアウト回数
+	cnt = wait_TIMOUT
+	while cnt > 0 do
+		cnt -= 1
+		Rrh.sleep(0,1000)	# sleep 1us
+		chk_s = Rrh.regread(reg_s)
+		if chk_s.to_i(16) == 0 then
+			return true
+		end
+	end
+	Rrh.regwrite(reg_s, "00000000")
+	printf(" Fn_WaitRegZero_memory_access_timeout. add 0x%s  dat 0x%s\n",reg_s,chk_s)
+	return false
+end
+
+#---------------------------------------------------
+#  機能：メモリ書込要求
+#---------------------------------------------------
+def self.fn_WriteMem(antnum, setval)
+	case antnum 
+		when 0..3 then
+			fbstrmgo_s      = Register::FPGA_FB_FBSTRMGO_ABCD
+		else
+			printf("Not supported ANT(%d)\n",antnum)
+			return false
+	end
+	Rrh.regwrite(fbstrmgo_s, setval.to_s(16))
+	return Rrh.fn_WaitRegZero(fbstrmgo_s)
+end
+
+#---------------------------------------------------
+#  機能 : TAP単位のFBディレイ値の設定
+#---------------------------------------------------
+def self.fn_SetFbDlyFil(antnum, fbfilno)
+
+	case antnum 
+		when 0..3 then
+			fbdly_addr_s      = Register::FPGA_FB_FBDLY_ABCD
+		else
+			printf("Not supported ANT(%d)\n",antnum)
+			return false
+	end
+	filbuf = fbfilno & 0x0000007F
+	regbuf_s = Rrh.regread(fbdly_addr_s)
+	regbuf_s = Rrh.calc(regbuf_s,"&","FFFFFF00")
+	regbuf_s = Rrh.calc(regbuf_s,"+",(filbuf << 1).to_s(16))
+	Rrh.regwrite(fbdly_addr_s, regbuf_s)
+end
+
+#---------------------------------------------------
+#  機能 : CLOCK単位のFBディレイ値の設定
+#---------------------------------------------------
+def self.fn_SetFbDly(antnum, dlyclk)
+	case antnum 
+		when 0..3 then
+			fbdly_addr_s      = Register::FPGA_FB_FBDLY_ABCD
+		else
+			printf("Not supported ANT(%d)\n",antnum)
+			return false
+	end
+	clkbuf = dlyclk & 0x000003FF
+	regbuf_s = Rrh.regread(fbdly_addr_s)
+	regbuf_s = Rrh.calc(regbuf_s,"&","000000FF")
+	regbuf_s = Rrh.calc(regbuf_s,"+",(clkbuf << 8).to_s(16))
+	Rrh.regwrite(fbdly_addr_s, regbuf_s)
+end
+
+#---------------------------------------------------
+# 遅延調整step1
+#---------------------------------------------------
+def self.fn_DelayAdj1itgNew(antnum)
+
+	d_dlyitg = Array.new(DLYST1_LEN, 0)
+
+	swcnt0_addr_s      = Register::FPGA_FB_SWCNTABCD
+	swcnt1_addr_s      = Register::FPGA_FB_SWCNTEFGH
+	rfsw0_addr_s       = Register::FPGA_FB_RFSWABCD
+	rfsw1_addr_s       = Register::FPGA_FB_RFSWEFGH
+
+	case antnum 
+		when 0..3 then
+			itdata_addr_s     = Register::FPGA_FB_ITDATA_ABCD
+			itmba_addr_s      = Register::FPGA_FB_ITMBA_ABCD
+			ifbstrmcfg_addr_s = Register::FPGA_FB_FBSTRMCFG_ABCD
+			calcmode_addr_s   = Register::FPGA_FB_CALCMODE_ABCD
+			itrst_addr_s      = Register::FPGA_FB_ITRST_ABCD
+			it3x_s            = Register::FPGA_FB_IT3X_ABCD
+			fbdly_addr_s      = Register::FPGA_FB_FBDLY_ABCD
+
+		else
+			printf("Not supported ANT(%d)\n",antnum)
+			return false
+	end
+
+	printlog_s = Rrh.tpshmread("apdivc","",APDIVC_APDLOGPRINT)
+	printlog_s = Rrh.calc(printlog_s,"&","00000001")
+	printlog = printlog_s.to_i(16)
+
+	Rrh.regwrite(itdata_addr_s    , "00001117")
+	Rrh.regwrite(itmba_addr_s     , "00FF0001")
+	Rrh.regwrite(ifbstrmcfg_addr_s, "00000007")
+	Rrh.regwrite(calcmode_addr_s  , "10111001")
+
+	d_itdata_max = 0.0
+	maxcnt = 0
+
+	if printlog != 0 then
+		regval_s = Rrh.regread(swcnt0_addr_s)
+		printf("SWCNT0(%s)    :0x%s \n",swcnt0_addr_s.upcase,regval_s)
+		regval_s = Rrh.regread(swcnt1_addr_s)
+		printf("SWCNT1(%s)    :0x%s \n",swcnt1_addr_s.upcase,regval_s)
+		regval_s = Rrh.regread(rfsw0_addr_s)
+		printf("RFSW0(%s)     :0x%s \n",rfsw0_addr_s.upcase,regval_s)
+		regval_s = Rrh.regread(rfsw1_addr_s)
+		printf("RFSW1(%s)     :0x%s \n",rfsw1_addr_s.upcase,regval_s)
+		regval_s = Rrh.regread(itdata_addr_s)
+		printf("ITDATA(%s)   :0x%s \n",itdata_addr_s.upcase,regval_s)
+		regval_s = Rrh.regread(itmba_addr_s)
+		printf("ITMBA(%s)    :0x%s \n",itmba_addr_s.upcase,regval_s)
+		regval_s = Rrh.regread(ifbstrmcfg_addr_s)
+		printf("FBSTRMCFG(%s):0x%s \n",ifbstrmcfg_addr_s.upcase,regval_s)
+		regval_s = Rrh.regread(calcmode_addr_s)
+		printf("CALCMODE(%s) :0x%s \n",calcmode_addr_s.upcase,regval_s)
+		printf("\n")
+	end
+	Rrh.regwrite(fbdly_addr_s , "00000000")	# 遅延調整値初期化
+	for cnt4 in 0..(DLY_ITG_NUM - 1) do
+		# 積分ﾃﾞｰﾀ蓄積
+		for cnt in 0..(DLYST1_LEN - 1) do
+			Rrh.fn_SetFbDly(antnum, cnt)	# CLK設定
+			# 5- 積分実行
+			Rrh.regwrite(itrst_addr_s, "00000007")	# 積分器リセット
+			if fn_WriteMem(antnum, 0x00000010) != true then		# CALC演算開始
+				return false
+			end
+			regval_s = Rrh.regread(it3x_s)
+			itdata = regval_s.to_i(16)
+			if printlog != 0 then
+				printf("IT3X (%s) :0x%s \n",it3x_s.upcase,regval_s)
+				regval_s = Rrh.regread(fbdly_addr_s)
+				printf("%d:%d FBDLY(%s) :0x%s \n",cnt4,cnt,fbdly_addr_s.upcase,regval_s)
+				printf("\n")
+			end
+			# 加算
+			d_dataval = itdata.to_f
+			d_dlyitg[cnt] += d_dataval
+		end
+		if printlog == 0 then
+			printf(". ")
+		end
+	end
+
+	for cnt in 0..(DLYST1_LEN - 1) do
+		if d_itdata_max < d_dlyitg[cnt] then
+			d_itdata_max = d_dlyitg[cnt]
+			maxcnt = cnt
+		end
+	end
+
+	if printlog != 0 then
+		printf("\n")
+		printf("  d_itdata_max: %f\n",d_itdata_max)
+		printf("  maxcnt      : %d(0x%08x)\n",maxcnt,maxcnt)
+		printf("\n")
+	end
+	printf("\n")
+	fn_SetFbDly(antnum, maxcnt)
+	regval_s = Rrh.regread(fbdly_addr_s)
+	printf("  Set Step1 CLK val: %s\n",regval_s)
+	printf("\n")
+	return true
+end
+
+#---------------------------------------------------
+# 遅延調整step2
+#---------------------------------------------------
+def self.fn_DlyAdjColitgNew2(antnum)
+
+	d_dlyitg = Array.new(DLYST2N2_LEN, 0)	# 128*5=640
+
+	case antnum 
+		when 0..3 then
+			itdata_addr_s     = Register::FPGA_FB_ITDATA_ABCD
+			itmba_addr_s      = Register::FPGA_FB_ITMBA_ABCD
+			ifbstrmcfg_addr_s = Register::FPGA_FB_FBSTRMCFG_ABCD
+			calcmode_addr_s   = Register::FPGA_FB_CALCMODE_ABCD
+			itrst_addr_s      = Register::FPGA_FB_ITRST_ABCD
+			it1x_s            = Register::FPGA_FB_IT1X_ABCD
+			it2x_s            = Register::FPGA_FB_IT2X_ABCD
+			it3x_s            = Register::FPGA_FB_IT3X_ABCD
+			fbdly_addr_s      = Register::FPGA_FB_FBDLY_ABCD
+		else
+			printf("Not supported ANT(%d)\n",antnum)
+			return false
+	end
+
+
+	printlog_s = Rrh.tpshmread("apdivc","",APDIVC_APDLOGPRINT)
+	printlog_s = Rrh.calc(printlog_s,"&","00000001")
+	printlog = printlog_s.to_i(16)
+
+	Rrh.regwrite(itdata_addr_s, "00001117")
+	regval_s = Rrh.regread(itdata_addr_s)
+	printf("ITDATA(%s)   :0x%s \n",itdata_addr_s.upcase,regval_s)
+
+	Rrh.regwrite(calcmode_addr_s, "10111001")
+	regval_s = Rrh.regread(calcmode_addr_s)
+	printf("CALCMODE(%s) :0x%s \n",calcmode_addr_s.upcase,regval_s)
+
+	dlyclk_s = Rrh.regread(fbdly_addr_s)
+	printf("pre FBDLY(%s):0x%s \n",fbdly_addr_s.upcase,dlyclk_s)
+	dlyclk_s = Rrh.calc(dlyclk_s,">","00000008")
+	dlyclk_s = Rrh.calc(dlyclk_s,"&","000003FF")	# クロック初期値保持
+	if dlyclk_s.to_i(16) > 0x000003FD then
+		dlyclk_s = "000003FD"
+	end
+	if dlyclk_s.to_i(16) < 0x00000002 then
+		dlyclk_s = "00000002"
+	end
+	setvaldat_s = Rrh.calc(dlyclk_s,"-","00000002")
+	buf_s = Rrh.calc(setvaldat_s,"<","00000008")
+	Rrh.regwrite(fbdly_addr_s, buf_s)		# 遅延値初期値設定
+	regval_s = Rrh.regread(fbdly_addr_s)
+	printf("1stSet FBDLY(%s):0x%s \n",fbdly_addr_s.upcase,regval_s)
+
+	for  cnt4 in 0..(DLY_ITG_NUM - 1) do
+		itgcnt = 0
+		setval_s = setvaldat_s
+		# 積分ﾃﾞｰﾀ蓄積
+		cnt2 = 3 #5
+		while cnt2 > 0 do
+			cnt2 -= 1
+			buf_s = Rrh.calc(setval_s,"<","00000008")
+			Rrh.regwrite(fbdly_addr_s, buf_s)
+			for cnt in 0..127 do
+				fn_SetFbDlyFil(antnum, cnt)		# 5- タップ設定
+				# 積分実行
+				Rrh.regwrite(itrst_addr_s, "00000007")	# 積分器リセット
+				if fn_WriteMem(antnum, 0x00000010) != true then		# CALC演算開始
+					return false
+				end
+				regval_s = Rrh.regread(it1x_s)
+				itdata1 = regval_s.to_i(16)
+				regval_s = Rrh.regread(it2x_s)
+				itdata2 = regval_s.to_i(16)
+				if printlog != 0 then
+					printf("IT1X (%s) :%08x \n",it1x_s.upcase,itdata1)
+					printf("IT2X (%s) :%08x \n",it2x_s.upcase,itdata2)
+					regval_s = Rrh.regread(fbdly_addr_s)
+					printf("%d:%d FBDLY(%s) :0x%s \n",cnt4,cnt,fbdly_addr_s.upcase,regval_s)
+					printf("\n")
+				end
+				d_itdata = itdata1.to_f - itdata2.to_f
+				d_dlyitg[itgcnt] = d_itdata
+				itgcnt += 1
+			end
+			setval_s = Rrh.calc(setval_s,"+","00000001")
+		end
+	end
+
+	itgcnt = 0
+	minclk = 0
+	mincnt = 0
+	d_itdata_min = d_dlyitg[0]
+	cnt2 = 3 #5
+	while cnt2 > 0 do
+		cnt2 -= 1
+		for cnt in 0..127 do
+			if d_dlyitg[itgcnt] < 0 then
+				d_dlyitg[itgcnt] *= (-1.0)
+			end
+			if d_dlyitg[itgcnt] < d_itdata_min then
+				d_itdata_min = d_dlyitg[itgcnt]
+				mincnt = cnt				# 最小時のフィルタタップ係数更新
+				minclk = setval_s.to_i(16) - 1 - cnt2		# 最小時のADRBAK更新
+			end
+			itgcnt += 1
+		end
+	end
+
+	if printlog != 0 then
+		printf("\n")
+		printf("minCLK : %08x \n",minclk)
+		printf("minTAP : %08x \n",mincnt)
+		printf("\n")
+		printf("\n")
+		printf("  d_itdata_min: %f\n",d_itdata_min)
+		printf("  mincnt      : %08x\n",mincnt)
+		printf("  minclk      : %08x\n",minclk)
+	end
+	fn_SetFbDlyFil(antnum, mincnt)	# 9-タップ単位設定
+	fn_SetFbDly(antnum, minclk)		#10-タップ単位設定
+	return true
+end
+
+#---------------------------------------------------
+#     Fn_DelayAdj()
+#---------------------------------------------------
+#  機能 : トレーニング時遅延調整
+#---------------------------------------------------
+# FBループの遅延調整を行うコマンドである。
+# 遅延調整には2つの段階(step)があり、
+# 遅延調整step1としてクロック単位の遅延調整を行った後、遅延調整step2としてTAP単位の遅延調整を行う。
+# クロック単位の遅延調整をFn_DelayAdj1itgNew関数で、TAP単位の遅延調整をFn_DlyAdjColitgNew2関数で行っている。
+# ちなみに1クロックは122.88MHzの幅であり、1TAPは1クロックの1/128の幅である。
+def self.fn_DelayAdjNew2(antnum)
+
+	ret = 0
+
+	printf(" Start the DELAY ADJUST step1.\n")
+	if fn_DelayAdj1itgNew(antnum) != true then
+		printf(" The DELAY ADJUST step1 abnormal end.\n")
+		ret = 1
+	end
+	if ret == 0 then
+		printf(" The DELAY ADJUST step1 normal end.\n")
+		printf(" Start the DELAY ADJUST step2.\n")
+		if fn_DlyAdjColitgNew2(antnum) != true then
+			printf(" The DELAY ADJUST step2 abnormal end.\n")
+			ret = 1
+		end
+	end
+	if ret == 0 then
+		printf(" The DELAY ADJUST step2 normal end.\n")
+		printf(" The DELAY ADJUST normal end.\n")
+    end
+
+	if ret == 0 then
+		return true
+	else
+		return false
+	end
+end
+
+end
+

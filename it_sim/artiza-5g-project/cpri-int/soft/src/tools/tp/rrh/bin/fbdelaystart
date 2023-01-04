@@ -1,0 +1,62 @@
+Rrh.require("./verbose")
+
+puts "TrainingData RF Gain Start ..."
+
+Rrh.assign()
+
+  txanta0 = Rrh.eepread(0x408)
+  txanta1 = Rrh.eepread(0x409)
+  txanta3 = Rrh.eepread(0x40B)
+  txanta3 = Rrh.calc(txanta3,"<<","1")
+  txantb0 = Rrh.eepread(0x468)
+  txantb1 = Rrh.eepread(0x469)
+  txantb3 = Rrh.eepread(0x46B)
+  txantb3 = Rrh.calc(txantb3,"<<","1")
+  txantc0 = Rrh.eepread(0x4C8)
+  txantc1 = Rrh.eepread(0x4C9)
+  txantc3 = Rrh.eepread(0x4CB)
+  txantc3 = Rrh.calc(txantc3,"<<","1")
+  txantd0 = Rrh.eepread(0x528)
+  txantd1 = Rrh.eepread(0x529)
+  txantd3 = Rrh.eepread(0x52B)
+  txantd3 = Rrh.calc(txantd3,"<<","1")
+  txante0 = Rrh.eepread(0x588)
+  txante1 = Rrh.eepread(0x589)
+  txante3 = Rrh.eepread(0x58B)
+  txante3 = Rrh.calc(txante3,"<<","1")
+  txantf0 = Rrh.eepread(0x5E8)
+  txantf1 = Rrh.eepread(0x5E9)
+  txantf3 = Rrh.eepread(0x5EB)
+  txantf3 = Rrh.calc(txantf3,"<<","1")
+  txantg0 = Rrh.eepread(0x648)
+  txantg1 = Rrh.eepread(0x649)
+  txantg3 = Rrh.eepread(0x64B)
+  txantg3 = Rrh.calc(txantg3,"<<","1")
+  txanth0 = Rrh.eepread(0x6A8)
+  txanth1 = Rrh.eepread(0x6A9)
+  txanth3 = Rrh.eepread(0x6AB)
+  txanth3 = Rrh.calc(txanth3,"<<","1")
+
+#txant*0を17:16、txant*1を15:8、txant*3を7:1としてレジスタにWRITE
+  txanta_s = txanta0 + txanta1 + txanta3[-2,2]
+  puts"#{txanta_s}"
+  Rrh.regwrite("B2103050",txanta_s)
+  txantb_s = txantb0 + txantb1 + txantb3[-2,2]
+  puts"#{txantb_s}"
+  Rrh.regwrite("B2103250",txantb_s)
+  txantc_s = txantc0 + txantc1 + txantc3[-2,2]
+  Rrh.regwrite("B2103450",txantc_s)
+  txantd_s = txantd0 + txantd1 + txantd3[-2,2]
+  Rrh.regwrite("B2103650",txantd_s)
+  txante_s = txante0 + txante1 + txante3[-2,2]
+  Rrh.regwrite("B2103850",txante_s)
+  txantf_s = txantf0 + txantf1 + txantf3[-2,2]
+  Rrh.regwrite("B2103A50",txantf_s)
+  txantg_s = txantg0 + txantg1 + txantg3[-2,2]
+  Rrh.regwrite("B2103C50",txantg_s)
+  txanth_s = txanth0 + txanth1 + txanth3[-2,2]
+  Rrh.regwrite("B2103E50",txanth_s)
+
+Rrh.unassign()
+exit(0)
+

@@ -1,0 +1,30 @@
+Rrh.require("./verbose")
+
+def cmd_help()
+ puts "usage: "+$0+" <carrID> ",
+ "(m):<carrID>  carriorID 0 - 255 "
+ return
+end
+
+#usage
+if ARGV.length < 1 then
+ cmd_help()
+ exit(1)
+end
+
+carrid_s  = ARGV[0]
+
+
+Rrh.assign()
+if carrid_s.to_i > 256 then
+    puts "Input value is incorrect : <carrID>"
+    raise
+end
+
+if !res = Rrh.carrparaminf( carrid_s ) then
+ puts "error"
+else
+ puts "complete"
+end
+
+Rrh.unassign()

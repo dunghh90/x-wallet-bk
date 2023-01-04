@@ -1,0 +1,7 @@
+#
+#  Makefile Include 
+
+MRUBY_PATH			= ./mruby
+
+LDLIBS				+= -lm -L../lib -lmruby
+CFLAGS				+= -DRRHLIB_MEM_CHK

@@ -1,0 +1,35 @@
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+Rrh.require("./z_global")
+Rrh.require("./apd_delayadjust")
+Rrh.require("./tpshm_access")
+
+Rrh.assign()
+
+addr_eep = 64
+res = Rrh.eepread(addr_eep.to_i(16))
+if res != "13" then
+	printf("device kind : [NG] (devkind = %02x : mmW)\n", res.to_i(16))
+	printf("Calibration coefficient disply NG!!!\n")
+	exit(1)
+end
+
+puts "** tx calcoef **"
+puts "----------------"
+for cnt in 0..3 do
+
+	CALcoef = Rrh.bpfshmread("E_RRH_SHMID_APL_TXCAL_COEF","",cnt.to_s)
+
+	if cnt == 0 then
+		printf("Ant.A : %08x\n", CALcoef.to_i(16))
+	elsif cnt == 1 then
+		printf("Ant.B : %08x\n", CALcoef.to_i(16))
+	elsif cnt == 2 then
+		printf("Ant.C : %08x\n", CALcoef.to_i(16))
+	else
+		printf("Ant.D : %08x\n", CALcoef.to_i(16))
+	end
+end
+puts "----------------"
+Rrh.unassign()

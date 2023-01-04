@@ -1,0 +1,4 @@
+# 
+# MMI CPLD write
+# 
+Rrh.require("./mmcw")

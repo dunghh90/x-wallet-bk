@@ -1,0 +1,552 @@
+# 
+# rrh -power
+# 
+
+Rrh.require("./verbose")
+
+def cmd_help()
+ puts "usage: "+$0+" ",
+ "Display Transfer Power"
+ return
+end
+
+#usage
+if (ARGV.length > 0) && ( ARGV[0].to_s.downcase == "help" ) then
+ cmd_help()
+ exit(1)
+end
+
+Rrh.assign()
+
+# judge(4.5G or 3.7G or 28G)
+addr_eep = 65
+if !band = Rrh.eepread(addr_eep.to_i(16)) then
+ puts "eeprom read error"
+else
+ puts "0x#{band} "
+end
+
+# judge(Sub6 or mmW)
+addr_eep = 64
+if !res = Rrh.eepread(addr_eep.to_i(16)) then
+ puts "eeprom read error"
+else
+ puts "0x#{res} "
+
+ case res
+
+ when "13"
+  puts "-- 5G-DU(sub6) --"
+  kind = "BPF_HM_DEVC_SUB6"
+
+  x_tssi = 1878452.2
+  z_tssi = -34.22
+  x_pow  = 30055235.73
+  z_pow  = -34.22
+  x_adc = -26.5
+  y_adc = 407123813.7
+  z_adc = -115.99 + x_adc
+  case band
+  when "10"
+	  y_tssi = 29.9
+	  y_pow  = 29.9
+	  x_rtwp = -26.5
+	  y_rtwp = 508904767.1
+	  z_rtwp = -116.92 + x_rtwp
+  else
+	  y_tssi = 28.5
+	  y_pow  = 28.5
+	  x_rtwp = -26.5
+	  y_rtwp = 508904767.1
+	  z_rtwp = -116.92 + x_rtwp
+  end
+# TSSILAT write
+  Rrh.regwrite("B11001E4","00000001")
+
+ when "14"
+  puts "-- 5G-DU(mmW) --"
+  kind = "BPF_HM_DEVC_MMW"
+ 
+  x_tssi = 37820813.7
+  y_tssi = 15.2
+  z_tssi = -34.22
+  x_pow  = 37820813.7
+  y_pow  = 15.2
+  z_pow  = -34.22
+  x_adc = -55.7
+  y_adc = 2693268.75
+  z_adc = -115.99 + x_adc
+  x_rtwp = -55.7
+  y_rtwp = 3366585.938
+  z_rtwp = -116.92 + x_rtwp
+
+# TSSILAT write
+  Rrh.regwrite("B1100124","00000001")
+
+ else
+  puts "kind error"
+  exit(1)
+ end
+
+end
+
+printf("-- TSSI Value -- \n")
+
+#sub6 route
+if kind == "BPF_HM_DEVC_SUB6" then
+
+    mount_a0 =  Rrh.regread( "B11001C0" )
+    mount_a1 =  Rrh.regread( "B11001C4" )
+    mount_b0 =  Rrh.regread( "B11005C0" )
+    mount_b1 =  Rrh.regread( "B11005C4" )
+    mount_c0 =  Rrh.regread( "B11009C0" )
+    mount_c1 =  Rrh.regread( "B11009C4" )
+    mount_d0 =  Rrh.regread( "B1100DC0" )
+    mount_d1 =  Rrh.regread( "B1100DC4" )
+
+	# calc & disp
+    if mount_a0 == "00000000" then
+        val = z_tssi
+    else
+        val = 10.0 * Math::log10( mount_a0.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.A Carrier0 Value :%f, reg=%s \n", val.round(1), mount_a0)
+
+    if mount_a1 == "00000000" then
+        val = z_tssi
+    else
+		val = 10.0 * Math::log10( mount_a1.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.A Carrier1 Value :%f, reg=%s \n", val.round(1), mount_a1)
+
+    if mount_b0 == "00000000" then
+        val = z_tssi
+    else
+        val = 10.0 * Math::log10( mount_b0.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.B Carrier0 Value :%f, reg=%s \n", val.round(1), mount_b0)
+
+    if mount_b1 == "00000000" then
+        val = z_tssi
+    else
+		val = 10.0 * Math::log10( mount_b1.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.B Carrier1 Value :%f, reg=%s \n", val.round(1), mount_b1)
+
+    if mount_c0 == "00000000" then
+        val = z_tssi
+    else
+        val = 10.0 * Math::log10( mount_c0.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.C Carrier0 Value :%f, reg=%s \n", val.round(1), mount_c0)
+
+    if mount_c1 == "00000000" then
+        val = z_tssi
+    else
+		val = 10.0 * Math::log10( mount_c1.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.C Carrier1 Value :%f, reg=%s \n", val.round(1), mount_c1)
+
+    if mount_d0 == "00000000" then
+        val = z_tssi
+    else
+        val = 10.0 * Math::log10( mount_d0.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.D Carrier0 Value :%f, reg=%s \n", val.round(1), mount_d0)
+
+    if mount_d1 == "00000000" then
+        val = z_tssi
+    else
+		val = 10.0 * Math::log10( mount_d1.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.D Carrier1 Value :%f, reg=%s \n", val.round(1), mount_d1)
+
+
+# mmW route
+else
+
+    mount_a0 =  Rrh.regread( "B1100100" )
+	mount_a1 =  Rrh.regread( "B1100104" )
+    mount_a2 =  Rrh.regread( "B1100108" )
+	mount_a3 =  Rrh.regread( "B110010C" )
+    mount_b0 =  Rrh.regread( "B1100500" )
+	mount_b1 =  Rrh.regread( "B1100504" )
+    mount_b2 =  Rrh.regread( "B1100508" )
+	mount_b3 =  Rrh.regread( "B110050C" )
+
+    if mount_a0 == "00000000" then
+        val = z_tssi
+    else
+		val = 10.0 * Math::log10( mount_a0.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.A Carrier0 Value :%f, reg=%s \n", val.round(1), mount_a0)
+
+    if mount_a1 == "00000000" then
+        val = z_tssi
+    else
+		val = 10.0 * Math::log10( mount_a1.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.A Carrier1 Value :%f, reg=%s \n", val.round(1), mount_a1)
+
+    if mount_a2 == "00000000" then
+        val = z_tssi
+    else
+		val = 10.0 * Math::log10( mount_a2.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.A Carrier2 Value :%f, reg=%s \n", val.round(1), mount_a2)
+
+    if mount_a3 == "00000000" then
+        val = z_tssi
+    else
+		val = 10.0 * Math::log10( mount_a3.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.A Carrier3 Value :%f, reg=%s \n", val.round(1), mount_a3)
+
+    if mount_b0 == "00000000" then
+        val = z_tssi
+    else
+		val = 10.0 * Math::log10( mount_b0.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.B Carrier0 Value :%f, reg=%s \n", val.round(1), mount_b0)
+
+    if mount_b1 == "00000000" then
+        val = z_tssi
+    else
+		val = 10.0 * Math::log10( mount_b1.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.B Carrier1 Value :%f, reg=%s \n", val.round(1), mount_b1)
+
+    if mount_b2 == "00000000" then
+        val = z_tssi
+    else
+		val = 10.0 * Math::log10( mount_b2.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.B Carrier2 Value :%f, reg=%s \n", val.round(1), mount_b2)
+
+    if mount_b3 == "00000000" then
+        val = z_tssi
+    else
+		val = 10.0 * Math::log10( mount_b3.to_i(16) / x_tssi ) + y_tssi
+    end
+	printf("Ant.B Carrier3 Value :%f, reg=%s \n", val.round(1), mount_b3)
+
+end
+
+# アンテナ送信電力
+
+#sub6 route
+if kind == "BPF_HM_DEVC_SUB6" then
+
+    # POWLAT write
+    Rrh.regwrite("B12030C0","00000001")
+    Rrh.regwrite("B12034C0","00000001")
+    Rrh.regwrite("B12038C0","00000001")
+    Rrh.regwrite("B1203CC0","00000001")
+
+    printf("-- Antenna Send Value -- \n")
+
+    ant_a =  Rrh.regread( "B12030E8" )
+	ant_b =  Rrh.regread( "B12034E8" )
+    ant_c =  Rrh.regread( "B12038E8" )
+	ant_d =  Rrh.regread( "B1203CE8" )
+
+    if ant_a == "00000000" then
+        val_a = z_pow
+    else
+		val_a = 10.0 * Math::log10( ant_a.to_i(16) / x_pow ) + y_pow
+    end
+	printf("Ant.A Send Value :%f, reg=%s \n", val_a.round(1), ant_a)
+
+    if ant_b == "00000000" then
+        val_b = z_pow
+    else
+		val_b = 10.0 * Math::log10( ant_b.to_i(16) / x_pow ) + y_pow
+    end
+	printf("Ant.B Send Value :%f, reg=%s \n", val_b.round(1), ant_b)
+
+    if ant_c == "00000000" then
+        val_c = z_pow
+    else
+		val_c = 10.0 * Math::log10( ant_c.to_i(16) / x_pow ) + y_pow
+    end
+	printf("Ant.C Send Value :%f, reg=%s \n", val_c.round(1), ant_c)
+
+    if ant_d == "00000000" then
+        val_d = z_pow
+    else
+		val_d = 10.0 * Math::log10( ant_d.to_i(16) / x_pow ) + y_pow
+    end
+	printf("Ant.D Send Value :%f, reg=%s \n", val_d.round(1), ant_d)
+
+    #FB電力
+	printf("-- FB Value -- \n")
+
+	antsw_a = ant_a
+	antsw_b = ant_b
+	antsw_c = ant_c
+	antsw_d = ant_d
+
+	antfb_a = Rrh.regread( "B12030EC" )
+	antfb_b = Rrh.regread( "B12034EC" )
+	antfb_c = Rrh.regread( "B12038EC" )
+	antfb_d = Rrh.regread( "B1203CEC" )
+
+	fb_a = 10.0 * Math::log10( antfb_a.to_i(16) / antsw_a.to_i(16) ) + val_a
+	fb_b = 10.0 * Math::log10( antfb_b.to_i(16) / antsw_b.to_i(16) ) + val_b
+	fb_c = 10.0 * Math::log10( antfb_c.to_i(16) / antsw_c.to_i(16) ) + val_c
+	fb_d = 10.0 * Math::log10( antfb_d.to_i(16) / antsw_d.to_i(16) ) + val_d
+
+	printf("Ant.A FB Value :%.0f, reg(FB)=%s, reg(SW)=%s\n", fb_a.round(1), antfb_a, antsw_a)
+	printf("Ant.B FB Value :%.0f, reg(FB)=%s, reg(SW)=%s\n", fb_b.round(1), antfb_b, antsw_b)
+	printf("Ant.C FB Value :%.0f, reg(FB)=%s, reg(SW)=%s\n", fb_c.round(1), antfb_c, antsw_c)
+	printf("Ant.D FB Value :%.0f, reg(FB)=%s, reg(SW)=%s\n", fb_d.round(1), antfb_d, antsw_d)
+
+else
+
+    # POWLAT write
+    Rrh.regwrite("B11002F4","00000001")
+
+    printf("-- Antenna Send Value -- \n")
+
+    ant_a =  Rrh.regread( "B11002E0" )
+	ant_b =  Rrh.regread( "B11006E0" )
+
+    if ant_a == "00000000" then
+        val_a = z_pow
+    else
+		val_a = 10.0 * Math::log10( ant_a.to_i(16) / x_pow ) + y_pow
+    end
+	printf("Ant.A Send Value :%f, reg=%s \n", val_a.round(1), ant_a)
+
+    if ant_b == "00000000" then
+        val_b = z_pow
+    else
+		val_b = 10.0 * Math::log10( ant_b.to_i(16) / x_pow ) + y_pow
+    end
+	printf("Ant.B Send Value :%f, reg=%s \n", val_b.round(1), ant_b)
+
+
+	#FBはmmWは無
+
+end
+
+
+# 受信電力報告値
+# ADC受信電力報告
+# RXPOWLAT write
+Rrh.regwrite("B1300238","00000001")
+Rrh.regwrite("B1300638","00000001")
+
+printf("-- ADC Value -- \n")
+
+#sub6 route
+if kind == "BPF_HM_DEVC_SUB6" then
+    Rrh.regwrite("B1300A38","00000001")
+    Rrh.regwrite("B1300E38","00000001")
+
+    adc_a =  Rrh.regread( "B1300230" )
+    adc_b =  Rrh.regread( "B1300630" )
+    adc_c =  Rrh.regread( "B1300A30" )
+    adc_d =  Rrh.regread( "B1300E30" )
+
+    #POW (dBm)=10*log( pppp_pppp /Y)+X
+    if adc_a == "00000000" then
+        val = z_adc
+    else
+        val = 10.0 * Math::log10( adc_a.to_i(16) / y_adc ) + x_adc
+    end
+	printf("Ant.A Value :%f, reg=%s \n", val.round(1), adc_a)
+    if adc_b == "00000000" then
+        val = z_adc
+    else
+        val = 10.0 * Math::log10( adc_b.to_i(16) / y_adc ) + x_adc
+    end
+	printf("Ant.B Value :%f, reg=%s \n", val.round(1), adc_b)
+    if adc_c == "00000000" then
+        val = z_adc
+    else
+        val = 10.0 * Math::log10( adc_c.to_i(16) / y_adc ) + x_adc
+    end
+	printf("Ant.C Value :%f, reg=%s \n", val.round(1), adc_c)
+    if adc_d == "00000000" then
+        val = z_adc
+    else
+        val = 10.0 * Math::log10( adc_d.to_i(16) / y_adc ) + x_adc
+    end
+	printf("Ant.D Value :%f, reg=%s \n", val.round(1), adc_d)
+# mmW route
+else
+    adc_a =  Rrh.regread( "B1300230" )
+    adc_b =  Rrh.regread( "B1300630" )
+
+    #POW (dBm)=10*log( pppp_pppp /Y)+X
+    if adc_a == "00000000" then
+        val = z_adc
+    else
+        val = 10.0 * Math::log10( adc_a.to_i(16) / y_adc ) + x_adc
+    end
+	printf("Ant.A Value :%f, reg=%s \n", val.round(1), adc_a)
+    if adc_b == "00000000" then
+        val = z_adc
+    else
+        val = 10.0 * Math::log10( adc_b.to_i(16) / y_adc ) + x_adc
+    end
+	printf("Ant.B Value :%f, reg=%s \n", val.round(1), adc_b)
+end
+
+
+# キャリア受信電力報告(RTWP)
+
+# RTWPLAT write
+Rrh.regwrite("B1300174","00000001")
+Rrh.regwrite("B1300574","00000001")
+
+printf("-- RTWP Value -- \n")
+
+#sub6 route
+if kind == "BPF_HM_DEVC_SUB6" then
+    Rrh.regwrite("B1300974","00000001")
+    Rrh.regwrite("B1300D74","00000001")
+
+    mount_a0 =  Rrh.regread( "B1300150" )
+    mount_a1 =  Rrh.regread( "B1300154" )
+    mount_b0 =  Rrh.regread( "B1300550" )
+    mount_b1 =  Rrh.regread( "B1300554" )
+    mount_c0 =  Rrh.regread( "B1300950" )
+    mount_c1 =  Rrh.regread( "B1300954" )
+    mount_d0 =  Rrh.regread( "B1300D50" )
+    mount_d1 =  Rrh.regread( "B1300D54" )
+
+    #RTWP (dBm)=10*log( pppp_pppp /Y)+X
+    if mount_a0 == "00000000" then
+        val = z_rtwp
+    else
+        val = 10.0 * Math::log10( mount_a0.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.A Carrier0 Value :%f, reg=%s \n", val.round(1), mount_a0)
+
+    if mount_a1 == "00000000" then
+        val = z_rtwp
+    else
+		val = 10.0 * Math::log10( mount_a1.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.A Carrier1 Value :%f, reg=%s \n", val.round(1), mount_a1)
+
+    if mount_b0 == "00000000" then
+        val = z_rtwp
+    else
+        val = 10.0 * Math::log10( mount_b0.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.B Carrier0 Value :%f, reg=%s \n", val.round(1), mount_b0)
+
+    if mount_b1 == "00000000" then
+        val = z_rtwp
+    else
+		val = 10.0 * Math::log10( mount_b1.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.B Carrier1 Value :%f, reg=%s \n", val.round(1), mount_b1)
+
+    if mount_c0 == "00000000" then
+        val = z_rtwp
+    else
+        val = 10.0 * Math::log10( mount_c0.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.C Carrier0 Value :%f, reg=%s \n", val.round(1), mount_c0)
+
+    if mount_c1 == "00000000" then
+        val = z_rtwp
+    else
+		val = 10.0 * Math::log10( mount_c1.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.C Carrier1 Value :%f, reg=%s \n", val.round(1), mount_c1)
+
+    if mount_d0 == "00000000" then
+        val = z_rtwp
+    else
+        val = 10.0 * Math::log10( mount_d0.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.D Carrier0 Value :%f, reg=%s \n", val.round(1), mount_d0)
+
+    if mount_d1 == "00000000" then
+        val = z_rtwp
+    else
+		val = 10.0 * Math::log10( mount_d1.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.D Carrier1 Value :%f, reg=%s \n", val.round(1), mount_d1)
+
+# mmW route
+else
+
+    mount_a0 =  Rrh.regread( "B1300150" )
+	mount_a1 =  Rrh.regread( "B1300154" )
+    mount_a2 =  Rrh.regread( "B1300158" )
+	mount_a3 =  Rrh.regread( "B130015C" )
+    mount_b0 =  Rrh.regread( "B1300550" )
+	mount_b1 =  Rrh.regread( "B1300554" )
+    mount_b2 =  Rrh.regread( "B1300558" )
+	mount_b3 =  Rrh.regread( "B130055C" )
+
+    #RTWP (dBm)=10*log( pppp_pppp /Y)+X
+    if mount_a0 == "00000000" then
+        val = z_rtwp
+    else
+		val = 10.0 * Math::log10( mount_a0.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.A Carrier0 Value :%f, reg=%s \n", val.round(1), mount_a0)
+
+    if mount_a1 == "00000000" then
+        val = z_rtwp
+    else
+		val = 10.0 * Math::log10( mount_a1.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.A Carrier1 Value :%f, reg=%s \n", val.round(1), mount_a1)
+
+    if mount_a2 == "00000000" then
+        val = z_rtwp
+    else
+		val = 10.0 * Math::log10( mount_a2.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.A Carrier2 Value :%f, reg=%s \n", val.round(1), mount_a2)
+
+    if mount_a3 == "00000000" then
+        val = z_rtwp
+    else
+		val = 10.0 * Math::log10( mount_a3.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.A Carrier3 Value :%f, reg=%s \n", val.round(1), mount_a3)
+
+
+    if mount_b0 == "00000000" then
+        val = z_rtwp
+    else
+		val = 10.0 * Math::log10( mount_b0.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.B Carrier0 Value :%f, reg=%s \n", val.round(1), mount_b0)
+
+    if mount_b1 == "00000000" then
+        val = z_rtwp
+    else
+		val = 10.0 * Math::log10( mount_b1.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.B Carrier1 Value :%f, reg=%s \n", val.round(1), mount_b1)
+
+    if mount_b2 == "00000000" then
+        val = z_rtwp
+    else
+		val = 10.0 * Math::log10( mount_b2.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.B Carrier2 Value :%f, reg=%s \n", val.round(1), mount_b2)
+
+    if mount_b3 == "00000000" then
+        val = z_rtwp
+    else
+		val = 10.0 * Math::log10( mount_b3.to_i(16) / y_rtwp ) + x_rtwp
+    end
+	printf("Ant.B Carrier3 Value :%f, reg=%s \n", val.round(1), mount_b3)
+
+
+end
+
+
+printf("-- rrh -power Fin! -- \n")
+Rrh.unassign()

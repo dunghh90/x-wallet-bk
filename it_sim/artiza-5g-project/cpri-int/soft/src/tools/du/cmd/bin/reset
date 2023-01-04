@@ -1,0 +1,56 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+chk_res = Rrh.proc_check()
+if chk_res == false then
+	puts DuCode::ERR_DESCRIPTION[12]
+	Rrh.exit(1)
+end
+
+result = 0
+facechange = 0
+# check start up side change option
+	if ARGV.length > 0 then
+		face = ARGV[0]
+		if face != "-v" then
+			if face.to_i != 0 && face.to_i != 1 then
+				puts DuCode::ERR_DESCRIPTION[5]
+				result = 1
+			else
+				case face.to_i 
+					when 0 then
+						slotsts=Rrh.eepread(0x17c)
+					when 1 then
+						slotsts=Rrh.eepread(0x17d)
+					else
+						Rrh.exit(1)
+				end
+				if slotsts != "01" then
+					if slotsts == "02" then
+						stsname = "INVALID"
+					else
+						stsname = "EMPTY"
+					end
+					puts DuCode::ERR_DESCRIPTION[6]
+					result = 1
+				else
+					facechange = 1
+				end
+			end
+		end
+	end
+
+if result == 0 then
+	if facechange != 0 then
+		Rrh.eepwrite(0x50,face.to_i)
+		puts "Reset by slot#{face.to_i} ..."
+	else
+		puts "Reset ..."
+	end
+	Rrh.fflush()
+	Rrh.sigqueue("SIGUSR2","DU_init",0x00001000)
+	while 1 do 
+		Rrh.sleep(1)
+	end
+end

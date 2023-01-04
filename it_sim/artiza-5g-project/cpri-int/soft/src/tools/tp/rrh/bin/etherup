@@ -1,0 +1,7 @@
+Rrh.require("./verbose")
+
+Rrh.assign()
+Rrh.regbiton("a2010000","00000001")
+Rrh.regbiton("a2200000","00000001")
+Rrh.unassign()
+exit(0)

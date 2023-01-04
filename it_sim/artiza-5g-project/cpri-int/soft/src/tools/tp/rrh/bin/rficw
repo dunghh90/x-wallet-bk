@@ -1,0 +1,44 @@
+# 
+# Register write
+# rrh -rficw <unit> <addr> <data>
+# 
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+#Rrh.dmsg(1)
+
+# usage
+if ARGV.length < 3 then
+ puts "usage:"+$0+" <unit> <addr> <data>",
+ "(m):<unit> is 0-3:RFIC0-RFIC1",
+ "(m):<addr> is rfic register address",
+ "(m):<data> is written data"
+ exit(1)
+end
+
+unit_s = ARGV[0]
+addr_s = ARGV[1]
+data_s = ARGV[2]
+
+#引数の整合性確認
+if( (unit_s.to_i(16)<0) || (unit_s.to_i(16)>1) ) then
+ puts "Input value is incorrect : <unit>"
+ exit(1)
+end
+if !Rrh.input_check(addr_s,8) then
+ puts "Input value is incorrect : <addr>"
+ exit(1)
+end
+if !Rrh.input_check(data_s,8) then
+ puts "Input value is incorrect : <data>"
+ exit(1)
+end
+
+Rrh.assign()
+#レジスタ書込み
+if !res = Rrh.rficwrite(unit_s.to_i(16),addr_s.to_i(16),data_s.to_i(16)) then
+ puts "rfic register write error"
+else
+ puts "rfic register write complete"
+end
+
+Rrh.unassign()

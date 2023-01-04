@@ -1,0 +1,25 @@
+Rrh.require("./verbose")
+
+def cmd_help ( )
+ puts "usage:"+$0+" <dbgMode> <dbgLevel>",
+ "(m):<dbgMode>      is Module Number used API - SetTraceLogLevel Request",
+ "(m):<dbgLevel>     is Log Level used API - SetTraceLogLevel Request"
+ exit(1)
+end
+
+if ARGV.length < 2 then
+ cmd_help()
+ raise
+end
+
+qid    = 0x10FD000E
+dbgMode  = ARGV[0]
+dbgLevel = ARGV[1]
+
+Rrh.assign()
+if ( rtn = Rrh.api("duApi_Ptp_Mqr_SetTraceLogLevel", qid, 0, 0, dbgMode.to_i, dbgLevel.to_i) ) != 0 then
+ printf("=>ERROR_R %d \n",rtn)
+else
+ puts "=>OK "
+end
+Rrh.unassign()

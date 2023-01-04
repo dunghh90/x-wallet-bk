@@ -1,0 +1,95 @@
+
+#QDEM IM補正設定
+#第1引数:(hex):アンテナ番号(0:Ant.A ～ 1:Ant.B)
+#第2引数(hex):設定値
+#selector = 2
+#20180815 新規作成 藤田
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./tpshm_access")
+
+
+#パラメータ確認
+if ARGV.length < 2 then
+ puts "usage:"+$0+" <ant> <data>",
+ "(m):<ant>  is 0:AntA / 1:AntB",
+ "(m):<data> is written data"
+ exit(1) 
+end
+
+ant_s = ARGV[0]
+sel = 2
+
+tmp_data_s = ARGV[1]
+case tmp_data_s.length
+   when 1
+     data_s = "000" + tmp_data_s
+   when 2
+     data_s = "00" + tmp_data_s
+   when 3
+     data_s = "0" + tmp_data_s
+   else
+     data_s = tmp_data_s
+end
+
+#想定外の値NGを追記
+if ant_s.to_i > 1 then
+ puts "Input value is incorrect : <ant>"
+ exit(1) 
+end
+
+#データチェック
+if !Rrh.input_check(data_s,4) then
+ puts "Input value is incorrect : <data>"
+ exit(1) 
+end
+
+Rrh.assign()
+
+
+#「rrh -qdemw」の第2引数は0x0005固定
+addr_s = "0005"
+
+if !res = Rrh.qdemwrite( ant_s , sel , addr_s.to_i(16) , data_s.to_i(16) ) then
+  puts "error qdemwrite 1"
+else
+  #puts "complete"
+end
+
+
+#★仮想レジスタ設定(mmW)
+# 仮想レジスタを「設定値」に書き換える
+# Ant.A: QDEM_IM_A → (通常)N_QDEM_IM_V：0x610、(低電力)L_QDEM_IM_V：0x710
+# Ant.B: QDEM_IM_B → (通常)N_QDEM_IM_H：0x612、(低電力)L_QDEM_IM_H：0x712
+
+#Ant.Aの場合
+if ant_s.to_i == 0 then
+  ## Ant.A: QDEM_IM_A
+  addr1 = 0x010
+
+#Ant.Bの場合
+else
+  ## Ant.B: QDEM_IM_B
+  addr1 = 0x012
+end
+
+data1 = data_s[0..1]
+data2 = data_s[2..3]
+#puts" #{data1}#{data2} "
+
+if !res = Rrh.tpshmwrite("apde2pRX_vt_mmw","",addr1.to_s(16),data1) then
+  puts "error tpshmwrite 1"
+  exit(1)
+end
+
+addr1 = addr1 + 1
+if !res = Rrh.tpshmwrite("apde2pRX_vt_mmw","",addr1.to_s(16),data2) then
+   puts "error tpshmwrite 2"
+   exit(1)
+end
+
+puts "complete"
+
+Rrh.unassign()

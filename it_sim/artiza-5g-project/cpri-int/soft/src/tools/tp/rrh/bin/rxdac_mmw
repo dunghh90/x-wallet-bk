@@ -1,0 +1,318 @@
+# 
+# PTP setup
+# 
+Rrh.require("./verbose")
+Rrh.assign()
+
+ puts "RXDAC ..."
+Rrh.regbitoff("A0000040","00002000")
+Rrh.sleep(1,10000000)
+Rrh.rxadcwrite(0x0000,0x81)
+Rrh.sleep(0,20000000)
+
+Rrh.rxadcwrite(0x0121,0x0F)
+Rrh.rxadcwrite(0x0200,0x02)
+Rrh.rxadcwrite(0x0201,0x01)
+Rrh.rxadcwrite(0x0310,0x43)
+Rrh.rxadcwrite(0x0311,0x00)
+Rrh.rxadcwrite(0x0314,0x00)
+Rrh.rxadcwrite(0x0316,0x00)
+Rrh.rxadcwrite(0x0317,0x00)
+Rrh.rxadcwrite(0x0318,0x00)
+Rrh.rxadcwrite(0x0319,0x00)
+Rrh.rxadcwrite(0x031a,0x00)
+Rrh.rxadcwrite(0x031b,0xC0)
+Rrh.rxadcwrite(0x0330,0x43)
+Rrh.rxadcwrite(0x0331,0x05)
+Rrh.rxadcwrite(0x0334,0x00)
+Rrh.rxadcwrite(0x0336,0x00)
+Rrh.rxadcwrite(0x0337,0x00)
+Rrh.rxadcwrite(0x0338,0x00)
+Rrh.rxadcwrite(0x0339,0x00)
+Rrh.rxadcwrite(0x033a,0x00)
+Rrh.rxadcwrite(0x033b,0xC0)
+Rrh.rxadcwrite(0x0300,0x00)
+Rrh.rxadcwrite(0x0571,0x15)
+Rrh.rxadcwrite(0x0572,0x00)
+Rrh.rxadcwrite(0x0573,0x40)
+Rrh.rxadcwrite(0x056E,0x00)
+Rrh.rxadcwrite(0x058B,0x87)
+Rrh.rxadcwrite(0x058C,0x01)
+Rrh.rxadcwrite(0x058D,0x1F)
+Rrh.rxadcwrite(0x058E,0x03)
+Rrh.rxadcwrite(0x058F,0x0F)
+Rrh.rxadcwrite(0x0590,0x2F)
+Rrh.rxadcwrite(0x0591,0x21)
+Rrh.rxadcwrite(0x0592,0x00)
+
+Rrh.rxadcwrite(0x05B0,0x00)
+Rrh.rxadcwrite(0x05B2,0x32)
+Rrh.rxadcwrite(0x05B3,0x10)
+Rrh.rxadcwrite(0x05B5,0x76)
+Rrh.rxadcwrite(0x05B6,0x54)
+Rrh.rxadcwrite(0x05C0,0x11)
+Rrh.rxadcwrite(0x05C1,0x11)
+Rrh.rxadcwrite(0x05C2,0x11)
+Rrh.rxadcwrite(0x05C3,0x11)
+Rrh.rxadcwrite(0x05C4,0x80)
+Rrh.rxadcwrite(0x05C5,0x80)
+Rrh.rxadcwrite(0x05C6,0x80)
+Rrh.rxadcwrite(0x05C7,0x80)
+Rrh.rxadcwrite(0x05C8,0x80)
+Rrh.rxadcwrite(0x05C9,0x80)
+Rrh.rxadcwrite(0x05CA,0x80)
+Rrh.rxadcwrite(0x05CB,0x80)
+Rrh.rxadcwrite(0x0571,0x14)
+
+Rrh.sleep(0,20000000)
+val = Rrh.rxadcread(0x056F)
+if Rrh.calc(val,"&","00000080") == "00000000" then
+   puts "Ensure PLL is locked by reading a value of 1"
+   exit(1)
+end
+
+Rrh.rxadcwrite(0x1228,0x4F)
+Rrh.rxadcwrite(0x1228,0x0F)
+Rrh.rxadcwrite(0x1222,0x00)
+Rrh.rxadcwrite(0x1222,0x04)
+Rrh.rxadcwrite(0x1222,0x00)
+Rrh.rxadcwrite(0x1262,0x08)
+Rrh.rxadcwrite(0x1262,0x00)
+
+Rrh.sleep(1,0)
+Rrh.rxadcwrite(0x0120,0x04)
+
+Rrh.sleep(0,110000000)
+
+puts "FPGA#1 RX JESD start"
+Rrh.regbiton("B001004C","00000004")
+Rrh.sleep(0,20000000)	
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B0010200")
+  if  Rrh.calc(val,"&","00040000") == "00000000" then
+    puts "JSFB RX SERDES NOT DONE cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR JSFB RX SERDES NOT DONE #{val}"
+ exit(1)
+end
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B1301308")
+  if  Rrh.calc(val,"&","FFFFFFF") == "00000000" then
+    puts "PHY status cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR PHY status #{val}"
+ exit(1)
+end
+Rrh.regbitoff("B1301020","00010000")
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B1301034")
+  if  Rrh.calc(val,"&","00000001") == "00000001" then
+    puts "JSRX SYNC cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR JSRX SYNC #{val}"
+ exit(1)
+end
+Rrh.regbiton("B1301030","00000001")
+Rrh.sleep(0,20000000)
+
+
+
+puts "FPGA#2 RX JESD start"
+Rrh.regbiton("B201004C","00000004")
+Rrh.sleep(0,20000000)	
+
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B2010200")
+  if  Rrh.calc(val,"&","00040000") == "00000000" then
+    puts "JSFB RX SERDES NOT DONE cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR JSFB RX SERDES NOT DONE #{val}"
+ exit(1)
+end
+
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B3301308")
+  if  Rrh.calc(val,"&","FFFFFFF") == "00000000" then
+    puts "PHY status cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR PHY status #{val}"
+ exit(1)
+end
+
+Rrh.regbitoff("B3301020","00010000")
+
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B3301034")
+  if  Rrh.calc(val,"&","00000001") == "00000001" then
+    puts "JSRX SYNC cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR JSRX SYNC #{val}"
+ exit(1)
+end
+
+Rrh.regbiton("B3301030","00000001")
+Rrh.sleep(0,20000000)
+
+puts "FPGA#1 RX ILAS start "
+#RD [JSRX] 0x1300[20, 16, 1] ="1"
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B1301300")
+  if  Rrh.calc(val,"&","00110001") == "00110001" then
+    puts "JSRX2 SYNC cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR JSRX2 SYNC #{val}"
+ exit(1)
+end
+
+
+#RD [JSRX] 0x1310 = all "0"
+loopnum = 0
+while loopnum < 1 do
+  val = Rrh.regread("B1301310")
+  if  Rrh.calc(val,"&","000FFFFF") == "00000000" then
+    puts "JSRX STATUS CHECK OK"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum >= 1 then
+ puts "ERROR JSRX STATUS CHECK #{val}"
+ exit(1)
+end
+
+#WR [JSRX] 0x1020[16] = "1"
+Rrh.regbiton("B1301020","00010000")
+Rrh.sleep(0,20000000)
+
+#RD [JSRX] 0x1404 = all "0"
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B1301404")
+  if  Rrh.calc(val,"&","FFFFFFFF") == "00000000" then
+    puts "JSRX NO ERROR"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR JSRX NO ERROR #{val}"
+ exit(1)
+end
+
+puts "FPGA#2 RX ILAS start "
+#RD [JSRX] 0x1300[20, 16, 1] ="1"
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B3301300")
+  if  Rrh.calc(val,"&","00110001") == "00110001" then
+    puts "JSRX SYNC cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR JSRX SYNC #{val}"
+ exit(1)
+end
+
+#RD [JSRX] 0x1310 = all "0"
+loopnum = 0
+while loopnum < 1 do
+  val = Rrh.regread("B3301310")
+  if  Rrh.calc(val,"&","000FFFFF") == "00000000" then
+    puts "JSRX STATUS CHECK OK"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum >= 1 then
+ puts "ERROR JSRX STATUS CHECK #{val}"
+ exit(1)
+end
+
+#WR [JSRX] 0x1020[16] = "1"
+Rrh.regbiton("B3301020","00010000")
+Rrh.sleep(0,20000000)
+
+#RD [JSRX] 0x1404 = all "0"
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B3301404")
+  if  Rrh.calc(val,"&","FFFFFFFF") == "00000000" then
+    puts "JSRX NO ERROR"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+
+if loopnum == 10 then
+ puts "JSRX NO ERROR #{val}"
+ exit(1)
+end
+
+
+#SYSREF OFF Set
+Rrh.pllwrite(0x14,0x00)
+Rrh.sleep(0,500000000)
+
+puts "Completed"
+Rrh.unassign()

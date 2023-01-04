@@ -1,0 +1,5 @@
+cmd = ''
+ARGV.length.times { | count |
+ cmd += ARGV[count].to_s + ' '
+}
+Rrh.system(cmd)

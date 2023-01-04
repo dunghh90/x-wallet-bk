@@ -1,0 +1,23 @@
+Rrh.require("./verbose")
+
+def cmd_help ( )
+    puts "usage:"+$0+" <dbgLevel>",
+    "(m):<dbgLevel>     is Log Level used API - SetAprLogLevel Request"
+    exit(1)
+end
+
+if ARGV.length < 1 then
+    cmd_help()
+    raise
+end
+
+qid      = 0x10FD000E
+dbgLevel = ARGV[0]
+
+Rrh.assign()
+if ( rtn = Rrh.api("duApi_Ptp_Mqr_SetAprLogLevel", qid, 0, 0, dbgLevel.to_i) ) != 0 then
+    printf("=>ERROR_R %d \n",rtn)
+else
+    puts "=>OK "
+end
+Rrh.unassign()

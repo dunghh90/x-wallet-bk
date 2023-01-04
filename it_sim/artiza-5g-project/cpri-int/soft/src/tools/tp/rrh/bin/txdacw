@@ -1,0 +1,49 @@
+
+#TXDAC (AD9172)レジスタ書き込み
+#第1引数(hex):EEPROM番地(0～0x7FF)
+#第2引数(hex): 設定データ(0～0xFF)
+#20180731新規作成 若水
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+
+#パラメータ確認
+if ARGV.length < 2 then
+ puts "usage:"+$0+" <addr> <data>",
+ "(m):<addr> is address(0~0x7FF)",
+ "(m):<data> is written data(0~0xFF)"
+ raise 
+end
+
+addr_s = ARGV[0]
+data_s = ARGV[1]
+
+
+
+#アドレスチェック
+
+
+if !Rrh.input_check(addr_s,4) then
+ puts "Input value is incorrect : <addr>"
+ raise 
+end
+
+#データチェック
+
+if !Rrh.input_check(data_s,4) then
+ puts "Input value is incorrect : <data>"
+ raise 
+end
+
+Rrh.assign()
+
+
+if !res = Rrh.txdacwrite(addr_s.to_i(16) , data_s.to_i(16) ) then
+ puts "error"
+else
+ puts "complete"
+end
+
+Rrh.unassign()

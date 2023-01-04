@@ -1,0 +1,59 @@
+#
+# PL QSPI FLASH erase
+# rrh -fepl <cs> <addr> <size>
+#
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+#Rrh.dmsg(1)
+
+# usage
+if ARGV.length < 3 then
+ puts "usage"+$0+" <cs> <addr> <size>",
+ "(m):<cs>   FLASH CS INFO(0)",
+ "(m):<addr> PL QSPI FLASH Address(00000000~07FF0000)",
+ "(m):<size> Erase Size"
+ exit(1)
+end
+
+cs_s   = ARGV[0]
+addr_s = ARGV[1]
+size_s = ARGV[2]
+
+if( (cs_s.to_i(16)<0) || (cs_s.to_i(16)>0) ) then
+ puts "Input value is incorrect : <cs>"
+ exit(1)
+end
+
+if !Rrh.input_check(addr_s,8) then
+ puts "Input value is incorrect : <addr>"
+ exit(1)
+end
+
+if !Rrh.input_check(size_s,8) then
+ puts "Input value is incorrect : <size>"
+ exit(1)
+end
+
+if (addr_s.to_i(16) % 0x10000) > 0 then
+ puts "Input value is incorrect : <addr is not 64K sector>"
+ exit(1)
+end
+
+if (size_s.to_i(16) % 0x10000) > 0 then
+ puts "Input value is incorrect : <size is not 64K sector>"
+ exit(1)
+end
+
+Rrh.assign()
+#PL QSIP FLASH erase
+puts "flash erase start "
+if !Rrh.flasherase( "2", addr_s, size_s ) then
+ puts "PL QSPI FLASH erase error"
+ raise
+else
+ puts "flash erase complete"
+end
+Rrh.unassign()
+
+
+

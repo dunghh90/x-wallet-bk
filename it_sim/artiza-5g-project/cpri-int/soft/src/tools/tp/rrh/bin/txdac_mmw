@@ -1,0 +1,494 @@
+# 
+# PTP setup
+# 
+Rrh.require("./verbose")
+Rrh.assign()
+
+Rrh.regbitoff("A0000040","00001000")
+Rrh.sleep(1,10000000)
+
+puts "SYSREF_OFF"
+Rrh.pllwrite(0x14,0x00)
+Rrh.sleep(0,500000000)
+
+puts "SREDES Para set.."
+
+Rrh.regwrite("B0010940","00040000")
+Rrh.regwrite("B0010944","00040000")
+Rrh.regwrite("B0010948","00040000")
+Rrh.regwrite("B001094C","00040000")
+
+Rrh.regbiton("B1204500","0000000C")
+Rrh.regbiton("B1301500","00000006")
+
+Rrh.regwrite("B1301100","87020000")
+Rrh.regwrite("B130110C","00004E00")
+Rrh.regwrite("B1301110","87030000")
+Rrh.regwrite("B130111C","00004F00")
+Rrh.regwrite("B1301120","87000000")
+Rrh.regwrite("B130112C","00004C00")
+Rrh.regwrite("B1301130","87010000")
+Rrh.regwrite("B130113C","00004D00")
+
+Rrh.regwrite("B2010940","00040000")
+Rrh.regwrite("B2010944","00040000")
+Rrh.regwrite("B2010948","00040000")
+Rrh.regwrite("B201094C","00040000")
+
+Rrh.regbiton("B3204500","0000000C")
+Rrh.regbiton("B3301500","00000006")
+
+Rrh.regwrite("B3301100","87060000")
+Rrh.regwrite("B330110C","00005200")
+Rrh.regwrite("B3301110","87070000")
+Rrh.regwrite("B330111C","00005300")
+Rrh.regwrite("B3301120","87040000")
+Rrh.regwrite("B330112C","00005000")
+Rrh.regwrite("B3301130","87050000")
+Rrh.regwrite("B330113C","00005100")
+
+puts "SYSREF_ON"
+Rrh.pllwrite(0x14,0x20)
+Rrh.sleep(0,500000000)
+
+puts "FPGA#1 JESD QPLL, JSFW PHY start..."
+Rrh.regbitoff("B1204000","00000100")
+Rrh.sleep(0,20000000)
+
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B1204004")
+  if  Rrh.calc(val,"&","00000001") == "00000001" then
+    puts "SYSREF comp OK"
+    break
+  else
+    Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR SYSREF #{val}"
+ exit(1)
+end
+
+Rrh.regbiton("B1204000","00000100")
+Rrh.regbiton("B0010050","00000010")
+Rrh.regbiton("B0010058","00000007")
+Rrh.regbitoff("B0010204","00000100")
+Rrh.regbitoff("B0010204","00070000")
+Rrh.regbiton("B0010044","00000010")
+Rrh.sleep(0,2000000)
+
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B0010200")
+  if  Rrh.calc(val,"&","00000100") == "00000000" then
+    puts "JESD QPLL UnLock comp OK"
+    break
+  else
+   Rrh.sleep(0,2000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR JESD QPLL UnLock #{val}"
+ exit(1)
+end
+
+
+Rrh.regbiton("B001004C","00000001")
+Rrh.sleep(0,20000000)
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B0010200")
+  if  Rrh.calc(val,"&","00010000") == "00000000" then
+    puts "JSFW SERDES NOT DONE comp OK"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+
+if loopnum == 10 then
+ puts "ERROR JSFW SERDES NOT DONE #{val}"
+ exit(1)
+end
+
+
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B1204304")
+  if  Rrh.calc(val,"&","FFFFFFFF") == "00000000" then
+    puts "PHY status comp OK"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+
+if loopnum == 10 then
+ puts "ERROR PHY status #{val}"
+ exit(1)
+end
+
+
+puts "FPGA#2 JESD QPLL, JSFW PHY start..."
+Rrh.regbitoff("B3204000","00000100")
+Rrh.sleep(0,20000000)
+
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B3204004")
+  if  Rrh.calc(val,"&","00000001") == "00000001" then
+    puts "SYSREF comp OK"
+    break
+  else
+    Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR SYSREF #{val}"
+ exit(1)
+end
+
+Rrh.regbiton("B3204000","00000100")
+Rrh.regbiton("B2010050","00000010")
+Rrh.regbiton("B2010058","00000007")
+Rrh.regbitoff("B2010204","00000100")
+Rrh.regbitoff("B2010204","00070000")
+Rrh.regbiton("B2010044","00000010")
+Rrh.sleep(0,2000000)
+
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B2010200")
+  if  Rrh.calc(val,"&","00000100") == "00000000" then
+    puts "JESD QPLL UnLock comp OK"
+    break
+  else
+   Rrh.sleep(0,2000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR JESD QPLL UnLock #{val}"
+ exit(1)
+end
+
+
+Rrh.regbiton("B201004C","00000001")
+Rrh.sleep(0,20000000)
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B2010200")
+  if  Rrh.calc(val,"&","00010000") == "00000000" then
+    puts "JSFW SERDES comp OK"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+
+if loopnum == 10 then
+ puts "ERROR JSFW SERDES NOT DONE #{val}"
+ exit(1)
+end
+
+
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B3204304")
+  if  Rrh.calc(val,"&","FFFFFFFF") == "00000000" then
+    puts "PHY status comp OK"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+
+if loopnum == 10 then
+ puts "ERROR PHY status #{val}"
+ exit(1)
+end
+
+ puts "TXDAC ..."
+ Rrh.txdacwrite(0x000,0x81)
+ Rrh.txdacwrite(0x000,0x00)
+ Rrh.txdacwrite(0x091,0x00)
+ Rrh.txdacwrite(0x083,0x82)
+ Rrh.txdacwrite(0x085,0x12)
+ Rrh.txdacwrite(0x206,0x01)
+ Rrh.txdacwrite(0x705,0x01)
+ Rrh.txdacwrite(0x090,0x00)
+ Rrh.txdacwrite(0x095,0x00)
+ Rrh.txdacwrite(0x796,0xE5)
+ Rrh.txdacwrite(0x7A0,0xBC)
+ Rrh.txdacwrite(0x794,0x20)
+ Rrh.txdacwrite(0x797,0x08)
+ Rrh.txdacwrite(0x798,0x10)
+ Rrh.txdacwrite(0x7A2,0x7F)
+ Rrh.sleep(0,100000000)	
+ Rrh.txdacwrite(0x08F,0x01)
+ Rrh.txdacwrite(0x799,0x0C)
+ Rrh.txdacwrite(0x793,0x18)
+ Rrh.txdacwrite(0x094,0x00)
+ Rrh.txdacwrite(0x792,0x02)
+ Rrh.txdacwrite(0x792,0x00)
+ Rrh.sleep(0,100000000)
+ val = Rrh.txdacread(0x7B5)
+ if Rrh.calc(val,"&","00000001") == "00000000" then
+    puts "ERROR:Ensure PLL is locked by reading a value of 1."
+    exit(1)
+ end
+ Rrh.txdacwrite(0x0C0,0x00)
+ Rrh.txdacwrite(0x0CC,0x00)
+ Rrh.txdacwrite(0x0CD,0x00)
+ Rrh.txdacwrite(0X0DB,0x00)
+ Rrh.txdacwrite(0X0DB,0x01)
+ Rrh.txdacwrite(0X0DB,0x00)
+ Rrh.txdacwrite(0x0C1,0x68)
+ Rrh.txdacwrite(0x0C1,0x69)
+ Rrh.txdacwrite(0x0C7,0x01)
+ val = Rrh.txdacread(0x0C3)
+ if Rrh.calc(val,"&","00000001") == "00000000" then
+    puts "ERROR:Ensure DLL is locked by reading back a value of 1 for bit 0."
+    exit(1)
+ end
+ Rrh.txdacwrite(0x050,0x2A)
+ Rrh.txdacwrite(0x061,0x68)
+ Rrh.txdacwrite(0x051,0x82)
+ Rrh.txdacwrite(0x051,0x83)
+ Rrh.txdacwrite(0x081,0x03)
+ Rrh.txdacwrite(0x100,0x00)
+ Rrh.txdacwrite(0x110,0x29)
+ Rrh.txdacwrite(0x111,0xC1)
+ Rrh.txdacwrite(0x084,0x40)
+ Rrh.txdacwrite(0x312,0x04)
+ Rrh.txdacwrite(0x300,0x0B)
+ Rrh.txdacwrite(0x475,0x09)
+ Rrh.txdacwrite(0x453,0x83)
+ Rrh.txdacwrite(0x458,0x2F)
+ Rrh.txdacwrite(0x475,0x01)
+ Rrh.txdacwrite(0x300,0x0C)
+ Rrh.txdacwrite(0x475,0x09)
+ Rrh.txdacwrite(0x453,0x83)
+ Rrh.txdacwrite(0x458,0x2F)
+ Rrh.txdacwrite(0x475,0x01)
+ Rrh.txdacwrite(0x008,0xC0)
+ Rrh.txdacwrite(0x112,0x0C)
+ Rrh.txdacwrite(0x114,0x00)
+ Rrh.txdacwrite(0x115,0x00)
+ Rrh.txdacwrite(0x116,0x00)
+ Rrh.txdacwrite(0x117,0x00)
+ Rrh.txdacwrite(0x118,0x00)
+ Rrh.txdacwrite(0x119,0x20)
+ Rrh.txdacwrite(0x11C,0x00)
+ Rrh.txdacwrite(0x11D,0x00)
+ Rrh.txdacwrite(0x113,0x01)
+ Rrh.txdacwrite(0x240,0xAA)
+ Rrh.txdacwrite(0x241,0xAA)
+ Rrh.txdacwrite(0x242,0x55)
+ Rrh.txdacwrite(0x243,0x55)
+ Rrh.txdacwrite(0x244,0x1F)
+ Rrh.txdacwrite(0x245,0x1F)
+ Rrh.txdacwrite(0x246,0x1F)
+ Rrh.txdacwrite(0x247,0x1F)
+ Rrh.txdacwrite(0x248,0x1F)
+ Rrh.txdacwrite(0x249,0x1F)
+ Rrh.txdacwrite(0x24A,0x1F)
+ Rrh.txdacwrite(0x24B,0x1F)
+ Rrh.txdacwrite(0x201,0x00)
+ Rrh.txdacwrite(0x203,0x00)
+ Rrh.txdacwrite(0x253,0x01)
+ Rrh.txdacwrite(0x254,0x01)
+ Rrh.txdacwrite(0x210,0x16)
+ Rrh.txdacwrite(0x216,0x05)
+ Rrh.txdacwrite(0x212,0xFF)
+ Rrh.txdacwrite(0x212,0x00)
+ Rrh.txdacwrite(0x210,0x87)
+ Rrh.txdacwrite(0x216,0x11)
+ Rrh.txdacwrite(0x213,0x01)
+ Rrh.txdacwrite(0x213,0x00)
+ Rrh.txdacwrite(0x200,0x00)
+ Rrh.sleep(0,100000000)
+ Rrh.txdacwrite(0x210,0x86)
+ Rrh.txdacwrite(0x216,0x40)
+ Rrh.txdacwrite(0x213,0x01)
+ Rrh.txdacwrite(0x213,0x00)
+ Rrh.txdacwrite(0x210,0x86)
+ Rrh.txdacwrite(0x216,0x00)
+ Rrh.txdacwrite(0x213,0x01)
+ Rrh.txdacwrite(0x213,0x00)
+ Rrh.txdacwrite(0x210,0x87)
+ Rrh.txdacwrite(0x216,0x01)
+ Rrh.txdacwrite(0x213,0x01)
+ Rrh.txdacwrite(0x213,0x00)
+ Rrh.txdacwrite(0x280,0x05)
+ Rrh.txdacwrite(0x280,0x01)
+ val = Rrh.txdacread(0x281)
+ if Rrh.calc(val,"&","00000001") == "00000000" then
+    puts "Ensure bit0 of this register reads back 1 to indicate the SERDSES PLL is locked."
+    exit(1)
+ end
+ Rrh.txdacwrite(0x308,0x1A)
+ Rrh.txdacwrite(0x309,0x08)
+ Rrh.txdacwrite(0x30A,0x3E)
+ Rrh.txdacwrite(0x30B,0x2C)
+ Rrh.txdacwrite(0x306,0x0C)
+ Rrh.txdacwrite(0x307,0x0C)
+ Rrh.txdacwrite(0x304,0x00)
+ Rrh.txdacwrite(0x305,0x00)
+ Rrh.txdacwrite(0x03B,0xF1)
+ Rrh.txdacwrite(0x03A,0x02)
+ Rrh.txdacwrite(0x300,0x0B)
+ Rrh.txdacwrite(0x083,0x00)
+ Rrh.txdacwrite(0x085,0x01)
+ Rrh.txdacwrite(0x1DE,0x00)
+ Rrh.txdacwrite(0x008,0xC0)
+ Rrh.txdacwrite(0x596,0x0C)
+ Rrh.sleep(0,100000000)
+
+puts "FPGA#1 FW JEAD start.."
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B1204034")
+  if  Rrh.calc(val,"&","00000001") == "00000000" then
+    puts "FPGA sync cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR FPGA sync #{val}"
+ exit(1)
+end
+
+Rrh.regbitoff("B1204020","00010000")
+Rrh.sleep(0,20000000)
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B1204034")
+  if  Rrh.calc(val,"&","00000001") == "00000001" then
+    puts "FPGA sync cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR FPGA sync #{val}"
+ exit(1)
+end
+Rrh.regbiton("B1204030","00000001")
+Rrh.sleep(0,20000000)
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B1204300")
+  if  Rrh.calc(val,"&","0011000f") == "0011000f" then
+    puts "FPGA Link cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR FPGA Link #{val}"
+ exit(1)
+end
+Rrh.regbiton("B1204020","00010000")
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B1204404")
+  if  Rrh.calc(val,"&","FFFFFFFF") == "00000000" then
+    puts "FPGA ERROR cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR FPGA ERROR #{val}"
+ exit(1)
+end
+
+puts "FPGA#2 FW JEAD start.."
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B3204034")
+  if  Rrh.calc(val,"&","00000001") == "00000000" then
+    puts "FPGA sync cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR FPGA sync #{val}"
+ exit(1)
+end
+
+Rrh.regbitoff("B3204020","00010000")
+Rrh.sleep(0,20000000)
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B3204034")
+  if  Rrh.calc(val,"&","00000001") == "00000001" then
+    puts "FPGA sync cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR FPGA sync #{val}"
+ exit(1)
+end
+Rrh.regbiton("B3204030","00000001")
+Rrh.sleep(0,20000000)
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B3204300")
+  if  Rrh.calc(val,"&","0011000f") == "0011000f" then
+    puts "FPGA Link cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR FPGA Link #{val}"
+ exit(1)
+end
+Rrh.regbiton("B3204020","00010000")
+loopnum = 0
+while loopnum < 10 do
+  val = Rrh.regread("B3204404")
+  if  Rrh.calc(val,"&","FFFFFFFF") == "00000000" then
+    puts "FPGA ERROR cmp"
+    break
+  else
+   Rrh.sleep(0,20000000)
+  end
+  loopnum = loopnum + 1
+end
+if loopnum == 10 then
+ puts "ERROR FPGA ERROR #{val}"
+ exit(1)
+end
+
+puts "Completed"
+Rrh.unassign()
+

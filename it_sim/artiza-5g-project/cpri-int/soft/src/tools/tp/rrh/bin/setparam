@@ -1,0 +1,85 @@
+Rrh.require("./verbose")
+
+def cmd_help()
+ puts "usage: "+$0+" <carrID> <DL/UL> <ant> <Carr> <NCO> <ACELL_ID> <CC_ID> <PORT_ID> <Car_Gain> <Car_Delay> ",
+ "(m):<carrID>  carriorID 0 - 255 ",
+ "(m):<DL/UL> is 0:DL / 1:UL / 2: DL/UL ",
+ "(m):<ant> is 1:AntA / 2:AntB / 4:AntC / 8:AntD 16:AntE / 32:AntF / 64:AntG / 128:AntH",
+ "(m):<Carr> Carrior is 0 - 1",
+ "(m):<NCO> is KHz",
+ "(m):<ACELL_ID> is 0x00 - 0x3F",
+ "(m):<CC_ID> is 0x0 - 0xF",
+ "(m):<PORT_ID> is 0 - 7",
+ "(m):Carrior Gain (TBD)",
+ "(m):Carrior Delay (TBD)"
+ return
+end
+
+#usage
+if ARGV.length < 10 then
+ cmd_help()
+ exit(1)
+end
+
+carrid_s  = ARGV[0]
+DLUL_s = ARGV[1]
+ant_s = ARGV[2]
+Carr_s = ARGV[3]
+NCO_s = ARGV[4]
+ACELLID_s = ARGV[5]
+CCID_s = ARGV[6]
+PORTID_s = ARGV[7]
+CAGain_s = ARGV[8]
+CADly_s = ARGV[9]
+
+
+if carrid_s.to_i > 255 then
+  puts "Input value is incorrect : <carrID>"
+  exit(1)
+end
+
+if DLUL_s.ti_i > 2 then
+  puts "Input value is incorrect : <DL/UL>"
+  exit(1)
+end
+
+if ant_s.to_i > 255 then
+  puts "Input value is incorrect : <ant>"
+  exit(1)
+else
+  if ant_s.to_i < 1 then
+    puts "Input value is incorrect : <ant>"
+    exit(1)
+  end
+end
+
+if Carr_s.to_i > 1 then
+  puts "Input value is incorrect : <Carr> "
+  exit(1)
+end
+
+if ACELLID_s.to_i > 63 then
+  puts "Input value is incorrect : <ACELL_ID> "
+  exit(1)
+end
+
+if CCID_s.to_i > 15 then
+  puts "Input value is incorrect : <CC_ID> "
+  exit(1)
+end
+
+if PORTID_s.to_i > 7 then
+  puts "Input value is incorrect : <PORT_ID> "
+  exit(1)
+end
+
+Rrh.assign()
+
+if !res = Rrh.carrsetparam( carrid_s , DLUL_s , ant_s, Carr_s , NCO_s ,
+                            ACELLID_s , CCID_s , PORTID_s , CAGain_s , CADly_s ) then
+  puts "error"
+else
+  puts "complete"
+end
+
+Rrh.unassign()

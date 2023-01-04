@@ -1,0 +1,34 @@
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+Rrh.require("./z_global")
+Rrh.require("./apd_delayadjust")
+Rrh.require("./tpshm_access")
+
+Rrh.assign()
+Rrh.regwrite("A2200100","80000000")    # Ant#A Car#0   ※CU側パラメータ A_Cell_ID=00/CC_ID=0/DU_Port_ID=0)
+Rrh.regwrite("A2200180","80000001")    # Ant#B Car#0   ※CU側パラメータ A_Cell_ID=00/CC_ID=0/DU_Port_ID=1)
+Rrh.regwrite("A2200200","80000002")    # Ant#C Car#0   ※CU側パラメータ A_Cell_ID=00/CC_ID=0/DU_Port_ID=2)
+Rrh.regwrite("A2200280","80000003")    # Ant#D Car#0   ※CU側パラメータ A_Cell_ID=00/CC_ID=0/DU_Port_ID=3)
+Rrh.regwrite("A2200300","80000004")    # Ant#E Car#0   ※CU側パラメータ A_Cell_ID=00/CC_ID=0/DU_Port_ID=4)
+Rrh.regwrite("A2200380","80000005")    # Ant#F Car#0   ※CU側パラメータ A_Cell_ID=00/CC_ID=0/DU_Port_ID=5)
+Rrh.regwrite("A2200400","80000006")    # Ant#G Car#0   ※CU側パラメータ A_Cell_ID=00/CC_ID=0/DU_Port_ID=6)
+Rrh.regwrite("A2200480","80000007")    # Ant#H Car#0   ※CU側パラメータ A_Cell_ID=00/CC_ID=0/DU_Port_ID=7)
+Rrh.sleep(0,50000000)
+Rrh.regwrite("A2200e04","800000ff")
+Rrh.regwrite("A2200140","0")    # Ant#A Car#1
+Rrh.sleep(0,50000000)
+Rrh.regwrite("A22001c0","0")    # Ant#B Car#1
+Rrh.sleep(0,50000000)
+Rrh.regwrite("A2200240","0")    # Ant#C Car#1
+Rrh.sleep(0,50000000)
+Rrh.regwrite("A22002c0","0")    # Ant#D Car#1
+Rrh.sleep(0,50000000)
+Rrh.regwrite("A2200340","0")    # Ant#E Car#1
+Rrh.sleep(0,50000000)
+Rrh.regwrite("A22003c0","0")    # Ant#F Car#1
+Rrh.sleep(0,50000000)
+Rrh.regwrite("A2200440","0")    # Ant#G Car#1
+Rrh.sleep(0,50000000)
+Rrh.regwrite("A22004c0","0")    # Ant#H Car#1
+Rrh.unassign()

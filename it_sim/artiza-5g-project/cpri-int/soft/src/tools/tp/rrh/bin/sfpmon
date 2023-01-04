@@ -1,0 +1,260 @@
+#
+# SPF Monitor
+# rrh -sfpmon <param>
+#
+@global_logcounter = "entry"	# -> log history mask
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+Rrh.require("./z_global")
+Rrh.require("./apd_access")
+Rrh.require("./tpshm_access")
+
+def cmd_help()
+ puts "usage:"+$0+" <param>",
+ "(m):<param> is below ",
+ " 1     : EXT Signal ST" ,
+ " 2     : Part Info" ,
+ " 3     : Diagnostic Monitor" ,
+ " 4     : Status/Control/Alarm Flags",
+ " all   : ALL mon "
+ return
+end
+
+if ARGV.length < 1 then
+ cmd_help()
+ exit(1)
+end
+
+Rrh.assign()
+mount =  Rrh.regread( "A0000300" )
+if ARGV[0].to_s.downcase == "1" || ARGV[0].to_s.downcase == "all" then
+	printf("-- EXT Signal Status -- \n")
+			printf("Port0 \n")
+	if  Rrh.calc(mount,"&","00000001") == "00000001" then
+			printf("  SFPMNT  : Normal\n")
+		if  Rrh.calc(mount,"&","00000002") == "00000002" then
+			printf("  SFPVALM : Fault\n")
+		else
+			printf("  SFPVALM : Normal\n")
+		end
+		if  Rrh.calc(mount,"&","00000004") == "00000004" then
+			printf("  SFPTXFLT: Fault\n")
+		else
+			printf("  SFPTXFLT: Normal\n")
+		end
+		if  Rrh.calc(mount,"&","00000008") == "00000008" then
+			printf("  SFPLOS  : Fault\n")
+		else
+			printf("  SFPLOS  : Normal\n")
+		end
+	else
+			printf("  SFPMNT  : Unmount\n")
+	end
+end
+
+if ARGV[0].to_s.downcase == "2" || ARGV[0].to_s.downcase == "all" then
+	printf("-- Part Info --\n")
+
+	printf("Port0 \n")
+	if  Rrh.calc(mount,"&","00000001") == "00000001" then
+		printf("  Vendor Specific :%s \n",Rrh.sfpread(0,0x60,12,"txt"))
+		printf("  Vendor name     :%s \n",Rrh.sfpread(0,0x14,16,"txt"))
+		printf("  Part number     :%s \n",Rrh.sfpread(0,0x28,16,"txt"))
+		printf("  Vendor rev      :%s \n",Rrh.sfpread(0,0x38,4,"txt"))
+		printf("  Serial number   :%s \n",Rrh.sfpread(0,0x44,16,"txt"))
+	else
+		puts "N/A"
+	end
+end
+
+if ARGV[0].to_s.downcase == "3" || ARGV[0].to_s.downcase == "all" then
+	printf("-- Diagnostic Monitor --\n")
+
+	printf("Port0 \n")
+	if  Rrh.calc(mount,"&","00000001") == "00000001" then
+		val = Rrh.sfpread(1,0x60,2,"bin")
+		if val != false then
+			val_wk_i = val.to_i(16)
+			val_wk_i = val_wk_i * 4
+			printf("  Temp     :%d.%02d(C) \n",(val_wk_i/1000), (val_wk_i/10)%100)
+		else
+			printf("  Temp     :%s \n",val)
+		end
+	
+		val = Rrh.sfpread(1,0x62,2,"bin")
+		if val != false then
+			val_wk_i = val.to_i(16)
+			val_wk_i = val_wk_i * 100
+			printf("  Vcc      :%d(uV) \n",val_wk_i)
+		else
+			printf("  Vcc      :%s \n",val)
+		end
+	
+		val = Rrh.sfpread(1,0x64,2,"bin")
+		if val != false then
+			val_wk_i = val.to_i(16)
+			val_wk_i = val_wk_i * 2
+			printf("  TxBias   :%d(uA) \n",val_wk_i)
+		else
+			printf("  TxBias   :%s \n",val)
+		end
+	
+		val = Rrh.sfpread(1,0x66,2,"bin")
+		if val != false then
+			val_wk_i = val.to_i(16)
+			val_wk_i = 10.0 * Math::log10(val_wk_i*0.0001)
+			printf("  TxPower  :%f(dBm) \n",val_wk_i)
+		else
+			printf("  TxPower  :%s \n",val)
+		end
+	
+		val = Rrh.sfpread(1,0x68,2,"bin")
+		if val != false then
+			val_wk_i = val.to_i(16)
+			val_wk_i = 10.0 * Math::log10(val_wk_i*0.0001)
+			printf("  RxPower  :%f(dBm) \n",val_wk_i)
+		else
+			printf("  RxPower  :%s \n",val)
+		end
+	else
+		puts "N/A"
+	end
+end
+
+if ARGV[0].to_s.downcase == "4" || ARGV[0].to_s.downcase == "all" then
+	printf("-- Status/Control/ Alarm Flags --\n")
+	
+	printf("Port0 \n")
+	if  Rrh.calc(mount,"&","00000001") == "00000001" then
+		checkval = Rrh.sfpread(1,0x6E,1,"bin")
+		if  Rrh.calc(checkval,"&","80") == "80" then
+			printf("  bit7:TX Disable State        : ON\n")
+		else
+			printf("  bit7:TX Disable State        : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","40") == "40" then
+			printf("  bit6:Soft TX Disable Select  : ON\n")
+		else
+			printf("  bit6:Soft TX Disable Select  : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","20") == "20" then
+			printf("  bit5:RS(1) State             : ON\n")
+		else
+			printf("  bit5:RS(1) State             : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","10") == "10" then
+			printf("  bit4:Rate_Select State       : ON\n")
+		else
+			printf("  bit4:Rate_Select State       : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","08") == "08" then
+			printf("  bit3:Soft Rate_Select Select : ON\n")
+		else
+			printf("  bit3:Soft Rate_Select Select : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","04") == "04" then
+			printf("  bit2:TX Fault State          : ON\n")
+		else
+			printf("  bit2:TX Fault State          : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","02") == "02" then
+			printf("  bit1:Rx_LOS State            : ON\n")
+		else
+			printf("  bit1:Rx_LOS State            : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","01") == "01" then
+			printf("  bit0:Data_Ready_Bar State    : ON\n")
+		else
+			printf("  bit0:Data_Ready_Bar State    : OFF\n")
+		end
+
+		checkval = Rrh.sfpread(1,0x70,1,"bin")
+		if  Rrh.calc(checkval,"&","80") == "80" then
+			printf("  bit7:Temp High Alarm         : ON\n")
+		else
+			printf("  bit7:Temp High Alarm         : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","40") == "40" then
+			printf("  bit6:Temp Low Alarm          : ON\n")
+		else
+			printf("  bit6:Temp Low Alarm          : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","20") == "20" then
+			printf("  bit5:Vcc High Alarm          : ON\n")
+		else
+			printf("  bit5:Vcc High Alarm          : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","10") == "10" then
+			printf("  bit4:Vcc Low Alarm           : ON\n")
+		else
+			printf("  bit4:Vcc Low Alarm           : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","08") == "08" then
+			printf("  bit3:TX Bias High Alarm      : ON\n")
+		else
+			printf("  bit3:TX Bias High Alarm      : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","04") == "04" then
+			printf("  bit2:TX Bias Low Alarm       : ON\n")
+		else
+			printf("  bit2:TX Bias Low Alarm       : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","02") == "02" then
+			printf("  bit1:TX Power High Alarm     : ON\n")
+		else
+			printf("  bit1:TX Power High Alarm     : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","01") == "01" then
+			printf("  bit0:TX Power Low Alarm      : ON\n")
+		else
+			printf("  bit0:TX Power Low Alarm      : OFF\n")
+		end
+
+		checkval = Rrh.sfpread(1,0x71,1,"bin")
+		if  Rrh.calc(checkval,"&","80") == "80" then
+			printf("  bit7:RX Power High Alarm     : ON\n")
+		else
+			printf("  bit7:RX Power High Alarm     : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","40") == "40" then
+			printf("  bit6:RX Power Low Alarm      : ON\n")
+		else
+			printf("  bit6:RX Power Low Alarm      : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","20") == "20" then
+			printf("  bit5:Reserved                : ON\n")
+		else
+			printf("  bit5:Reserved                : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","10") == "10" then
+			printf("  bit4:Reserved                : ON\n")
+		else
+			printf("  bit4:Reserved                : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","08") == "08" then
+			printf("  bit3:Reserved                : ON\n")
+		else
+			printf("  bit3:Reserved                : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","04") == "04" then
+			printf("  bit2:Reserved                : ON\n")
+		else
+			printf("  bit2:Reserved                : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","02") == "02" then
+			printf("  bit1:Reserved                : ON\n")
+		else
+			printf("  bit1:Reserved                : OFF\n")
+		end
+		if  Rrh.calc(checkval,"&","01") == "01" then
+			printf("  bit0:Reserved                : ON\n")
+		else
+			printf("  bit0:Reserved                : OFF\n")
+		end	
+	else
+		puts "N/A"
+	end
+end
+
+Rrh.unassign()

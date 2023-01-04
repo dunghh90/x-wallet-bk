@@ -1,0 +1,3 @@
+f_trp_rec_FcXX_m_use_FilSndFin_fw.c:30:6:f_trp_rec_FcXX_m_use_FilSndFinNtc_fw	96	static
+f_trp_rec_FcXX_m_use_FilSndFin_fw.c:94:6:f_trp_rec_FcXX_m_use_FilSndFinRes_fw	48	static
+f_trp_rec_FcXX_m_use_FilSndFin_fw.c:110:6:f_trp_rec_FcXX_timer_ent	272	dynamic,bounded

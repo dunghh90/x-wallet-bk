@@ -1,0 +1,63 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+if ARGV.length < 2 then
+ puts "usage:"+$0+" <ant> <CW OFF/ON> <Amp.>",
+  "(m):<ant>      is ant",
+  "(m):<off/on>   is CW OFF/ON(0:CW-OFF 1:CW-ON)",
+  "(m):<data>     is Amplitude"
+ exit(1)
+end
+
+ant_s = ARGV[0]
+offon_s = ARGV[1]
+data_s = ARGV[2]
+if offon_s.to_i > 1 then
+ puts "Input value is incorrect : <off/on>"
+ exit(1) 
+end
+
+Rrh.assign()
+
+#装置構成確認
+addr_eep = 64
+if !res = Rrh.eepread(addr_eep.to_i(16)) then
+ puts "eep read error"
+else
+ puts "0x#{res} "
+ 
+ case res
+ 
+ when "13"
+  kind = "BPF_HM_DEVC_SUB6"
+
+ when "14"
+  kind = "BPF_HM_DEVC_MMW"
+ else
+  puts "kind num error"
+  exit(1)
+ end
+end
+
+#mmW 0~1 sub6 0~3
+MAX = 3
+if kind == "BPF_HM_DEVC_MMW" then
+	MAX = 1
+end
+
+if ant_s.to_i > MAX then
+ puts "Input value is incorrect : <ant>"
+ exit (1)
+end
+
+addr1 = 0xB1100140 + ant_s.to_i(16) * 0x400
+addr2 = 0xB1100144 + ant_s.to_i(16) * 0x400
+
+if offon_s.to_i == 0 then
+Rrh.regwrite(addr2.to_s(16),"00000000")
+Rrh.regwrite(addr1.to_s(16),offon_s)
+else
+Rrh.regwrite(addr2.to_s(16),data_s)
+Rrh.regwrite(addr1.to_s(16),offon_s)
+end
+Rrh.unassign()

@@ -1,0 +1,204 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+device_type = Rrh.get_shmcm("device_type")
+if device_type == "00000013" then
+	if ARGV.length < 3 then
+		puts "usage:"+$0+" <p1> <p2>",
+			"(m):<p1> is below .",
+			"        Bit[3]=AntD",
+			"        Bit[2]=AntC",
+			"        Bit[1]=AntB",
+			"        Bit[0]=AntA",
+			"(m):<p2> is below .",
+			"        0 : Cr0",
+			"        1 : Cr1",
+			"(m):<p3> is below .",
+			"        0 : DL100 ",
+			"        1 : TDD Pattern 1",
+			"        2 : TDD Pattern 2",
+			"        3 : TDD Pattern 3"
+		Rrh.exit(1)
+	end
+elsif device_type == "00000014"then
+	if ARGV.length < 3 then
+		puts "usage:"+$0+" <p1> <p2>",
+			"(m):<p1> is below .",
+			"        Bit[1]=AntB",
+			"        Bit[0]=AntA",
+			"(m):<p2> is below .",
+			"        0 : Cr0",
+			"        1 : Cr1",
+			"        2 : Cr2",
+			"        3 : Cr3",
+			"(m):<p3> is below .",
+			"        0 : DL100 ",
+			"        1 : TDD Pattern 1",
+			"        2 : TDD Pattern 2",
+			"        3 : TDD Pattern 3"
+		Rrh.exit(1)
+	end
+else
+	puts DuCode::ERR_DESCRIPTION[3]
+	Rrh.exit(1)
+end
+
+
+ant = ARGV[0]
+ant_i = Rrh.hex_check(ant)
+
+if ant_i == false then
+	puts DuCode::ERR_DESCRIPTION[1]
+	Rrh.exit(1)
+else
+	if device_type == "00000013" then
+		maxCC = 1
+		maxAnt = 3
+		case ant_i
+			when 0x01 then
+				ulp = "00000001"
+			when 0x02 then
+				ulp = "00000002"
+			when 0x04 then
+				ulp = "00000004"
+			when 0x08 then
+				ulp = "00000008"
+			else
+				puts DuCode::ERR_DESCRIPTION[2]
+				Rrh.exit(1)
+		end
+		ulp2 = ulp
+	else
+		maxCC = 3
+		maxAnt = 1
+		case ant_i
+			when 0x01 then
+				ulp = "00000000"
+				ulp2 = "00000000"
+			when 0x02 then
+				ulp = "00000010"
+				ulp2 = "00000004"
+			else
+				puts DuCode::ERR_DESCRIPTION[2]
+				Rrh.exit(1)
+		end
+	end
+end
+
+cr = ARGV[1]
+cr_i = Rrh.hex_check(cr)
+
+if cr_i == false then
+	puts DuCode::ERR_DESCRIPTION[1]
+	Rrh.exit(1)
+else
+	if device_type == "00000013" then
+		case cr_i
+			when 0 then
+				setval = ulp
+				setval2 = ulp2
+			when 1 then
+				setval = Rrh.calc(ulp,"<","00000010")
+				setval2 = Rrh.calc(ulp2,"<","00000004")
+			else
+				puts DuCode::ERR_DESCRIPTION[2]
+				Rrh.exit(1)
+		end
+	else
+		case cr_i
+			when 0 then
+				setval = Rrh.calc("00000001","<",ulp)
+				setval2 = Rrh.calc("00000001","<",ulp2)
+			when 1 then
+				setval = Rrh.calc("00000002","<",ulp)
+				setval2 = Rrh.calc("00000002","<",ulp2)
+			when 2 then
+				setval = Rrh.calc("00000004","<",ulp)
+				setval2 = Rrh.calc("00000004","<",ulp2)
+			when 3 then
+				setval = Rrh.calc("00000008","<",ulp)
+				setval2 = Rrh.calc("00000008","<",ulp2)
+			else
+				puts DuCode::ERR_DESCRIPTION[2]
+				Rrh.exit(1)
+		end
+	end
+end
+
+# already testmode start ?
+for cc in 0..maxCC do
+	for ant in 0..maxAnt do
+		case ant
+			when 0 then
+				ant_s = "a"
+			when 1 then
+				ant_s = "b"
+			when 2 then
+				ant_s = "c"
+			when 3 then
+				ant_s = "d"
+			else
+				puts DuCode::ERR_DESCRIPTION[9]
+				Rrh.exit(1)
+		end
+		test_onoff = Rrh.get_shmtx("#{cc.to_s}_cc","#{ant_s}_array","test_onoff")
+		if test_onoff != "00000000" then
+			puts DuCode::ERR_DESCRIPTION[9]
+			Rrh.exit(1)
+		end
+		test_onoff = Rrh.get_shmtx("#{cc.to_s}_cc","#{ant_s}_array","test_onoff")
+		if test_onoff != "00000000" then
+			puts DuCode::ERR_DESCRIPTION[9]
+			Rrh.exit(1)
+		end
+	end
+end
+
+tddptn = ARGV[2]
+tddptn_i = Rrh.hex_check(tddptn)
+if tddptn_i > 3 then
+	puts DuCode::ERR_DESCRIPTION[2]
+	Rrh.exit(1)
+end
+
+print "Starting test rx "
+dpl_en = Rrh.regread("a2010000")
+if Rrh.calc(dpl_en,"&","00000001") != "00000000" then
+	Rrh.regbitoff("a2010000","00000001")
+end
+
+Rrh.regbitoff("a2000904","0000000f")
+
+pattan = Rrh.calc("00000000","|",tddptn)
+if device_type == "00000014" then
+	Rrh.calc(pattan,"|","00000008")
+end
+Rrh.regbiton("a2000904",pattan)
+
+
+setval3 = Rrh.calc("80000000","|",setval2)
+Rrh.regwrite("a2200e04",setval3)
+
+
+Rrh.regbiton("a2000900","00000002")
+for cnt in 0..50 do	# 5.1sec wait
+	Rrh.sleep(0,100000000)	# sleep 100ms
+	printf(". ")
+end
+Rrh.regbitoff("a2200d14","00FF00FF")
+Rrh.regbiton("a2200d14",setval)
+Rrh.regwrite("a2200d10","00000000")
+Rrh.regbiton("a2200d00","00000001")
+for cnt in 0..50 do	# 5.1sec wait
+	Rrh.sleep(0,100000000)	# sleep 100ms
+	printf(". ")
+end
+Rrh.regbitoff("a2200d00","00000001")
+Rrh.system("/opt/debug/cmd_sramctl r 0 /tmp/uplink_iqdata 1>/dev/null 2>/dev/null")
+
+Rrh.regwrite("a2200e04","00000000")
+Rrh.regbitoff("a2000900","00000003")
+Rrh.regwrite("a2010000",dpl_en)
+
+puts DuCode::ERR_DESCRIPTION[0]

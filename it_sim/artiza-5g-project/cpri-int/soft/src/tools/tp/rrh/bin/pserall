@@ -1,0 +1,29 @@
+# 
+# Eeprom dump
+# rrh -pserall
+# 
+@global_logcounter = "entry"	# -> log history mask
+Rrh.require("./verbose")
+#EEPROMのMAXサイズ定義
+eeprom_max_str = "7FF"
+eeprom_max = eeprom_max_str.to_i(16)
+
+#EEPROMダンプ
+printf "           00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f\n"
+printf "----------------------------------------------------------"
+
+Rrh.assign()
+for addr in 0..eeprom_max do
+ if addr%16 == 0 then
+  printf("\n%08x : ", addr)
+ end
+ if res = Rrh.eepread(addr) then
+  printf("%s ", res)
+ else
+  printf("eeprom read error, addr = 0x%08x\n", addr)
+  raise
+ end
+end
+printf("\n")
+Rrh.unassign()
+

@@ -1,0 +1,269 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+
+def param_to_reg(data_s)
+	case data_s.length
+	   when 1
+	     data_s = "0000000" + data_s
+	   when 2
+	     data_s = "000000" + data_s
+	   when 3
+	     data_s = "00000" + data_s
+	   when 4
+	     data_s = "0000" + data_s
+	   when 5
+	     data_s = "000" + data_s
+	   when 6
+	     data_s = "00" + data_s
+	   when 7
+	     data_s = "0" + data_s
+	   else
+	end
+	return data_s
+end
+
+if ARGV.length < 2 then
+	puts "usage:"+$0+" <ant> <onoff> <txeq0> <txeq1> <txeq2> <txeq3> <txeq4> <txeq5> <txeq6> <txeq7>",
+		"(m):<ant> is 0:AntA or 1:AntB",
+		"(m):<onoff> is 1:on or 0:off",
+		"(m):<txeq0> is txeq0",
+		"(m):<txeq1> is txeq1",
+		"(m):<txeq2> is txeq2",
+		"(m):<txeq3> is txeq3",
+		"(m):<txeq4> is txeq4",
+		"(m):<txeq5> is txeq5",
+		"(m):<txeq6> is txeq6",
+		"(m):<txeq7> is txeq7"
+	exit(1)
+end
+
+ant    = ARGV[0]
+onoff  = ARGV[1]
+
+#inparaチェック
+
+if ant.to_i > 1 or ant.to_i < 0 then
+ puts "Input value is incorrect : <ant(0-1)>"
+ exit(1) 
+end
+
+if onoff.to_i > 1 or onoff.to_i < 0 then
+ puts "Input value is incorrect : <onoff(0-1)>"
+ exit(1) 
+end
+
+okng = 0
+
+Rrh.assign()
+if onoff.to_i == 0 then
+	if ant.to_i == 0 then
+		Rrh.tpshmwrite("apde2pTX_vt","","40","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","41","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","42","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","43","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","44","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","45","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","46","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","47","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","48","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","49","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","4A","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","4B","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","4C","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","4D","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","4E","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","4F","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","50","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","51","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","52","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","53","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","54","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","55","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","56","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","57","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","58","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","59","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","5A","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","5B","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","5C","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","5D","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","5E","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","5F","00")
+		Rrh.regwrite("B11001F4","00000000")
+	else
+		Rrh.tpshmwrite("apde2pTX_vt","","60","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","61","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","62","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","63","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","64","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","65","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","66","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","67","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","68","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","69","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","6A","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","6B","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","6C","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","6D","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","6E","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","6F","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","70","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","71","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","72","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","73","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","74","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","75","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","76","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","77","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","78","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","79","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","7A","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","7B","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","7C","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","7D","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","7E","00")
+		Rrh.tpshmwrite("apde2pTX_vt","","7F","00")
+		Rrh.regwrite("B11005F4","00000000")
+	end
+else
+	if ARGV.length >= 10 then
+		txeq0  = ARGV[2]
+		txeq1  = ARGV[3]
+		txeq2  = ARGV[4]
+		txeq3  = ARGV[5]
+		txeq4  = ARGV[6]
+		txeq5  = ARGV[7]
+		txeq6  = ARGV[8]
+		txeq7  = ARGV[9]
+		if ant.to_i == 0 then
+			txeq0 = param_to_reg(txeq0)
+			Rrh.tpshmwrite("apde2pTX_vt","","40",txeq0[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","41",txeq0[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","42",txeq0[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","43",txeq0[6..7])
+			Rrh.regwrite("B11001F0",txeq0)
+
+			txeq1 = param_to_reg(txeq1)
+			Rrh.tpshmwrite("apde2pTX_vt","","44",txeq1[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","45",txeq1[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","46",txeq1[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","47",txeq1[6..7])
+			Rrh.regwrite("B11001F0",txeq1)
+
+			txeq2 = param_to_reg(txeq2)
+			Rrh.tpshmwrite("apde2pTX_vt","","48",txeq2[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","49",txeq2[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","4A",txeq2[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","4B",txeq2[6..7])
+			Rrh.regwrite("B11001F0",txeq2)
+
+			txeq3 = param_to_reg(txeq3)
+			Rrh.tpshmwrite("apde2pTX_vt","","4C",txeq3[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","4D",txeq3[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","4E",txeq3[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","4F",txeq3[6..7])
+			Rrh.regwrite("B11001F0",txeq3)
+
+			txeq4 = param_to_reg(txeq4)
+			Rrh.tpshmwrite("apde2pTX_vt","","50",txeq4[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","51",txeq4[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","52",txeq4[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","53",txeq4[6..7])
+			Rrh.regwrite("B11001F0",txeq4)
+
+			txeq5 = param_to_reg(txeq5)
+			Rrh.tpshmwrite("apde2pTX_vt","","54",txeq5[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","55",txeq5[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","56",txeq5[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","57",txeq5[6..7])
+			Rrh.regwrite("B11001F0",txeq5)
+
+			txeq6 = param_to_reg(txeq6)
+			Rrh.tpshmwrite("apde2pTX_vt","","58",txeq6[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","59",txeq6[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","5A",txeq6[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","5B",txeq6[6..7])
+			Rrh.regwrite("B11001F0",txeq6)
+
+			txeq7 = param_to_reg(txeq7)
+			Rrh.tpshmwrite("apde2pTX_vt","","5C",txeq7[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","5D",txeq7[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","5E",txeq7[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","5F",txeq7[6..7])
+			Rrh.regwrite("B11001F0",txeq7)
+
+			Rrh.regwrite("B11001F4","00000001")
+
+		else
+
+			txeq0 = param_to_reg(txeq0)
+			Rrh.tpshmwrite("apde2pTX_vt","","60",txeq0[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","61",txeq0[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","62",txeq0[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","63",txeq0[6..7])
+			Rrh.regwrite("B11005F0",txeq0)
+
+			txeq1 = param_to_reg(txeq1)
+			Rrh.tpshmwrite("apde2pTX_vt","","64",txeq1[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","65",txeq1[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","66",txeq1[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","67",txeq1[6..7])
+			Rrh.regwrite("B11005F0",txeq1)
+
+			txeq2 = param_to_reg(txeq2)
+			Rrh.tpshmwrite("apde2pTX_vt","","68",txeq2[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","69",txeq2[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","6A",txeq2[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","6B",txeq2[6..7])
+			Rrh.regwrite("B11005F0",txeq2)
+
+			txeq3 = param_to_reg(txeq3)
+			Rrh.tpshmwrite("apde2pTX_vt","","6C",txeq3[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","6D",txeq3[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","6E",txeq3[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","6F",txeq3[6..7])
+			Rrh.regwrite("B11005F0",txeq3)
+
+			txeq4 = param_to_reg(txeq4)
+			Rrh.tpshmwrite("apde2pTX_vt","","70",txeq4[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","71",txeq4[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","72",txeq4[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","73",txeq4[6..7])
+			Rrh.regwrite("B11005F0",txeq4)
+
+			txeq5 = param_to_reg(txeq5)
+			Rrh.tpshmwrite("apde2pTX_vt","","74",txeq5[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","75",txeq5[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","76",txeq5[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","77",txeq5[6..7])
+			Rrh.regwrite("B11005F0",txeq5)
+
+			txeq6 = param_to_reg(txeq6)
+			Rrh.tpshmwrite("apde2pTX_vt","","78",txeq6[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","79",txeq6[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","7A",txeq6[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","7B",txeq6[6..7])
+			Rrh.regwrite("B11005F0",txeq6)
+
+			txeq7 = param_to_reg(txeq7)
+			Rrh.tpshmwrite("apde2pTX_vt","","7C",txeq7[0..1])
+			Rrh.tpshmwrite("apde2pTX_vt","","7D",txeq7[2..3])
+			Rrh.tpshmwrite("apde2pTX_vt","","7E",txeq7[4..5])
+			Rrh.tpshmwrite("apde2pTX_vt","","7F",txeq7[6..7])
+			Rrh.regwrite("B11005F0",txeq7)
+
+			Rrh.regwrite("B11005F4","00000001")
+		end
+	else
+		puts "Input pamarm error"
+		okng = 1
+	end
+end
+
+Rrh.unassign()
+
+if okng == 0 then
+puts "OK"
+end

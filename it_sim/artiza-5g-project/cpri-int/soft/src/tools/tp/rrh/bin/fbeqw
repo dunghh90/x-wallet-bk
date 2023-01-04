@@ -1,0 +1,88 @@
+# 
+# Register write
+# rrh -w <addr> <data>
+# 
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+# usage
+if ARGV.length < 3 then
+ puts "usage:"+$0+" <ant> <ofs> <filter>",
+ "(m):<ant> is 0~3(0:ANTA,1:ANTB,2:ANTC,3:ANTD)",
+ "(m):<ofs> is 0~14",
+ "(m):<filter> is hex value"
+ exit(1)
+end
+
+ant = ARGV[0]
+ofs = ARGV[1]
+filter = ARGV[2]
+
+if ant.to_i > 3 or ant.to_i < 0 then
+ puts "Input value is incorrect : <ant>"
+ exit(1)
+end
+
+if ofs.to_i > 14 or ofs.to_i < 0 then
+	puts "Input value is incorrect : <ofs>"
+	exit(1)
+end
+
+if !Rrh.input_check(filter,8) then
+	puts "Input value is incorrect : <filter>"
+	exit(1)
+end
+
+
+offset1 = 0x40 * ant.to_i
+offset1_hex = Rrh.v_to_v( "d" , "h" , offset1.to_s )
+case offset1_hex.length 
+	when 1 then
+		offset_hex = "0000000" + offset1_hex
+	when 2 then
+		offset_hex = "000000" + offset1_hex
+	when 3 then
+		offset_hex = "00000" + offset1_hex
+	when 4 then
+		offset_hex = "0000" + offset1_hex
+	when 5 then
+		offset_hex = "000" + offset1_hex
+	when 6 then
+		offset_hex = "00" + offset1_hex
+	when 7 then
+		offset_hex = "00" + offset1_hex
+	else
+		offset_hex = offset1_hex
+end
+
+setaddr1 = Rrh.calc("b1213000","+",offset_hex)
+
+offset1 = 0x4 * ofs.to_i
+offset1_hex = Rrh.v_to_v( "d" , "h" , offset1.to_s )
+case offset1_hex.length 
+	when 1 then
+		offset_hex = "0000000" + offset1_hex
+	when 2 then
+		offset_hex = "000000" + offset1_hex
+	when 3 then
+		offset_hex = "00000" + offset1_hex
+	when 4 then
+		offset_hex = "0000" + offset1_hex
+	when 5 then
+		offset_hex = "000" + offset1_hex
+	when 6 then
+		offset_hex = "00" + offset1_hex
+	when 7 then
+		offset_hex = "00" + offset1_hex
+	else
+		offset_hex = offset1_hex
+end
+
+setaddr = Rrh.calc(setaddr1,"+",offset_hex)
+
+Rrh.assign()
+if !res = Rrh.regwrite( setaddr , filter) then
+	puts "register write error"
+else
+	puts "OK"
+end
+Rrh.unassign()

@@ -1,0 +1,16 @@
+#アドレス系define
+
+Rrh.require("./reg_define_5g_du_lls")
+
+
+def Rrh_CmdSupportCheck( *accept_arch )
+   accept_arch.length.times { | count |
+     if Register::ARCH == accept_arch[count] then
+       return true
+     end
+   }
+   printf("Not supported on this ARCH.\n")
+   raise
+end
+
+

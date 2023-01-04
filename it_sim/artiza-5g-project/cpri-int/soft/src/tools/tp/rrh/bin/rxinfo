@@ -1,0 +1,180 @@
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+Rrh.require("./comfunc_5glls")
+
+device_type = Rrh.get_shmcm("device_type")
+if device_type != "00000013" && device_type != "00000014"then
+	puts DuCode::ERR_DESCRIPTION[3]
+	Rrh.exit(1)
+end
+
+
+ant_name = ["A","B","C","D","E","F","G","H"]
+antmask = ["a","b","c","d","e","f","g","h"]
+bwval = ["00000000","00000001","00000002","00000003","00000004","00000005","00000006","00000007","00000008","00000009","0000000a","0000000b"]
+BW = ["10","20","30","40","50","60","70","80","90","100","200","400"]
+SCS = ["15","30","60","120","240"]
+
+support_band = Rrh.get_shmcm("support_band")
+if support_band == "00000010" then
+	# ‘•’u	‘Ñˆæ(MHz)	X	Y
+	# SUB6(4.5G)	100	1.12	17607552.25
+	x_rtwp = -26.5
+	y_rtwp = 508904767.1
+	z_rtwp = -116.92 + x_rtwp
+elsif support_band == "00000011" then
+	# SUB6(3.7G)	100	1.12	17975110.84
+	x_rtwp = -26.5
+	y_rtwp = 508904767.1
+	z_rtwp = -116.92 + x_rtwp
+else
+	#mmW	200	-10.88	22109216.31
+	x_rtwp = -55.7
+	y_rtwp = 3366585.938
+	z_rtwp = -116.92 + x_rtwp
+end
+
+# RTWPLAT write
+if device_type == "00000013" then
+	for cnt in 0..3 do
+		offset = Rrh.calc(cnt.to_s(10), "*", "0x400")
+		addr = Rrh.calc("B1300174", "+", offset)
+		Rrh.regwrite(addr,"00000001")
+	end
+else
+	Rrh.regwrite("B1300174","00000001")
+end
+
+for cnt in 0..3 do
+	if device_type == "00000014" && cnt > 1 then
+		break
+	end
+	ANT_no = antmask[cnt] + "_array"
+
+	#ANT#n Rx Information
+	#       CarState      Frequency  Bandwidth  RxPower
+	#Cr#0 : ON/OFF      *****      100      *****
+	#Cr#1 : ON/OFF      *****      100      *****
+	if device_type == "00000013" then
+		for cntcr in 0..1 do
+			offset = Rrh.calc(cnt.to_s(10), "*", "0x400")
+			addr = Rrh.calc("B1300150", "+", offset)
+
+			CC_no		= cntcr.to_s(10) + "_cc"
+			onoff		= Rrh.get_shmrx(CC_no,ANT_no,"onoff")
+			bw		= Rrh.get_shmrx(CC_no,ANT_no,"nr_bandwidth")
+			freq		= Rrh.get_shmrx(CC_no,ANT_no,"nr_freq")
+			scs		= Rrh.get_shmrx(CC_no,ANT_no,"nr_scs")
+
+			offsetcr = Rrh.calc(cntcr.to_s(16), "*", "0x4")
+			addr = Rrh.calc(addr, "+", offsetcr)
+			power_val = Rrh.regread(addr)
+
+			for cntbw in 0..11 do
+				if bw == bwval[cntbw] then
+					bw = BW[cntbw]
+					break
+				end
+			end
+			for cntscs in 0..4 do
+				if scs == bwval[cntscs] then
+					scs = SCS[cntscs]
+					if cntscs == 0 then
+						scs = "30"
+					end
+					break
+				end
+			end
+			if onoff == "00000001" then
+				state = "ON"
+			else
+				state = "OFF"
+			end
+
+			if power_val == "00000000" then
+				power = z_rtwp
+			else
+				power = 10.0 * Math::log10( power_val.to_i(16) / y_rtwp ) + x_rtwp
+			end
+
+			if cntcr == 0 then
+				printf("ANT#%s Rx Information\n",ant_name[cnt])
+				printf("       CarState      Frequency  Bandwidth  RxPower    Scs\n")
+			end
+			if state == "OFF" then
+				if freq == "00000000" then
+					printf("Cr#%s : %04s           %07s    %03s      %7s    %03s\n",cntcr.to_s(10),state,"-","-","-","-")
+				else
+					printf("Cr#%s : %04s           %7d    %03s      %7s    %03s\n",cntcr.to_s(10),state,freq.to_i(16).to_i(10),bw,"-",scs)
+				end
+			else
+				if freq == "00000000" then
+					printf("Cr#%s : %04s           %07s    %03s      %7.1f    %03s\n",cntcr.to_s(10),state,"-","-",power.round(1),scs)
+				else
+					printf("Cr#%s : %04s           %7d    %03s      %7.1f    %03s\n",cntcr.to_s(10),state,freq.to_i(16).to_i(10),bw,power.round(1),scs)
+				end
+			end
+
+		end
+	else
+		for cntcr in 0..3 do
+			offset = Rrh.calc(cnt.to_s(10), "*", "0x400")
+			addr = Rrh.calc("B1300150", "+", offset)
+			base = addr
+			CC_no = cntcr.to_s(10) + "_cc"
+			onoff		= Rrh.get_shmrx(CC_no,ANT_no,"onoff")
+			bw		= Rrh.get_shmrx(CC_no,ANT_no,"nr_bandwidth")
+			freq		= Rrh.get_shmrx(CC_no,ANT_no,"nr_freq")
+			scs		= Rrh.get_shmrx(CC_no,ANT_no,"nr_scs")
+
+			offsetcr = Rrh.calc(cntcr.to_s(16), "*", "0x4")
+			addr = Rrh.calc(base, "+", offsetcr)
+			power_val = Rrh.regread(addr)
+
+			for cntbw in 0..11 do
+				if bw == bwval[cntbw] then
+					bw = BW[cntbw]
+					break
+				end
+			end
+			for cntscs in 0..4 do
+				if scs == bwval[cntscs] then
+					scs = SCS[cntscs]
+					if cntscs == 0 then
+						scs = "120"
+					end
+					break
+				end
+			end
+			if onoff == "00000001" then
+				state = "ON"
+			else
+				state = "OFF"
+			end
+			if power_val == "00000000" then
+				power = z_rtwp
+			else
+				power = 10.0 * Math::log10( power_val.to_i(16) / y_rtwp ) + x_rtwp
+			end
+
+			if cntcr == 0 then
+				printf("ANT#%s Rx Information\n",ant_name[cnt])
+				printf("       CarState      Frequency  Bandwidth  RxPower    Scs\n")
+			end
+			if state == "OFF" then
+				if freq == "00000000" then
+					printf("Cr#%s : %04s           %08s    %03s      %7s    %03s\n",cntcr.to_s(10),state,"-","-","-","-")
+				else
+					printf("Cr#%s : %04s           %8d    %03s      %7s    %03s\n",cntcr.to_s(10),state,freq.to_i(16).to_i(10),bw,"-",scs)
+				end
+			else
+				if freq == "00000000" then
+					printf("Cr#%s : %04s           %08s    %03s      %7.1f    %03s\n",cntcr.to_s(10),state,"-","-",power.round(1),scs)
+				else
+					printf("Cr#%s : %04s           %8d    %03s      %7.1f    %03s\n",cntcr.to_s(10),state,freq.to_i(16).to_i(10),bw,power.round(1),scs)
+				end
+			end
+		end
+	end
+end
+

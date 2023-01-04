@@ -1,0 +1,9 @@
+Rrh.require("./verbose")
+Rrh.assign()
+puts "FH eth0 Loop back mode"
+Rrh.regwrite("a1000004","00000010")
+Rrh.regwrite("a1000004","00000000")
+Rrh.regwrite("a1000c00","00000002")
+Rrh.regwrite("a1000004","00010000")
+Rrh.regwrite("a1000004","00000000")
+Rrh.unassign()

@@ -1,0 +1,349 @@
+@global_logcounter = "entry"	# -> log history mask
+Rrh.require("./verbose")
+Rrh.require("./define_5glls")
+
+sts = Rrh.regread("a0000150")
+fault = Rrh.regread("a0000158")
+faultFact = Rrh.regread("a000015c")
+led = Rrh.regread("a0000800")
+temp = Rrh.tempread()
+stopwave = Rrh.regread("a000018c")
+
+
+reset_reason = Rrh.get_shmcm("reset_reason")
+case reset_reason.downcase
+	when "00000000","00000001" then
+		restart_cause = "Power-On"
+	when "00000004" then
+		restart_cause = "Maintenance Reset by DU command or RU-MT"
+	when "00000005" then
+		restart_cause = "M-plane-Recovery-Reset by FrontHaul Ether Link Down"
+	when "00000007" then
+		restart_cause = "Other-Watchdog-Timer"
+	when "0000000b","0000000d","00000013" then
+		restart_cause = "Software-Failure"
+	when "00000002" then
+		restart_cause = "M-plane-Triggered-Restart"
+	when "0000000e" then
+		restart_cause = "Supervision-Watchdog"
+	else
+		restart_cause = "Unknown"
+end
+
+admin="Unlocked"
+if  Rrh.calc(sts,"&","07000007") != "00000000" then
+	if  Rrh.calc(sts,"&","00000001") != "00000000" then
+		admin="Locked"
+	elsif  Rrh.calc(sts,"&","00000002") != "00000000" then
+		admin="Shutting-Down"
+	elsif  Rrh.calc(sts,"&","01000000") != "00000000" then
+		admin="Locked by MT"
+	else
+		admin="Unlocked"
+	end
+end
+
+oper="Enabled"
+if  Rrh.calc(sts,"&","00000300") != "00000000" then
+	if  Rrh.calc(sts,"&","00000200") != "00000000" then
+		oper="Disabled"
+	else
+		oper="Enabled"
+	end
+end
+
+usage="Idle"
+if  Rrh.calc(sts,"&","00070000") != "00000000" then
+	if  Rrh.calc(sts,"&","00010000") != "00000000" then
+		usage="Busy"
+	elsif  Rrh.calc(sts,"&","00020000") != "00000000" then
+		usage="Active"
+	else
+		usage="Idle"
+	end
+end
+
+
+availability="Normal"
+if  Rrh.calc(sts,"&","00007000") != "00000000" then
+	if  Rrh.calc(sts,"&","00001000") != "00000000" then
+		availability="Faulty"
+	elsif  Rrh.calc(sts,"&","00002000") != "00000000" then
+		availability="Degraded"
+	else
+		availability="Normal"
+	end
+end
+
+energysaving="Awake"
+if  Rrh.calc(sts,"&","00000030") != "00000000" then
+	if  Rrh.calc(sts,"&","00000010") != "00000000" then
+		energysaving="Sleeping"
+	else
+		energysaving="Awake"
+	end
+end
+
+led1 = "Off"
+if  Rrh.calc(led,"&","00000007") != "00000000" then
+	if  Rrh.calc(led,"&","00000007") == "00000001" then
+		led1="Red On"
+	elsif  Rrh.calc(led,"&","00000007") == "00000002" then
+		led1="Green On"
+	elsif  Rrh.calc(led,"&","00000007") == "00000003" then
+		led1="Red and Green On"
+	elsif  Rrh.calc(led,"&","00000007") == "00000004" then
+		led1="Off"
+	elsif  Rrh.calc(led,"&","00000007") == "00000005" then
+		led1="Red Blinking"
+	elsif  Rrh.calc(led,"&","00000007") == "00000006" then
+		led1="Green Blinking"
+	elsif  Rrh.calc(led,"&","00000007") == "00000007" then
+		led1="Red and Green Blinking"
+	else
+		led1="Off"
+	end
+end
+
+led2 = "Off"
+if  Rrh.calc(led,"&","00000070") != "00000000" then
+	if  Rrh.calc(led,"&","00000070") == "00000010" then
+		led2="Orange On"
+	elsif  Rrh.calc(led,"&","00000070") == "00000020" then
+		led2="Green On"
+	elsif  Rrh.calc(led,"&","00000070") == "00000030" then
+		led2="Orange and Green On"
+	elsif  Rrh.calc(led,"&","00000070") == "00000040" then
+		led2="Off"
+	elsif  Rrh.calc(led,"&","00000070") == "00000050" then
+		led2="Orange Blinking"
+	elsif  Rrh.calc(led,"&","00000070") == "00000060" then
+		led2="Green Blinking"
+	elsif  Rrh.calc(led,"&","00000070") == "00000070" then
+		led2="Orange and Green Blinking"
+	else
+		led2="Off"
+	end
+end
+
+puts ""
+puts "DU status information"
+puts ""
+Rrh.system("/bin/echo -n \"Time : \" ; /bin/date +\"%Y/%m/%d %H:%M:%S\"")
+puts ""
+puts " Restart cause        : #{restart_cause}"
+puts ""
+puts " Hardware State       : Description"
+puts "--------------------------------------------------"
+puts "  administrative      : #{admin}"
+puts "  operational         : #{oper}"
+puts "  usage               : #{usage}"
+puts "  availability        : #{availability}"
+puts "  energysaving        : #{energysaving}"
+puts ""
+puts " Extended State"
+puts "--------------------------------------------------"
+puts "  LED1 state          : #{led1}"
+puts "  LED2 state          : #{led2}"
+puts "  Temperature state   : #{temp} degree Celsius"
+
+severity = "None"
+Software = "None"
+Initialization= "None"
+Fronthaul_sync= "None"
+Module_clk= "None"
+Fronthaul_faulty1= "None"
+Ps_alm= "None"
+Common_hardware= "None"
+Rf_mod= "None"
+Tx_out= "None"
+Rx_out= "None"
+Temp_low= "None"
+Temp_high= "None"
+PortAb= "None"
+NoFan= "None"
+FanPS= "None"
+CoolFan1= "None"
+CoolFan2= "None"
+CoolFan3= "None"
+SFP_Error="None"
+SFPFailSafe = "None"
+Tx_Slp= "None"
+Tx_Off= "None"
+TEST_Mode= "None"
+Frc_alm= "None"
+
+if  Rrh.calc(fault,"&","00000007") != "00000000" then
+	if  Rrh.calc(fault,"&","00000004") != "00000000" then
+		severity = "Critical"
+	elsif  Rrh.calc(fault,"&","00000002") != "00000000" then
+		severity = "Major"
+	else
+		severity = "Minor"
+	end
+end
+
+
+if  Rrh.calc(faultFact,"&","ffffffff") != "00000000" then
+
+	if  Rrh.calc(faultFact,"&","00000001") != "00000000" then
+		Software = "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00000002") != "00000000" then
+		Initialization= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00000004") != "00000000" then
+		Fronthaul_sync= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00000008") != "00000000" then
+		Module_clk= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00000010") != "00000000" then
+		Fronthaul_faulty1= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00000020") != "00000000" then
+		Ps_alm= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00000040") != "00000000" then
+		Common_hardware= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00000080") != "00000000" then
+		Rf_mod= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00000100") != "00000000" then
+		Tx_out= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00000200") != "00000000" then
+		Rx_out= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00000400") != "00000000" then
+		PortAb= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00001000") != "00000000" then
+		Temp_low= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00002000") != "00000000" then
+		Temp_high= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00010000") != "00000000" then
+		NoFan= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00020000") != "00000000" then
+		FanPS= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00040000") != "00000000" then
+		CoolFan1= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00080000") != "00000000" then
+		CoolFan2= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","00100000") != "00000000" then
+		CoolFan3= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","01000000") != "00000000" then
+		SFP_Error= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","04000000") != "00000000" then
+		SFPFailSafe= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","10000000") != "00000000" then
+		Tx_Slp= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","20000000") != "00000000" then
+		Tx_Off= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","40000000") != "00000000" then
+		TEST_Mode= "Active"
+	end
+
+	if  Rrh.calc(faultFact,"&","80000000") != "00000000" then
+		Frc_alm= "Active"
+	end
+
+end
+
+
+sts_stopwave= "None"
+synce_stopwave = "None"
+ptp_stopwave= "None"
+ptp_unlock_stopwave= "None"
+
+if  Rrh.calc(stopwave,"&","00000007") != "00000000" then
+	sts_stopwave= "Active"
+	if  Rrh.calc(stopwave,"&","00000001") != "00000000" then
+		synce_stopwave= "Active"
+	end
+
+	if  Rrh.calc(stopwave,"&","00000002") != "00000000" then
+		ptp_stopwave= "Active"
+	end
+
+	if  Rrh.calc(stopwave,"&","00000004") != "00000000" then
+		ptp_unlock_stopwave= "Active"
+	end
+
+end
+
+puts ""
+puts " Fault State                       : #{severity}"
+puts "--------------------------------------------------"
+puts " Fault Active List"
+puts "--------------------------------------------------"
+puts "  Software fault                   : #{Software} "
+puts "  Initialization failure           : #{Initialization} "
+puts "  Fronthaul Synchronization Error  : #{Fronthaul_sync} "
+puts "  Module Clock faulty              : #{Module_clk} "
+puts "  Fronthaul faulty by Port1        : #{Fronthaul_faulty1} "
+puts "  PS ALM                           : #{Ps_alm} "
+puts "  Unit out of order                : #{Common_hardware} "
+puts "  RF module fault                  : #{Rf_mod} "
+puts "  TX out of order                  : #{Tx_out} "
+puts "  RX out of order                  : #{Rx_out} "
+puts "  ANT port abnormal                : #{PortAb} "
+puts "  Temperature too low              : #{Temp_low} "
+puts "  Unit dangerously overheating     : #{Temp_high} "
+puts "  No FAN detected                  : #{NoFan} "
+puts "  FAN ps alarm                     : #{FanPS} "
+puts "  Cooling FAN broken FAN1          : #{CoolFan1} "
+puts "  Cooling FAN broken FAN2          : #{CoolFan2} "
+puts "  Cooling FAN broken FAN3          : #{CoolFan3} "
+puts "  SFP Error                        : #{SFP_Error} "
+puts "  SFP Fail Safe                    : #{SFPFailSafe} "
+puts "  Tx Sleep                         : #{Tx_Slp} "
+puts "  Tx OFF                           : #{Tx_Off} "
+puts "  TEST Mode                        : #{TEST_Mode} "
+puts "  Forced alarm                     : #{Frc_alm} "
+
+puts ""
+puts " Stop RF transmission by SyncE/PTP : #{sts_stopwave}"
+puts "--------------------------------------------------"
+puts " Cause of Stop"
+puts "--------------------------------------------------"
+puts "  Clock quality of SyncE is low    : #{synce_stopwave}"
+puts "  Clock quality of PTP is low      : #{ptp_stopwave}"
+puts "  PTP state is UnLock              : #{ptp_unlock_stopwave}"
+puts "--------------------------------------------------"
+puts ""
+

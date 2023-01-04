@@ -1,0 +1,8 @@
+Rrh.require("./verbose")
+
+Rrh.assign()
+Rrh.regwrite("a2000000","00000000")
+Rrh.regwrite("a2000004","00000001")
+Rrh.unassign()
+
+puts "OK"

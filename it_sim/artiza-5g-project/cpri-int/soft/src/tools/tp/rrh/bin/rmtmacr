@@ -1,0 +1,27 @@
+#
+# remoteMacAddress  read
+# rrh -rmtmacr <fh>
+#
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+# usage
+
+
+Rrh.assign()
+# remoteMacAddress  read
+
+	data_s = Rrh.regread("A1000480")
+	printf("FH:1 add: %s data: %s\n","A1000480",data_s)
+	printf("\n")
+	data_s = Rrh.regread("A1000484")
+	printf("FH:1 add: %s data: %s\n","A1000484",data_s)
+	printf("\n")
+	data_s = Rrh.regread("A1001480")
+	printf("FH:2 add: %s data: %s\n","A1001480",data_s)
+	printf("\n")
+	data_s = Rrh.regread("A1001484")
+	printf("FH:2 add: %s data: %s\n","A1001484",data_s)
+
+
+Rrh.unassign()

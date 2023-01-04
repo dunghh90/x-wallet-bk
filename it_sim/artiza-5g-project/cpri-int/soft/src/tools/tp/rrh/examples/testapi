@@ -1,0 +1,43 @@
+Rrh.require("./verbose")
+Rrh.assign()
+
+qid =  0x10FE000E
+wtime = 1000
+
+case ARGV[0].to_s.downcase
+ when "rfp" then
+   buf = Rrh.malloc(4096)
+   Data = Struct.new( :len,:result)
+   data = Data.new
+   data.len = 4
+   data.result = 0
+   Rrh.msgset(buf,data)
+   Rrh.api("rrhApi_Rfp_Mqr_PaControl",qid,wtime,buf,0,1)
+   Rrh.api("rrhApi_Rfp_Mqr_PaControl",qid,wtime,buf,1,1)
+   Rrh.free(buf)
+ when "svp" then
+
+ when "cpri" then
+
+ when "tilt" then
+
+ when "log" then
+
+ when "dia" then
+
+ when "ext" then
+
+ when "file" then
+
+ when "l2" then
+
+ when "inv" then 
+
+ when "dbg" then 
+
+ else
+  puts "not supported api"
+end
+
+
+Rrh.unassign()

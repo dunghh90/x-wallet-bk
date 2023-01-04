@@ -1,0 +1,306 @@
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+Rrh.require("./z_global")
+Rrh.require("./tpshm_access")
+Rrh.require("./sveep")
+
+if ARGV.length < 1 then
+	puts "usage:"+$0+" <ant>",
+		"(m):<ant> is 0:AntA or 1:AntB or all(AntA & AntB)"
+	exit(1)
+end
+
+
+ant = ARGV[0]
+antno = 0
+case ant
+	when "all" then
+		antno = 2
+	else
+		if ant.to_i < 0 or ant.to_i > 1 then
+			puts "Input value is incorrect : <ant(0-1) or all>"
+			exit(1)
+		end
+		antno = ant.to_i
+end
+
+
+
+Rrh.assign()
+	if ant.to_i == 0 then
+
+		addr = 0x440
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","40")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","41")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","42")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","43")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","44")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","45")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","46")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","47")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","48")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","49")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","4A")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","4B")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","4C")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","4D")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","4E")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","4F")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","50")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","51")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","52")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","53")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","54")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","55")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","56")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","57")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","58")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","59")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","5A")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","5B")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","5C")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","5D")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","5E")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","5F")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+		
+		flg = Rrh.regread("B11001F4")
+		Rrh.rfewrite(0x40,flg[6..7].to_i(16))
+		
+
+	else
+
+		addr = 0x460
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","60")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","61")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","62")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","63")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","64")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","65")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","66")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","67")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","68")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","69")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","6A")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","6B")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","6C")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","6D")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","6E")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","6F")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","70")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","71")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","72")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","73")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","74")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","75")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","76")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","77")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","78")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","79")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","7A")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","7B")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","7C")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","7D")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","7E")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+	
+		addr = addr + 1
+		fweqftap = Rrh.tpshmread("apde2pTX_vt","","7F")
+		Rrh.rfewrite(addr,fweqftap.to_i(16))
+
+		flg = Rrh.regread("B11005F4")
+		Rrh.rfewrite(0x41,flg[6..7].to_i(16))
+
+	end
+
+	if Rrh.svvstx_rf_n() == false then
+	    puts "EEP update error "
+	    exit(1)
+	end
+	printf("CRC saved \n")
+
+Rrh.unassign()
+

@@ -1,0 +1,4 @@
+puts "All Kill process ... "
+Rrh.system("killall -9 DU_init")
+Rrh.system("killall -9 DU_pf")
+puts "...> Finish "

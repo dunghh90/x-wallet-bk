@@ -1,0 +1,25 @@
+# 
+# FAN DAC set(5G-è§ópDU)
+# rrh -fandacw <data>
+# 
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <data>",
+ "(m):<data> is written dac data"
+ exit(1)
+end
+
+data_s = ARGV[0]
+if(data_s.to_i(16) < 0) ||(data_s.to_i(16) > 0xfff) then
+ puts "Input dac data is incorrect : <data>=#{data_s}"
+ exit(1)
+end
+
+Rrh.assign()
+
+#FAN DAC set
+Rrh.fandac_w( data_s )
+
+Rrh.unassign()

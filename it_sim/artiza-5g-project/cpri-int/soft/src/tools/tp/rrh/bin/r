@@ -1,0 +1,65 @@
+# 
+# Register read
+# rrh -r <addr>
+# 
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh.require("./input_check")
+# usage
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <addr> <size>",
+ "(m):<addr> is register address"
+ "(o):<size> is register dump size(hex)" 
+ exit(1)
+end
+
+addr_s = ARGV[0]
+
+#引数の整合性確認
+if !Rrh.input_check(addr_s,8) then
+ puts "Input value is incorrect : <addr>"
+ exit(1)
+end
+
+if Rrh.calc(addr_s,"&","0000000F") != "00000000" then
+	if Rrh.calc(addr_s,"%","00000004") != "00000000" then
+		puts "Input value is not 4byte alignment : <addr>"
+		exit(1)
+	end
+end
+
+Rrh.assign()
+if ARGV.length == 1 then
+#レジスタ読み取り
+ if !res = Rrh.regread(addr_s) then
+  puts "register read error"
+ else
+  puts "0x#{res} "
+ end
+else
+  printf("ADDRESS  : +0        +4        +8        +C      \n")
+  printf("-------------------------------------------------\n")
+  printf("%s : ",addr_s.upcase)
+
+  if ARGV[1].to_i(16) < 4 then
+    total = 0
+  else
+    total = ARGV[1].to_i(16)/4 - 1
+    if (ARGV[1].to_i(16) % 4) > 0 then
+      total = total + 1
+    end
+  end
+
+  for cnt in 0..total do
+   addrval2 = Rrh.calc(addr_s,"+",(cnt * 4).to_s(16))
+   res = Rrh.regread(addrval2)
+   printf("%s  ",res.upcase)
+   if ((((cnt + 1) % 4 ) == 0) && (cnt < total)) then
+     puts ""
+     printf("%s : ",Rrh.calc(addrval2,"+","4").upcase)
+   end
+  end
+  puts ""
+end
+
+Rrh.unassign()

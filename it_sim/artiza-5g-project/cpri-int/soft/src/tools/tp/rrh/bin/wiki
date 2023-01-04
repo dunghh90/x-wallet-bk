@@ -1,0 +1,118 @@
+num = ARGV.length
+errflg = 1
+
+def cmd_help ( )
+  puts "usage:"+$0+" <keywords> <...> ",
+  "(m):<words> is wiki keywords ",
+  "(o):<...>  is add words "
+  return
+end
+
+def cmd_entry ( )
+puts "Current wiki words is below ",
+     "---------------------------------------",
+     "wiki alm <...>: alm code description.",
+     "wiki mp  <...>: mplane description.",
+     "wiki sig <...>: os signal description.",
+     "wiki h2b <val>: hex to bit.",
+     "wiki h2d <val>: hex to dec.",
+     "wiki d2h <val>: dec to hex.",
+     "wiki d2b <val>: dec to bit. ",
+     "wiki b2h <val>: bit to hex.",
+     "wiki b2d <val>: bit to dec.",
+     "wiki help,-h  : wiki command help.",
+     "wiki entry,-e : wiki entry words."
+  return
+end
+
+def cmd_make ( cmd , cmdnum , cmdnumofs )
+   totalcmd = cmd
+   if cmdnum > cmdnumofs then
+     totalcmd << " \| grep \""
+     loop = cmdnum - cmdnumofs
+     index = cmdnumofs
+     loop.times { 
+        totalcmd << ARGV[ index ].to_s
+        index = index + 1
+        if index == cmdnumofs then
+         break
+        end
+        if index  < cmdnum then
+           totalcmd << "\\|"
+        end 
+     }
+   else
+     if cmdnum > 1 then
+       totalcmd << " \""
+     end
+   end
+   return totalcmd
+end
+
+
+if num == 0 then
+  cmd_help()
+  exit
+end
+
+cmd = ""
+case ARGV[0].to_s.downcase
+ when "ps" then
+   cmd = "ps xo lwp,pid,ppid,stat,bsdstart,bsdtime,etime,rtprio,policy,pcpu,pmem,rss,vsz,esp,eip,fname,wchan -L"
+ when "alm","mp","sig" then
+   cmd = cmd_make("./rrh -wiki_" + ARGV[0].to_s.downcase , num , 1)
+   if num > 1 then
+    cmd << "\""
+   end
+ when "h2d" then
+   if num > 1 then
+    print "Hex:",ARGV[1]," -> Dec:", Rrh.v_to_v( "h" , "d",ARGV[1] ),"\n"
+    errflg = 0
+   end
+ when "h2b" then
+   if num > 1 then
+    bitval = Rrh.v_to_v( "h" , "b",ARGV[1] )
+    print "Hex:",ARGV[1]," -> Bit:", bitval[0,8]," ",bitval[8,8]," ",bitval[16,8]," ",bitval[24,8],"\n"
+    errflg = 0
+   end
+ when "d2h" then
+   if num > 1 then
+    print "Dec:",ARGV[1]," -> Hex:", Rrh.v_to_v( "d" , "h",ARGV[1] ),"\n"
+    errflg = 0
+   end
+ when "d2b" then
+   if num > 1 then
+    bitval = Rrh.v_to_v( "d" , "b",ARGV[1] )
+    print "Dec:",ARGV[1]," -> Bit:", bitval[0,8]," ",bitval[8,8]," ",bitval[16,8]," ",bitval[24,8],"\n"
+    errflg = 0
+   end
+ when "b2h" then
+   if num > 1 then
+    print "Bit:",ARGV[1]," -> Hex:", Rrh.v_to_v( "b" , "h",ARGV[1] ),"\n"
+    errflg = 0
+   end
+ when "b2d" then
+   if num > 1 then
+    print "Bit:",ARGV[1]," -> Dec:", Rrh.v_to_v( "b" , "d",ARGV[1] ),"\n"
+    errflg = 0
+   end
+ when "entry","-e" then
+   cmd_entry()
+   errflg = 0
+ when "help","-h" then
+   cmd_help()
+   errflg = 0
+ else
+end
+
+if cmd != "" then
+# puts cmd
+ if Rrh.system( cmd ) == 0 then
+   errflg = 0
+ end
+end
+
+if errflg != 0 then
+ puts "Sorry, your keywords is not yet entry.",
+      "So We are looking forward to your cooperation for wiki."
+end

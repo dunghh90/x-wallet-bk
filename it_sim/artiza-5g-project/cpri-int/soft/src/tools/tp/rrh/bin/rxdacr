@@ -1,0 +1,37 @@
+
+#RXADC (AD9689)レジスタ読出し
+#第1引数(hex):EEPROM番地(0～0x7FF)
+#20180731新規作成 若水
+
+
+Rrh.require("./verbose")
+Rrh.require("./input_check")
+
+
+#パラメータ確認
+if ARGV.length < 1 then
+ puts "usage:"+$0+" <addr>",
+ "(m):<addr> is address(0~0x7FF)"
+ raise 
+end
+
+addr_s = ARGV[0]
+
+
+#アドレスチェック
+
+if !Rrh.input_check(addr_s,4) then
+ puts "Input value is incorrect : <addr>"
+ raise 
+end
+
+Rrh.assign()
+
+
+if !res = Rrh.rxadcread(addr_s.to_i(16)) then
+ puts "read error"
+else
+ puts "0x#{res} "
+end
+
+Rrh.unassign()

@@ -1,0 +1,42 @@
+Rrh.require("./verbose")
+Rrh.require("./reg_define")
+Rrh_CmdSupportCheck("5G_DU_LLS")
+
+ Rrh.assign()
+ Rrh.eepwrite(0x3D3,0xFF)
+ Rrh.eepwrite(0x3D4,0xFF)
+ Rrh.eepwrite(0x3D5,0x0)
+ Rrh.eepwrite(0x3D6,0x0)
+
+ puts(" cleaned up flash TROUBLELOG1 ")
+
+ Rrh.flasherase("0","6000000","200000")
+ Rrh.flasherase("0","6200000","200000")
+
+ puts(" cleaned up flash TROUBLELOG2 ")
+
+ Rrh.flasherase("0","E000000","200000")
+ Rrh.flasherase("0","E200000","200000")
+
+ puts(" cleaned up flash CYCLICLOG1 ")
+
+ Rrh.flasherase("0","6400000","300000")
+
+ puts(" cleaned up flash CYCLICLOG2 ")
+
+ Rrh.flasherase("1","6400000","300000")
+
+ Rrh.system("cmd_rrhdbg clr rst")
+ puts(" cleaned up reset his")
+ 
+ Rrh.system("cmd_rrhdbg clr ast")
+ puts(" cleaned up assert his")
+
+ Rrh.system("cmd_rrhdbg clr bpf")
+ puts(" cleaned up bpf his")
+
+ Rrh.system("cmd_rrhdbg clr mac")
+ puts(" cleaned up mac his")
+
+ puts("Finish")
+

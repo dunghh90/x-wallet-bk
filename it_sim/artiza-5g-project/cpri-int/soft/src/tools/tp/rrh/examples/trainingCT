@@ -1,0 +1,21 @@
+# 
+# CT用擬似ハード
+# 
+Rrh.require("./reg_define")
+#駐在(5分ほど)
+for cnt in 0..0x400000 do
+ #レジスタ監視
+ strmgo = Rrh.regread(Register::FB_FBSTRMGO)
+ if strmgo == "00000002" then
+  words=sprintf("%02x",(cnt%256))
+  Rrh.regwrite(Register::FB_IT1RE,"001234"+words)
+  Rrh.regwrite(Register::FB_IT1IM,"001234aa")
+  Rrh.regwrite(Register::FB_IT2RE,"001234bb")
+  Rrh.regwrite(Register::FB_IT2IM,"001234"+words)
+  Rrh.regwrite(Register::FB_FBSTRMGO,"00000000")
+ end
+ 
+ Rrh.sleep(0,500)
+end
+
+puts "time out"

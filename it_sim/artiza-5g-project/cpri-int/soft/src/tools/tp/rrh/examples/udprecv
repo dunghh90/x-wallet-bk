@@ -1,0 +1,23 @@
+Rrh.require("./verbose")
+Rrh.require("./udpmsg")
+
+socket =  Rrh.usocket()
+
+if Rrh.ubind(socket,@hostip,@hostport) != 0 then
+ puts "Bind Ng"
+ Rrh.uclose(socket)
+ exit
+end
+
+msg = Msg.new
+head = Head.new
+
+num = 0
+while num < 10  do
+ Rrh.urecv(socket,msg,head)
+ print "No.",num,":",msg.name,":",head.ip,":",head.port,"\n"
+ Rrh.usend(socket,msg,head)
+ num = num + 1
+end
+Rrh.uclose(socket)
+

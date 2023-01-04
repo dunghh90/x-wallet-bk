@@ -1,0 +1,8 @@
+value.h:419:1:mrb_fixnum_value	64	static
+value.h:467:1:mrb_false_value	48	static
+value.h:485:1:mrb_true_value	48	static
+dulib_api.c:105:11:rrhlib_api	3424	dynamic,bounded
+dulib_api.c:222:11:rrhlib_device_txon	224	dynamic,bounded
+dulib_api.c:278:11:rrhlib_device_txoff	128	dynamic,bounded
+dulib_api.c:323:11:rrhlib_api_txgain	80	static
+dulib_api.c:357:6:rrhlib_api_install	48	static
