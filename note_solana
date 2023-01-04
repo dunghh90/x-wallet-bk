@@ -1,0 +1,505 @@
+昨日、Avata映画を見に行きました。
+映画は面白かったですが、見る時間が長かったです。
+
+
+
+curl --location --request GET 'https://atom.getblock.io/mainnet/blocks/latest' --header 'x-api-key:28a9b81b-d72f-43de-b417-7a48b44697f9'
+
+curl --location --request POST 'https://atom.nownodes.io/cosmos/tx/v1beta1/txs' \
+--header 'api-key: 8d737401-a600-4767-92e2-380a9269841e' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "tx_bytes": "string",
+  "mode": "BROADCAST_MODE_UNSPECIFIED"
+}'
+
+
+curl --location --request GET 'https://atom.nownodes.io/blocks/latest' \
+--header 'api-key: 8d737401-a600-4767-92e2-380a9269841e' \
+--data-raw ''
+
+28a9b81b-d72f-43de-b417-7a48b44697f9
+28a9b81b-d72f-43de-b417-7a48b44697f9
+
+input: ...
+output xac nhan: ....
+console la gi can envident
+---------------------------------
+- thi ly thuyet, thuc hanh bn.
+- thi mo hinh.
+
+=========================
+Thong tin account Hetzer
+anton@cbase.llc
+7#8Ahawe%WNAs8eawohlancsap8!A8@jA*ANzZPqv
+get token google authen:
+Q23H7F2UZQSF2IWS63Z3YMZ54KSKXP2V
+
+========== Teraswitch ==================
+OS: Ubuntu 20.04 LTS
+Username: ubuntu
+Password: aWW8txTPZt4LwR
+IPv4 Address141.98.218.48
+----------------------
+
+Hostname: crosstech
+Username: ubuntu
+Password: QyrU8Va7
+IPv4 Address: 141.98.218.38
+IPv6 Address: 2607:fdc0:2c1:0:e63d:1aff:fe89:c48
+------------------------
+
+ssh ubuntu@141.98.218.48
+
+
+
+1. Vấn đề downtime:
+- catchup data như thế nào?
+
+------------------------
+Để tránh ảnh hưởng downtime, các bước thực hiện:
+** Setting new server follow guildline https://github.com/shiraz-edgevana/solana
+Step -1: create new keypair:
+ + Authorized Withdrawer Keypair
+ + Validator Keypair
+ + Vote Account Keypair
+ + Stake Account Keypair
+Step -2: Start validator
+Step -3: Waiting node caught up
+
+** Move old sever to new server
+Step -4: Stop old server
+Step -4: Stop new server
+Step -5: Change all keypair of new server to old server by command
+solana-keygen recover ASK --outfile ~/[name-key]-keypair.json
+Step -6: Start new server
+
+=======================================
+
+** Setting new server follow guildline https://github.com/shiraz-edgevana/solana
+Step -1: import all keypair into new server by command
+solana-keygen recover ASK --outfile ~/[name-key]-keypair.json
+Step -2: Setup new server
+Step -3: Start validator new server
+Step -4: Waiting node caught up
+Step -5: Stop old server
+Step -6: restart new server
+
+** Move old sever to new server
+Step -4: Stop old server
+Step -4: Stop new server
+Step -5: Change all keypair of new server to old server by command
+solana-keygen recover ASK --outfile ~/[name-key]-keypair.json
+Step -6: Start new server
+
+solana transfer --allow-unfunded-recipient  --fee-payer ASK --from ASK ./wallet-withdrawer-keypair.json .05
+====================================================
+----------------------------------------------------
+Wrote new keypair to /home/dunghoang/wallet-withdrawer-keypair.json
+==========================================================================
+pubkey: 6WVChmWSPgL6HwZ6iqLssWGRRKVEmtQDiEBVWw7bxcjv
+==========================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+sleep matrix angle switch shove manage stage super annual hub motor behind
+==========================================================================
+
+
+
+Wrote new keypair to /home/dunghoang/validator-keypair.json - indentiti
+=============================================================================
+pubkey: Gd8Ykp5G8NHDevyxM7274QZjGeBSwbu2QxPC5qPnAJVx
+=============================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+zero verify census concert wonder skirt start banana bridge bright water soft
+=============================================================================
+
+
+Wrote new keypair to /home/dunghoang/vote-account-keypair.json
+=================================================================================
+pubkey: DitD8gBesEnHTq3sS1M4ogC7K2NNQK552TA9UnvGESYK
+=================================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+attract hollow slice impact heavy traffic alarm dial napkin other sibling soldier
+=================================================================================
+
+
+chiều mai la sinh nhật cty.
+có lẻ sẽ uống nhiều bia.
+vì vậy tôi sẽ đi grap cho an toàn
+
+
+明日の午後は会社の誕生日です。ビールをたくさん飲むでしょう。
+安全のために、Grapサービスで通勤することにします。
+
+
+
+飲み会に参観してバイクで帰ると、危ないですから、会社は
+
+
+
+
+-----------------
+KEYBASE.IO
+-----------------
+chief space duck convince forward castle envelope offer bundle pitch table acid mimic
+
+
+
+solana validator-info publish "public name" -n "name-keybase" -w "your-website" -d "your-description"
+
+
+
+===========================================================
+
+Wrote new keypair to /home/dunghoang/vote-account.json
+========================================================================
+pubkey: GJ4WrbSyVZBt2owVTHj6g5XzRC97hgN6vBEHcuqZPuJJ
+========================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+twin gun captain prepare search excite undo entry method silk sun family
+========================================================================
+
+Wrote new keypair to /home/dunghoang/indentiti.json
+=======================================================================
+pubkey: 7mXr9Vvctcqziayujs1URW3xwdgo9jW4WK3YA36cTCrW
+=======================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+give local carpet firm six cabin alone garlic corn arrange hundred shoe
+=======================================================================
+
+Wrote new keypair to /home/dunghoang/withdraw.json
+=====================================================================
+pubkey: 9r5ggBjLcrrANCpLahP6RNxgtsMMnQbYdAfsTPeQzurL
+=====================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+loan bulb loan loyal camera pen solution exact next plate inmate hold
+=====================================================================
+
+
+
+
+
+ssh-add ~/.ssh/
+ssh -i path_to ^Cser@133
+
+
+
+
+
+
+
+
+- 
+- ram 384
+
+
+
+I want to buy server to setup Solana validator.
+Hardware requirements RAM: 380GB, network 1GBit/s, disk: 3TB
+Which machine on your server meets the requirements?
+
+
+How much is it for 1 month?
+
+
+I want to chose Dedicated-Root-Server option RAM: 384GB, but upto Drives 3TB?
+
+I want to order Dedicated-Root-Server but have fee setup € 119.00.
+What is this fee?
+
+
+https://www.validators.app/data-centers?locale=en&network=mainnet&sort_by=asn
+
+https://www.hetzner.com/dedicated-rootserver/ax161/configurator#/
+https://www.hetzner.com/dedicated-rootserver/px93/configurator#/
+
+
+I have ordered Dedicated-Root-Server successfully.
+I go to the order (https://robot.hetzner.com/order) but I don't see the order history.
+Then how can I view my order history and status order?
+-----------------------------
+answer:
+If your order of a dedicated root server has gone through successfully, then you will have received an automated order confirmtation with an Order number.
+ I view my order history and status order?
+
+https://docs.hetzner.com/general/others/order-processing/?title=Auftragsbearbeitung
+On that table you will see the approximate setup times.
+
+
+=============================================================
+
+SSH key genarate - research
+- https://www.ssh.com/academy/ssh/keygen
+- ssh key generate
+
+
+Yogurt nha đam
+Sữa Tươi Kem Trứng
+
+----------------
+
+I want to order Dedicated-Root-Server but I don't want ACCOUNT VERIFICATION.
+If so then can I use Dedicated-Root-Server?
+
+anwser:
+Here is the process up until the processing of your first order:
+1. You create an order and register a Hetzner account
+2. Your account is checked and gets verified
+3. Your order is processed, the server is setup and the server goes online
+
+
+----------------------
+I ordered Dedicated-Root-Server and confirmed it successfully.
+When I access https://console.hetzner.cloud/projects to create project
+display notification "Before you can create a new project, your user account data has to be verified."
+If i don't verify account then when server order has gone online, can i use this server?
+
+
+
+--------------------------
+Please check all the available servers we offer. https://www.reliablesite.net/dedicated-servers/
+
+
+ssh -i "SolanaValidator.pem" ubuntu@ec2-13-212-107-72.ap-southeast-1.compute.amazonaws.com
+ssh -i "SolanaValidator.pem" ubuntu@ec2-13-213-155-37.ap-southeast-1.compute.amazonaws.com
+
+------------------------------------
+sudo parted /dev/nvme0n1
+
+resize:
+sudo parted /dev/nvme0n1 resizepart 2
+remove:
+parted /dev/nvme0n1
+print
+rm 2
+create:
+mkpart primary ext4 0% 100%
+format:
+sudo mkfs.ext4 /dev/nvme1n1p1
+
+sudo parted mkpart primary ext4 0% 100%
+----------------
+b6653855-2be5-4649-af68-10055fdc5955
+UUID=8919be9e-e92f-4d53-aae3-d087c10ed4cc /mnt/accounts ext4 defaults,nofail 0 0
+UUID=8919be9e-e92f-4d53-aae3-d087c10ed4cc /mnt/sol ext4 defaults,nofail 0 0
+-----------------------------------
+transaction-count:
+114473739324
+161320798,
+-----------------------------------
+Indentity key:
+Wrote new keypair to /mnt/sol/validator-keypair.json
+======================================================================
+pubkey: 8LPQradcYxm9ZD55MtnFdQt5hiRZjrXReKTKcxwmmFYa
+======================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+wine surround legend follow easily elbow joy fluid hip young bus crisp
+======================================================================
+solana-keygen recover ASK --outfile /mnt/sol/new-validator-keypair.json
+
+Vote account:
+Wrote new keypair to /mnt/sol/vote-account-keypair.json
+==================================================================================
+pubkey: EvFqJXejDxEahPQAtA9Vj5b9v2p74yViZ8UYRScQ4gRh
+==================================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+salute animal crystal process flag rally bullet settle marble bachelor slot puzzle
+==================================================================================
+solana-keygen recover ASK --outfile /mnt/sol/new-vote-account-keypair.json
+
+
+wallet keypair:
+Wrote new keypair to /mnt/sol/wallet-keypair.json
+==================================================================================
+pubkey: 4SfpScA752CY6bR9tTAXxCe49MaPkSemJWykpZLxbCPw
+==================================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+can midnight catalog pass crew sugar squirrel visa enhance combine disorder across
+==================================================================================
+
+solana-keygen recover ASK --outfile /mnt/sol/wallet-keypair.json
+
+stake keypair:
+
+Wrote new keypair to /mnt/sol/validator-stake-keypair.json
+=======================================================================
+pubkey: 8kX8PK9UssbSemsevfiENdgKsiPFknuaS8uUHg1swFna
+=======================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+treat access coast alien sister save heart zebra myself begin gaze rare
+=======================================================================
+solana-keygen recover ASK --outfile /mnt/sol/new-validator-stake-keypair.json
+
+
+solana transfer --allow-unfunded-recipient \
+  --fee-payer /mnt/sol/wallet-keypair.json \
+  --from /mnt/sol/wallet-keypair.json /mnt/sol/new-validator-keypair.json 0.01
+
+
+
+
+
+https://solanabeach.io/address/8kX8PK9UssbSemsevfiENdgKsiPFknuaS8uUHg1swFna/stake-rewards
+
+
+=========================
+=========================
+=========================
+=========================
+=========================
+=========================
+solana transfer --allow-unfunded-recipient --fee-payer /mnt/sol/wallet-keypair.json --from /mnt/sol/wallet-keypair.json /mnt/sol/validator-keypair.json 0.5					
+==================================
+8000-8020
+
+chmod +x ~/start-validator.sh
+sudo systemctl daemon-reload
+sudo journalctl -u sol.service -f 
+sudo journalctl -u solana-sys-tuner.service -f 
+
+sudo systemctl start sol
+checklog:
+tail -f -n 100 ~/solana-validator.log 
+
+solana transaction-count
+solana-validator --ledger /mnt/sol/ledger monitor
+
+solana catchup /mnt/sol/validator-keypair.json --our-localhost
+solana catchup /mnt/sol/new-validator-keypair.json --our-localhost
+
+solana vote-account /mnt/sol/vote-account-keypair.json
+
+--known-validator WUNoB9YQXmXXRcJsjY1G8PfVag5aAfnyGmFd6YwJVwp   141.94.134.154
+--known-validator akU6A2s7PKXrPYDRHpUCs2FePcY9Qn8Nb4tBTSaMyta    141.95.168.101
+--known-validator Bo3s3ZZZJaqdXguBzTsPEHHkUmXPumRF1udBjnZyGXHh   54.167.97.44
+--known-validator 
+
+Validator startup: DownloadingSnapshot { slot: 161460935, rpc_addr: 147.75.38.117:80 }...
+
+sudo lsblk
+
+161125000.
+161125313
+
+114,704,216,263
+114,704,323,835
+Transactions per second (TPS)	2,678
+
+Validator startup: DownloadingSnapshot { slot: 161125674, rpc_addr: 52.91.223.66:8545 }...
+Validator startup: DownloadingSnapshot { slot: 161125674, rpc_addr: 52.91.223.66:8545 }...
+
+
+sudo ufw allow from 203.209.181.50
+
+Identity: 8LPQradcYxm9ZD55MtnFdQt5hiRZjrXReKTKcxwmmFYa
+Genesis Hash: 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d
+⠤ 00:43:17 | health unknown | Processed Slot: 161139476 | Confirmed Slot: 161139476 | Finalized Slot: 161139473 | Full Snapshot Slot: 161128981 | Incremental Snapshot Slot: 161139473 | Transactions:
+
+--------------------
+Validator startup: DownloadingSnapshot { slot: 161292915, rpc_addr: 98.96.251.250:8899 }...
+161320798,
+161292915
+161329794
+161320798,
+161320798,
+
+1443040149
+13.213.155.37   | 8LPQradcYxm9ZD55MtnFdQt5hiRZjrXReKTKcxwmmFYa | 8000   | none  | none                  | 1.14.7  | 1443040149
+
+------------
+
+ curl http://localhost:8899 -X POST -H "Content-Type: application/json" -d '
+      {"jsonrpc":"2.0","id":1, "method":"getHealth"}
+    '
+uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),117(netdev),118(lxd)
+uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),117(netdev),118(lxd)
+
+When I access into your server, I use basic command(mkdir, whoami, nano...) then have error
+"mkdir: cannot create directory ‘test.txt’: Read-only file system"
+"-bash: /usr/bin/nano: Input/output error"
+I searched on google, it could be because of "Your Linux filesystem has corrupted."
+Please help me check this error
+
+------------
+RPC node root slot: 161344593
+[2022-11-16T10:40:44.125497998Z INFO  solana_validator::bootstrap] Local snapshot from slot 161329794 is too old. Downloading a newer snapshot for slot 161344276.
+
+
+Please help me setup partition:
+nvme0n1
++ nvme0n1p1: OS(500G)
++ nvme0n1p2: rest value (format ext4)
+nvme1n1
++ nvme1n1p1: all value (format ext4)
+
+
+
+
+-----------------------------------
+issue:
+- error when delegate-stake:
+Error: RPC response error -32002: Transaction simulation failed: Error processing Instruction 0: missing required signature for instruction [2 log messages]
+
+-> fix: add thêm option keypair để ký và trả fee
+ex: solana delegate-stake --stake-authority /mnt/sol/wallet-keypair.json 8kX8PK9UssbSemsevfiENdgKsiPFknuaS8uUHg1swFna EvFqJXejDxEahPQAtA9Vj5b9v2p74yViZ8UYRScQ4gRh --fee-payer /mnt/sol/wallet-keypair.json
+
+
+
+====================TeraSwitch account================================
+======================================================================
+Indentity:
+Wrote new keypair to /mnt/sol/validator-keypair.json
+======================================================================
+pubkey: XJRJp4LzEWhG4deMBu3TBmTcDdrRzcCMZYTpoPwjk3d
+======================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+crazy illness rice upper limit brain give trophy early zoo fury access
+======================================================================
+
+Vote-account:
+Wrote new keypair to /mnt/sol/vote-account-keypair.json
+=========================================================================
+pubkey: G4Tsq161YjMb99NiFhaLm3WX5PD3bt29dznYjNXZuogT
+=========================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+grid galaxy clay hotel rich solution live donor execute average staff zoo
+=========================================================================
+
+Wrote new keypair to /mnt/sol/validator-stake-keypair.json
+===============================================================================
+pubkey: 7nw4UnBxAvpMzuTng9NrZ3UMqwiJNdcNgdEh6dJCiUa1
+===============================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+nominee extend mandate stand fruit silly lottery doll topple conduct song toast
+===============================================================================
+
+
+2:58
+3:33
+
+solana create-stake-account /mnt/sol/validator-stake-keypair.json 0.1
+
+solana create-vote-account /mnt/sol/vote-account-keypair.json /mnt/sol/validator-keypair.json /mnt/sol/wallet-keypair.json --commission  10
+================================================
+=================================================
+
+solana transfer --allow-unfunded-recipient \
+  --fee-payer /mnt/sol/wallet-keypair.json \
+  --from /mnt/sol/wallet-keypair.json /mnt/sol/validator-keypair.json 0.11
+
+
+161695966
+161691613,
+
+
+141.98.218.38   | XJRJp4LzEWhG4deMBu3TBmTcDdrRzcCMZYTpoPwjk3d  | 8000   | 8003  | none                  | 1.13.5  | 1365939126
+
+
+
+1. Đã move xong validator từ AWS -> TeraSwitch. Sau khi move server đã tự động update lại IP và Datacenter
+https://www.validators.app/validators/8LPQradcYxm9ZD55MtnFdQt5hiRZjrXReKTKcxwmmFYa?locale=en&network=mainnet&order=&refresh=true
+Downtime: chỉ mất thời gian sync data (tùy mạng và khoảng thời gian stop/start server (~30 phút))
+2. Address staking ở validator move từ AWS -> TeraSwitch đã nhận được reward. 
+https://solanabeach.io/address/8kX8PK9UssbSemsevfiENdgKsiPFknuaS8uUHg1swFna/stake-rewards
+
+git submodule update --init --recursive

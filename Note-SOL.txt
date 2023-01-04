@@ -1,0 +1,103 @@
+Thông tin truy cập validator SOL:
+Hostname: crosstech
+Username: ubuntu
+Password: QyrU8Va7
+IPv4 Address: 141.98.218.38
+IPv6 Address: 2607:fdc0:2c1:0:e63d:1aff:fe89:c48
+
+-------------------------------------------------
+List key validator server TeraSwitch:
+
+Indentity key:
+Wrote new keypair to /mnt/sol/validator-keypair.json
+======================================================================
+pubkey: 8LPQradcYxm9ZD55MtnFdQt5hiRZjrXReKTKcxwmmFYa
+======================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+wine surround legend follow easily elbow joy fluid hip young bus crisp
+======================================================================
+
+Vote account:
+Wrote new keypair to /mnt/sol/vote-account-keypair.json
+==================================================================================
+pubkey: EvFqJXejDxEahPQAtA9Vj5b9v2p74yViZ8UYRScQ4gRh
+==================================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+salute animal crystal process flag rally bullet settle marble bachelor slot puzzle
+==================================================================================
+
+wallet keypair:
+Wrote new keypair to /mnt/sol/wallet-keypair.json
+==================================================================================
+pubkey: 4SfpScA752CY6bR9tTAXxCe49MaPkSemJWykpZLxbCPw
+==================================================================================
+
+
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+can midnight catalog pass crew sugar squirrel visa enhance combine disorder across
+==================================================================================
+
+stake keypair:
+
+Wrote new keypair to /mnt/sol/validator-stake-keypair.json
+=======================================================================
+pubkey: 8kX8PK9UssbSemsevfiENdgKsiPFknuaS8uUHg1swFna
+=======================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+treat access coast alien sister save heart zebra myself begin gaze rare
+=======================================================================
+
+
+--------------------------------------------------------
+Lệnh command support:
+
+1. Transfer sol:
+solana transfer --allow-unfunded-recipient \
+  --fee-payer /mnt/sol/wallet-keypair.json \
+  --from /mnt/sol/wallet-keypair.json /mnt/sol/new-validator-keypair.json 0.01
+
+2. Recover keypair từ seed phrase
+solana-keygen recover ASK --outfile /mnt/sol/new-vote-account-keypair.json
+
+
+3. Phân vùng ổ đĩa dùng parted
+sudo parted /dev/nvme0n1
+resize:
+sudo parted /dev/nvme0n1 resizepart 2
+remove:
+parted /dev/nvme0n1
+print
+rm 2
+create:
+mkpart primary ext4 0% 100%
+format:
+sudo mkfs.ext4 /dev/nvme1n1p1
+
+4. Xem thông tin phân vùng
+sudo lsblk
+df -h
+
+sudo parted mkpart primary ext4 0% 100%
+
+5. Check log service
+sudo journalctl -u solana-sys-tuner.service -f 
+
+6. Check log validator
+tail -f -n 100 ~/solana-validator.log 
+
+7. Check status validator
+solana-validator --ledger /mnt/sol/ledger monitor
+solana catchup /mnt/sol/validator-keypair.json --our-localhost
+
+8. Xem số lượng transaction
+solana transaction-count
+
+Link tham khảo:
+https://github.com/shiraz-edgevana/solana/blob/main/solana_server_setup.sh
+https://github.com/Throbac-Labs/SolanaValidator_FullDeployment
+
+
+
+
+
+

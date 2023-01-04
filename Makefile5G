@@ -1,0 +1,410 @@
+#
+#  Makefile
+#
+
+
+# export setting
+ifndef BUILD_MODE
+BUILD_MODE=0
+endif
+ifeq ($(BUILD_MODE),0)
+export ARCH = arm64
+export PATH += :/opt/windriver/wrlinux-tiny/10.17.41/sysroots/x86_64-wrlinuxsdk-linux/usr/bin/aarch64-wrs-linux/
+export CROSS_COMPILE = aarch64-wrs-linux-
+export SYSROOT=/opt/windriver/wrlinux-tiny/10.17.41/sysroots/aarch64-wrs-linux/
+USER_DRIVER_PATH   = ./kernel/zynqU
+export BUILD_MODE_DEF =0
+export BUILD_QEMU_DEF =0
+export BUILD_MODE =0
+
+else
+
+export PATH += :=/usr/bin/
+export SYSROOT=/
+USER_DRIVER_PATH   = ./kernel/zynqU
+export BUILD_MODE_DEF = 1
+export BUILD_QEMU_DEF = 1
+export BUILD_MODE = 1
+endif
+
+include ./Makefile.in
+
+# env path setting
+OAL_PATH  = ./mw/oal
+HAL_PATH  = ./mw/hal
+RFIC_PATH = ./mw/rfic_tal
+CMN_PATH  = ./cmn
+API_PATH  = ./pf/z_makefile_api
+FHM_API_PATH  = ./pf/pf_fhm/z_makefile_api
+PF_PATH   = ./pf/z_makefile
+PF_FHM_PATH   = ./pf/pf_fhm/z_makefile
+L2_PATH   = ./pf/l2/z_makefile
+L2_API_PATH   = ./pf/l2/z_makefile_api
+L3_PATH   = ./pf/l3/z_makefile
+MNT_PATH  = ./pf/mnt/z_makefile
+RE_PATH  = ./pf/re/z_makefile
+MP_PATH   = ./mp/server/build/llsRU/bin
+TOOLS_PATH  = ./tools
+PDUMP_PATH  = $(TOOLS_PATH)/rrupfdump_v3
+PLNPDUMP_PATH  = $(TOOLS_PATH)/planedump
+COREDUMP_PATH  = $(TOOLS_PATH)/coredump
+DEVCTL_PATH  = $(TOOLS_PATH)/devctl
+SRAMCTL_PATH  = $(TOOLS_PATH)/sramctl
+DBG_PATH  = $(TOOLS_PATH)/debug
+TP_PATH   = $(TOOLS_PATH)/tp
+PTPTOOL_PATH   = $(TOOLS_PATH)/linuxptp
+DOCMD_PATH   = $(TOOLS_PATH)/do_cmd
+INSTALL_PATH = ../ramdisk/target
+MAP_PATH = ../map
+DUCMD_PATH   = $(TOOLS_PATH)/du
+SRCVER_PATH  = $(TOOLS_PATH)/srcver
+MSIDBG_PATH  = $(TOOLS_PATH)/msidbg
+SOCAT_PATH   = $(TOOLS_PATH)/socat
+RPCSDEC_PATH = $(TOOLS_PATH)/rpcsdecoder
+JTAGETHER_PATH  = $(TOOLS_PATH)/jtagEther
+
+define FINISH_MSG
+@echo "*********************************************************************************************************************"
+@echo "!!!!!!!!!!!!!!!!!!!!!!!  Compile finish  !!!!!!!!!!!!!!!!!!!!!!!"
+@echo "*********************************************************************************************************************"
+endef
+
+define YOUR_ENV
+@echo "*********************************************************************************************************************"
+@echo " + Compile Machine environment "
+@echo " | "
+@echo " +- Standard path"
+@echo " |  +- PATH           :" "\""${PATH}"\""
+@echo " |  +- ARCH           :" "\""${ARCH}"\""
+@echo " |  +- CROSS_COMPILE  :" "\""${CROSS_COMPILE}"\""
+@echo " +- Compile path"
+@echo " |  +- OAL_PATH       :" "\""${OAL_PATH}"\""
+@echo " |  +- HAL_PATH       :" "\""${HAL_PATH}"\""
+@echo " |  +- RFIC_PATH      :" "\""${RFIC_PATH}"\""
+@echo " |  +- CMN_PATH       :" "\""${CMN_PATH}"\""
+@echo " |  +- API_PATH       :" "\""${API_PATH}"\""
+@echo " |  +- PF_PATH        :" "\""${PF_PATH}"\""
+@echo " |  +- FHM_API_PATH   :" "\""${FHM_API_PATH}"\""
+@echo " |  +- PF_FHM_PATH    :" "\""${PF_FHM_PATH}"\""
+@echo " |  +- L2_PATH        :" "\""${L2_PATH}"\""
+@echo " |  +- L2_API_PATH    :" "\""${L2_API_PATH}"\""
+@echo " |  +- L3_PATH        :" "\""${L3_PATH}"\""
+@echo " |  +- MNT_PATH       :" "\""${MNT_PATH}"\""
+@echo " |  +- RE_PATH        :" "\""${RE_PATH}"\""
+@echo " |  +- MP_PATH        :" "\""${MP_PATH}"\""
+@echo " |  +- DBG_PATH       :" "\""${DBG_PATH}"\""
+@echo " |  +- TP_PATH        :" "\""${TP_PATH}"\""
+@echo " |  +- INSTALL_PATH   :" "\""${INSTALL_PATH}"\""
+@echo " |  +- MAP_PATH       :" "\""${MAP_PATH}"\""
+@echo " +- Compile option"
+@echo "    +- CC             :" "\""${CC}"\""
+@echo "    +- CXX            :" "\""${CXX}"\""
+@echo "    +- LD             :" "\""${LD}"\""
+@echo "    +- AR             :" "\""${AR}"\""
+@echo "    +- STRIP          :" "\""${STRIP}"\""
+@echo "    +- CFLAGS         :" "\""${CFLAGS}"\""
+@echo "    +- LDFLAGS        :" "\""${LDFLAGS}"\""
+@echo "    +- ARFLAGS        :" "\""${ARFLAGS}"\""
+@echo "    +- LDLIBS         :" "\""${LDLIBS}"\""
+@echo "*********************************************************************************************************************"
+endef
+ifeq ($(BUILD_MODE),0)
+all:
+#	make rruplog ;
+#	make fheth ;
+	make lib_bpf ;
+#	make lib_rfic ;
+	make mpsw_srv ;
+	make rrh_dbg ;
+	make lib_cmn ;
+	make lib_api ;
+	make rrh_pf ;
+	make rrh_tp ;
+	make du_cmd ;
+	make rrh_pf_fhm ;
+#	make rrh_ini ;
+	make rrh_l2 ;
+	make rrh_l3 ;
+	make rrh_mnt ;
+	make rrh_re ;
+else
+all:
+#	make rruplog ;
+#	make fheth ;
+	make lib_bpf ;
+#	make lib_rfic ;
+	make mpsw_srv ;
+	make rrh_dbg ;
+	make lib_cmn ;
+	make lib_api ;
+	make rrh_pf ;
+	make rrh_tp ;
+	make du_cmd ;
+	make rrh_pf_fhm ;
+#	make rrh_ini ;
+	make rrh_l2 ;
+	make rrh_l3 ;
+	make rrh_mnt ;
+	make rrh_re ;
+endif
+	./gen_re_help.sh
+
+	mkdir -p $(INSTALL_PATH)/lib64
+	cp -f $(INSTALL_PATH)/lib/* $(INSTALL_PATH)/lib64/.
+
+	$(YOUR_ENV)
+
+#	ls -l $(INSTALL_PATH)/lib
+#	ls -l $(INSTALL_PATH)/opt/proc
+#	ls -l $(INSTALL_PATH)/opt/debug
+#	ls -l $(INSTALL_PATH)/opt/tp
+#	ls -l $(INSTALL_PATH)/opt/sh
+#	ls -l $(INSTALL_PATH)/opt/lkm
+#	ls -l $(INSTALL_PATH)/opt/lnk
+
+	$(FINISH_MSG)
+
+doxygen:
+	cd $(TP_PATH) ; make doxygen
+
+pgr:
+	cd $(TP_PATH) ; make pgr
+
+clean:
+	rm -rf $(INSTALL_PATH)/lib64
+	rm -rf $(INSTALL_PATH)/lib/libbpf*
+	rm -rf $(INSTALL_PATH)/lib/librrh*
+	rm -rf $(INSTALL_PATH)/lib/libDBG*
+	rm -rf $(INSTALL_PATH)/lib/libmp*
+	rm -rf $(INSTALL_PATH)/lib/libyp*
+	rm -rf $(INSTALL_PATH)/opt/tp/*
+	rm -rf $(INSTALL_PATH)/opt/debug/*
+	rm -rf $(INSTALL_PATH)/opt/proc/*
+	rm -rf $(INSTALL_PATH)/opt/agent
+	rm -rf $(MAP_PATH)/*
+
+	cd $(OAL_PATH) ; make clean
+	cd $(HAL_PATH) ; make clean
+	cd $(MP_PATH) ; make clean
+	cd $(CMN_PATH) ; make clean
+	cd $(API_PATH) ; make clean
+	cd $(FHM_API_PATH) ; make clean
+	cd $(L2_API_PATH) ; make clean
+	cd $(PF_PATH) ; make clean
+	cd $(PF_FHM_PATH) ; make clean
+	cd $(L2_PATH) ; make clean
+	cd $(L3_PATH) ; make clean
+	cd $(MNT_PATH) ; make clean
+	cd $(RE_PATH) ; make clean
+	cd $(DBG_PATH) ; make clean
+	cd $(TP_PATH) ; make clean
+	cd $(PDUMP_PATH) ; make clean
+	cd $(PLNPDUMP_PATH) ; make clean
+	cd $(COREDUMP_PATH) ; make clean
+	cd $(DOCMD_PATH) ; make clean
+	cd $(DUCMD_PATH) ; make clean
+
+env:
+	$(YOUR_ENV)
+
+rruplog:
+	rm -rf $(INSTALL_PATH)/opt/lkm/rruploglevel.ko
+	cd $(USER_DRIVER_PATH)/drivers/rruploglevel;make clean;make;
+	cp $(USER_DRIVER_PATH)/drivers/rruploglevel/rruploglevel.ko $(INSTALL_PATH)/opt/lkm/
+
+fheth:
+	rm -rf $(INSTALL_PATH)/opt/lkm/fheth.ko
+	cd $(USER_DRIVER_PATH)/drivers/fheth;make clean;make;
+	cp $(USER_DRIVER_PATH)/drivers/fheth/fheth.ko $(INSTALL_PATH)/opt/lkm/
+
+lib_bpf:
+	rm -rf $(INSTALL_PATH)/lib/libbpf*
+	rm -rf $(MAP_PATH)/libbpf*
+	cd $(OAL_PATH) ; make clean ; make all
+	cd $(HAL_PATH) ; make clean ; make all
+	$(OBJDUMP) -S -D $(INSTALL_PATH)/lib/libbpf* > $(MAP_PATH)/libbpf.dump
+	$(STRIP) $(INSTALL_PATH)/lib/libbpf*
+	ls -l $(INSTALL_PATH)/lib | grep bpf
+	$(FINISH_MSG)
+
+lib_rfic:
+	rm -rf $(INSTALL_PATH)/lib/librfic*
+	rm -rf $(MAP_PATH)/librfic*
+	cd $(RFIC_PATH) ; make clean ; make all
+	$(OBJDUMP) -S -D $(INSTALL_PATH)/lib/librfic* > $(MAP_PATH)/librfic.dump
+	$(STRIP) $(INSTALL_PATH)/lib/librfic*
+	ls -l $(INSTALL_PATH)/lib | grep rfic
+	$(FINISH_MSG)
+
+lib_cmn:
+	cd $(CMN_PATH) ; make clean ; make all
+	$(FINISH_MSG)
+
+lib_api:
+	rm -rf $(INSTALL_PATH)/lib/librrh*
+	rm -rf $(MAP_PATH)/librrh*
+	cd $(API_PATH) ; make clean ; make all
+	cd $(FHM_API_PATH) ; make clean ; make all
+	cd $(L2_API_PATH) ; make clean ; make all
+	$(OBJDUMP) -S -D $(INSTALL_PATH)/lib/librrh* > $(MAP_PATH)/librrhapi.dump
+	$(STRIP) $(INSTALL_PATH)/lib/librrh*
+	ls -l $(INSTALL_PATH)/lib | grep rrh
+	$(FINISH_MSG)
+
+mpsw_srv:
+	rm -rf $(INSTALL_PATH)/opt/agent
+	cd $(MP_PATH) ; make all
+	mv $(MP_PATH)/opt/agent $(INSTALL_PATH)/opt/
+	mv $(MP_PATH)/lib/* $(INSTALL_PATH)/lib/
+	mv $(MP_PATH)/etc/yumapro/* $(INSTALL_PATH)/etc/yumapro/
+	cp $(INSTALL_PATH)/usr/lib64/yumapro/* $(INSTALL_PATH)/opt/agent/lib/
+	$(FINISH_MSG)
+
+rrh_pf:
+	rm -rf $(INSTALL_PATH)/opt/proc/DU_init
+	rm -rf $(INSTALL_PATH)/opt/proc/DU_pf
+	rm -rf $(INSTALL_PATH)/opt/proc/DU_mw
+	rm -rf $(MAP_PATH)/DU_init.map
+	rm -rf $(MAP_PATH)/DU_pf.map
+	rm -rf $(MAP_PATH)/DU_mw.map
+	rm -rf $(MAP_PATH)/DU_init.dump
+	rm -rf $(MAP_PATH)/DU_pf.dump
+	rm -rf $(MAP_PATH)/DU_mw.dump
+
+	cd $(PF_PATH) ; make clean ; make all
+	mv $(PF_PATH)/DU_init $(INSTALL_PATH)/opt/proc/
+	mv $(PF_PATH)/DU_pf $(INSTALL_PATH)/opt/proc/
+	mv $(PF_PATH)/DU_mw $(INSTALL_PATH)/opt/proc/
+#	$(OBJDUMP) -S -D $(INSTALL_PATH)/opt/proc/DU_pf > $(MAP_PATH)/DU_pf.dump
+#	$(OBJDUMP) -S -D $(INSTALL_PATH)/opt/proc/DU_init > $(MAP_PATH)/DU_init.dump
+#	$(OBJDUMP) -S -D $(INSTALL_PATH)/opt/proc/DU_mw > $(MAP_PATH)/DU_mw.dump
+	$(STRIP) $(INSTALL_PATH)/opt/proc/DU_pf
+	$(STRIP) $(INSTALL_PATH)/opt/proc/DU_init
+	$(STRIP) $(INSTALL_PATH)/opt/proc/DU_mw
+	ls -l $(INSTALL_PATH)/opt/proc | grep "DU_pf\|DU_init\|DU_mw"
+	$(FINISH_MSG)
+
+du_cmd:
+	rm -rf $(INSTALL_PATH)/opt/du/*
+	rm -rf $(MAP_PATH)/DU_ducmd.map
+	cd $(DUCMD_PATH) ; make clean ; make all ; make install
+	$(STRIP) $(INSTALL_PATH)/opt/du/du
+	ls -l $(INSTALL_PATH)/opt/du
+	$(FINISH_MSG)
+
+rrh_pf_fhm:
+	rm -rf $(INSTALL_PATH)/opt/proc/rrh_pf_fhm
+	rm -rf $(MAP_PATH)/rrh_pf_fhm.map
+	rm -rf $(MAP_PATH)/rrh_pf_fhm.dump
+
+	cd $(PF_FHM_PATH) ; make clean ; make all
+	mv $(PF_FHM_PATH)/rrh_pf_fhm $(INSTALL_PATH)/opt/proc/
+	# mv $(MAP_PATH)/*.map $(MAP_PATH)/
+	# $(OBJDUMP) -S -D $(INSTALL_PATH)/opt/proc/rrh_pf_fhm > $(MAP_PATH)/rrh_pf_fhm.dump
+	$(STRIP) $(INSTALL_PATH)/opt/proc/rrh_pf_fhm
+	ls -l $(INSTALL_PATH)/opt/proc | grep "rrh_pf_fhm"
+	$(FINISH_MSG)
+
+rrh_l2:
+	rm -rf $(INSTALL_PATH)/opt/proc/rrh_l2
+	rm -rf $(MAP_PATH)/rrh_l2.map
+	rm -rf $(MAP_PATH)/rrh_l2.dump
+
+	cd $(L2_PATH) ; make clean ; make all
+	mv $(L2_PATH)/rrh_l2 $(INSTALL_PATH)/opt/proc/
+	# mv $(MAP_PATH)/*.map $(MAP_PATH)/rrh_l2.map
+	# $(OBJDUMP) -S -D $(INSTALL_PATH)/opt/proc/rrh_l2 > $(MAP_PATH)/rrh_l2.dump
+	$(STRIP) $(INSTALL_PATH)/opt/proc/rrh_l2
+	ls -l $(INSTALL_PATH)/opt/proc | grep rrh_l2
+	$(FINISH_MSG)
+
+rrh_l3:
+	rm -rf $(INSTALL_PATH)/opt/proc/rrh_l3
+	rm -rf $(MAP_PATH)/rrh_l3.map
+	rm -rf $(MAP_PATH)/rrh_l3.dump
+
+	cd $(L3_PATH) ; make clean ; make all
+	mv $(L3_PATH)/rrh_l3 $(INSTALL_PATH)/opt/proc/
+	# mv $(MAP_PATH)/*.map $(MAP_PATH)/rrh_l3.map
+	# $(OBJDUMP) -S -D $(INSTALL_PATH)/opt/proc/rrh_l3 > $(MAP_PATH)/rrh_l3.dump
+	$(STRIP) $(INSTALL_PATH)/opt/proc/rrh_l3
+	ls -l $(INSTALL_PATH)/opt/proc | grep rrh_l3
+	$(FINISH_MSG)
+
+rrh_mnt:
+	rm -rf $(INSTALL_PATH)/opt/proc/rrh_mnt
+	rm -rf $(MAP_PATH)/rrh_mnt.map
+	rm -rf $(MAP_PATH)/rrh_mnt.dump
+
+	cd $(MNT_PATH) ; make clean ; make all
+	mv $(MNT_PATH)/rrh_mnt $(INSTALL_PATH)/opt/proc/
+	# mv $(MAP_PATH)/*.map $(MAP_PATH)/rrh_mnt.map
+	# $(OBJDUMP) -S -D $(INSTALL_PATH)/opt/proc/rrh_mnt > $(MAP_PATH)/rrh_mnt.dump
+	$(STRIP) $(INSTALL_PATH)/opt/proc/rrh_mnt
+	ls -l $(INSTALL_PATH)/opt/proc | grep rrh_mnt
+	$(FINISH_MSG)
+
+rrh_re:
+	rm -rf $(INSTALL_PATH)/opt/proc/rrh_re
+	rm -rf $(MAP_PATH)/rrh_re.map
+	rm -rf $(MAP_PATH)/rrh_re.dump
+
+	cd $(RE_PATH) ; make clean ; make all
+	mv $(RE_PATH)/rrh_re $(INSTALL_PATH)/opt/proc/
+	# mv $(MAP_PATH)/*.map $(MAP_PATH)/rrh_re.map
+	# $(OBJDUMP) -S -D $(INSTALL_PATH)/opt/proc/rrh_re > $(MAP_PATH)/rrh_re.dump
+	$(STRIP) $(INSTALL_PATH)/opt/proc/rrh_re
+	ls -l $(INSTALL_PATH)/opt/proc | grep rrh_re
+	$(FINISH_MSG)
+
+rrh_tp:
+	rm -rf $(INSTALL_PATH)/opt/tp/*
+	rm -rf $(MAP_PATH)/DU_tp.map
+#	rm -rf $(MAP_PATH)/DU_tp.dump
+
+	cd $(TP_PATH) ; make clean ; make all ; make install
+#	$(OBJDUMP) -S -D $(INSTALL_PATH)/opt/tp/rrh > $(MAP_PATH)/DU_tp.dump
+	$(STRIP) $(INSTALL_PATH)/opt/tp/rrh
+	ls -l $(INSTALL_PATH)/opt/tp
+	$(FINISH_MSG)
+
+rrh_dbg:
+	rm -rf $(INSTALL_PATH)/opt/debug/*
+#	rm -rf $(MAP_PATH)/debug.dump
+#	rm -rf $(MAP_PATH)/libDBG.dump
+
+	cd $(DBG_PATH) ; make clean ; make all ; make install
+	cd $(PDUMP_PATH) ; make clean ; make
+	cd $(PLNPDUMP_PATH) ; make clean ; make
+	cd $(COREDUMP_PATH) ; make clean ; make
+	cd $(DEVCTL_PATH) ; make clean ; make
+	cd $(MSIDBG_PATH) ; make clean ; make
+	cd $(SRAMCTL_PATH) ; make clean ; make
+	cd $(SRCVER_PATH) ; make clean ; make
+	cd $(DOCMD_PATH) ; make clean ; make
+	cd $(PTPTOOL_PATH) ; ./make.sh
+	cd $(SOCAT_PATH) ; ./make.sh
+	cd $(RPCSDEC_PATH) ; make clean ; make
+	cd $(JTAGETHER_PATH) ; make clean ; make
+
+
+	# mv $(DBG_PATH)/bin/* $(INSTALL_PATH)/opt/debug/
+	mv $(PDUMP_PATH)/cmd_rrupfdump $(INSTALL_PATH)/opt/debug/
+	mv $(PLNPDUMP_PATH)/cmd_planedump $(INSTALL_PATH)/opt/debug/
+	mv $(COREDUMP_PATH)/cmd_coredump $(INSTALL_PATH)/opt/debug/
+	mv $(DEVCTL_PATH)/cmd_devctl $(INSTALL_PATH)/opt/debug/
+	mv $(MSIDBG_PATH)/cmd_msidbg $(INSTALL_PATH)/opt/debug/
+	mv $(SRAMCTL_PATH)/cmd_sramctl $(INSTALL_PATH)/opt/debug/
+	mv $(SRCVER_PATH)/cmd_srcver $(INSTALL_PATH)/opt/debug/
+	mv $(DOCMD_PATH)/cmd_do_cmd $(INSTALL_PATH)/opt/debug/
+	mv $(RPCSDEC_PATH)/cmd_rpcsdecoder $(INSTALL_PATH)/opt/debug/
+	mv $(JTAGETHER_PATH)/cmd_jtagEther $(INSTALL_PATH)/opt/debug/
+
+#	$(OBJDUMP) -S -D $(INSTALL_PATH)/opt/debug/* > $(MAP_PATH)/debug.dump
+#	$(OBJDUMP) -S -D $(INSTALL_PATH)/lib/libDBG* > $(MAP_PATH)/libDBG.dump
+	$(STRIP) $(INSTALL_PATH)/opt/debug/*
+# not strip command
+	mv $(SOCAT_PATH)/cmd_socat $(INSTALL_PATH)/opt/debug/
+	ls -l $(INSTALL_PATH)/opt/debug
+	$(FINISH_MSG)
+

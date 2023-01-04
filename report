@@ -1,0 +1,84 @@
+
+
+==============================================
+Túm lại, thì khi trình bày vấn đề của mình để người khác hiểu thì có những bước như sau.
+1. Nói rõ chi tiết mà cái task của mình đang làm là gì, tóm gọn lại chức năng chính là được.
+2. Nói rõ vấn đề gặp phải là gì, nói rõ càng chi tiết càng tốt.
+3. Mô tả thêm một số thông tin nhằm thu gọi lại phạm vị điều tra nhằm tiết kiệm thời gian của cả hai bên. Tốt nhất là nên nói ra hết những cái gì mình biết nhằm để cho người support dễ dàng hỗ trợ mình.
+
+==============================================
+
+cd /opt && sudo git clone https://github.com/SpiderLabs/ModSecurity
+cd ModSecurity
+sudo git submodule init
+sudo git submodule update
+
+sudo ./build.sh
+sudo ./configure
+sudo make
+sudo make install
+
+======================
+@alex.nguyen clb hiện có 17 thành viên active anh.
+chi phí 40k/người/buổi. Mong muốn hỗ trợ tối thiểu 1người, 1 tuần, 1 buổi
+17x1x4x40 = 2.720k
+
+
+
+web application firewall
+
+
+Daily Report 22-Aug
+
+```1. Today 
+       - study web application firewall: 80% (8h)
+2. Issues/Problems
+       - N/A
+3. Next Tasks
+       - research run source ModSecurity
+
+===================================
+
+
+
+Daily Report 6-June
+
+1. Today 
+       - fix bug XTZ: 100% (4h)
+       - xử lý transaction multiple ATOM: 100% (1h)
+       - Điều tra fix bug deposit avax xchain: 50% (2.5h)
+       - Meeting Ulturex: 0.5h
+2. Issues/Problems
+       - N/A
+3. Next Tasks
+       - Điều tra fix bug deposit AVAX xchain
+       - Update allocateFee của XTZ
+
+===================================
+
+Daily Report 7-June
+
+1. Today 
+       - fix bug XWAL-778 (get list transfer): 50% (3h)
+       - Điều tra fix bug deposit avax xchain: 100% (5h)
+2. Issues/Problems
+       - N/A
+3. Next Tasks
+       - fix bug XWAL-778 (get list transfer)
+
+===================================
+
+
+Daily Report 10-June
+
+1. Today 
+       - fix bug list transfer query param address: 100% (3h)
+       - fix bug list transfer query param searchLabel: 100% (3h)
+       - điều tra allocate fee XTZ: 50% (2h)
+2. Issues/Problems
+       - N/A
+3. Next Tasks
+       - điều tra allocate fee XTZ
+
+===================================
+

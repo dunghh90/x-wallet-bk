@@ -1,0 +1,1171 @@
+chain
+file log privateKey:
+	+ BaseHotWalletSigner.ts
+	+ kmsDoChecking.ts
+	+ doCheckKmsDataKey.ts(42)
+	+ HotWallet.ts(57, 59)
+5017.845649
+22.5
+
+pass napa: !Ngan12302 !Ngan12303
+
+
+https://hangzhou.tzstats.com/
+
+
+83.00000000000001
+tz1LAWtr7hsLpomMSBiVQhbsWeV3MLtzXFyu
+tz1Ry7GaPP1AZDuXyFR2fC2EC451dZTyvai5
+
+KT1KEa8z6vWXDJrVqtMrAeDVzsvxat3kHaCE
+tz1MLn3eeLKWHwPJoCMhuRekbBNS7iQsqFwN
+
+Library for Ledger Hardware Wallets.
+Ledger Hardware Wallet XTZ JavaScript bindings.
+
+ithacanet
+
+
+create wallet
+create address
+list address
+list wallet
+withdraws
+
+- sua chua tran chau ha long
+- dau mr toc
+- che
+- nuoc ep
+- rau ma pha
+- banh bao chien
+- chuoi chien
+- my que
+
+XWAL-156, XWAL-274, XWAL-387: Loi cú pháp json.
+XWAL-302: ko bị lỗi
+
+aO85gCMXATqce8Q9xd1r21WsY0Oq1VEGB2ZExCwVuvxIF556kAhacy237UYxpJu8lvFZ9J6kczoPgJPHynfECQ==
+LnNJHV3fSvM5Clnue8CiAXnZdBVeRblNzYpwxgl0Er6msepojPms/zotYdVycXOH1//5Y3tGytT3TBl2EctdBQ==
+
+**Mat ma vi solana:
+----------------
+powder talent gown educate clinic subway dawn ocean curtain mass elder wide federal dry comfort rebuild romance van arrange check curious lion umbrella nasty
+----------------
+----------------
+room scout risk theme deal praise alarm around betray swarm invest earn artist any attack audit base gospel lottery fat coast ancient arena master
+----------------
+
+
+======================= vi xtz ============
+annual deer undo ketchup mask doctor include hole wash crack owner jump summer live wage once silly hungry ahead hold later pitch able laugh
+
+
+======== vi osmo ==========
+ethics turkey gentle keep busy step candy alcohol erosion soup disorder unhappy
+
+==========================
+cd xwallet-api/workspace/X-Wallet-API-Staging
+ll
+cd /home/ec2-user/
+exit
+vi withdrawal.service.ts
+------------------
+ssh -i X-Wallet-API.pem ec2-user@3.222.138.9
+chmod 400 Jenkins_Server.pem 
+chmod 400 X-Wallet-Worker-Backup.pem 
+ssh -i X-Wallet-API.pem ec2-user@ec2-44-199-74-140.compute-1.amazonaws.com
+
+ssh -i X-Wallet-Worker-Backup.pem ec2-user@ec2-44-199-74-140.compute-1.amazonaws.com
+
+
+aws:
+ssh -i avalanche.pem ubuntu@ec2-44-236-236-192.us-west-2.compute.amazonaws.com
+ssh -i avalanche.pem ubuntu@ec2-35-82-28-139.us-west-2.compute.amazonaws.com
+
+ssh -i "avalancheXchain.pem" ubuntu@ec2-44-224-32-119.us-west-2.compute.amazonaws.com
+
+ssh -i "node_avalanche.pem" ubuntu@ec2-35-173-93-228.compute-1.amazonaws.com
+
+ssh -i "avalanche_mainnet.pem" ubuntu@ec2-35-171-8-187.compute-1.amazonaws.com
+
+./avalanchego-installer.sh --reinstall --version v1.7.10 --rpc local --fuji --ip static --
+
+./avalanchego-installer.sh --reinstall --version v1.7.10 --rpc local --ip static --index
+
+./avalanchego-installer.sh --reinstall --ip static --index
+
+./avalanchego-installer.sh --reinstall --archival --ip static --db-dir /home/node/db --index
+
+./avalanchego-installer.sh --reinstall --version v1.7.10 --archival --ip static --fuji --index
+./avalanchego-installer.sh --reinstall --version v1.7.10 --archival --ip static --mainnet --index
+
+=====================
+ssh -i "sol-validator-devnet.pem" ubuntu@10.0.0.189
+-----------------------
+
+./avalanchego-installer.sh --reinstall --version v1.7.6 --ip static --index
+
+https://docs.google.com/document/d/1G_jU7Wqp4ItOHknS9hy8n-dZiOph9sGMOiEHsPucwUY/edit
+
+edit file: vi, nano
+read file: cat
+true
+
+
+
+========
+git submodule update --init --recursive
+sudo npm install -g node-gyp
+
+sudo apt-get install gcc-c++
+
+
+44.236.236.192
+https://chat.avax.network
+NodeID-6mLGLT38wzorruKn73q3DTzgwaxHqDgAx
+
+deposit AVAX
+x-fuji1p9x4x347vkwwqk6msykcvmkjl79zaakzwr9hdy
+
+===============
+df: kiem tra o cung
+cd logs
+pm2 flush
+rm -fr xwallet-xlm-picker-out.log
+ls -kla
+cd .pm2
+====================
+kiem tra dung luong: [ec2-user ~]$ df -h
+[ec2-user ~]$ sudo xfs_growfs -d /data
+sudo resize2fs /dev/nvme0n1p1
+
+
+pm2 log 0 --lines 100
+
+============================================
+block api: 40179542-e78c-4601-a914-42eafbdb92a3
+
+
+e983d17e63b2c83a971a47bfc19b59acfb608d43d1c0ccc5db33d68b9c4e0e16
+
+test: 756c0632a8b2e26f85e16b7c6ea7096872ef161a5be89856128401a1b5b1b55b
+
+
+54967600.00000000
+44957400.00000000
+
+==========================================
+xtz smartcontract send:
+opW2yhCmtDgbZeWWCxQP4FW3AMXTGmFD8vfSfksu1K7NqbcVTwn
+==========================================
+
+pm2 start app_
+
+ooYRTRkLnTDG5EaaAmG5WCfukgno9GXwh7iz2aMGVwC2jxu96Xa
+ooYRTRkLnTDG5EaaAmG5WCfukgno9GXwh7iz2aMGVwC2jxu96Xa
+
+p-chain avax
+prk: 58ec18f591d2fea1b04a5104d7e59c4277be2d758f23d3b7ba7a424576d51f08
+
+==============================================
+user server:
+api-key:
+7d62df3122596e14c20d34b8aad265b05f408fb1057ddae05954c90c33e3b981
+
+token:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImR1bmciLCJ1c2VySWQiOiI0MyIsImlhdCI6MTY0MDA1Mzk0Mn0.siCS_WTa7aQWqbhnPvhylEWEwDtfjxSjrC4rGszOun4
+=============================
+https://matic.getblock.io/testnet/?api_key=28a9b81b-d72f-43de-b417-7a48b44697f9
+
+wss://matic.getblock.io/testnet/?api_key=28a9b81b-d72f-43de-b417-7a48b44697f9
+
+https://matic.getblock.io/mainnet/?api_key=28a9b81b-d72f-43de-b417-7a48b44697f9
+
+https://matic.getblock.io/testnet/?api_key=28a9b81b-d72f-43de-b417-7a48b44697f9
+=============================
+
+
+test1:
+cf66f8d06c1a4006eb4a4694f8835eebdc29b130dc128cd28cf24a793477d175
+0x875c0f7432B8a246c055Bd0dA253FC6c072B99Eb
+
+::ffff:127.0.0.1
+
+api key:
+cc80d5c854ad035a876621ea71ebee498aacbc0ec0e98820202c629ebc55bea1
+
+token
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImR1bmcxIiwidXNlcklkIjoiNCIsImlhdCI6MTYzOTU0MDkwMX0.rxHdxdovkSVZUImthTdqJqv-teTSEVKkQQ77cUtbGEo
+
+
+seed confirm sol
+---------------------------------------
+course script width lake parent virtual rain glory fade fork board one jewel entry nose detect rule useless recycle cotton awesome window behave weasel
+---------------------------------------
+
+Fix bug XRP:
+--------------------
+const amountSending = new BigNumber(converNumberFromBlockChain(amount.toNumber(),CurrencyRegistry.Ripple.nativeScale));
+--------------------
+
+
+==================================
+if (!/^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]+$/g.test(queryBalancesWalletData.labelContains)) {
+        throw new ApiErrorResponse(
+          HttpStatus.BAD_REQUEST,
+          'Invalid labelContains',
+          'InvalidLabelContains',
+          { labelContains: queryBalancesWalletData.labelContains }
+        );
+      }
+==================================
+
+
+logger.error(`Generate address failed currency=${currency.platform}, wallet_id=${walletId}`);
+
+decrease fee stomach hedgehog calm green plug that sword clown material change
+
+0x875c0f7432B8a246c055Bd0dA253FC6c072B99Eb
+
+https://rinkeby-faucet.com/send
+
+
+sudo shutdown -h 17:05
+sudo shutdown -h 21:45
+sudo shutdown -c
+
+
+123456789adw789qrt1923esftc8g3sq
+
+
+mQRgq1DxfN8iM9XAhE3jzYbGeByLuFnO
+tqf3SYtdIs4BRCjagdz7RG8JD1RcmuJv
+hhdung0711: JqOfZGUtSH0VThW97nCF6vND5pricK2X
+hhdung0712: 3xD5zenX1S2FNWwZ7gVIp0PTtl4LJdCr
+hhdung7148: 15OxN9ubpqstVW0UoMZ4fRcmYHg2wC3n
+
+
+0200000002e42f94ddad73cee299c048bd30eff6b698a73034ad0cb570e12a112cbc04e073000000006a473044022042a96493dceabddd22be9134673292d14cd1a6abdbac5b4d0016fe4a2998409e02200f0f7d7685a4d6fa8b4c7c0255506c8d63751c8ff202ac18ef125b08ccd0065d012102d8c064dea36fd336e811a4abdfce1aa9034afb1b5518062ec2a647f12b65c263fdffffff812edd21da0f26ffbb05633e44d910f48e8e13671d30838e13efa7bed66129ae000000006b483045022100a6e6a5a077e29608355cd9bf3a00bfa997bf6f067d7f264b9eec72109022f5500220317a678d047e8dd90e9a451d2bb95b503f0d7f88db58a3d81383f5d2ca404806012102d8c064dea36fd336e811a4abdfce1aa9034afb1b5518062ec2a647f12b65c263fdffffff0264000000000000001976a914d4c2953610351a552bc333369b1eaf11b5de067088ac1c770100000000001976a9149eb66a1ade14a60cec1952feafcc1af6dfb7b68f88ac00000000
+0100000002eb79853628c21c3870689749c653a12b73c026d04a7d777380f73ee2f9fa5703000000006a47304402205b3ebcdfcad22517301dfa2c2628af12f76c1433f517b0411627fc5bde69a95d022070d6b723fbeba3f00a44747fbff30d282a8e07664f13698cb2d681caae8a5e35412102732b7151c9da2b20edb3e495c3cbca3555661bbb13e972c55999d848d44921adfdffffffb435190ab16f0cfb920848d593f24b52f5bab9cd6cf9252d19890e92aa21db88000000006b483045022100d8c451d9d11aef29d5973487f7fd61de64bca5f9bcc18bb4e457a808e29e815f02207655342235c379c0d844f05adf6b20623cded1c544e39b3b6685da47cd4a845d412102732b7151c9da2b20edb3e495c3cbca3555661bbb13e972c55999d848d44921adfdffffff02bc020000000000001976a914c0ba90c4e2dec686e9caf9b15905c2620a160b5688ac58000000000000001976a9148afe02d07c8dcecc9c4c82f3bf535e2599a4082e88ac00000000
+
+
+
+bitcoincash:qzrs54n9g2qw5ug63m7en8hlqs75djhgjsxrwggq6r
+dust (code 64)
+
+https://www.xfaucets.com/?ref=f38cdd9f
+coinpay
+bitcoincash:qrqt4yxyut0vdphfetumzkg9cf3q59st2cc6jz8apj
+
+===========================
+create keygen gitlab:
+b1: ssh-keygen
+b2: cat ~/.ssh/id_rsa.pub 
+
+
+{"protocol":"https","rpchost":"btc-testnet.nownodes.io","bookhost":"https://api.trongrid.io","port":"","apikey":"8199b4b8-686c-4329-b0f1-094619f72c73"}
+
+
+
+`${trc20TransactionApi}/v1/accounts/${address}/transactions/trc20?limit=30`
+https://api.trongrid.io/
+trc20TransactionApi=https://api.trongrid.io/
+
+
+https://apilist.tronscan.org/api/transaction-info?hash=6bdd19a01c28a7cbfd6f5484097daf2339c214bea5c72f1ace58aa8666468b1e
+
+
+{{home}}/api/v1/xlm/wallet/291/transfer?allTokens=true&limit=10&type=send&dateGte=2021/03/10 01:00
+
+
+****cosmos:
+const Cosmos = {
+  symbol: BlockchainPlatform.Cosmos,
+  networkSymbol: BlockchainPlatform.Cosmos,
+  name: 'Cosmos',
+  platform: BlockchainPlatform.Cosmos,
+  isNative: true,
+  isUTXOBased: false,
+  humanReadableScale: 8,
+  type: TransactionBaseType.COSMOS,
+  nativeScale: 8,
+  hdPath: `m/44'/330'/0'/0/`,
+  hasMemo: true,
+};
+
+
+const randomBytes = Buffer.from(randomBytes(32), `hex`)
+
+
+
+
+cosmos1ehhdpeqcvhv4th7qdngy66hl7u0lhcqmp0lkyu
+
+
+{
+  "code": 5,
+  "message": "rpc error: code = NotFound desc = account cosmos1ehhdpeqcvhv4th7qdngy66hl7u0lhcqmp0lkyu not found: key not found",
+  "details": []
+}
+
+{
+  "code": 3,
+  "message": "decoding bech32 failed: checksum failed. Expected p0lkyu, got p0lkye.: invalid request",
+  "details": []
+}	
+
+
+
+xlm:
+prkey: SCAIJJTGHZBM5UZEVZUDAP445ULLAFFWMV35IJYH46FNBHND3VU37G6W
+       SCAIJJTGHZBM5UZEVZUDAP445ULLAFFWMV35IJYH46FNBHND3VU37G6W
+
+
+136: GCRYXF7UAVGO6CM53ZH3HCSS6UOC2TEYLCJBFZ4F4DPGSUNXEBHJNI35
+
+
+400000000.00000000
+399979800.00000000
+
+34947300.00000000
+114937100.00000000
+
+
+Hi all dev, sau khi merge từ developer => staging. 
+Để kiểm tra code mình trên staging có lỗi hay không mọi người truy cập vào 2 link bên dưới để check nhé.
+
+1. link/User/pass vào trang jenkin
+http://34.225.65.106:8080/login?from=%2F
+admin/Admin@123
+
+2. ssh vào api hoặc worker để xem log hoặc make all trên staging
+
+**ssh vào api:**
+ssh -i X-Wallet-API.pem ec2-user@3.222.138.9
+**ssh vào worker:**
+ssh -i X-Wallet-Worker-Backup.pem ec2-user@ec2-44-199-74-140.compute-1.amazonaws.com
+
+
+GB6AIETSO363L4GM2AAGOY3OSSFJ46UOWFHH5OI42WOHFLBSRTRBGXMK : 2xlm
+
+
+
+{"protocol":"https","host":"https://api.cosmos.network","port":"80","user":"","pass":""}
+
+=====================
+avax address:
+memonic:
+pupil gossip begin vacuum piece pupil easy minimum diary fruit lizard vapor kangaroo fold jar peanut gasp draft large box treat close veteran arena
+key:
+bc40155b0334f6110196ac0f09d4fb602e3cdaa18749d495e4811532c8cbe88e
+address:
+0x5788ab5C120184Df31B8b945a92Bf1B3f1984eB3
+P-avax1w0ajww6rx5eeqaf94qj3u0nnred2nzazk3s4sp
+X-fuji1n0jsmhtj0uutvtgxeff7rv3rnykl55rw4qd0e9
+========================
+empower reject often recall soup unique airport enter skin canyon churn message pipe decide very punch blade sibling about rabbit attract term praise prepare
+X-fuji1nlywyxk7xzl4qwawuk7a2uu9rhc85ctttrzmr5
+6c508a528135402a94d9b6a586a78f8fcf701f897cb0292cbce5e171e70c7c4d
+=======================
+X-fuji1ms44995284vkh3ev8ju8y2r66ta4hkmgucguhf
+PrivateKey-2J2iVroJLhpHjGev1cmRq7pmZTdj5EhqzAhjCwhp1LMDQktkaG
+
+3.983949125
+2.981949125
+3.981949125
+1
+3.979949125
+
+2mSpRiUJ7qjxDx2FAMwg2xwc16adgbKyuXWfHXvhxi4nogeRKH
+
+114054102.00000000
+118041382
+
+
+
+
+https://api.hangzhou2net.tzkt.io
+{"protocol":"https","host":"https://rpc.hangzhou.tzstats.com","port":"80","user":"","pass":""}
+
+
+
+sudo gedit /etc/crontab
+
+spdxUxVJQbX85MGxMHbKw1sHxMnSqJ3QBzDyDYEP3h6TLuxqQ
+qysTYUMCWdsR3MctzyfXiSvoSf6evbeFGRLLzA4j2BjNXTknh
+
+
+- ulturest
+
+
+
+
+====================================
+vi xtz
+
+{
+	"pkh": "tz1YvC3KNTie3sd9uhUsBVvNwf3nBqbYyL9c",
+	"mnemonic": [
+		"few",
+		"autumn",
+		"faint",
+		"jeans",
+		"cat",
+		"stove",
+		"pizza",
+		"end",
+		"birth",
+		"dream",
+		"position",
+		"slice",
+		"original",
+		"shrug",
+		"praise"
+	],
+	"email": "pshhutok.ighmxzgs@teztnets.xyz",
+	"password": "fWzk2g7NYr",
+	"amount": "68765554410",
+	"activation_code": "3f3283877e0e9c0e059c3e1b47565639d6544102"
+}
+"pass": dung_hoang_90
+
+
+curl -X POST --data '{
+    "jsonrpc":"2.0",
+    "id"     :1,
+    "method" :"info.isBootstrapped",
+    "params": {
+        "chain":"C"
+    }
+}' -H 'content-type:application/json;' 127.0.0.1:9650/ext/info
+
+
+
+curl --location --request POST '127.0.0.1:9650/ext/index/X/vtx' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "jsonrpc": "2.0",
+    "method": "index.getLastAccepted",
+    "params": {
+        "encoding":"cb58"
+    },
+    "id": 1	
+}'
+
+http://35.173.93.228:9650
+curl --location --request POST 'http://44.224.32.119:9650/ext/index/X/tx' \
+curl --location --request POST 'http://35.173.93.228:9650/ext/index/X/tx' \
+curl --location --request POST 'http://localhost:9650/ext/index/X/tx' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "jsonrpc": "2.0",
+    "method": "index.getLastAccepted",
+    "params": {
+        "encoding":"cb58"
+    },
+    "id": 1
+}'
+
+
+curl --location --request POST 'http://localhost:9650/ext/index/X/tx' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "jsonrpc": "2.0",
+    "method": "index.getLastAccepted",
+    "params": {
+        "encoding":"hex"
+    },
+    "id": 1
+}'
+
+
+curl --location --request POST 'https://indexer-demo.avax.network/ext/index/X/tx' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "jsonrpc": "2.0",
+    "method": "index.getLastAccepted",
+    "params": {
+        "encoding":"hex"
+    },
+    "id": 1
+}'
+
+
+
+
+curl --location --request POST '127.0.0.1:9650/ext/index/X/tx' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "jsonrpc": "2.0",
+    "method": "index.getContainerByIndex",
+    "params": {
+        "index":493524,
+        "encoding":"cb58"
+    },
+    "id": 1
+}'
+
+curl --location --request POST 'https://indexer-demo.avax.network/ext/index/X/tx' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "jsonrpc": "2.0",
+    "method": "index.getContainerByIndex",
+    "params": {
+        "index":493524,
+        "encoding":"cb58"
+    },
+    "id": 1
+}'
+
+
+[Unit]
+Description     = Avalanche node service
+Wants           = network-online.target
+After           = network-online.target 
+
+[Service]
+User            = ubuntu
+Group           = root
+Type            = simple
+ExecStart       = /bin/bash -c '/home/ubuntu/avalanche-node/avalanchego --http-host=0.0.0.0 --dynamic-public-ip=ifconfig --config-file=/home/ubuntu/.avalanchego/configs/node.json'
+KillSignal=SIGINT
+RestartKillSignal=SIGINT
+TimeoutStopSec=2
+LimitNOFILE=32768
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy        = multi-user.target
+
+
+
+curl --location --request POST 'http://44.224.32.119:9650/ext/index/X/tx' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "jsonrpc": "2.0",
+    "method": "index.getContainerByIndex",
+    "params": {
+        "index":493530,
+        "encoding":"cb58"
+    },
+    "id": 1
+}'
+
+
+
+curl -X POST --data '{
+    "jsonrpc":"2.0",
+    "id"     :1,
+    "method" :"avm.getUTXOs",
+    "params" :{
+        "addresses":["X-fuji15ktl74ggkg68z0eajphre7stewqrrzv9hjyd98"],
+        "limit":5,
+        "encoding": "cb58"
+    }
+}' -H 'content-type:application/json;' http://35.173.93.228:9650/ext/bc/X
+
+
+6uNVSJVUQY4Nuvq11XMYheexCvWF74sQd9GyvnEj2HH
+
+
+
+YdFbhZS9d8qjrS7f8g8Qf7Ndd4F6zaNWUjX1TjAJTcbm7FU8c    ->   495889
+26ZvrXjKvKBw9bGJrorgmSiopYbCDpL8Yby9kcaNzWpUVezKvM   ->   495888
+    x-fuji18m2aml4vxywgtjr8q8t79w0zwcewt7r50cpejm
+35000000
+16000000
+
+
+curl http://localhost:8899 -X POST -H "Content-Type: application/json" -d '
+  {"jsonrpc":"2.0", "id":1, "method":"getMinimumBalanceForRentExemption", "params":[50]}
+'
+
+
+curl --location --request POST 'localhost/ext/index/X/tx' --header 'Content-Type: application/json' --data-raw '{
+    "jsonrpc": "2.0",
+    "method": "index.getContainerByIndex",
+    "params": {
+        "index":493524,
+        "encoding":"cb58"
+    },
+    "id": 1
+}'
+
+server1: wallet_id: 719
+
+==================
+mkdir Studio3t
+mv studio-3t-linux-x64.tar.gz Studio3t/
+cs Studio3t/
+
+tar xvf studio-3t-linux-x64.tar.gz
+./studio-3t-linux-x64.sh
+
+
+
+==============================
+Chức năng từng repo backend Ultorex:
+
+con hibtc-web thì có nhiệm vụ api cho FE, ws cho FE, và API cho external apps
+hibtc-web-back là API cho con xex-back
+account thì quản lí thông tin account
+bb cho trading
+news cho xử lí mail, thông báo
+ticker để xử lí orderbook, vẽ chart,...
+mine, stake xử lí earn, staking
+
+con xex-back là trang admin
+dbs là repo setup database
+
+
+
+curl -X POST --data '{	
+    "jsonrpc":"2.0",
+    "id"     :1,
+    "method" :"avm.getTx",
+    "params" :{
+        "txID":"26ZvrXjKvKBw9bGJrorgmSiopYbCDpL8Yby9kcaNzWpUVezKvM",
+        "encoding": "json"
+    }
+}' -H 'content-type:application/json;' https://api.avax-test.network/ext/bc/X
+
+26ZvrXjKvKBw9bGJrorgmSiopYbCDpL8Yby9kcaNzWpUVezKvM
+SmZoNpvcUbonDoWxQdK6FmpfEV6t1ezXDLGcwdKNt5doFNs5j
+
+
+
+No sufficient hot wallet walletId=725 currency=avax-xchain amount=120100000
+No sufficient hot wallet walletId=733 currency=avax-xchain amount=210000000
+58000000
+120100000
+
+
+
+===================================
+
+
+
+
+irVLQZgMSYFTd7UD2zrp2bv18ff3nmMMYTQB5zo29KHB94toX
+
+
+
+nownode-api_key:
+8d737401-a600-4767-92e2-380a9269841e
+
+transaction_dung:
+17iHHnS7ZRba2WHC5XRDk4H6zAiNsgBBWyeTvCrh6CqkXxBM7
+
+
+
+157400000
+391000000
+
+1125000003750000
+200000000000000
+500000000000000
+
+
+rest_endpoint: avax testnet
+http://35.173.93.228:9650/ext/index/X/tx
+https://indexer-demo.avax.network/ext/index/X/tx
+block issue: 3744476
+
+
+
+
+
+deposit
+withdraw
+getDetailTransfer
+getTransferBySquenceId
+
+
+
+npm i @polkadot/app-staking@0.22.48
+
+============
+Note staking
+============
+1. chu ky tinh lai (nhan theo ngay hay theo chu ky)
+-> trả hàng ngày
+2. co stake hoan toan hay chi stake tung phan tuy mang luoi
+3. Tuong tu unstake thi hoan toan hay tung phan tuy mang luoi
+4. sau khi stake xong thi nhan tien thuong ntn
+
+===============
+Polkadot memonic
+fetch deputy lion duck source defy output rotate change pelican tired cherry
+
+=================================
+
+NAS
+suavegard
+
+215k usd
+
+=================================
+rest_endpoint: LTC
+{"protocol":"https","host":"https://bch.getblock.io/testnet/?api_key=755741cf-ac07-498a-bd84-90559f134459","port":"80","user":"","pass":""}
+http://bitcoincash-test.ekoiosblock.com:3000/api/BCH/testnet
+https://www.blockchain.com/explorer?view=bch-testnet
+
+===============================================
+{"protocol":"https","rpchost":"ltc-testnet.nownodes.io","bookhost":"ltcbook-testnet.nownodes.io","port":"443","apikey":"RyqB4xEfGVcIDkpSMdoP705TYigNnZ9h"}
+
+https://blockexplorer.one/litecoin/testnet
+
+https://www.blockchain.com/explorer?view=bch-testnet
+
+===============================
+
+rpc ltc:
+https://ubiquity.api.blockdaemon.com/v2/litecoin/mainnet/tx/send
+
+{
+	"tx" : ""
+}
+===============================
+
+https://ltc.getblock.io/mainnet/
+
+===============================
+
+curl --location --request POST 'https://ltc.nownodes.io' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "API_key": "your_API_key",
+    "jsonrpc": "2.0",
+    "id": "test",
+    "method": "sendrawtransaction",
+    "params": [
+        "signedhex"
+    ]
+}'
+============================
+curl --location --request POST 'https://ltc.getblock.io/mainnet/' \ 
+--header 'x-api-key: YOUR-API-KEY' \ 
+--header 'Content-Type: application/json' \ 
+--data-raw '{"jsonrpc": "2.0",
+"method": "sendrawtransaction",
+"params": ["hexstring"],
+"id": "getblock.io"}'
+============================
+
+https://docs-v2.blocksdk.com/litecoin.html#wallet-multi-coin-transfer
+https://api.blocksdk.com/v2/ltc/transactions/send
+
+
+==========================================
+
+Hang Nguyen, [05/07/2022 09:28]
+LTC ko ghi nhận
+
+Hang Nguyen, [05/07/2022 09:28]
+https://blockchair.com/litecoin/transaction/d3775381bf24fcbeadf67e493929ad1feb8b1a322418ccd7475196a6bbd15fc1
+
+Hang Nguyen, [05/07/2022 09:28]
+LTC ghi nhận
+
+Hang Nguyen, [05/07/2022 09:28]
+https://blockchair.com/litecoin/transaction/8a49394c6383f064877bb2c71869e45f968508a18735c015d1d1da8e31e9be1e
+
+Hang Nguyen, [05/07/2022 09:28]
+Đều gửi tới địa chỉ LR4teWGsKZQPypXj6k7xqdTEYyEbwv2J8z
+
+
+==========================================
+thứ ba, 28 tháng 6 năm 2022 11:46:25
+
+thứ ba, 5 tháng 7 năm 2022 09:56:47
+
+
+fade meat gravity judge pottery ecology shuffle movie venture foster photo season width amused essay update polar ghost flavor left twice dizzy tired kit
+
+================================
+xtz la:
+1. send KT1 to tz1
+opEugMESnkn1oQnMHixYALS4cFvRQqsoKokpvU8J7ZcvARg5Bva
+
+
+
+
+
+curl --location --request POST 'http://35.173.93.228:9650/ext/index/X/tx' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "jsonrpc": "2.0",
+    "method": "index.getIndex",
+    "params": {
+        "id":"zmvvqhLFaPsrJGU5Qi44tRpus33XAijPTyQZ1hjestYxUcvTx",
+        "encoding": "hex"
+    },
+    "id": 1
+}'
+
+
+curl --location --request POST 'https://indexer-demo.avax.network/ext/index/X/tx' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "jsonrpc": "2.0",
+    "method": "index.getLastAccepted",
+    "params": {
+        "encoding": "cb58"
+    },
+    "id": 1
+}'
+
+curl --location --request POST 'http://172.31.16.200:9650/ext/index/X/tx' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "jsonrpc": "2.0",
+    "method": "index.getLastAccepted",
+    "params": {
+        "encoding": "hex"
+    },
+    "id": 1
+}'
+
+
+curl --location --request POST 'https://indexer-demo.avax.network/ext/index/X/tx' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "jsonrpc": "2.0",
+    "method": "index.getIndex",
+    "params": {
+        "id":"2EzBqiCc8HKGsSj5vr5vYDKHGJzdWM9kdDcNFVe9xdBZHNdVrU",
+        "encoding": "hex"
+    },
+    "id": 1
+}'
+
+curl --location --request POST 'http://35.173.93.228:9650/ext/index/X/tx' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "jsonrpc": "2.0",
+    "method": "index.getIndex",
+    "params": {
+        "id":"82uUFT4C4an3ZYDQxKih4acJKAksJtBpwC8GEX9ZetDSuMmRF",
+        "encoding": "hex"
+    },
+    "id": 1
+}'
+
+
+
+Accounts.prototype.create = function create(entropy) {
+    return this._addAccountFunctions(Account.create(entropy || utils.randomHex(32)));
+};
+
+
+
+http://35.173.93.228:9650/ext/index/X/tx
+
+xử lý sai 1 số ký tự trong chuỗi địa chỉ IP. Ví dụ khi nhập số bát phân là 9.
+Vì vậy có thể bypass kiểm soát truy cập dựa vào IP.
+
+============================================================
+aws soluciton architect
+tool test selenium, puppeteer
+============================================================
+
+ada
+atom
+avax-xchain
+avax
+bch
+bsc
+btc
+doge
+iost
+ltc
+
+
+
+
+
+
+============================================================
+iputils-ping
+libcurl4-gnutls-dev
+libexpat1-dev
+libgeoip-dev
+libxslt
+
+
+apt-get install bison build-essential ca-certificates curl dh-autoreconf doxygen  flex gawk liblmdb-dev libpcre3-dev libpcre++-dev libssl-dev libtool libxml2 libxml2-dev libyajl-dev locales lua5.3-dev pkg-config wget zlib1g-dev zlibc libgd-dev
+
+
+sudo apt-get install g++
+
+
+
+`#[repr(C)]` or `#[repr(transparent)]
+
+Time start: 11h15
+
+- Đổi tên validator:
+- Tìm combility (discord)
+- Hỏi có đổi tên được ko
+- search doc đổi tên validator
+
+Thank you response.
+I want change name Producer
+----------------
+Thank you response!
+I still can't solve it. Please help me change name validator
+Thanks!!!
+
+Hi all,
+How can I change name validator?
+Please help me!
+
+
+Thanks， So how much ORBS do I need to be a validator at least?
+
+when update validator info (name validator,...), Downtime and Reward is affected?
+
+update validator parameters doesn't affect on uptime. Node is working as usual, it's just tx in blockchain that says of changes
+I'm sorry. I haven't run comand update validator-info yet
+I want only change name validator. But I don't know will affect into downtime or reward affected?
+
+
+Set quyen use:
+sudo chown sol:sol /mnt/accountsdb/ramdisk 
+========================
+SETTING VALIDATOR SOLANA
+========================
+
+pass: dunghuu90
+Wrote new keypair to /home/sol/validator-keypair.json
+=================================================================================
+pubkey: DFSRFqutnaXnY5juJiSEkiq3WU4rVvtygKtdZLjaRucK
+=================================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+version empty weasel neglect slight drink donate rent teach protect subject blood
+
+solana transfer --allow-unfunded-recipient --fee-payer ASK --from ASK ~/validator-keypair.json .1
+===========================================
+Authorized Withdrawer:
+pass: dunghuu90
+\===================================================================================
+pubkey: C8TxjBxUs39FY62udTwJPok4K4FjX6Kz3C9Zx7r4N2Nf
+===================================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+trophy enemy draw average suffer mirror virus budget original gorilla glare pottery
+===================================================================================
+
+
+
+solana-keygen recover ASK --outfile ./withdrawer-keypair.json
+
+
+
+=====================
+Signature:
+5dtMVJJ6kRFJaZZMpfbq3MfBpaNu1Gqh4tq3pcB7gwyW3gsGN1ckHLb299vfgau4QAj5452RLXvxuLZKrwAq7vzZ
+
+
+==============================================================================
+Vote Account
+pass: dunghuu90
+
+Wrote new keypair to /home/sol/vote-account-keypair.json
+===============================================================================
+pubkey: AjKVHzZbv7xGTisu53Peb9Mbz2p71yTK2Q9AgmDze4KA
+===============================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+shift quote shift crater destroy claim strike whisper price liberty weasel fork
+===============================================================================
+
+solana create-vote-account ~/vote-account-keypair.json ~/validator-keypair.json C8TxjBxUs39FY62udTwJPok4K4FjX6Kz3C9Zx7r4N2Nf --commission 10 \
+--fee-payer ASK
+
+solana vote-update-commission AjKVHzZbv7xGTisu53Peb9Mbz2p71yTK2Q9AgmDze4KA 30 C8TxjBxUs39FY62udTwJPok4K4FjX6Kz3C9Zx7r4N2Nf
+
+Ping risk:
+orbs: ok
+sol: ok
+iotx: not
+ada: not
+atom: not
+xprt: not
+theta: ok
+
+
+
+Theta:
+0x2f9ec91d9cd07a8062d3caf4f36f48b7c68dcec2fb23dd96aaeb88e73b7a56d5
+aim novel say own west six auction hill gospel amateur cycle figure
+
+0x2f9ec91d9cd07a8062d3caf4f36f48b7c68dcec2fb23dd96aaeb88e73b7a56d5
+
+Huong dan change name validator theta:
+STEP 1. You will need to access your GN  on the web wallet https://thetawalletmainorg-net.web.app/restore using any of web browser (brave,safari,chrome,Mozilla,opera) to REdownload and REinstall the updated firmware node clients automatically and install it, when the client is downloaded the wallet will be synced together with the guardian node clients automatically. 
+
+STEP 2. After the restoration, THE NODE WILL BE SYNCED TO 100% without getting stacked, then go to settings >> go to delegations and rewards >>> click theta reward distribution management >> choose your address and view all details under it, for examples (time,date,percentage of rewards baked etc.
+
+STEP 3 Then The Guardian Node Directory under %system_drive%\Users%user_name%\AppData\Roaming\Theta Guardian Node. Then un-install the app,delete the directory under %appdata%. Re-install the node software using the same password that you used to create the node. Let it sync. When it asks for a wallet to stake the node. Stop the app, copy the encrypted key to the correct directory and delete the new key the installment created, restart the node. Your directories will be completely done successfully.
+
+====================
+
+NodeID-4BPSaJpNyz8ghMbEnXjwvkmXYSdd1zq3t
+
+Hi all, I want to update validator info (only name validator).
+How can I update it?
+Please help me!
+
+
+
+aaroniotex
+
+sudo systemctl restart validator.service
+sudo systemctl status validator.service
+
+sudo journalctl -u validator.service -f 
+
+
+--------------------------------
+I want to change name validator.
+I login into https://stake.iotex.io/portal, but I not found item change name validator.
+I have read the document in https://delegates.iotex.io/, but it also doesn't have information update info validator
+Have any guideline for change name validator?
+
+
+
+In document https://delegates.iotex.io/, 
+
+===========================================
+SOLANA DEVNET
+===========================================
+pass: Ngan12301
+Wrote new keypair to /home/ubuntu/wallet-keypair.json
+=============================================================================
+pubkey: DNUVC9W2Bwn2WmJ7KJM4B4eqSGpJxLD5ad7s17UMHjio
+=============================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+issue payment give canvas dilemma lock scout demand recipe puppy jacket admit
+=============================================================================
+
+-------------------------------------------
+----------Validator identity---------------
+Wrote new keypair to /home/ubuntu/validator-keypair.json
+==============================================================================
+pubkey: E8zbQYaBFMKxzk7vUXuFnmX2erep9QxS5mcjT2zGQH4R
+==============================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+surround rate rural accuse cool broccoli quick ceiling label coyote edge medal
+==============================================================================
+
+
+-------------------------------------------
+-----------vote-account--------------------
+Wrote new keypair to /home/ubuntu/vote-account-keypair.json
+=======================================================================
+pubkey: 7UGfGxfuRH8mU45ZTk2CJ6bchFwAUiwjCGkiLEi9yEXb
+=======================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+hope gate liar empty salad tornado text initial gorilla mean faint town
+=======================================================================
+
+
+
+===========================================
+===========================================
+I Login Delegate, but I can't to change name in edit my profile.
+
+
+
+
+=================================
+keybase.io
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: Keybase OpenPGP v2.1.13
+Comment: https://keybase.io/crypto
+
+xsFNBGM/k+gBEADYw3DcAoy0vbgqN7h8SaRlBjJQPr4AA4p1b5pUTj7dsJ2TUZCj
+
+
+
+
+I am running validator solana in an AWS service.
+I want to move to your server, do you support move/setup?
+
+When from AWS move to new server, How does downtime?
+Does it affect reward or any other problem?
+
+
+can i only set the new validator right?
+
+I have to cancel the AWS service.
+can i just set a new validator in your server right?
+
+
+=============key =========
+BIP39 Passphrase (empty for none): 
+Enter same passphrase again: 
+
+Wrote new keypair to /home/dunghoang/wallet-keypair.json
+=====================================================================
+pubkey: GEhfq3jMTqa5bZTcwVEzRKM7ifawT75yQSET7nK6tuL9
+=====================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+push disagree select thumb elbow entry fruit equip toe pill book nose
+=====================================================================
+
+======================
+
+BIP39 Passphrase (empty for none): 
+Enter same passphrase again: 
+
+==========================================================================
+pubkey: 9jcCDo8uqjak6Aukana5wowVNhJqAmujGAM8q3EcCGDo
+==========================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+drum mule sting rough slim sudden lonely quarter enrich chase enroll salad
+==========================================================================
+
+solana-keygen recover 'prompt:?key=0/0' --outfile ~/id_solana.json
+solana-keygen recover 'prompt://?key=0/0' -o file.json
+
+
+when setup new server, My validator does downtime?
+Does it affect reward or any other problem in my validator setup in AWS?
+
+when stop server AWS and setup new server, How is my validator the downtime?
+Does it affect reward or any other problem in my validator setup in AWS?
+
+I am running validator solana in an AWS service.
+when stop server AWS and setup new server, How is my validator the downtime?
+Does it affect reward or any other problem in my validator setup in AWS?
+
+
+
+===============================================================
+---------------------------------------------------------------
+
+when stop server AWS and setup new server, How is my validator the downtime?
+Does it affect reward or any other problem in my validator setup in AWS?
+
+------------------------------------------------
+You're welcome. Feel free to chat with us again if you have any more questions! Have a great day ahead
+------------------------------------------------
+I am running validator solana in an AWS service.
+If I use keypair server AWS to setup new server of you
+then is any guideline for this?
+
+You can set up your new validator server with us by using this script: https://github.com/shiraz-edgevana/solana
+
+- confirm new server solana
+- study validator document solana
+
+--------------------------------------
+1. Thời gian downtime thế nào (catchup trước hay sau khi start service? Nếu bật 2 bên cùng lúc thì thế nào? biết khi nào thì catchup được để đợi)
+2. Xin service testnet để test thử remove key
+--------------------------------------
+
+
+
+
+210 tran hung dao, fishnet
