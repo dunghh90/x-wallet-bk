@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat real time</title>
+</head>
+
+<body>
+    <div id="home">
+        <h1 id="chanel">Hello welcome to #Rocket1hChat</h1>
+        <form id="join-chanel-form">
+            <input type="text" id="join-chanel-id" placeholder="input chanel id" />
+            <input type="text" id="join-name" placeholder="with a name" />
+            <button id="send-chat">Join</button>
+        </form>
+        <br />
+        <h3>You can also create a new chat channel</h3>
+        <form id="create-chanel-form">
+            <input type="text" id="chanel-name" placeholder="input chanel name" />
+            <button id="create-chanel">Create</button>
+        </form>
+        <br />
+        <div id="info-chanel"></div>
+    </div>
+
+    <div id="chat-rom">
+        <h1 id="chanel">Hello welcome to <span id="chanel-info"></span></h1>
+        <ul id="messages"></ul>
+        <form id="chat-form">
+            <input type="text" id="chat-message" placeholder="chat something" />
+            <button id="send-chat">Join</button>
+        </form>
+    </div>
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io()
+    const isHome = true
+    const joinForm = document.querySelector('#join-chanel-form')
+    const createForm = document.querySelector('#create-chanel-form')
+    const getName = document.querySelector('#join-name')
+    const home = document.querySelector('#home')
+    const chatRom = document.querySelector('#chat-rom')
+    let name = ""
+    const joinChanelId = document.querySelector('#join-chanel-id')
+    const messages = document.querySelector('#messages')
+    const chatForm = document.querySelector('#chat-form')
+    const chatMessage = document.querySelector('#chat-message')
+
+    if (isHome) {
+        chatRom.style.display = "none"
+        home.style.display = "block"
+    }
+
+    createForm.addEventListener("submit",(e) => {
+        e.preventDefault()
+        const chanelName = document.querySelector('#chanel-name').value
+        if (chanelName && chanelName !== '') {
+            socket.emit("create", chanelName)
+            socket.on(chanelName, (data) => {
+                document.querySelector('#info-chanel').textContent = "ID: " + data.id
+            })
+        } else {
+            alert('Please enter a chanel name')
+        }
+    })
+
+    joinForm.addEventListener("submit", (e) => {
+        e.preventDefault()
+        name = getName.value && getName.value != "" ? getName.value : "#" + Math.floor(Math.random() * 1000) + 1
+        socket.emit("join-chanel", joinChanelId.value)
+        socket.on(joinChanelId.value, (data) => {
+            if (data) {
+                chatRom.style.display = "block"
+                home.style.display = "none"
+                document.querySelector('#info-chanel').textContent = `${data.name} ~ #${joinChanelId.value}`
+                if (Array.isArray(data.messages)) {
+                    data.messages.forEach((data) => {
+                        const chatItem = document.createElement('li')
+                        chatItem.content = `${data.name} : ${data.message}`;
+                        
+                    })
+                }
+            }
+        })
+    })
+
+
+
+
+</script>
+
+</html>
